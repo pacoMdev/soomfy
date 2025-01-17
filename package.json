@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "▶️PROJECT": "php artisan migrate && php artisan serve",
     "dev": "vite",
     "build": "vite build"
   },

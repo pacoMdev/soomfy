@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PostControllerAdvance;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Http\Request;
@@ -51,3 +52,11 @@ Route::get('category-list', [CategoryController::class, 'getList']);
 Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
 Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
 Route::get('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
+
+// añade la ruta de la api para redirigir a la clase 
+//crud de apis
+Route::get('note', [NoteController::class, 'index']) -> name('note.index');
+Route::post('note', [NoteController::class, 'store']) -> name('note.store');
+Route::get('note/{id}', action: [NoteController::class, 'show']) -> name('note.show');
+Route::put('note/{id}', action: [NoteController::class, 'update']) -> name('note.update');
+Route::delete('note/{id}', action: [NoteController::class, 'delete']) -> name('note.delete');
