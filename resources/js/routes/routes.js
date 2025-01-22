@@ -253,6 +253,26 @@ export default [
                     }
                 ]
             },
+            {
+                name: 'authors',
+                path: 'authors',
+                meta: { breadCrumb: 'Autores'},
+                children: [
+                    {
+                        name: 'authors.index',
+                        path: '',
+                        component: () => import('../views/admin/authors/index.vue'),
+                        meta: { breadCrumb: 'Listado' }
+                    },
+                    {
+                        name: 'authors.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/authors/edit.vue'),
+                        meta: { breadCrumb: 'Editar autores' }
+                    }
+                ]
+            },
+
 
             //TODO Organizar rutas
             {

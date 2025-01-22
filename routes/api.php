@@ -60,3 +60,9 @@ Route::post('note', [NoteController::class, 'store']) -> name('note.store');
 Route::get('note/{id}', action: [NoteController::class, 'show']) -> name('note.show');
 Route::put('note/{id}', action: [NoteController::class, 'update']) -> name('note.update');
 Route::delete('note/{id}', action: [NoteController::class, 'delete']) -> name('note.delete');
+
+Route::get('author', [AuthorController::class, 'index']) -> name('author.index');
+Route::post('author', action: [AuthorController::class, 'store']);
+Route::delete('author/{author}', action: [AuthorController::class, 'delete']);
+Route::get('author/{author}', action: [AuthorController::class, 'index']);
+Route::get('author/{author}', action: [AuthorController::class, 'update']);
