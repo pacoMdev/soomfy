@@ -659,6 +659,7 @@ class ComposerStaticInit5fc6ac1de102957c6c424a28f5b9ce10
         'App\\Http\\Resources\\PostResource' => __DIR__ . '/../..' . '/app/Http/Resources/PostResource.php',
         'App\\Http\\Resources\\RoleResource' => __DIR__ . '/../..' . '/app/Http/Resources/RoleResource.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
+        'App\\Models\\Author' => __DIR__ . '/../..' . '/app/Models/Author.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
         'App\\Models\\CommentExercise' => __DIR__ . '/../..' . '/app/Models/CommentExercise.php',
         'App\\Models\\Note' => __DIR__ . '/../..' . '/app/Models/Note.php',

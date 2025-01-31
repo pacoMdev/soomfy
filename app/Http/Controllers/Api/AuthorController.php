@@ -76,8 +76,4 @@ class AuthorController extends Controller
        $author->delete();
        return response()->json(['status'=>405,'success'=>true,'data'=>'']);
    }
-
-
-
-
 }

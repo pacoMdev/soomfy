@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'dev-prodSoomfy',
-        'version' => 'dev-prodSoomfy',
-        'reference' => '9784150c63f41e33fd87475f5b4a6bf3543066a7',
+        'pretty_version' => 'dev-devPaco',
+        'version' => 'dev-devPaco',
+        'reference' => '4bdc8a0223d356fc49eb2339bd434a0b28d57f2e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -398,9 +398,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'dev-prodSoomfy',
-            'version' => 'dev-prodSoomfy',
-            'reference' => '9784150c63f41e33fd87475f5b4a6bf3543066a7',
+            'pretty_version' => 'dev-devPaco',
+            'version' => 'dev-devPaco',
+            'reference' => '4bdc8a0223d356fc49eb2339bd434a0b28d57f2e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

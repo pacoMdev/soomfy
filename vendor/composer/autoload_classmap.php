@@ -48,6 +48,7 @@ return array(
     'App\\Http\\Resources\\PostResource' => $baseDir . '/app/Http/Resources/PostResource.php',
     'App\\Http\\Resources\\RoleResource' => $baseDir . '/app/Http/Resources/RoleResource.php',
     'App\\Http\\Resources\\UserResource' => $baseDir . '/app/Http/Resources/UserResource.php',
+    'App\\Models\\Author' => $baseDir . '/app/Models/Author.php',
     'App\\Models\\Category' => $baseDir . '/app/Models/Category.php',
     'App\\Models\\CommentExercise' => $baseDir . '/app/Models/CommentExercise.php',
     'App\\Models\\Note' => $baseDir . '/app/Models/Note.php',
