@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use League\CommonMark\Reference\Reference;
 
 return new class extends Migration
 {
@@ -14,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('message', function(Blueprint $table){
             $table->id();
-            $table->id('userDestination_id')->reference('id')->on('users');
-            $table->id('userRemitent_id')->reference('id')->on('users');
-            $table->id('post_id')->reference('post_id')->on('post');
             $table->string('fullMessage');
+            $table->unsignedBigInteger('userDestination_id');
+            $table->unsignedBigInteger('userRemitent_id');
+            $table->unsignedBigInteger('post_id');
+            $table->foreign('userDestination_id')->references('id')->on('users');
+            $table->foreign('userRemitent_id')->references('id')->on('users');
+            $table->foreign('post_id')->references('id')->on('post');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('message');
     }
 };
