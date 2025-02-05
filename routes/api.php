@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NoteController;
+use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Http\Request;
@@ -66,3 +67,9 @@ Route::post('author', action: [AuthorController::class, 'store']);
 Route::delete('author/{author}', action: [AuthorController::class, 'delete']);
 Route::get('author/{author}', action: [AuthorController::class, 'index']);
 Route::get('author/{author}', action: [AuthorController::class, 'update']);
+
+Route::get('posts', [PostsController::class, 'index']) -> name('posts.index');
+Route::post('posts', action: [PostsController::class, 'store']);
+Route::delete('posts/{posts}', action: [PostsController::class, 'delete']);
+Route::get('posts/{posts}', action: [PostsController::class, 'index']);
+Route::get('posts/{posts}', action: [PostsController::class, 'update']);

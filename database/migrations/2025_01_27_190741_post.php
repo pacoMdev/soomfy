@@ -54,6 +54,12 @@ return new class extends Migration
             $table -> string('type'); // compra | venta
             $table -> timestamps();
         });
+        Schema::create('post_image', function(Blueprint $table){
+            $table -> id();
+            $table -> string('title');
+            $table -> unsignedBigInteger('post_id');
+            $table -> foreign('post_id') -> references('id') -> on('post');
+        });
     }
 
     /**
@@ -64,5 +70,6 @@ return new class extends Migration
         Schema::dropIfExists('post');
         Schema::dropIfExists('userOpinion');
         Schema::dropIfExists('transactions');
+        Schema::dropIfExists('post_image');
     }
 };
