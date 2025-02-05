@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('message', function(Blueprint $table){
-            $table->id();
-            $table->string('fullMessage');
-            $table->unsignedBigInteger('userDestination_id');
-            $table->unsignedBigInteger('userRemitent_id');
-            $table->unsignedBigInteger('post_id');
-            $table->foreign('userDestination_id')->references('id')->on('users');
-            $table->foreign('userRemitent_id')->references('id')->on('users');
-            $table->foreign('post_id')->references('id')->on('post');
-            $table->timestamps();
+            $table -> id();
+            $table -> string('fullMessage');
+            $table -> unsignedBigInteger('userDestination_id');
+            $table -> unsignedBigInteger('userRemitent_id');
+            $table -> unsignedBigInteger('post_id');
+            $table -> boolean('isReaded');
+            $table -> foreign('userDestination_id') -> references('id') -> on('users');
+            $table -> foreign('userRemitent_id') -> references('id') -> on('users');
+            $table -> foreign('post_id') -> references('id') -> on('post');
+            $table -> timestamps();
         });
     }
 
