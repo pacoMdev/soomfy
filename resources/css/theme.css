@@ -36,7 +36,17 @@
 }
 
 .fondoNav .icons-size {
-    width: 35px;
+    width: 30px;
+    /* padding: 5px; */
+}
+
+.textSize-chat {
+    font-size: 17px;
+}
+
+.icon-plus {
+    width: 16px !important;
+    padding: 0px !important;
 }
 
 /* Tamaño default iconos */
@@ -46,7 +56,7 @@
 
 .primary-button {
     background-color: var(--primary-color);
-    border-style: none;
+    border-style: solid;
     border-color: var(--secondary-color);
     border-radius: 100px;
     height: 40px;
@@ -57,16 +67,14 @@
 .secondary-button {
     background-color: var(--secondary-color);
     border-radius: 100px;
-
+    border-style: none;
     height: 40px;
+    align-items: center;
+    justify-content: space-between;
 
     /* Paddin */
     padding: 0px 30px !important;
     color: var(--primary-color);
-}
-
-.icon-plus {
-    width: 16px !important;
 }
 
 /* Tamaños y colores textos*/
