@@ -59,6 +59,7 @@ return new class extends Migration
             $table -> string('title');
             $table -> unsignedBigInteger('post_id');
             $table -> foreign('post_id') -> references('id') -> on('post');
+            $table ->timestamps();
         });
     }
 
