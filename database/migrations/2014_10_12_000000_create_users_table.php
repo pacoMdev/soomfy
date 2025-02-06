@@ -14,20 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table -> id();
-            $table -> string('name');
-            $table -> string('surname1') -> nullable();
-            $table -> string('surname2') -> nullable();
-            $table -> string('alias') -> unique() -> nullable();
-            $table -> string('username') -> unique() -> nullable();
-            $table -> string('email') -> unique();
-            $table -> string('password');
-            $table -> boolean('isDeleted') ->default(false);
-            $table -> string('imgProfile') -> nullable();
-            $table -> string('imgBanner') -> nullable() -> default('default.webp');
-            $table -> string('location') -> nullable();
-            $table -> rememberToken();
-            $table -> timestamps();
+            $table->id();
+            $table->string('name');
+            $table->string('surname1')->nullable();
+            $table->string('surname2')->nullable();
+            $table->string('alias')->unique()->nullable();
+            $table->string('username')->unique()->nullable();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('imgProfile')->nullable();
+            $table->string('imgBanner')->nullable()->default('default.webp');
+            $table->string('location')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 
