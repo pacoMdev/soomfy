@@ -1,5 +1,37 @@
 <template>
+    <div class="fondoBienvenida d-flex justify-content-center">
+        <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
+            <h1>¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
+            <h2>¡Todo a solo un clic de distancia!</h2>
+            <div class="d-flex w-100 justify-content-center"> 
+                <input type="text" class="buscadorProductos">
+                <button>Search</button>
+            </div>
+        </div>
+    </div>
 </template>
+
+
+
+<style scoped>
+.fondoBienvenida {
+  background-image: url('images/home/bannerIcons.webp');
+  width: 100%;
+  height: 471px;
+}
+
+.contenidoBienvenida {
+    width: 65%;
+}
+
+.contenidoBienvenida .buscadorProductos {
+    width: 80% !important;
+    height: 50px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-width: 1px;
+}
+</style>
 <!--
 <template>
     <div class="demo" id="edit-demo">
