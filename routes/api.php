@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\PostsController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Http\Request;
@@ -17,13 +18,14 @@ use Illuminate\Support\Facades\Route;
 Route::post('forget-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forget.password.post');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
+// protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::apiResource('users', UserController::class);
 
     Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
 
-    Route::apiResource('posts', PostControllerAdvance::class);
+    // Route::apiResource('posts', PostControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
 
@@ -70,6 +72,13 @@ Route::get('author/{author}', action: [AuthorController::class, 'update']);
 
 Route::get('posts', [PostsController::class, 'index']) -> name('posts.index');
 Route::post('posts', action: [PostsController::class, 'store']);
-Route::delete('posts/{posts}', action: [PostsController::class, 'delete']);
-Route::get('posts/{posts}', action: [PostsController::class, 'index']);
-Route::get('posts/{posts}', action: [PostsController::class, 'update']);
+Route::get('posts/{id}', action: [PostsController::class, 'show']);
+Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostsController::class, 'getNearbyPost']);
+Route::put('posts/{id}', action: [PostsController::class, 'update']);
+Route::delete('posts/{id}', action: [PostsController::class, 'delete']);
+
+Route::get('message', [MessageController::class, 'index']);
+Route::post('message', action: [MessageController::class, 'store']);
+Route::get('message/{id}', action: [MessageController::class, 'show']);
+Route::put('message/{id}', action: [MessageController::class, 'update']);
+Route::delete('message/{id}', action: [MessageController::class, 'delete']);

@@ -15,11 +15,20 @@ class CategoryTableSeeder extends Seeder
     public function run()
     {
         $categories = [
-            'Ciencia',
-            'Educación',
-            'Alimentación',
-            'Programación',
-            'Varios'
+            'Moviles',
+            'Tecnologia',
+            'Coches',
+            'Motos',
+            'Inmuebles',
+            'Herramientas',
+            'Moda',
+            'Servicios',
+            'Muebles',
+            'Empleo',
+            'Jardineria',
+            'Deporte',
+            'Construccion',
+            'Otros...',
         ];
 
 

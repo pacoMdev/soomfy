@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PostsController extends Controller
 {
+    /**
+     * Summary of index
+     * Muestra todos los posts
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $authors = Posts::all();
@@ -20,63 +25,118 @@ class PostsController extends Controller
     }
 
 
+    /**
+     * Summary of store
+     * Almacena el post en base de datos
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => ['required', 'max:255'],
-                'surname' => '',
-                'email' => ['required', 'unique:authors']
-            ]
-        );
+        // Crea el post para guardar en base de datos
+        $post = new Posts();
+        $post -> title = $request -> title;
+        $post -> description = $request -> description;
+        $post -> price = $request -> price;
+        $post -> estado = $request -> estado;
+        $post -> latitude = $request -> latitude;
+        $post -> longitude = $request -> longitude;
+        $post -> toSend = $request -> toSend;
+        $post -> isDeleted = $request -> isDeleted;
+        $post -> isBoost = $request -> isBoost;
+        $post -> dimensionX = $request -> dimensionX;
+        $post -> dimensionY = $request -> dimensionY;
+        $post -> marca = $request -> marca;
+        $post -> color = $request -> color;
+        $post -> category_id = $request -> category_id;
 
+        // Guardar en la base de datos
+        $post -> save();
 
-        $data = $validator->validated();
-
-
-        $posts = Posts::create($data);
-        return response()->json(['status' => 405, 'success' => true, 'data' => $posts]);
+        return response()->json(data: ['status' => 200, 'success' => true, 'mensaje' => 'Post guardado', 'post' => $post]);
     }
 
-
-    public function show(Posts $posts)
+    /**
+     * Summary of show
+     * Muestra el post con x id
+     * @param mixed $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function show($id)
     {
-        $posts->load('categories')->get();
-        return new PostsResource($posts);
+        // busca por id
+        $post = Posts::findOrFail($id);
+
+        return response()->json(['status' => 200, 'success' => true, 'data' => $post]);
     }
-    public function update(Posts $posts, Request $request)
+    /**
+     * Summary of update
+     * Actualiza el post
+     * @param \Illuminate\Http\Request $request
+     * @param mixed $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'title' => '',
-                'description' => '',
-                'price' => '',
-                'estado' => '',
-                'location' => '',
-                'toSend' => '',
-                'isDeleted' => '',
-                'isBost' => '',
-                'dimensionX' => '',
-                'dimensionY' => '',
-                'marca' => '',
-                'color' => '',
-                'category_id' => '',
-            ]
-        );
-        $data = $validator->validated();
-        $posts->update($data);
-        return response()->json(['status' => 405, 'success' => true, 'data' => $posts]);
+        $post = Posts::findOrFail($id);
+        
+        // Crea el post para guardar en base de datos
+        $post -> title = $request -> title ?? $post -> title;
+        $post -> description = $request -> description ?? $post -> description;
+        $post -> price = $request -> price ?? $post -> price;
+        $post -> estado = $request -> estado ?? $post -> estado;
+        $post -> latitude = $request -> latitude ?? $post -> latitude;
+        $post -> longitude = $request -> longitude ?? $post -> longitude;
+        $post -> toSend = $request -> toSend ?? $post -> toSend;
+        $post -> isDeleted = $request -> isDeleted ?? $post -> isDeleted;
+        $post -> isBoost = $request -> isBoost ?? $post -> isBoost;
+        $post -> dimensionX = $request -> dimensionX ?? $post -> dimensionX;
+        $post -> dimensionY = $request -> dimensionY ?? $post -> dimensionY;
+        $post -> marca = $request -> marca ?? $post -> marca;
+        $post -> color = $request -> color ?? $post -> color;
+        $post -> category_id = $request -> category_id ?? $post -> category_id;
+
+        // Guardar en la base de datos
+        $post->save();
+        
+        return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'Post actualizado', 'post' => $post]);
+    }
+
+    /**
+     * Summary of delete
+     * Elimina el post
+     * @param mixed $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function delete($id)
+    {
+        $post = Posts::findOrFail($id);
+        $post->delete();
+        return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'Post eliminado']);
     }
 
 
-    public function destroy(Posts $posts)
-    {
-        $posts->delete();
-        return response()->json(['status' => 405, 'success' => true, 'data' => '']);
-    }
-    public function getImgPost(Request $request) 
-    {
-    }
+    /**
+     * Summary of getNearbyPosts
+     * Obtiene los posts en radio base 10km, se puede ajustar
+     * 
+     * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
+     * 
+     * @param mixed $latitude
+     * @param mixed $longitude
+     * @param mixed $radius
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getNearbyPost($latitude, $longitude, $radius = 10)
+{
+    $posts = Posts::selectRaw("
+            id, title, description, price, estado, category_id,
+            ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
+        ", [$latitude, $longitude, $latitude])
+        ->having('distance', '<', $radius)  // Radio en km (10 km por defecto)
+        ->orderBy('distance')
+        ->get();
+
+        return response()->json(['status' => 200, 'success' => true, 'posts' => $posts]);
+}
 }
