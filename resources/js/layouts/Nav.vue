@@ -32,7 +32,7 @@
                         </ul>
                     </li>
                     <router-link to="/" class="nav-link d-flex align-items-center">
-                        <button class="d-flex secondary-button gap-2">
+                        <button class="d-flex primary-button-2 gap-2">
                             <img src="images/agregar.svg" class="icon-plus" alt="">
                             <p>Anuncia y vende</p>
                         </button>

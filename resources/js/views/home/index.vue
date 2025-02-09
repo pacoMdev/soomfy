@@ -1,12 +1,137 @@
 <template>
-    <div class="fondoBienvenida d-flex justify-content-center">
-        <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
-            <h1>¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
-            <h2>¡Todo a solo un clic de distancia!</h2>
-            <div class="d-flex w-100 justify-content-center"> 
-                <input type="text" class="buscadorProductos">
-                <button>Search</button>
+    <div class="separacion-general">
+        <div class="fondoBienvenida d-flex justify-content-center">
+            <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
+                <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
+                <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
+                <div class="d-flex w-100 justify-content-center"> 
+                    <input type="text" class="buscadorProductos">
+                    <button class="secondary-button-2"><i class="fas fa-search"></i> Search</button>
+                </div>
             </div>
+        </div>
+        <div class="centrar-categories">
+            <div class="categories">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+            </div>
+        </div>
+        <div class="centrar-productos">
+            <div class="productos">
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+                <div class="producto">
+                    <div class="contenido-producto">
+                        <div class="d-flex justify-content-end w-100">
+                            <i class="fa-regular fa-heart justify-content-rigth"></i>
+                        </div>
+                        <img src="images/home/productos/producto.webp" alt="">
+                        <p class="h1-p">99€</p>
+                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
+                        <p class="tamaño-estadoProducto">Semi nuevo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button class="primary-button">¡Ver mas!</button>
+        </div>
+
+        <div class="apartado-mensaje">
+            <h1>Dale una nueva vida a lo que ya no usas!</h1>
+            <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
+
+            <img src="images/cascos-decoracion.webp" alt="Cascos"class="cascos">
+            <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota">
+            <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj">
+            <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato">
         </div>
     </div>
 </template>
@@ -14,23 +139,187 @@
 
 
 <style scoped>
+
+.separacion-general {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding-top: 130px;
+    padding-bottom: 130px;
+    
+}
 .fondoBienvenida {
-  background-image: url('images/home/bannerIcons.webp');
-  width: 100%;
-  height: 471px;
+    background-image: url('images/home/bannerIcons.webp');
+    width: 100%;
 }
 
 .contenidoBienvenida {
     width: 65%;
 }
 
+.tamañoH1 {
+    max-width: 1033px;
+}
+
+/* Buscador productos */
 .contenidoBienvenida .buscadorProductos {
-    width: 80% !important;
+    width: 90% !important;
     height: 50px;
     border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
     border-width: 1px;
+    border: 1px solid var(--primary-color);
+    padding-left: 25px;
 }
+
+.secondary-button-2 {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+/* Categorias */
+.centrar-categories {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.categories {
+    width: 65%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+.categories img {
+    width: 132px;
+}
+
+/* Productos */
+.centrar-productos {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.productos {
+    width: 65%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 55px;
+}
+
+.producto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    height: auto; /* Que el tamaño se ajuste al contenido */
+    border-radius: 15px;
+    border: 1px solid rgba(195, 195, 195, 0.5);
+    background-color: #fff; /* Fondo blanco */
+    padding: 15px;
+}
+
+.producto img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.producto i {
+    font-size: 20px !important;
+    padding: 5px 0px;
+}
+
+.producto .contenido-producto {
+    width: 100%;
+    padding: 10px; /* Espaciado interno */
+}
+
+.h1-p {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.tamaño-estadoProducto {
+    font-size: 13px;
+}
+
+/* Ver mas */
+.primary-button {
+    border-width: 2px;
+    color: var(--primary-color);
+}
+
+/* Mensaje */
+
+.apartado-mensaje {
+    background: linear-gradient(to bottom, #f9f9f9 0%, var(--secondary-color) 50%, #f9f9f9 100%);
+    width: 100%;
+    height: 450px; /* Ajusta la altura según necesites */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.cascos , .pelota , .reloj , .zapato{
+    position: absolute;
+}
+
+.cascos {
+    top: 50px;
+    left: 150px;
+}
+
+.pelota {
+    bottom: 60px;
+    left: 280px;
+}
+
+.reloj {
+    top: 25px;
+    right: 150px;
+}
+
+.zapato {
+    bottom: 70px;
+    right: 200px;
+}
+
+/* Cuando lleguen a un tamaño los movemos de lugar */
+@media (max-width: 1640px) {
+    .cascos, .pelota, .reloj, .zapato {
+        position: absolute;
+        top: auto !important; /* Elimina cualquier top */
+        bottom: 0 !important; /* Los baja al fondo */
+    }
+
+    .cascos {
+        left: 10%; /* Separado hacia la izquierda */
+    }
+
+    .pelota {
+        left: 30%; /* Más al centro */
+    }
+
+    .reloj {
+        right: 30%; /* Más al centro desde la derecha */
+    }
+
+    .zapato {
+        right: 10%; /* Separado hacia la derecha */
+    }
+}
+
+
 </style>
 <!--
 <template>
