@@ -43,11 +43,12 @@
 }
 
 .categories {
-    width: 65%;
+    width: 70%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 50px;
+    column-gap: 10px;
+    row-gap: 40px;
 }
 
 .categories img {
@@ -62,18 +63,18 @@
 }
 
 .productos {
-    width: 65%;
+    width: 70%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 55px;
+    gap: 45px;
 }
 
 .producto {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 250px;
+    width: 20%;
     height: auto; /* Que el tamaño se ajuste al contenido */
     border-radius: 15px;
     border: 1px solid rgba(195, 195, 195, 0.5);
