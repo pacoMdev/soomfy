@@ -62,4 +62,11 @@ class MessageController extends Controller
         $message->delete();
         return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'message eliminado']);
     }
+
+    public function getConversation(Request $request, $product_id, $userRemitenr_id, $userDestination_id){        
+        $conversation = Message::where('userRemitent_id', $request->remitent_id)->where('userDestination_id', $request->destination_id)->where('post_id', $request->post_id)->orderByAscendant('createt_at');
+        
+        
+        return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'full conversation OK', 'conversation' => $conversation]);
+    }
 }

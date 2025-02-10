@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\PostsResource;
 use App\Models\Posts;
+use App\Models\User;
+use App\Models\Transactions;
 use App\Http\Controllers\Controller;
-
-
+use App\Mail\ConstructEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\helpers;
 
 
 class PostsController extends Controller
@@ -127,8 +129,7 @@ class PostsController extends Controller
      * @param mixed $radius
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function getNearbyPost($latitude, $longitude, $radius = 10)
-{
+    public function getNearbyPost($latitude, $longitude, $radius = 10){
     $posts = Posts::selectRaw("
             id, title, description, price, estado, category_id,
             ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
@@ -138,5 +139,49 @@ class PostsController extends Controller
         ->get();
 
         return response()->json(['status' => 200, 'success' => true, 'posts' => $posts]);
-}
+    }
+    
+    public function sellPost(Request $request){
+        $userSeller = User::findOrFail($request -> userSeller_id);
+        $userBuyer = User::findOrFail($request -> userBuyer_id);
+        
+        if ($request -> initialPrice != $request -> finalPrice){
+            $initialPrice = $request -> initialPrice;
+            $finalPrice = $request -> finalPrice;
+            $isRegated = true;
+        }else{
+            $initialPrice = $request -> initialPrice;
+            $finalPrice = $request -> finalPrice;
+            $isRegated = false;
+        }
+
+        $transaction = new Transactions();
+        $transaction -> userSeller_id = $userSeller -> id;
+        $transaction -> userBuyer_id = $userBuyer -> id;
+        $transaction -> post_id = $request -> post_id;
+        $transaction -> initialPrice = $initialPrice;
+        $transaction -> finalPrice = $finalPrice;
+        $transaction -> isToSend = $request -> isToSend;
+        $transaction -> isRegated = $isRegated;
+
+        $transaction -> save();
+
+        $data = [
+            'from_email' => 'soomfy@gmail.com',
+            'from_name' => 'Soomfy',
+            'to_email' => $userSeller['email'],
+            'to_name' => $userSeller['name'],
+            'subject' => 'Hey acabas de vender un producto',
+            'view' => 'emails.welcome',
+            'finalPrice' => $finalPrice,
+            'userSeller' => $userSeller,
+            'userBuyer' => $userBuyer,
+        ];
+        $email = new ConstructEmail($data);
+        $data_email = sendEmail($email);
+        dd($data_email);
+
+
+        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+    }
 }

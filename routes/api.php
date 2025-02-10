@@ -82,3 +82,5 @@ Route::post('message', action: [MessageController::class, 'store']);
 Route::get('message/{id}', action: [MessageController::class, 'show']);
 Route::put('message/{id}', action: [MessageController::class, 'update']);
 Route::delete('message/{id}', action: [MessageController::class, 'delete']);
+
+Route::post('sellPost', action: [PostsController::class, 'sellPost']);

@@ -49,11 +49,16 @@ return new class extends Migration
         });
         Schema::create('transactions', function(Blueprint $table){
             $table -> id();
-            $table -> unsignedBigInteger('user_id');
+            $table -> unsignedBigInteger('userSeller_id');
+            $table -> unsignedBigInteger('userBuyer_id');
             $table -> unsignedBigInteger('post_id');
+            $table -> foreign('userSeller_id') -> references('id') -> on('users');
+            $table -> foreign('userBuyer_id') -> references('id') -> on('users');
             $table -> foreign('post_id') -> references('id') -> on('posts');
-            $table -> foreign('user_id') -> references('id') -> on('users');
-            $table -> string('type'); // compra | venta
+            $table -> double('initialPrice');
+            $table -> double('finalPrice');
+            $table -> boolean('isToSend') -> default(0);
+            $table -> boolean('isRegated') -> default(0);
             $table -> timestamps();
         });
         Schema::create('post_image', function(Blueprint $table){

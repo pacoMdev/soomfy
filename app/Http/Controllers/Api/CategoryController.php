@@ -72,4 +72,8 @@ class CategoryController extends Controller
     {
         return CategoryResource::collection(Category::all());
     }
+    public function getCategory(){
+        $category = Category::all();
+        return response()->json(['code' => 200, 'status'=>'done', 'category' => $category]);
+    }
 }
