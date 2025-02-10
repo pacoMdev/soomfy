@@ -63,7 +63,7 @@ export default [
         children: [
             { 
                 // Si intentan entrar sin la sesion iniciada, de momento lo redirigiremos al login (TEMPORAL)
-                path: '/cuenta',
+                path: 'cuenta',
                 name: 'cuenta',
                 component: () => import('../views/login/Login.vue'),
             },

@@ -118,8 +118,9 @@
     color: var(--secondary-color);
 }
 
-.primary-button-2:hover img{
-    color: var(--secondary-color);
+.primary-button-2:hover svg{
+    stroke: var(--secondary-color);
+    
 }
 
 .primary-button-2:active {

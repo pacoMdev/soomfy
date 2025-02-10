@@ -33,7 +33,9 @@
                     </li>
                     <router-link to="/" class="nav-link d-flex align-items-center">
                         <button class="d-flex primary-button-2 gap-2">
-                            <img src="images/agregar.svg" class="icon-plus" alt="">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.59383 5.88469V12.1152M5.47856 8.99995H11.7091M16.382 8.99995C16.382 13.3012 12.8951 16.7881 8.59383 16.7881C4.29254 16.7881 0.805664 13.3012 0.805664 8.99995C0.805664 4.69867 4.29254 1.21179 8.59383 1.21179C12.8951 1.21179 16.382 4.69867 16.382 8.99995Z" stroke="currentColor" stroke-width="1.40187" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                             <p>Anuncia y vende</p>
                         </button>
                     </router-link>

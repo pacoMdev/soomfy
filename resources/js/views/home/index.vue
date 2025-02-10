@@ -12,22 +12,65 @@
         </div>
         <div class="centrar-categories">
             <div class="categories">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
-                <img src="images/home/categories/Dispositivos moviles.webp" alt="">
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/telefono.webp" alt="">
+                    <p>Moviles, tablets</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/tecnologia.webp" alt="">
+                    <p>Tecnologia</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/car.webp" alt="">
+                    <p>Coches</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/moto.webp" alt="">
+                    <p>Motos</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/inmuebles.webp" alt="">
+                    <p>Inmuebles</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/herramientas.webp" alt="">
+                    <p>Herramientas</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/moda.webp" alt="">
+                    <p>Moda</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/services.webp" alt="">
+                    <p>Servicios</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/muebles.webp" alt="">
+                    <p>Muebles</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/jobs.webp" alt="">
+                    <p>Empleo</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/jardineria.webp" alt="">
+                    <p>Jardineria</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/deporte.webp" alt="">
+                    <p>Deporte</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/construccion.webp" alt="">
+                    <p>Construccion</p>
+                </div>
+                <div class="d-flex flex-column text-center gap-2">
+                    <img src="images/home/categories/others.webp" alt="">
+                    <p>Otros..</p>
+                </div>
             </div>
         </div>
+
         <div class="centrar-productos">
             <div class="productos">
                 <div class="producto">
