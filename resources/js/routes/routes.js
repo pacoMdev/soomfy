@@ -61,11 +61,27 @@ export default [
         // redirect: { name: 'login' },
         component: GuestLayout,
         children: [
-
+            { 
+                // Si intentan entrar sin la sesion iniciada, de momento lo redirigiremos al login (TEMPORAL)
+                path: '/cuenta',
+                name: 'cuenta',
+                component: () => import('../views/login/Login.vue'),
+            },
             {
                 path: '/',
                 name: 'home',
                 component: () => import('../views/home/index.vue'),
+            },
+            {
+                path: 'productos',
+                name: 'productos',
+                component: () => import('../views/productos/productos.vue'),
+            },
+            {
+                // Pagina de detalle del producto vendido
+                path: 'productos/:id',
+                name: 'detalle-producto',
+                component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },
             {
                 path: 'posts',
@@ -117,7 +133,14 @@ export default [
         // },
         name: 'app',
         beforeEnter: requireLogin,
-        meta: { breadCrumb: 'Dashboard' }
+        meta: { breadCrumb: 'Dashboard' },
+        children: [
+            {
+                path: '/cuenta',
+                name: 'cuenta',
+                component: () => import('../views/perfil/perfil.vue'),
+            }
+        ]
     },
 
 
