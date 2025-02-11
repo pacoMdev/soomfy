@@ -4,6 +4,9 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
+    server: {
+        open: 'http://127.0.0.1:8000' // Abre la URL de Laravel
+      },
     plugins: [
         laravel({
             input: [

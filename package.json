@@ -4,7 +4,7 @@
   "scripts": {
     "▶️PROJECT": "killall Terminal; npm  install; npm run 💻TERMINAL & npm run 🆅VUE",
     "🆅VUE": "vite --open",
-    "💻TERMINAL": "osascript -e 'tell application \"Terminal\" to do script \"cd /Applications/MAMP/htdocs/soomfy && php artisan migrate && php artisan serve\"'",
+    "💻TERMINAL": "osascript -e 'tell application \"Terminal\" to do script \"cd /Applications/MAMP/htdocs/soomfy && php artisan migrate:fresh --seed && php artisan serve\"'",
     "dev": "vite",
     "build": "vite build"
   },
@@ -17,7 +17,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8.4.49",
     "sass": "^1.82.0",
-    "vite": "^6.0.2",
+    "vite": "^6.0.11",
     "vue": "^3.5.13"
   },
   "dependencies": {

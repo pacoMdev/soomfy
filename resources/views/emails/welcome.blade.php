@@ -20,7 +20,7 @@
                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:30px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                             <div style="font-size: 14px; line-height: 140%; text-align: center; word-wrap: break-word;">
-                                                <p style="line-height: 140%;">{{company_info_name}}<span style="color: #7e8c8d; line-height: 19.6px;"> </span></p>
+                                                <p style="line-height: 140%;">Soomfy<span style="color: #7e8c8d; line-height: 19.6px;"> </span></p>
                                             </div>
 
                                         </td>
@@ -106,7 +106,7 @@
                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                             <!--[if mso]><table width="100%"><tr><td><![endif]-->
-                                            <h1 style="margin: 0px; line-height: 140%; text-align: left; word-wrap: break-word; font-size: 22px; font-weight: 400;"><strong>Welcome, {{name}}!</strong></h1>
+                                            <h1 style="margin: 0px; line-height: 140%; text-align: left; word-wrap: break-word; font-size: 22px; font-weight: 400;"><strong>Welcome, USER!</strong></h1>
                                             <!--[if mso]></td></tr></table><![endif]-->
 
                                         </td>
@@ -145,7 +145,7 @@
                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                             <div style="font-size: 14px; line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                <p style="line-height: 140%;">Thanks for choosing {{company_info_name}}! We are happy to see you on board.</p>
+                                                <p style="line-height: 140%;">Thanks for choosing Soomfy! We are happy to see you on board.</p>
                                                 <p style="line-height: 140%;">&nbsp;</p>
                                                 <p style="line-height: 140%;">To get started, do this next step:</p>
                                             </div>
@@ -314,7 +314,7 @@
                                         <td style="overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:arial,helvetica,sans-serif;" align="left">
 
                                             <div style="font-family: helvetica,sans-serif; font-size: 13px; line-height: 140%; text-align: center; word-wrap: break-word;">
-                                                <p style="line-height: 140%;"><span style="color: #8b949f; line-height: 18.2px;">© {{company_info_name}}&nbsp; • &nbsp;{{company_info_city}}, {{company_info_zip_code}}, {{company_info_country}}</span></p>
+                                                <p style="line-height: 140%;"><span style="color: #8b949f; line-height: 18.2px;">© Soomfy&nbsp; • &nbsp;Barcelona, 08001, Cataluña</span></p>
                                             </div>
 
                                         </td>
