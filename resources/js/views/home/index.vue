@@ -74,13 +74,6 @@
         <div class="centrar-productos">
             <div class="productos">
                 <Producto />
-                <Producto />
-                <Producto />
-                <Producto />
-                <Producto />
-                <Producto />
-                <Producto />
-                <Producto />
             </div>
         </div>
         <div class="d-flex justify-content-center">

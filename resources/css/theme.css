@@ -34,8 +34,12 @@
 }
 
 
-.fondoNav a {
+.fondoNav a, .nav-item .dropdown{
     color: var(--secondary-color);
+}
+
+.dropdown-menu li a {
+    color: var(--neutral-color);
 }
 
 .fondoNav .logo-size {
@@ -120,7 +124,6 @@
 
 .primary-button-2:hover svg{
     stroke: var(--secondary-color);
-    
 }
 
 .primary-button-2:active {

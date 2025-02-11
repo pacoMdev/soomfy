@@ -1,16 +1,36 @@
 <template>
-    <div class="producto">
+    
+    <router-link :to="'/productos/' + producto.id" 
+    v-for="producto in productos" :key="producto.id" class="producto">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
                 <i class="fa-regular fa-heart justify-content-rigth"></i>
             </div>
             <img src="images/home/productos/producto.webp" alt="">
-            <p class="h1-p">99€</p>
-            <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-            <p class="tamaño-estadoProducto">Semi nuevo</p>
+            <p class="h1-p">{{ producto.price }}€</p>
+            <p class="h4-p">{{ producto.description }}</p>
+            <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
         </div>
-    </div>
+    </router-link>
+
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+// Estado reactivo
+const productos = ref([]);
+
+// Función para obtener productos desde la API
+const obtenerProductos = async () => {
+    const respuesta = await axios.get('/api/posts'); // Asegúrate de que esta URL sea la correcta
+    productos.value = respuesta.data.data; // Guardamos los datos en productos
+};
+
+// Ejecutar la función cuando el componente se monte
+onMounted(obtenerProductos);
+</script>
 
 <style scoped>
 

@@ -15,6 +15,6 @@ import Footer from './Footer.vue';
 const route = useRoute();
 
 const isAuthPage = computed(() => {
-    return route.path === '/login' || route.path === '/register';
+    return route.path === '/login' || route.path === '/register' || route.path === '/forgot-password';
 });
 </script>

@@ -22,10 +22,11 @@
                     </template>
                     <li v-if="authStore().user?.name" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            {{ authStore().user?.name }}
+                            <img src="images/logoUser.svg" class="icons-size">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><router-link class="dropdown-item" to="/admin">Admin</router-link></li>
+                            <li><p class="h4-p text-center">Bienvenid@ {{ authStore().user?.name }}</p></li>
+                            <li><router-link v-if="!isAdm" class="dropdown-item" to="/admin">Admin</router-link></li>
                             <li><router-link to="/admin/posts" class="dropdown-item">Post</router-link></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a></li>
