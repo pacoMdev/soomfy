@@ -1,0 +1,198 @@
+.separacion-general {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding-top: 130px;
+    padding-bottom: 130px;
+    
+}
+.fondoBienvenida {
+    background-image: url('images/home/bannerIcons.webp');
+    width: 100%;
+}
+
+.contenidoBienvenida {
+    width: 65%;
+}
+
+.tamañoH1 {
+    max-width: 1033px;
+}
+
+/* Buscador productos */
+.contenidoBienvenida .buscadorProductos {
+    width: 90% !important;
+    height: 50px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-width: 1px;
+    border: 1px solid var(--primary-color);
+    padding-left: 25px;
+}
+
+.secondary-button-2 {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+/* Categorias */
+.centrar-categories {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.categories {
+    width: 67%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 71px;
+    row-gap: 40px;
+}
+
+.categories img {
+    width: 80px;
+    padding: 12px;
+    object-fit: contain; /* Cambiado de cover a contain para que la imagen no se corte */
+    background-color: rgb(225, 223, 223);
+    border-radius: 50%; /* Ajustado para que se mantenga redondo */
+    overflow: visible; /* Asegura que la imagen sobresalga si es necesario */
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+.categories img:hover {
+    transform: scale(1.1);
+    border: 0.5px dotted var(--primary-color);
+    border-style: dashed;
+}
+/* Productos */
+.centrar-productos {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.productos {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 45px;
+}
+
+.producto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    height: auto; /* Que el tamaño se ajuste al contenido */
+    border-radius: 15px;
+    border: 1px solid rgba(195, 195, 195, 0.5);
+    background-color: #fff; /* Fondo blanco */
+    padding: 15px;
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+.producto:hover {
+    transform: scale(1.02);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}
+
+.producto img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.producto i {
+    font-size: 20px !important;
+    padding: 5px 0px;
+}
+
+.producto .contenido-producto {
+    width: 100%;
+    padding: 10px; /* Espaciado interno */
+}
+
+.h1-p {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.tamaño-estadoProducto {
+    font-size: 13px;
+}
+
+/* Ver mas */
+.primary-button {
+    border-width: 2px;
+    color: var(--primary-color);
+}
+
+/* Mensaje */
+
+.apartado-mensaje {
+    background: linear-gradient(to bottom, #f9f9f9 0%, var(--secondary-color) 50%, #f9f9f9 100%);
+    width: 100%;
+    height: 450px; /* Ajusta la altura según necesites */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.cascos , .pelota , .reloj , .zapato{
+    position: absolute;
+}
+
+.cascos {
+    top: 50px;
+    left: 150px;
+}
+
+.pelota {
+    bottom: 60px;
+    left: 280px;
+}
+
+.reloj {
+    top: 25px;
+    right: 150px;
+}
+
+.zapato {
+    bottom: 70px;
+    right: 200px;
+}
+
+/* Cuando lleguen a un tamaño los movemos de lugar */
+@media (max-width: 1640px) {
+    .cascos, .pelota, .reloj, .zapato {
+        position: absolute;
+        top: auto !important; /* Elimina cualquier top */
+        bottom: 0 !important; /* Los baja al fondo */
+    }
+
+    .cascos {
+        left: 10%; /* Separado hacia la izquierda */
+    }
+
+    .pelota {
+        left: 30%; /* Más al centro */
+    }
+
+    .reloj {
+        right: 30%; /* Más al centro desde la derecha */
+    }
+
+    .zapato {
+        right: 10%; /* Separado hacia la derecha */
+    }
+}

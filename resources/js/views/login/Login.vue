@@ -1,16 +1,19 @@
 <template>
-    <div class="container">
+    <div class="container vh-100 d-grid align-items-center">
         <div class="row justify-content-center my-5">
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-
                         <form @submit.prevent="submitLogin">
-                            <div class="">
+                            <div class="text-center d-flex flex-column row-gap-2 py-5">
+                                <h3 class="m-0">Iniciar sesión</h3>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <p class="h1-p">¿No tienes cuenta?</p>
+                                    <router-link to="/register" class="h1-p">Registrate!</router-link>
+                                </div>
                                 <!-- Email -->
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">{{ $t('email') }}</label>
-                                    <input v-model="loginForm.email" id="email" type="email" class="form-control" required autofocus autocomplete="username">
+                                    <input v-model="loginForm.email" id="email" type="email" placeholder="Email"  class="form-control" required autofocus autocomplete="username">
                                     <!-- Validation Errors -->
                                     <div class="text-danger mt-1">
                                         <div v-for="message in validationErrors?.email">
@@ -20,10 +23,7 @@
                                 </div>
                                 <!-- Password -->
                                 <div class="mb-4">
-                                    <label for="password" class="form-label">
-                                        {{ $t('password') }}
-                                    </label>
-                                    <input v-model="loginForm.password" id="password" type="password" class="form-control" required autocomplete="current-password">
+                                    <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password">
                                     <!-- Validation Errors -->
                                     <div class="text-danger-600 mt-1">
                                         <div v-for="message in validationErrors?.password">
@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                                 <!-- Remember me -->
-                                <div class="form-check">
+                                <div class="form-check text-start">
                                     <input class="form-check-input" type="checkbox" name="remember" v-model="loginForm.remember" id="flexCheckIndeterminate">
                                     <label class="form-check-label" for="flexCheckIndeterminate">
                                         {{ $t('remember_me') }}
@@ -41,12 +41,12 @@
 
                                 <!-- Buttons -->
                                 <div class="flex items-center justify-end mt-4">
-                                    <button class="btn btn-primary" :class="{ 'opacity-25': processing }" :disabled="processing">
-                                        {{ $t('login') }}
+                                    <button class="w-100 secondary-button-2" :class="{ 'opacity-25': processing }" :disabled="processing">
+                                        {{ $t('Entrar') }}
                                     </button>
                                 </div>
+                                <router-link :to="{name: 'auth.forgot-password'}">{{ $t('forgot_password')}}</router-link>
                             </div>
-                            <router-link :to="{name: 'auth.forgot-password'}">{{ $t('forgot_password')}}</router-link>
                         </form>
                     </div>
                 </div>
