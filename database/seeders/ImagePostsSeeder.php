@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Post_image;
 
-class ImagePosts extends Seeder
+class ImagePostsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -34,7 +34,7 @@ class ImagePosts extends Seeder
         while ($index < $totalImages) {
             for ($i = 0; $i < $imagesPerPost && $index < $totalImages; $i++) {
                 $imagePost = new Post_image();
-                $imagePost->title = pathinfo($images[$index], PATHINFO_FILENAME);
+                $imagePost->title = $images[$index];
                 $imagePost->POST_ID = $postId;
                 $imagePost->save();
                 $index++;
