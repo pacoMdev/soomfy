@@ -84,3 +84,7 @@ Route::put('message/{id}', action: [MessageController::class, 'update']);
 Route::delete('message/{id}', action: [MessageController::class, 'delete']);
 
 Route::post('sellPost', action: [PostsController::class, 'sellPost']);
+
+Route::post('getConversation', action: [MessageController::class, 'getConversation']);
+Route::post('sendMessage', action: [MessageController::class, 'sendMessage']);
+Route::post('getImagePost', action: [PostsController::class, 'getImagePost']);
