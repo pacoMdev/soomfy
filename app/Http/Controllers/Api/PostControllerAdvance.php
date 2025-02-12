@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Post_image;
 
 class PostControllerAdvance extends Controller
 {
@@ -63,18 +64,36 @@ class PostControllerAdvance extends Controller
     {
 
         $this->authorize('post-create');
-
+        
         $validatedData = $request->validated();
         $validatedData['user_id'] = auth()->id();
+        
+
+        $post = new Post();
+        $post -> title = $validatedData["title"];
+        $post -> content = $validatedData["content"];
+        $post -> estado = $validatedData["estado"] ?? "Nuevo";
+        $post -> price = $validatedData["price"] ?? 99.99;
+        // dd($validatedData, $request);
+
+
         $post = Post::create($validatedData);
 
         $categories = explode(",", $request->categories);
         $category = Category::findMany($categories);
         $post->categories()->sync($category);
 
+
         if ($request->hasFile('thumbnail')) {
             $post->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
         }
+
+        $image = new Post_image();
+        
+        $image -> post_id = $post->id;
+        $image -> image_id;
+        $image -> save();
+
 
         return new PostResource($post);
     }
@@ -127,7 +146,7 @@ class PostControllerAdvance extends Controller
 
     public function getCategoryByPosts($id)
     {
-        $posts = Post::whereRelation('categories', 'category_id', '=', $id)->paginate();
+        $posts = Post::whereRelation('categories', 'id', '=', $id)->paginate();
 
         return PostResource::collection($posts);
     }

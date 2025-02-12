@@ -17,7 +17,8 @@ class Post extends Model implements HasMedia
 
     // protected $fillable = ['title', 'content', 'user_id'];
     protected $table = 'posts';
-
+    protected $fillable = ['title', 'content', 'price', 'estado'];
+    
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -40,19 +40,18 @@ class PostsController extends Controller
         // Crea el post para guardar en base de datos
         $post = new Post();
         $post -> title = $request -> title;
-        $post -> description = $request -> description;
-        $post -> price = $request -> price;
-        $post -> estado = $request -> estado;
-        $post -> latitude = $request -> latitude;
-        $post -> longitude = $request -> longitude;
-        $post -> toSend = $request -> toSend;
-        $post -> isDeleted = $request -> isDeleted;
-        $post -> isBoost = $request -> isBoost;
-        $post -> dimensionX = $request -> dimensionX;
-        $post -> dimensionY = $request -> dimensionY;
-        $post -> marca = $request -> marca;
-        $post -> color = $request -> color;
-        $post -> category_id = $request -> category_id;
+        $post -> description = $request -> content;
+        $post -> price = $request -> price ?? 99.99;
+        $post -> estado = $request -> estado ?? 'New';
+        $post -> latitude = $request -> latitude ?? null;
+        $post -> longitude = $request -> longitude ?? null;
+        $post -> toSend = $request -> toSend ?? null;
+        $post -> isDeleted = $request -> isDeleted ?? null;
+        $post -> isBoost = $request -> isBoost ?? null;
+        $post -> dimensionX = $request -> dimensionX ?? null;
+        $post -> dimensionY = $request -> dimensionY ?? null;
+        $post -> marca = $request -> marca ?? null;
+        $post -> color = $request -> color ?? null;
 
         // Guardar en la base de datos
         $post -> save();

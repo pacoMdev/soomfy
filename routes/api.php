@@ -71,7 +71,7 @@ Route::get('author/{author}', action: [AuthorController::class, 'index']);
 Route::get('author/{author}', action: [AuthorController::class, 'update']);
 
 Route::get('posts', [PostsController::class, 'index']) -> name('posts.index');
-Route::post('posts', action: [PostsController::class, 'store']);
+Route::post('posts', action: [PostControllerAdvance::class, 'store']);
 Route::get('posts/{id}', action: [PostsController::class, 'show']);
 Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostsController::class, 'getNearbyPost']);
 Route::put('posts/{id}', action: [PostsController::class, 'update']);

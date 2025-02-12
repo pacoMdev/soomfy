@@ -16,7 +16,7 @@ class PostsSeeder extends Seeder
         $posts = [
             [
                 'title' => 'Smartphone Samsung Galaxy S21',
-                'description' => 'Teléfono en excelente estado, sin rayones.',
+                'content' => 'Teléfono en excelente estado, sin rayones.',
                 'price' => 450,
                 'estado' => 'Usado',
                 'latitude' => 41.3774, // Coordenada en Barcelona
@@ -31,7 +31,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Laptop MacBook Pro M1',
-                'description' => 'MacBook Pro con chip M1, 16GB RAM, SSD 512GB.',
+                'content' => 'MacBook Pro con chip M1, 16GB RAM, SSD 512GB.',
                 'price' => 1200,
                 'estado' => 'Nuevo',
                 'latitude' => 41.4027, // Coordenada en Barcelona
@@ -46,7 +46,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Bicicleta de montaña Trek X-Caliber',
-                'description' => 'Bicicleta en perfecto estado, ideal para montaña.',
+                'content' => 'Bicicleta en perfecto estado, ideal para montaña.',
                 'price' => 650,
                 'estado' => 'Usado',
                 'latitude' => 41.3775, // Coordenada en Barcelona
@@ -61,7 +61,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'TV 4K LG OLED',
-                'description' => 'Televisión de 55 pulgadas, en perfecto estado.',
+                'content' => 'Televisión de 55 pulgadas, en perfecto estado.',
                 'price' => 800,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3851, // Coordenada en Barcelona
@@ -76,7 +76,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Cámara Sony Alpha 7 III',
-                'description' => 'Cámara profesional de alta calidad.',
+                'content' => 'Cámara profesional de alta calidad.',
                 'price' => 1500,
                 'estado' => 'Usado',
                 'latitude' => 41.3920, // Coordenada en Barcelona
@@ -91,7 +91,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Silla Gaming DXRacer',
-                'description' => 'Silla ergonómica para juegos en perfecto estado.',
+                'content' => 'Silla ergonómica para juegos en perfecto estado.',
                 'price' => 200,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3805, // Coordenada en Barcelona
@@ -106,7 +106,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Patinete Eléctrico Xiaomi M365',
-                'description' => 'Patinete eléctrico en estado como nuevo.',
+                'content' => 'Patinete eléctrico en estado como nuevo.',
                 'price' => 350,
                 'estado' => 'Usado',
                 'latitude' => 41.3794, // Coordenada en Barcelona
@@ -121,7 +121,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Reloj Casio G-Shock',
-                'description' => 'Reloj deportivo, resistente al agua.',
+                'content' => 'Reloj deportivo, resistente al agua.',
                 'price' => 100,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3778, // Coordenada en Barcelona
@@ -136,7 +136,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Coche Eléctrico Infantil',
-                'description' => 'Coche eléctrico para niños con mando remoto.',
+                'content' => 'Coche eléctrico para niños con mando remoto.',
                 'price' => 250,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3800, // Coordenada en Barcelona
@@ -151,7 +151,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Bici Eléctrica BH Easy Move',
-                'description' => 'Bicicleta eléctrica ideal para moverse por la ciudad.',
+                'content' => 'Bicicleta eléctrica ideal para moverse por la ciudad.',
                 'price' => 950,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3820, // Coordenada en Barcelona
@@ -166,7 +166,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Tostadora Philips',
-                'description' => 'Tostadora de 2 ranuras en perfecto estado.',
+                'content' => 'Tostadora de 2 ranuras en perfecto estado.',
                 'price' => 40,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3744, // Coordenada en Barcelona
@@ -181,7 +181,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Cafetera Nespresso',
-                'description' => 'Cafetera de cápsulas Nespresso en excelente estado.',
+                'content' => 'Cafetera de cápsulas Nespresso en excelente estado.',
                 'price' => 120,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3833, // Coordenada en Barcelona
@@ -196,7 +196,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Maceta de Cerámica Grande',
-                'description' => 'Maceta de cerámica ideal para interiores.',
+                'content' => 'Maceta de cerámica ideal para interiores.',
                 'price' => 25,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3812, // Coordenada en Barcelona
@@ -211,7 +211,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Lámpara de Mesa Ikea',
-                'description' => 'Lámpara de mesa de estilo moderno, nueva.',
+                'content' => 'Lámpara de mesa de estilo moderno, nueva.',
                 'price' => 30,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3798, // Coordenada en Barcelona
@@ -226,7 +226,7 @@ class PostsSeeder extends Seeder
             ],
             [
                 'title' => 'Lentes de Sol Ray-Ban',
-                'description' => 'Lentes de sol originales, sin rayaduras.',
+                'content' => 'Lentes de sol originales, sin rayaduras.',
                 'price' => 150,
                 'estado' => 'Nuevo',
                 'latitude' => 41.3823, // Coordenada en Barcelona

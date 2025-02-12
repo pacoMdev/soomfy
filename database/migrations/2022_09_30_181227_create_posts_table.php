@@ -16,18 +16,18 @@ return new class extends Migration
         Schema::create('posts', function(Blueprint $table){
             $table -> id();
             $table -> string('title');
-            $table -> string('description');
-            $table -> double('price');
-            $table -> string('estado');
+            $table -> string('content')-> nullable();
+            $table -> double('price') -> nullable();
+            $table -> string('estado') -> nullable();
             $table -> decimal('latitude', 10, 8) -> nullable();
             $table -> decimal('longitude', 11, 8) -> nullable();
-            $table -> boolean('toSend');
-            $table -> boolean('isDeleted');
-            $table -> boolean('isBoost');
-            $table -> integer('dimensionX');
-            $table -> integer('dimensionY');
-            $table -> string('marca');
-            $table -> string('color');
+            $table -> boolean('toSend') -> nullable();
+            $table -> boolean('isDeleted') -> nullable();
+            $table -> boolean('isBoost') -> nullable();
+            $table -> integer('dimensionX') -> nullable();
+            $table -> integer('dimensionY') -> nullable();
+            $table -> string('marca') -> nullable();
+            $table -> string('color') -> nullable();
             $table -> timestamps();
         });
     
@@ -61,9 +61,10 @@ return new class extends Migration
         });
         Schema::create('post_image', function(Blueprint $table){
             $table -> id();
-            $table -> string('title');
             $table -> unsignedBigInteger('post_id');
-            $table -> foreign('post_id') -> references('id') -> on('posts');
+            $table -> unsignedBigInteger('image_id');
+            $table -> foreign('post_id') -> references(columns: 'id') -> on('posts');
+            $table -> foreign('image_id') -> references(columns: 'id') -> on('madia');
             $table ->timestamps();
         });
 
