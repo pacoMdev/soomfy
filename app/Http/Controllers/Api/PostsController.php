@@ -13,7 +13,7 @@ use App\Mail\ConstructEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\helpers;
-
+use Database\Seeders\ImagePosts;
 
 class PostsController extends Controller
 {
@@ -24,13 +24,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('images')->get();
-        dd($posts);
-        $data = [];
-        foreach($posts as $post){
-            $imagenes = $this->getImagePost($post->id);
-            $data[$post]=$imagenes;
-        }
+        $posts = Post::all();
         return response()->json(['status' => 405, 'success' => true, 'data' => $posts]);
     }
 
