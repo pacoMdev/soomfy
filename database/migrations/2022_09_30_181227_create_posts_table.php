@@ -28,8 +28,6 @@ return new class extends Migration
             $table -> integer('dimensionY');
             $table -> string('marca');
             $table -> string('color');
-            $table -> unsignedBigInteger('category_id');
-            $table -> foreign('category_id') -> references('id') -> on('categories');
             $table -> timestamps();
         });
     
