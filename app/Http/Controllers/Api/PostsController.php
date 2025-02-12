@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\PostsResource;
 use App\Models\Posts;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Transactions;
+use App\Models\Post_image;
 use App\Http\Controllers\Controller;
 use App\Mail\ConstructEmail;
 use Illuminate\Http\Request;
@@ -22,8 +24,14 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $authors = Posts::all();
-        return response()->json(['status' => 405, 'success' => true, 'data' => $authors]);
+        $posts = Post::with('images')->get();
+        dd($posts);
+        $data = [];
+        foreach($posts as $post){
+            $imagenes = $this->getImagePost($post->id);
+            $data[$post]=$imagenes;
+        }
+        return response()->json(['status' => 405, 'success' => true, 'data' => $posts]);
     }
 
 
@@ -36,7 +44,7 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         // Crea el post para guardar en base de datos
-        $post = new Posts();
+        $post = new Post();
         $post -> title = $request -> title;
         $post -> description = $request -> description;
         $post -> price = $request -> price;
@@ -67,7 +75,7 @@ class PostsController extends Controller
     public function show($id)
     {
         // busca por id
-        $post = Posts::findOrFail($id);
+        $post = Post::findOrFail($id);
 
         return response()->json(['status' => 200, 'success' => true, 'data' => $post]);
     }
@@ -80,7 +88,7 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Posts::findOrFail($id);
+        $post = Post::findOrFail($id);
         
         // Crea el post para guardar en base de datos
         $post -> title = $request -> title ?? $post -> title;
@@ -112,7 +120,7 @@ class PostsController extends Controller
      */
     public function delete($id)
     {
-        $post = Posts::findOrFail($id);
+        $post = Post::findOrFail($id);
         $post->delete();
         return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'Post eliminado']);
     }
@@ -130,7 +138,7 @@ class PostsController extends Controller
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getNearbyPost($latitude, $longitude, $radius = 10){
-    $posts = Posts::selectRaw("
+    $posts = Post::selectRaw("
             id, title, description, price, estado, category_id,
             ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
         ", [$latitude, $longitude, $latitude])
@@ -183,5 +191,11 @@ class PostsController extends Controller
 
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+    }
+
+    public function getImagePost(Request $request){
+        $imagenes = Post_image::where('post_id', $request->post_id)->get();
+        dd($imagenes);
+        return response()->json(['status'=>200, 'data'=>$imagenes]);
     }
 }

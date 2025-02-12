@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Models\User;
+use App\Models\Post;
 
 class MessageController extends Controller
 {
@@ -62,11 +64,58 @@ class MessageController extends Controller
         $message->delete();
         return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'message eliminado']);
     }
+    /**
+     * Summary of getConversation
+     * Obtiene todos los mensajes y los marca como leidos los mensajes enviados del remitente
+     * @param \Illuminate\Http\Request $request
+     * @return
+     */
+    public function getConversation(Request $request){   
+        // El lector el el remitente     
+        $messages = Message::where('post_id', $request->post_id)->where('userRemitent_id', $request->remitent_id)->where('userDestination_id', $request->destination_id)->get();
+        dd($messages);
 
-    public function getConversation(Request $request, $product_id, $userRemitenr_id, $userDestination_id){        
-        $conversation = Message::where('userRemitent_id', $request->remitent_id)->where('userDestination_id', $request->destination_id)->where('post_id', $request->post_id)->orderByAscendant('createt_at');
+        foreach($messages as $message){
+            $message -> isReaded = true;
+            $message -> save();
+        } 
+        return response()->json(['status'=>200, 'Message'=>'Mensajes obtenidos y leidos']);
         
-        
-        return response()->json(['status' => 200, 'success' => true, 'mensaje' => 'full conversation OK', 'conversation' => $conversation]);
     }
+
+    /**
+     * Summary of sendMessage
+     * Envia el mensaje al destinatario
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function sendMessage(Request $request){
+
+        $post = Post::findOrFail($request -> post_id, );
+
+        $userRemitent = User::findOrFail($request -> userRemitent);
+        $userDestination = User::findOrFail($request -> userDestination);
+        
+           
+        // Marca todo los mensajes del chat como leido por receptor, check en mensaje contrario
+
+        $message = new Message();
+        $message -> fullMessage = $request -> message;
+        $message -> userDestination_id = $request -> userDestination_id;
+        $message -> userRemitent_id = $request -> userRemitent;
+        $message ->  post_id= $request -> post_id;
+        $message -> isReaded = false;
+        $message -> save();
+        
+
+        $data = [
+            'userDestination' =>$userDestination,
+            'userRemitent' =>$userRemitent,
+            'post' =>$post,
+            'message' =>$message,
+
+        ];
+
+        return response() -> json(['status' => 200, 'status'=>true, 'message'=>'Mensaje enviado', 'data'=>$data] );
+}
 }

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Posts;
+use App\Models\Post;
 
 class PostsSeeder extends Seeder
 {
@@ -257,7 +257,7 @@ class PostsSeeder extends Seeder
         ];
 
         foreach ($posts as $post) {
-            Posts::create($post);
+            Post::create($post);
         }
 
     }

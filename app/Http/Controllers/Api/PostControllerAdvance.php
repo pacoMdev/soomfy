@@ -53,6 +53,12 @@ class PostControllerAdvance extends Controller
         return PostResource::collection($posts);
     }
 
+    /**
+     * Summary of store
+     * Guarda la info del post
+     * @param \App\Http\Requests\StorePostRequest $request
+     * @return PostResource
+     */
     public function store(StorePostRequest $request)
     {
 

@@ -15,11 +15,16 @@ class Post extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title', 'content', 'user_id'];
+    // protected $fillable = ['title', 'content', 'user_id'];
+    protected $table = 'posts';
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function images()
+    {
+        return $this->hasMany(Post_image::class, 'post_id');
     }
 
     /**
