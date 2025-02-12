@@ -181,7 +181,6 @@ class PostsController extends Controller
         ];
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
-        dd($data_email);
 
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
@@ -189,7 +188,6 @@ class PostsController extends Controller
 
     public function getImagePost(Request $request){
         $imagenes = Post_image::where('post_id', $request->post_id)->get();
-        dd($imagenes);
         return response()->json(['status'=>200, 'data'=>$imagenes]);
     }
 }

@@ -28,7 +28,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 7,
                 'marca' => 'Samsung',
                 'color' => 'Negro',
-                'category_id' => 1
             ],
             [
                 'title' => 'Laptop MacBook Pro M1',
@@ -44,7 +43,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Apple',
                 'color' => 'Plata',
-                'category_id' => 2
             ],
             [
                 'title' => 'Bicicleta de montaña Trek X-Caliber',
@@ -60,7 +58,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 8,
                 'marca' => 'Trek',
                 'color' => 'Rojo',
-                'category_id' => 12
             ],
             [
                 'title' => 'TV 4K LG OLED',
@@ -76,7 +73,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 30,
                 'marca' => 'LG',
                 'color' => 'Negro',
-                'category_id' => 2
             ],
             [
                 'title' => 'Cámara Sony Alpha 7 III',
@@ -92,7 +88,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 7,
                 'marca' => 'Sony',
                 'color' => 'Negro',
-                'category_id' => 2
             ],
             [
                 'title' => 'Silla Gaming DXRacer',
@@ -108,7 +103,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'DXRacer',
                 'color' => 'Negro',
-                'category_id' => 9
             ],
             [
                 'title' => 'Patinete Eléctrico Xiaomi M365',
@@ -124,7 +118,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 12,
                 'marca' => 'Xiaomi',
                 'color' => 'Blanco',
-                'category_id' => 2
             ],
             [
                 'title' => 'Reloj Casio G-Shock',
@@ -140,7 +133,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 3,
                 'marca' => 'Casio',
                 'color' => 'Negro',
-                'category_id' => 7
             ],
             [
                 'title' => 'Coche Eléctrico Infantil',
@@ -156,7 +148,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 40,
                 'marca' => 'Xtoys',
                 'color' => 'Rojo',
-                'category_id' => 14
             ],
             [
                 'title' => 'Bici Eléctrica BH Easy Move',
@@ -172,7 +163,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 7,
                 'marca' => 'BH',
                 'color' => 'Azul',
-                'category_id' => 12
             ],
             [
                 'title' => 'Tostadora Philips',
@@ -188,7 +178,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 7,
                 'marca' => 'Philips',
                 'color' => 'Blanco',
-                'category_id' => 14
             ],
             [
                 'title' => 'Cafetera Nespresso',
@@ -204,7 +193,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 12,
                 'marca' => 'Nespresso',
                 'color' => 'Negro',
-                'category_id' => 14
             ],
             [
                 'title' => 'Maceta de Cerámica Grande',
@@ -220,7 +208,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Cerámica Barcelona',
                 'color' => 'Terracota',
-                'category_id' => 11
             ],
             [
                 'title' => 'Lámpara de Mesa Ikea',
@@ -236,7 +223,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 10,
                 'marca' => 'Ikea',
                 'color' => 'Blanco',
-                'category_id' => 9
             ],
             [
                 'title' => 'Lentes de Sol Ray-Ban',
@@ -252,7 +238,6 @@ class PostsSeeder extends Seeder
                 'dimensionY' => 5,
                 'marca' => 'Ray-Ban',
                 'color' => 'Negro',
-                'category_id' => 14
             ]
         ];
 
