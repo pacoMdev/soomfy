@@ -139,7 +139,12 @@ export default [
                 path: '/cuenta',
                 name: 'cuenta',
                 component: () => import('../views/perfil/perfil.vue'),
-            }
+            },
+            {
+                path: '/chat',
+                name: 'chat',
+                component: () => import('../views/chat/chat.vue'),
+            },
         ]
     },
 

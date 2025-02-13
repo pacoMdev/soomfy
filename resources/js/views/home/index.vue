@@ -6,7 +6,7 @@
                 <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
                 <div class="d-flex w-100 justify-content-center"> 
                     <input type="text" class="buscadorProductos">
-                    <button class="secondary-button-2"><i class="fas fa-search"></i> Search</button>
+                    <button class="secondary-button-2 no-borders-left"><i class="fas fa-search"></i> Search</button>
                 </div>
             </div>
         </div>
@@ -73,98 +73,11 @@
 
         <div class="centrar-productos">
             <div class="productos">
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
-                <div class="producto">
-                    <div class="contenido-producto">
-                        <div class="d-flex justify-content-end w-100">
-                            <i class="fa-regular fa-heart justify-content-rigth"></i>
-                        </div>
-                        <img src="images/home/productos/producto.webp" alt="">
-                        <p class="h1-p">99€</p>
-                        <p class="h4-p">Prácticamente nuevo se entrega con caja original,papeles y tiquet de compra.</p>
-                        <p class="tamaño-estadoProducto">Semi nuevo</p>
-                    </div>
-                </div>
+                <Producto />
             </div>
         </div>
         <div class="d-flex justify-content-center">
-            <button class="primary-button-2">¡Ver mas!</button>
+            <button class="secondary-button-2">¡Ver mas!</button>
         </div>
 
         <div class="apartado-mensaje">
@@ -184,6 +97,7 @@
 <script setup>
 
 import '../../../css/home/home.css';
+import Producto from '../../components/Producto.vue';
 
 </script>
 <!--

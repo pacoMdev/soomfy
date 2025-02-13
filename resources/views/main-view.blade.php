@@ -15,7 +15,10 @@
     <title>Soomfy</title>
     {{-- Font awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {{-- Icon --}}
+    <link rel="icon" href="/images/logo-whiteground.svg">
     <!-- Fonts MAIN-->
+    <link rel="alternate" href="atom.xml" type="application/atom+xml" title="Atom">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
