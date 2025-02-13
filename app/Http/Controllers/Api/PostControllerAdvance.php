@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\StorePostRequest;
 use App\Http\Resources\PostResource;
+
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Post_image;
+use App\Models\Transactions;
+use App\Models\User;
+
+use App\Mail\ConstructEmail;
+
 
 class PostControllerAdvance extends Controller
 {
@@ -63,19 +73,30 @@ class PostControllerAdvance extends Controller
     {
 
         $this->authorize('post-create');
-
+        
         $validatedData = $request->validated();
         $validatedData['user_id'] = auth()->id();
+        
+
+        $post = new Post();
+        $post -> title = $validatedData["title"];
+        $post -> content = $validatedData["content"];
+        $post -> estado = $validatedData["estado"] ?? "Nuevo";
+        $post -> price = $validatedData["price"] ?? 99.99;
+        // dd($validatedData, $request);
+
+
         $post = Post::create($validatedData);
 
         $categories = explode(",", $request->categories);
         $category = Category::findMany($categories);
         $post->categories()->sync($category);
 
+
         if ($request->hasFile('thumbnail')) {
             $post->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
         }
-
+        
         return new PostResource($post);
     }
 
@@ -127,7 +148,7 @@ class PostControllerAdvance extends Controller
 
     public function getCategoryByPosts($id)
     {
-        $posts = Post::whereRelation('categories', 'category_id', '=', $id)->paginate();
+        $posts = Post::whereRelation('categories', 'id', '=', $id)->paginate();
 
         return PostResource::collection($posts);
     }
@@ -136,4 +157,70 @@ class PostControllerAdvance extends Controller
     {
         return Post::with('categories', 'user', 'media')->findOrFail($id);
     }
+
+    /**
+     * Summary of getNearbyPosts
+     * Obtiene los posts en radio base 10km, se puede ajustar
+     * 
+     * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
+     * 
+     * @param mixed $latitude
+     * @param mixed $longitude
+     * @param mixed $radius
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getNearbyPost($latitude, $longitude, $radius = 10){
+        $posts = Post::selectRaw("
+                id, title, description, price, estado, category_id,
+                ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
+            ", [$latitude, $longitude, $latitude])
+            ->having('distance', '<', $radius)  // Radio en km (10 km por defecto)
+            ->orderBy('distance')
+            ->get();
+    
+            return response()->json(['status' => 200, 'success' => true, 'posts' => $posts]);
+        }
+        
+        public function sellPost(Request $request){
+            $userSeller = User::findOrFail($request -> userSeller_id);
+            $userBuyer = User::findOrFail($request -> userBuyer_id);
+            
+            if ($request -> initialPrice != $request -> finalPrice){
+                $initialPrice = $request -> initialPrice;
+                $finalPrice = $request -> finalPrice;
+                $isRegated = true;
+            }else{
+                $initialPrice = $request -> initialPrice;
+                $finalPrice = $request -> finalPrice;
+                $isRegated = false;
+            }
+    
+            $transaction = new Transactions();
+            $transaction -> userSeller_id = $userSeller -> id;
+            $transaction -> userBuyer_id = $userBuyer -> id;
+            $transaction -> post_id = $request -> post_id;
+            $transaction -> initialPrice = $initialPrice;
+            $transaction -> finalPrice = $finalPrice;
+            $transaction -> isToSend = $request -> isToSend;
+            $transaction -> isRegated = $isRegated;
+    
+            $transaction -> save();
+    
+            $data = [
+                'from_email' => 'soomfy@gmail.com',
+                'from_name' => 'Soomfy',
+                'to_email' => $userSeller['email'],
+                'to_name' => $userSeller['name'],
+                'subject' => 'Hey acabas de vender un producto',
+                'view' => 'emails.welcome',
+                'finalPrice' => $finalPrice,
+                'userSeller' => $userSeller,
+                'userBuyer' => $userBuyer,
+            ];
+            $email = new ConstructEmail($data);
+            $data_email = sendEmail($email);
+    
+    
+            return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+        }
 }

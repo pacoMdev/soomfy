@@ -70,12 +70,12 @@ Route::delete('author/{author}', action: [AuthorController::class, 'delete']);
 Route::get('author/{author}', action: [AuthorController::class, 'index']);
 Route::get('author/{author}', action: [AuthorController::class, 'update']);
 
-Route::get('posts', [PostsController::class, 'index']) -> name('posts.index');
-Route::post('posts', action: [PostsController::class, 'store']);
-Route::get('posts/{id}', action: [PostsController::class, 'show']);
-Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostsController::class, 'getNearbyPost']);
-Route::put('posts/{id}', action: [PostsController::class, 'update']);
-Route::delete('posts/{id}', action: [PostsController::class, 'delete']);
+Route::get('posts', [PostControllerAdvance::class, 'index']) -> name('posts.index');
+Route::post('posts', action: [PostControllerAdvance::class, 'store']);
+Route::get('posts/{id}', action: [PostControllerAdvance::class, 'show']);
+Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostControllerAdvance::class, 'getNearbyPost']);
+Route::put('posts/{id}', action: [PostControllerAdvance::class, 'update']);
+Route::delete('posts/{id}', action: [PostControllerAdvance::class, 'delete']);
 
 Route::get('message', [MessageController::class, 'index']);
 Route::post('message', action: [MessageController::class, 'store']);
@@ -83,8 +83,8 @@ Route::get('message/{id}', action: [MessageController::class, 'show']);
 Route::put('message/{id}', action: [MessageController::class, 'update']);
 Route::delete('message/{id}', action: [MessageController::class, 'delete']);
 
-Route::post('sellPost', action: [PostsController::class, 'sellPost']);
+Route::post('sellPost', action: [PostControllerAdvance::class, 'sellPost']);
 
 Route::post('getConversation', action: [MessageController::class, 'getConversation']);
 Route::post('sendMessage', action: [MessageController::class, 'sendMessage']);
-Route::post('getImagePost', action: [PostsController::class, 'getImagePost']);
+Route::post('getImagePost', action: [PostControllerAdvance::class, 'getImagePost']);
