@@ -30,7 +30,7 @@
     padding-left: 25px;
 }
 
-.secondary-button-2 {
+.no-borders-left {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }

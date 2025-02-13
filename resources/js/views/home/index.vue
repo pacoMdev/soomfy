@@ -6,7 +6,7 @@
                 <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
                 <div class="d-flex w-100 justify-content-center"> 
                     <input type="text" class="buscadorProductos">
-                    <button class="secondary-button-2"><i class="fas fa-search"></i> Search</button>
+                    <button class="secondary-button-2 no-borders-left"><i class="fas fa-search"></i> Search</button>
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
             </div>
         </div>
         <div class="d-flex justify-content-center">
-            <button class="primary-button-2">¡Ver mas!</button>
+            <button class="secondary-button-2">¡Ver mas!</button>
         </div>
 
         <div class="apartado-mensaje">
