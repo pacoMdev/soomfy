@@ -59,14 +59,6 @@ return new class extends Migration
             $table -> boolean('isRegated') -> default(0);
             $table -> timestamps();
         });
-        Schema::create('post_image', function(Blueprint $table){
-            $table -> id();
-            $table -> unsignedBigInteger('post_id');
-            $table -> unsignedBigInteger('image_id');
-            $table -> foreign('post_id') -> references(columns: 'id') -> on('posts');
-            $table -> foreign('image_id') -> references(columns: 'id') -> on('madia');
-            $table ->timestamps();
-        });
 
     }
 
@@ -81,6 +73,5 @@ return new class extends Migration
         Schema::dropIfExists('posts');
         Schema::dropIfExists('usersOpinion');
         Schema::dropIfExists('transactions');
-        Schema::dropIfExists('post_image');
     }
 };

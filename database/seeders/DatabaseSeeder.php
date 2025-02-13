@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         //en prod comentar
         $this->call(PostsSeeder::class);
         $this->call(MessageSeeder::class);
-        $this->call(ImagePostsSeeder::class);
 
         // $this->call(RoleSeeder::class);
         // \App\Models\User::factory(10)->create();
