@@ -135,6 +135,17 @@ export default [
         beforeEnter: requireLogin,
         meta: { breadCrumb: 'Dashboard' },
         children: [
+            // Subir producto
+            {
+                path: 'subir-producto',
+                name: 'subir producto',
+                component: () => import('../views/user/posts/Create.vue'),
+            },
+            {
+                path: 'actualizar-producto',
+                name: 'actualizar producto',
+                component: () => import('../views/user/posts/Create.vue'),
+            },
             {
                 path: '/cuenta',
                 name: 'cuenta',
