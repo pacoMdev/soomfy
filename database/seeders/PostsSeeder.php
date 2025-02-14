@@ -162,9 +162,9 @@ class PostsSeeder extends Seeder
 
             foreach($postData['image'] as $image){
                 // Copiar la imagen a storage si no existe
-                $imagePath = storage_path('app/public/posts/' . $image);
+                $imagePath = storage_path('app'. DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'posts' . DIRECTORY_SEPARATOR . $image);
                 if (!file_exists($imagePath)) {
-                    copy(public_path('seed_images/' . $image), $imagePath);
+                    copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
                 }
     
                 // Agregar la imagen a Spatie Media Library
