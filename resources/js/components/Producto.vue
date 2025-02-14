@@ -6,7 +6,7 @@
             <div class="d-flex justify-content-end w-100">
                 <i class="fa-regular fa-heart justify-content-rigth"></i>
             </div>
-            <img src="images/home/productos/producto.webp" alt="">
+            <img src="" alt="product">
             <p class="h1-p">{{ producto.price }}€</p>
             <p class="h4-p">{{ producto.description }}</p>
             <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
@@ -22,14 +22,18 @@ import axios from 'axios';
 // Estado reactivo
 const productos = ref([]);
 
+// Ejecutar la función cuando el componente se monte
+onMounted(() => {
+    obtenerProductos();
+});
+
 // Función para obtener productos desde la API
 const obtenerProductos = async () => {
-    const respuesta = await axios.get('/api/posts'); // Asegúrate de que esta URL sea la correcta
+    const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
     productos.value = respuesta.data.data; // Guardamos los datos en productos
+    console.log(respuesta);
 };
 
-// Ejecutar la función cuando el componente se monte
-onMounted(obtenerProductos);
 </script>
 
 <style scoped>
