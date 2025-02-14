@@ -35,11 +35,11 @@ class MessageSeeder extends Seeder
 
             // Conversación 3 (Usuario 2 y Usuario 3)
             [
-                ['from' => 2, 'to' => 3, 'post' => 12, 'msg' => 'Hola, ¿puedes hacer un pequeño descuento?'],
-                ['from' => 3, 'to' => 2, 'post' => 12, 'msg' => 'Depende, ¿cuánto estás ofreciendo?'],
-                ['from' => 2, 'to' => 3, 'post' => 12, 'msg' => '¿Te parece bien 5€ menos?'],
-                ['from' => 3, 'to' => 2, 'post' => 12, 'msg' => 'Mmm, te lo dejo en 3€ menos, ¿trato hecho?'],
-                ['from' => 2, 'to' => 3, 'post' => 12, 'msg' => 'Vale, me parece bien. ¿Cuándo podemos vernos?'],
+                ['from' => 2, 'to' => 3, 'post' => 5, 'msg' => 'Hola, ¿puedes hacer un pequeño descuento?'],
+                ['from' => 3, 'to' => 2, 'post' => 5, 'msg' => 'Depende, ¿cuánto estás ofreciendo?'],
+                ['from' => 2, 'to' => 3, 'post' => 5, 'msg' => '¿Te parece bien 5€ menos?'],
+                ['from' => 3, 'to' => 2, 'post' => 5, 'msg' => 'Mmm, te lo dejo en 3€ menos, ¿trato hecho?'],
+                ['from' => 2, 'to' => 3, 'post' => 5, 'msg' => 'Vale, me parece bien. ¿Cuándo podemos vernos?'],
             ],
         ];
 
