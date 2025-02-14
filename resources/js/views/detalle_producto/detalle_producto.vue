@@ -1,12 +1,16 @@
 <template lang="">
-    <div>
+    <div v-for="producto in productos" :key="producto.id" class="producto">
         <h1>Detalle poducto</h1>
         <div class="container-left">
-            <img src="" alt="">
+            <!-- <Galleria :value="getImage(post.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="max-width: 640px"
+            :showItemNavigators="true">
+                <template #item="slotProps">
+                    <img :src="slotProps.item.original_url" :alt="post.title" style="width: 100%; display: block;" />
+                </template>
+            </Galleria> -->
         </div>
         <div class="container-right">
             <div class="container-info-prod">
-                <h2>{{ post['data'] }}</h2>
                 <h3>Title product</h3>
                 <h3>Description product for all </h3>
                 <h3>State Product</h3>
@@ -26,7 +30,7 @@
                 <img src="" alt="">
                 <div>
                     <h3>Username</h3>
-                    <Rating v-model="value" :stars="5" :value="3"/>
+                    <Rating v-model="value" :stars="5" :value="3" />
                     <div>
                         <img src="" alt="">
                         <p>Calle falsa 123</p>
@@ -41,29 +45,32 @@
 </template>
 <script setup>
 
-import Rating from 'primevue/rating';
-import Carousel from 'primevue/carousel';
+    import { ref, onMounted } from 'vue';
+    import Rating from 'primevue/rating';
 
-import { ref, onMounted } from 'vue';
 
-onMounted(() => {
+    onMounted(() => {
+        getPost();
+
+    })
+
+
+    const path = window.location.pathname; // obtiene url
+    const segments = path.split('/');
+    const id = segments.pop();  // obtiene ultimo elemento (id)
+
+    const post = ref([]);
+
+
+    const getPost = async () => {
+        const respuesta = await axios.get('/api/get-post/'+id); // Asegúrate de que esta URL sea la correcta
+        post.value = respuesta.data.data; // Guardamos los datos en productos
+        console.log(respuesta);
+    };
     
-    let postt = getPost();
-})
-
-
-const path = window.location.pathname; // obtiene url
-const segments = path.split('/');
-const id = segments.pop();  // obtiene ultimo elemento (id)
-
-const post = ref([]);
-
-
-const getPost = async () => {
-    const respuesta = await axios.get('/api/get-post/'+id); // Asegúrate de que esta URL sea la correcta
-    post.value = respuesta.data.data; // Guardamos los datos en productos
-    console.log(respuesta);
-};
+    function getImage(resized_image){
+        return Object.value(resized_image || {});
+    }
 
 
 </script>

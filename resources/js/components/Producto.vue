@@ -6,9 +6,15 @@
             <div class="d-flex justify-content-end w-100">
                 <i class="fa-regular fa-heart justify-content-rigth"></i>
             </div>
-            <img src="" alt="product">
+            <Galleria :value="getImages(producto.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="height: 150px; width: 200px; border-radius: 10px; object-fit:cover;"
+            :showItemNavigators="true" :showThumbnails="false">
+                <template #item="slotProps">
+                    <img :src="slotProps.item.original_url" :alt="producto.title" style="width: 100%; height: auto; display: block; overflow: visible; object-position: center bottom;" />
+                </template>
+            </Galleria>
             <p class="h1-p">{{ producto.price }}€</p>
-            <p class="h4-p">{{ producto.description }}</p>
+            <p class="h4-p">{{ producto.title }}</p>
+            <p class="">{{ producto.content }}</p>
             <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
         </div>
     </router-link>
@@ -19,6 +25,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+
+
 // Estado reactivo
 const productos = ref([]);
 
@@ -27,13 +35,31 @@ onMounted(() => {
     obtenerProductos();
 });
 
+const responsiveOptions = ref([
+    {
+        breakpoint: '991px',
+        numVisible: 4
+    },
+    {
+        breakpoint: '767px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '575px',
+        numVisible: 1
+    }
+]);
+
+
 // Función para obtener productos desde la API
 const obtenerProductos = async () => {
     const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
     productos.value = respuesta.data.data; // Guardamos los datos en productos
     console.log(respuesta);
 };
-
+function getImages(resized_image) {
+    return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
+}
 </script>
 
 <style scoped>
@@ -42,7 +68,7 @@ const obtenerProductos = async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 20%;
+    width: 250px;
     height: auto; /* Que el tamaño se ajuste al contenido */
     border-radius: 15px;
     border: 1px solid rgba(195, 195, 195, 0.5);
@@ -57,20 +83,13 @@ const obtenerProductos = async () => {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
 }
 
-.producto img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
 .producto i {
     font-size: 20px !important;
     padding: 5px 0px;
 }
 
 .producto .contenido-producto {
-    width: 100%;
+    /* width: 100%; */
     padding: 10px; /* Espaciado interno */
 }
 </style>

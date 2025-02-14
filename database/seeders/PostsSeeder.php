@@ -162,6 +162,7 @@ class PostsSeeder extends Seeder
 
             foreach($postData['image'] as $image){
                 // Copiar la imagen a storage si no existe
+                // hay que hacer un 
                 $imagePath = storage_path('app'. DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'posts' . DIRECTORY_SEPARATOR . $image);
                 if (!file_exists($imagePath)) {
                     copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
