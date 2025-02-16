@@ -2,7 +2,7 @@
     <div class="layout-wrapper" :class="containerClass">
         <Navbar />
         <div class="">
-            <Suspense>
+                <Suspense>
                     <router-view></router-view>
                 </Suspense>
         </div>

@@ -137,6 +137,11 @@ export default [
         children: [
             // Subir producto
             {
+                path: '',
+                name: 'cuenta',
+                component: () => import('../views/user/perfil/perfil.vue'),
+            },
+            {
                 path: 'subir-producto',
                 name: 'subir producto',
                 component: () => import('../views/user/posts/Create.vue'),
@@ -147,14 +152,9 @@ export default [
                 component: () => import('../views/user/posts/Create.vue'),
             },
             {
-                path: '/cuenta',
-                name: 'cuenta',
-                component: () => import('../views/perfil/perfil.vue'),
-            },
-            {
-                path: '/chat',
+                path: 'chat',
                 name: 'chat',
-                component: () => import('../views/chat/chat.vue'),
+                component: () => import('../views/user/chat/chat.vue'),
             },
         ]
     },

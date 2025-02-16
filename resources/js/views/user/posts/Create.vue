@@ -61,6 +61,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="mb-3 input-estado">
+                                <label>Estado:</label>
+                                <MultiSelect 
+                                    v-model="post.estado" 
+                                    :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }]" 
+                                    optionLabel="label" 
+                                    optionValue="value"
+                                    placeholder="Selecciona estado" 
+                                    :maxSelectedLabels="1" 
+                                    class="w-full md:w-80" 
+                                />
+                                
+                                <div class="text-danger mt-1">
+                                    {{ errors.estado }}
+                                </div>
+                                <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.estado">
+                                        {{ message }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="mt-3 text-center">
                             <button :disabled="isLoading" class="btn btn-primary">
@@ -83,6 +104,7 @@ import useCategories from "@/composables/categories";
 import usePosts from "@/composables/posts";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
+import { MultiSelect } from "primevue";
 
 defineRule('required', required)
 defineRule('min', min);
@@ -138,4 +160,20 @@ onMounted(() => {
     width: 25%;
 }
 
+
+.p-select-label {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--p-multiselect-padding-y) / 2);
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: var(--p-multiselect-padding-y) var(--p-multiselect-padding-x);
+    color: var(--p-multiselect-color);
+}
+
+.p-select-label.p-placeholder {
+    color: var(--p-multiselect-placeholder-color);
+}
 </style>
