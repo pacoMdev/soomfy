@@ -22,6 +22,24 @@
 * {
     font-family: 'Nunito';
 }
+/* BACKGROUND COLOR */
+.bg-bs-color-primary {
+    background-color: var(--primary-color);
+}
+.bg-bs-color-secondary {
+    background-color: var(--secondary-color);
+}
+
+/* TEXT COLOR */
+.tx-color-primari {
+    color: var(--primary-color);
+}
+.tx-color-secondari {
+    color: var(--secondary-color);
+}
+.tx-color-neutral {
+    color: var(--neutral-color);
+}
 
 .fondoNav {
     background-color: var(--primary-color);

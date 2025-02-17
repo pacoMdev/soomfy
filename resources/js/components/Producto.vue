@@ -1,15 +1,15 @@
 <template>
     
     <router-link :to="'/productos/' + producto.id" 
-    v-for="producto in productos" :key="producto.id" class="producto">
+    v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
                 <i class="fa-regular fa-heart justify-content-rigth"></i>
             </div>
-            <Galleria :value="getImages(producto.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="height: 150px; width: 200px; border-radius: 10px; object-fit:cover;"
+            <Galleria :value="getImages(producto.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="height: 150px; width: 200px; border-radius: 10px;"
             :showItemNavigators="true" :showThumbnails="false">
                 <template #item="slotProps">
-                    <img :src="slotProps.item.original_url" :alt="producto.title" style="width: 100%; height: auto; display: block; overflow: visible; object-position: center bottom;" />
+                    <img :src="slotProps.item.original_url" :alt="producto.title" style="width: auto; height: 150px; display: block; object-fit: cover;" />
                 </template>
             </Galleria>
             <p class="h1-p">{{ producto.price }}€</p>

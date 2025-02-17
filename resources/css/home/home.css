@@ -2,9 +2,14 @@
     display: flex;
     flex-direction: column;
     gap: 100px;
-    padding-top: 130px;
     padding-bottom: 130px;
     
+}
+.separacion-general-web {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding-top: 80px;
 }
 .fondoBienvenida {
     background-image: url('images/home/bannerIcons.webp');
@@ -79,6 +84,10 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 45px;
+}
+.productos-movile {
+    width: 100%;
+    
 }
 
 .h1-p {
