@@ -2,9 +2,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "▶️PROJECT": "killall Terminal; npm  install; npm run 💻TERMINAL & npm run 🆅VUE",
+    "▶️PROJECT": "npm  install; php artisan serve & npm run dev",
     "🆅VUE": "vite --open",
-    "💻TERMINAL": "osascript -e 'tell application \"Terminal\" to do script \"cd /Applications/MAMP/htdocs/soomfy && php artisan migrate:fresh --seed && php artisan serve\"'",
     "dev": "vite",
     "build": "vite build"
   },
