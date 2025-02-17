@@ -1,9 +1,10 @@
 <template>
-  <div class="grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-3 gap-5 w-100">
     <div
       v-for="(item, index) in containers"
       :key="index"
-      class="dropzone-container"
+      @click="activarInput"
+      class="dropzone-container tamaño-imagen input-imagen"
       @dragover="dragover"
       @dragleave="dragleave"
       @drop="(e) => drop(e, index)"
@@ -14,18 +15,25 @@
         type="file"
         class="hidden-input backgroundIcon"
         @change="(e) => onChange(e, index)"
-        :ref="'refFiles' + index"
+        :ref="`refFiles${index}`"
         accept=".webp"
       />
       <div class="file-label" @click="() => triggerFileInput(index)">
+        <!-- Si hay imagen -->
         <div v-if="item.img" class="preview-wrapper" :class="{ 'hover-effect': hoverIndex === index }">
           <img class="preview-img" :src="item.img" />
           <div v-if="hoverIndex === index" class="overlay">
             <i class="fas fa-edit edit-icon"></i>
           </div>
         </div>
-        <div v-else class="placeholder">
-          <i class="fas fa-image image-icon"></i>
+        <!-- Si no hay imagen -->
+        <div v-else class="preview-wrapper">
+          <div class="overlay">
+            <i class="fas fa-edit edit-icon"></i>
+          </div>
+          <div class="placeholder"> 
+            <font-awesome-icon :icon="['fad', 'image']" />
+          </div>
         </div>
       </div>
     </div>
@@ -35,13 +43,16 @@
 <script setup>
 import { ref } from "vue";
 
+// Usar ref en Vue para referirse a los inputs dinámicos
 const containers = ref([
-  { img: "", file: null },
-  { img: "", file: null },
-  { img: "", file: null }
+  { img: "", file: null }, // Contenedor 1
+  { img: "", file: null }, // Contenedor 2
+  { img: "", file: null }  // Contenedor 3
 ]);
+
 const hoverIndex = ref(null);
 
+// Función de arrastre
 const dragover = (e) => {
   e.preventDefault();
 };
@@ -58,6 +69,7 @@ const drop = (e, index) => {
   }
 };
 
+// Manejar cambio de imagen desde el input
 const onChange = (e, index) => {
   const file = e.target.files[0];
   if (file) {
@@ -66,14 +78,29 @@ const onChange = (e, index) => {
   }
 };
 
+// Función para disparar el input cuando se hace clic
 const triggerFileInput = (index) => {
-  document.querySelector(`[ref='refFiles${index}']`).click();
+  // Usar la referencia correcta para activar el input correspondiente
+  document.querySelectorAll('input[type="file"]')[index].click();
+};
+
+// Función adicional para manejar clic en el contenedor (opcional)
+const activarInput = () => {
+  // Aquí puedes agregar lógica para cuando el contenedor sea clickeado
 };
 </script>
 
 <style scoped>
+input {
+  display: none;
+}
+
+.tamaño-imagen {
+  width: 31%;
+}
+
 .dropzone-container {
-  height: 150px;
+  height: 200px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   display: flex;
@@ -82,12 +109,11 @@ const triggerFileInput = (index) => {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  transition: filter 7s ease;
 }
 
-
-.placeholder {
-  color: #888;
-  font-size: 24px;
+.dropzone-container:hover {
+  background-color: rgba(227, 227, 227, 0.8);
 }
 
 .image-icon {
@@ -128,5 +154,13 @@ const triggerFileInput = (index) => {
 
 .hover-effect .preview-img {
   filter: brightness(0.7);
+}
+
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+  font-size: 24px;
 }
 </style>

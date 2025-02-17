@@ -6,16 +6,15 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h3>Fotos</h3>
-                            <div class="w-100 d-flex flex-wrap">
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                                <DropZoneV v-model="post.thumbnail" class="imagenes"/>
-                            </div>
+                                <DropZoneV v-model="post.thumbnails" class="imagenes"/>
+                               
+                                
+                            
                         </div>
                     </div>
+                
+
+                
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h3>Información del producto</h3>
@@ -150,9 +149,8 @@ onMounted(() => {
 <style scoped>
 
 .imagenes {
-    width: 33.3%;
+    width: 33%;
 }
-
 .input-nombre {
     width: 70%;
 }
