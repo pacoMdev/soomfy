@@ -53,6 +53,12 @@ class User extends Authenticatable implements HasMedia
     {   
         return $this->belongsToMany(Post::class , 'user_post');
     }
+
+    // Relacion NM (usuarios / favoritos / posts)
+    public function favoritos(){
+        return $this->belongsToMany(Post::class, 'productos_favoritos')
+        ->withTimestamps(); // Esto añade los campos de cuando se agrego o actualizo
+    }
     
     public function sendPasswordResetNotification($token)
     {

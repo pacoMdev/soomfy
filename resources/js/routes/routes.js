@@ -156,6 +156,11 @@ export default [
                 name: 'chat',
                 component: () => import('../views/user/chat/chat.vue'),
             },
+            {
+                path: 'favoritos',
+                name: 'favoritos',
+                component: () => import('../views/user/favoritos/favoritos.vue'),
+            }
         ]
     },
 

@@ -157,6 +157,35 @@ class PostControllerAdvance extends Controller
     {
         return Post::with('categories', 'users', 'media')->findOrFail($id);
     }
+
+    // Favoritos
+
+    // Agregar a favoritos 
+    public function agregarFavoritos($postId){
+        $user = auth()->user();
+        $post = Post::findOrFail($postId);
+        // Agregar producto a favoritos, si no existe
+        $user->favoritos()->syncWithoutDetaching([$postId]);
+        return back();
+    }
+
+    public function quitarFavoritos($postId) {
+        $user = auth()->user();
+        $post = Post::findOrFail($postId);
+         // Quitamos el producto de favoritos
+         $user->favoritos()->detach($postId);
+
+         return back(); // Volvemos a la página anterior
+    }
+
+     // Función para mostrar los productos favoritos
+     public function mostrarFavoritos()
+     {
+        $user = auth()->user(); // Obtenemos al usuario autenticado
+        $favoritos = $user->favoritos; // Obtenemos los productos favoritos
+ 
+        return response()->json($favoritos);
+     }
         
     public function sellPost(Request $request){
         $userSeller = User::findOrFail($request -> userSeller_id);

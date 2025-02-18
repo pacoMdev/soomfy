@@ -51,33 +51,47 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 });
 
 // Users
-Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', action: [UserController::class, 'getNearbyPost']);
+Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyPost']);
+Route::get('get-user-posts/{id}', [UserController::class, 'getUserPosts']);
 
-Route::get('get-user-posts/{id}', action: [UserController::class, 'getUserPosts']);
+// Productos Favoritos
+// Agregar un producto a favoritos (POST)
+Route::post('add-favorite-post/{postId}', [PostController::class, 'addToFavorites']); 
+// Quitar productos de tus favoritos
+Route::delete('remove-favorite-post/{postId}', [PostController::class, 'quitarFavoritos']); 
+// Obtener productos favoritos del usuario (GET)
+Route::get('get-favorite-posts', [PostController::class, 'getFavoritePosts']);
 
-// Categorias
+// Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
 
 // Posts
+// Obtener todas las publicaciones
 Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
+// Obtener publicaciones por categoría
 Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
-Route::get('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
-// Almacenar
-Route::post('store-data-posts', action: [PostControllerAdvance::class, 'store']);
-Route::put('posts/{id}', action: [PostControllerAdvance::class, 'update']);
-Route::delete('posts/{id}', action: [PostControllerAdvance::class, 'delete']);
+// Obtener detalles de una publicación
+Route::post('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
 
+// Almacenar, Actualizar y Eliminar Posts
+// Almacenar nueva publicación
+Route::post('store-data-posts', [PostControllerAdvance::class, 'store']);
+// Actualizar publicación existente
+Route::put('posts/{id}', [PostControllerAdvance::class, 'update']);
+// Eliminar publicación
+Route::delete('posts/{id}', [PostControllerAdvance::class, 'delete']);
+
+// Mensajes
 Route::get('message', [MessageController::class, 'index']);
-Route::post('message', action: [MessageController::class, 'store']);
-Route::get('message/{id}', action: [MessageController::class, 'show']);
-Route::put('message/{id}', action: [MessageController::class, 'update']);
-Route::delete('message/{id}', action: [MessageController::class, 'delete']);
+Route::post('message', [MessageController::class, 'store']);
+Route::get('message/{id}', [MessageController::class, 'show']);
+Route::put('message/{id}', [MessageController::class, 'update']);
+Route::delete('message/{id}', [MessageController::class, 'delete']);
 
-Route::post('sellPost', action: [PostControllerAdvance::class, 'sellPost']);
+// Conversaciones
+Route::post('getConversation', [MessageController::class, 'getConversation']);
+Route::post('sendMessage', [MessageController::class, 'sendMessage']);
 
-
-Route::post('getConversation', action: [MessageController::class, 'getConversation']);
-Route::post('sendMessage', action: [MessageController::class, 'sendMessage']);
-
-Route::get('getImagePost/2', action: [PostControllerAdvance::class, 'getImagePost']);
-Route::post('getImagePost', action: [PostControllerAdvance::class, 'getImagePost']);
+// Publicación de imagen de producto
+Route::get('getImagePost/2', [PostControllerAdvance::class, 'getImagePost']);
+Route::post('getImagePost', [PostControllerAdvance::class, 'getImagePost']);
