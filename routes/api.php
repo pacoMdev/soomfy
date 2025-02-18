@@ -50,30 +50,20 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     });
 });
 
+// Users
+Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', action: [UserController::class, 'getNearbyPost']);
+
+Route::get('get-user-posts/{id}', action: [UserController::class, 'getUserPosts']);
+
+// Categorias
 Route::get('category-list', [CategoryController::class, 'getList']);
 
+// Posts
 Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
 Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
 Route::get('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
-
-// añade la ruta de la api para redirigir a la clase 
-//crud de apis
-Route::get('note', [NoteController::class, 'index']) -> name('note.index');
-Route::post('note', [NoteController::class, 'store']) -> name('note.store');
-Route::get('note/{id}', action: [NoteController::class, 'show']) -> name('note.show');
-Route::put('note/{id}', action: [NoteController::class, 'update']) -> name('note.update');
-Route::delete('note/{id}', action: [NoteController::class, 'delete']) -> name('note.delete');
-
-Route::get('author', [AuthorController::class, 'index']) -> name('author.index');
-Route::post('author', action: [AuthorController::class, 'store']);
-Route::delete('author/{author}', action: [AuthorController::class, 'delete']);
-Route::get('author/{author}', action: [AuthorController::class, 'index']);
-Route::get('author/{author}', action: [AuthorController::class, 'update']);
-
-Route::get('posts', [PostControllerAdvance::class, 'index']) -> name('posts.index');
-Route::post('posts', action: [PostControllerAdvance::class, 'store']);
-Route::get('posts/{id}', action: [PostControllerAdvance::class, 'show']);
-Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostControllerAdvance::class, 'getNearbyPost']);
+// Almacenar
+Route::post('store-data-posts', action: [PostControllerAdvance::class, 'store']);
 Route::put('posts/{id}', action: [PostControllerAdvance::class, 'update']);
 Route::delete('posts/{id}', action: [PostControllerAdvance::class, 'delete']);
 
@@ -85,6 +75,9 @@ Route::delete('message/{id}', action: [MessageController::class, 'delete']);
 
 Route::post('sellPost', action: [PostControllerAdvance::class, 'sellPost']);
 
+
 Route::post('getConversation', action: [MessageController::class, 'getConversation']);
 Route::post('sendMessage', action: [MessageController::class, 'sendMessage']);
+
+Route::get('getImagePost/2', action: [PostControllerAdvance::class, 'getImagePost']);
 Route::post('getImagePost', action: [PostControllerAdvance::class, 'getImagePost']);

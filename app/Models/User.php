@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Post;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\UserResetPasswordNotification;
@@ -21,6 +22,8 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'longitude',
+        'latitude',
         'surname1',
         'surname2'
     ];
@@ -44,6 +47,13 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+
+    // Relacion NM ( usuarios / posts )
+    public function posts()
+    {   
+        return $this->belongsToMany(Post::class , 'user_post');
+    }
+    
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPasswordNotification($token));

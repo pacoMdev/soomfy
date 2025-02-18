@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -49,6 +50,8 @@ class UserController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->latitude = $request->latitude;
+        $user->longitude = $request->longitude;
         $user->surname1 = $request->surname1;
         $user->surname2 = $request->surname2;
 
@@ -61,6 +64,61 @@ class UserController extends Controller
             return new UserResource($user);
         }
     }
+
+    public function getUserPosts($id){
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+    
+        return response()->json($user->posts); // Retorna los posts del usuario
+    }
+    /**
+     * Summary of getNearbyPosts
+     * Obtiene los posts en radio base 10km, se puede ajustar
+     * 
+     * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
+     * 
+     * @param mixed $latitude
+     * @param mixed $longitude
+     * @param mixed $radius
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getNearbyPost($userId, $radius = 10)
+    {
+        // Obtener las coordenadas del usuario que está aplicando el filtro
+        $user = User::find($userId);
+    
+        if (!$user) {
+            return response()->json([
+                'status' => 404,
+                'success' => false,
+                'message' => 'Usuario no encontrado',
+            ]);
+        }
+    
+        // Obtener latitud y longitud del usuario
+        $latitude = $user->latitude;
+        $longitude = $user->longitude;
+    
+        // Buscar los productos de los usuarios cercanos
+        $products = Product::selectRaw("
+            products.id, products.name, products.price, products.description, 
+            ( 6371 * acos( cos( radians(?) ) * cos( radians( users.latitude ) ) * cos( radians( users.longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( users.latitude ) ) ) ) AS distance
+        ", [$latitude, $longitude, $latitude])
+        ->join('user_product', 'products.id', '=', 'user_product.product_id') // Tabla intermedia
+        ->join('users', 'user_product.user_id', '=', 'users.id') // Relación con usuarios
+        ->having('distance', '<', $radius)  // Filtrar productos dentro del radio
+        ->orderBy('distance')  // Ordenar por distancia
+        ->get();
+    
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'products' => $products,
+        ]);
+}
+
 
     /**
      * Display the specified resource.

@@ -7,14 +7,8 @@
                         <div class="card-body">
                             <h3>Fotos</h3>
                                 <DropZoneV v-model="post.thumbnails" class="imagenes"/>
-                               
-                                
-                            
                         </div>
                     </div>
-                
-
-                
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h3>Información del producto</h3>

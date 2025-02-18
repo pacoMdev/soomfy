@@ -19,8 +19,6 @@ class PostsSeeder extends Seeder
                 'content' => 'MacBook Pro con chip M1, 16GB RAM, SSD 512GB.',
                 'price' => 1200,
                 'estado' => 'Nuevo',
-                'latitude' => 41.4027, // Coordenada en Barcelona
-                'longitude' => 2.1900,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -35,8 +33,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Bicicleta en perfecto estado, ideal para montaña.',
                 'price' => 650,
                 'estado' => 'Usado',
-                'latitude' => 41.3775, // Coordenada en Barcelona
-                'longitude' => 2.1678,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -51,8 +47,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Televisión de 55 pulgadas, en perfecto estado.',
                 'price' => 800,
                 'estado' => 'Nuevo',
-                'latitude' => 41.3851, // Coordenada en Barcelona
-                'longitude' => 2.1734,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -67,8 +61,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Reloj deportivo, resistente al agua.',
                 'price' => 100,
                 'estado' => 'Nuevo',
-                'latitude' => 41.3778, // Coordenada en Barcelona
-                'longitude' => 2.1899,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -83,8 +75,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Cafetera de cápsulas Nespresso en excelente estado.',
                 'price' => 120,
                 'estado' => 'Nuevo',
-                'latitude' => 41.3833, // Coordenada en Barcelona
-                'longitude' => 2.1875,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -99,8 +89,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Maceta de cerámica ideal para interiores.',
                 'price' => 25,
                 'estado' => 'Nuevo',
-                'latitude' => 41.3812, // Coordenada en Barcelona
-                'longitude' => 2.1935,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -115,8 +103,6 @@ class PostsSeeder extends Seeder
                 'content' => 'Lámpara de mesa de estilo moderno, nueva.',
                 'price' => 30,
                 'estado' => 'Nuevo',
-                'latitude' => 41.3798, // Coordenada en Barcelona
-                'longitude' => 2.1884,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -134,8 +120,6 @@ class PostsSeeder extends Seeder
             $post -> content = $postData['content'];
             $post -> price = $postData['price'];
             $post -> estado = $postData['estado'];
-            $post -> latitude = $postData['latitude'];
-            $post -> longitude = $postData['longitude'];
             $post -> toSend = $postData['toSend'];
             $post -> isDeleted = $postData['isDeleted'];
             $post -> isBoost = $postData['isBoost'];
