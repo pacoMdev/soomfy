@@ -1,9 +1,8 @@
 <template>
-  <div>
     <h1>Productos Favoritoss</h1>
 
     <!-- Mostrar la lista de productos favoritos -->
-    <div>
+    <!-- <div>
       <ul>
         <li v-for="favorite in favorites" :key="id">
           <div>
@@ -15,12 +14,13 @@
           </div>
         </li>
       </ul>
-    </div>
-  </div>
+    </div> -->
+    <Producto :productos="favorites"/>
 </template>
 
 <script setup>
 import axios from 'axios';
+import Producto from '../../../components/ProductoNew.vue';
 import { onMounted, ref } from 'vue';
 
 const favorites = ref([]);
@@ -30,6 +30,7 @@ onMounted(()=>{
     getFavorites()
   }
 );
+
 
 
 console.log("sadfsgdh");
