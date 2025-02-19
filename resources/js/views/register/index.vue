@@ -4,6 +4,7 @@
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
+                        <img src="../../../../public/images/logo.svg" alt="">
                         <form @submit.prevent="submitRegister">
                             <div class="text-center d-flex flex-column row-gap-2 py-5">
                                 <h3 class="m-0">Registro de sesión</h3>
@@ -13,16 +14,22 @@
                                 </div>
                                 <!-- Email -->
                                 <div class="mb-3">
-                                    <input v-model="registerForm.name" id="name" type="text" placeholder="Nombre de usuario"  class="form-control" autofocus>
+                                    <FloatLabel>
+                                        <InputText id="name" v-model="registerForm.name" class="form-control" />
+                                        <label for="username">Nombre de usuario</label>
+                                    </FloatLabel>
                                     <!-- Validation Errors -->
                                     <div class="text-danger mt-1">
-                                        <div v-for="message in validationErrors?.name">
+                                        <div class="" v-for="message in validationErrors?.name">
                                             {{ message }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <input v-model="registerForm.email" id="email" type="email" placeholder="Email" class="form-control" autocomplete="username">
+                                    <FloatLabel>
+                                        <InputText id="email" type="email" v-model="registerForm.email" class="form-control" autocomplete="username" />
+                                        <label for="email">Email</label>
+                                    </FloatLabel>
                                     <!-- Validation Errors -->
                                     <div class="text-danger mt-1">
                                         <div v-for="message in validationErrors?.email">
@@ -32,8 +39,10 @@
                                 </div>
                                 <!-- Password -->
                                 <div class="mb-4">
-                                    <input v-model="registerForm.password" id="password" type="password" placeholder="Password"  class="form-control" autocomplete="current-password">
-                                    <!-- Validation Errors -->
+                                    <FloatLabel>
+                                        <Password id="password" type="password" v-model="registerForm.password" class="w-100" autocomplete="current-password" toggleMask />
+                                        <label for="email">Contraseña</label>
+                                    </FloatLabel>
                                     <div class="text-danger-600 mt-1">
                                         <div v-for="message in validationErrors?.password">
                                             {{ message }}
@@ -41,7 +50,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <input v-model="registerForm.password_confirmation" id="password_confirmation" placeholder="Confirm password" type="password" class="form-control" autocomplete="current-password">
+                                    <FloatLabel>
+                                        <Password id="password_confirmation" type="password" v-model="registerForm.password" class="w-100" autocomplete="current-password" toggleMask />
+                                        <label for="email">Confirmar contraseña</label>
+                                    </FloatLabel>
                                     <!-- Validation Errors -->
                                     <div class="text-danger-600 mt-1">
                                         <div v-for="message in validationErrors?.password_confirmation">
@@ -68,6 +80,8 @@
 <script setup>
 
 import useAuth from '@/composables/auth'
+import { Password } from 'primevue';
+import { Text } from 'vue';
 
 const { registerForm, validationErrors, processing, submitRegister } = useAuth();
 
