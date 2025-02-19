@@ -13,7 +13,10 @@
                                 </div>
                                 <!-- Email -->
                                 <div class="mb-3">
-                                    <input v-model="loginForm.email" id="email" type="email" placeholder="Email"  class="form-control" required autofocus autocomplete="username">
+                                    <FloatLabel>
+                                        <InputText id="email" type="email" v-model="loginForm.email" class="form-control" autocomplete="username" />
+                                        <label for="email">Email</label>
+                                    </FloatLabel>
                                     <!-- Validation Errors -->
                                     <div class="text-danger mt-1">
                                         <div v-for="message in validationErrors?.email">
@@ -23,7 +26,11 @@
                                 </div>
                                 <!-- Password -->
                                 <div class="mb-4">
-                                    <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password">
+                                    <FloatLabel>
+                                        <Password id="password" type="password" v-model="loginForm.password" class="w-100" autocomplete="current-password" :feedback="false" toggleMask />
+                                        <label for="password">Contraseña</label>
+                                    </FloatLabel>
+                                    <!-- <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password"> -->
                                     <!-- Validation Errors -->
                                     <div class="text-danger-600 mt-1">
                                         <div v-for="message in validationErrors?.password">
@@ -58,7 +65,18 @@
 <script setup>
 
 import useAuth from '@/composables/auth'
+import { ref } from 'vue'
+import { Password } from 'primevue';
+
+const email = ref('');
+const password = ref('');
 
 const { loginForm, validationErrors, processing, submitLogin } = useAuth();
 
 </script>
+
+<style>
+    input{
+        width: 100%;
+    }
+</style>
