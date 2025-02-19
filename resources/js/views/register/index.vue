@@ -41,7 +41,7 @@
                                 <div class="mb-4">
                                     <FloatLabel>
                                         <Password id="password" type="password" v-model="registerForm.password" class="w-100" autocomplete="current-password" toggleMask />
-                                        <label for="email">Contraseña</label>
+                                        <label for="password">Contraseña</label>
                                     </FloatLabel>
                                     <div class="text-danger-600 mt-1">
                                         <div v-for="message in validationErrors?.password">
@@ -51,8 +51,8 @@
                                 </div>
                                 <div class="mb-4">
                                     <FloatLabel>
-                                        <Password id="password_confirmation" type="password" v-model="registerForm.password" class="w-100" autocomplete="current-password" toggleMask />
-                                        <label for="email">Confirmar contraseña</label>
+                                        <Password id="password_confirmation" type="password" v-model="registerForm.password_confirmation" class="w-100" autocomplete="current-password" toggleMask />
+                                        <label for="password_confirmation">Confirmar contraseña</label>
                                     </FloatLabel>
                                     <!-- Validation Errors -->
                                     <div class="text-danger-600 mt-1">
@@ -86,3 +86,9 @@ import { Text } from 'vue';
 const { registerForm, validationErrors, processing, submitRegister } = useAuth();
 
 </script>
+<style>
+    input{
+        width: 100%;
+
+    }
+</style>

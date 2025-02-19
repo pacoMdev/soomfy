@@ -14,7 +14,7 @@
                                 <!-- Email -->
                                 <div class="mb-3">
                                     <FloatLabel>
-                                        <InputText id="email" type="email" v-model="loginForm.email" class="form-control" autocomplete="username" :invalid="!email" />
+                                        <InputText id="email" type="email" v-model="loginForm.email" class="form-control" autocomplete="username" />
                                         <label for="email">Email</label>
                                     </FloatLabel>
                                     <!-- Validation Errors -->
@@ -27,7 +27,7 @@
                                 <!-- Password -->
                                 <div class="mb-4">
                                     <FloatLabel>
-                                        <InputText id="password" type="password" v-model="registerForm.password" autocomplete="password" :invalid="!password" />
+                                        <Password id="password" type="password" v-model="loginForm.password" class="w-100" autocomplete="current-password" :feedback="false" toggleMask />
                                         <label for="password">Contraseña</label>
                                     </FloatLabel>
                                     <!-- <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password"> -->
@@ -66,6 +66,7 @@
 
 import useAuth from '@/composables/auth'
 import { ref } from 'vue'
+import { Password } from 'primevue';
 
 const email = ref('');
 const password = ref('');
@@ -73,3 +74,9 @@ const password = ref('');
 const { loginForm, validationErrors, processing, submitLogin } = useAuth();
 
 </script>
+
+<style>
+    input{
+        width: 100%;
+    }
+</style>
