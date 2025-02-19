@@ -19,8 +19,6 @@ return new class extends Migration
             $table -> string('content')-> nullable();
             $table -> double('price') -> nullable();
             $table -> string('estado') -> nullable();
-            $table -> decimal('latitude', 10, 8) -> nullable();
-            $table -> decimal('longitude', 11, 8) -> nullable();
             $table -> boolean('toSend') -> nullable();
             $table -> boolean('isDeleted') -> nullable();
             $table -> boolean('isBoost') -> nullable();
@@ -28,6 +26,8 @@ return new class extends Migration
             $table -> integer('dimensionY') -> nullable();
             $table -> string('marca') -> nullable();
             $table -> string('color') -> nullable();
+            
+
             $table -> timestamps();
         });
     

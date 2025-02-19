@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('surname2')->nullable();
             $table->string('alias')->unique()->nullable();
             $table->string('username')->unique()->nullable();
+            $table -> decimal('latitude', 10, 8) -> nullable();
+            $table -> decimal('longitude', 11, 8) -> nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('imgProfile')->nullable();

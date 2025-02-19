@@ -155,72 +155,78 @@ class PostControllerAdvance extends Controller
 
     public function getPost($id)
     {
-        return Post::with('categories', 'user', 'media')->findOrFail($id);
+        return Post::with('categories', 'users', 'media')->findOrFail($id);
     }
 
-    /**
-     * Summary of getNearbyPosts
-     * Obtiene los posts en radio base 10km, se puede ajustar
-     * 
-     * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
-     * 
-     * @param mixed $latitude
-     * @param mixed $longitude
-     * @param mixed $radius
-     * @return mixed|\Illuminate\Http\JsonResponse
-     */
-    public function getNearbyPost($latitude, $longitude, $radius = 10){
-        $posts = Post::selectRaw("
-                id, title, description, price, estado, category_id,
-                ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance
-            ", [$latitude, $longitude, $latitude])
-            ->having('distance', '<', $radius)  // Radio en km (10 km por defecto)
-            ->orderBy('distance')
-            ->get();
-    
-            return response()->json(['status' => 200, 'success' => true, 'posts' => $posts]);
-        }
+    // Favoritos
+
+    // Agregar a favoritos 
+    public function agregarFavoritos($postId){
+        $user = auth()->user();
+        $post = Post::findOrFail($postId);
+        // Agregar producto a favoritos, si no existe
+        $user->favoritos()->syncWithoutDetaching([$postId]);
+        return back();
+    }
+
+    public function quitarFavoritos($postId) {
+        $user = auth()->user();
+        $post = Post::findOrFail($postId);
+         // Quitamos el producto de favoritos
+         $user->favoritos()->detach($postId);
+
+         return back(); // Volvemos a la página anterior
+    }
+
+     // Función para mostrar los productos favoritos
+     public function mostrarFavoritos()
+     {
+        $user = auth()->user(); // Obtenemos al usuario autenticado
+        $favoritos = $user->favoritos; // Obtenemos los productos favoritos
+ 
+        return response()->json($favoritos);
+     }
         
-        public function sellPost(Request $request){
-            $userSeller = User::findOrFail($request -> userSeller_id);
-            $userBuyer = User::findOrFail($request -> userBuyer_id);
-            
-            if ($request -> initialPrice != $request -> finalPrice){
-                $initialPrice = $request -> initialPrice;
-                $finalPrice = $request -> finalPrice;
-                $isRegated = true;
-            }else{
-                $initialPrice = $request -> initialPrice;
-                $finalPrice = $request -> finalPrice;
-                $isRegated = false;
-            }
-    
-            $transaction = new Transactions();
-            $transaction -> userSeller_id = $userSeller -> id;
-            $transaction -> userBuyer_id = $userBuyer -> id;
-            $transaction -> post_id = $request -> post_id;
-            $transaction -> initialPrice = $initialPrice;
-            $transaction -> finalPrice = $finalPrice;
-            $transaction -> isToSend = $request -> isToSend;
-            $transaction -> isRegated = $isRegated;
-    
-            $transaction -> save();
-    
-            $data = [
-                'from_email' => 'soomfy@gmail.com',
-                'from_name' => 'Soomfy',
-                'to_email' => $userSeller['email'],
-                'to_name' => $userSeller['name'],
-                'subject' => 'Hey acabas de vender un producto',
-                'view' => 'emails.welcome',
-                'finalPrice' => $finalPrice,
-                'userSeller' => $userSeller,
-                'userBuyer' => $userBuyer,
-            ];
-            $email = new ConstructEmail($data);
-            $data_email = sendEmail($email);
-    
-    
-            return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+    public function sellPost(Request $request){
+        $userSeller = User::findOrFail($request -> userSeller_id);
+        $userBuyer = User::findOrFail($request -> userBuyer_id);
+        
+        if ($request -> initialPrice != $request -> finalPrice){
+            $initialPrice = $request -> initialPrice;
+            $finalPrice = $request -> finalPrice;
+            $isRegated = true;
+        }else{
+            $initialPrice = $request -> initialPrice;
+            $finalPrice = $request -> finalPrice;
+            $isRegated = false;
         }
+
+        $transaction = new Transactions();
+        $transaction -> userSeller_id = $userSeller -> id;
+        $transaction -> userBuyer_id = $userBuyer -> id;
+        $transaction -> post_id = $request -> post_id;
+        $transaction -> initialPrice = $initialPrice;
+        $transaction -> finalPrice = $finalPrice;
+        $transaction -> isToSend = $request -> isToSend;
+        $transaction -> isRegated = $isRegated;
+
+        $transaction -> save();
+
+        $data = [
+            'from_email' => 'soomfy@gmail.com',
+            'from_name' => 'Soomfy',
+            'to_email' => $userSeller['email'],
+            'to_name' => $userSeller['name'],
+            'subject' => 'Hey acabas de vender un producto',
+            'view' => 'emails.welcome',
+            'finalPrice' => $finalPrice,
+            'userSeller' => $userSeller,
+            'userBuyer' => $userBuyer,
+        ];
+        $email = new ConstructEmail($data);
+        $data_email = sendEmail($email);
+
+
+        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+    }
 }

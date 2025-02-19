@@ -1,8 +1,10 @@
 <template>
     <div class="layout-wrapper" :class="containerClass">
         <Navbar />
-        <div class="layout-main-container ">
-            
+        <div class="">
+                <Suspense>
+                    <router-view></router-view>
+                </Suspense>
         </div>
         <Footer />
 

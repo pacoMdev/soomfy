@@ -135,16 +135,32 @@ export default [
         beforeEnter: requireLogin,
         meta: { breadCrumb: 'Dashboard' },
         children: [
+            // Subir producto
             {
-                path: '/cuenta',
+                path: '',
                 name: 'cuenta',
-                component: () => import('../views/perfil/perfil.vue'),
+                component: () => import('../views/user/perfil/perfil.vue'),
             },
             {
-                path: '/chat',
-                name: 'chat',
-                component: () => import('../views/chat/chat.vue'),
+                path: 'subir-producto',
+                name: 'subir producto',
+                component: () => import('../views/user/posts/Create.vue'),
             },
+            {
+                path: 'actualizar-producto',
+                name: 'actualizar producto',
+                component: () => import('../views/user/posts/Create.vue'),
+            },
+            {
+                path: 'chat',
+                name: 'chat',
+                component: () => import('../views/user/chat/chat.vue'),
+            },
+            {
+                path: 'favoritos',
+                name: 'favoritos',
+                component: () => import('../views/user/favoritos/favoritos.vue'),
+            }
         ]
     },
 

@@ -50,41 +50,48 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     });
 });
 
+// Users
+Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyPost']);
+Route::get('get-user-posts/{id}', [UserController::class, 'getUserPosts']);
+
+// Productos Favoritos
+// Agregar un producto a favoritos (POST)
+Route::post('add-favorite-post/{postId}', [PostController::class, 'addToFavorites']); 
+// Quitar productos de tus favoritos
+Route::delete('remove-favorite-post/{postId}', [PostController::class, 'quitarFavoritos']); 
+// Obtener productos favoritos del usuario (GET)
+Route::get('get-favorite-posts', [PostController::class, 'getFavoritePosts']);
+
+// Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
 
+// Posts
+// Obtener todas las publicaciones
 Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
+// Obtener publicaciones por categoría
 Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
-Route::get('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
+// Obtener detalles de una publicación
+Route::post('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
 
-// añade la ruta de la api para redirigir a la clase 
-//crud de apis
-Route::get('note', [NoteController::class, 'index']) -> name('note.index');
-Route::post('note', [NoteController::class, 'store']) -> name('note.store');
-Route::get('note/{id}', action: [NoteController::class, 'show']) -> name('note.show');
-Route::put('note/{id}', action: [NoteController::class, 'update']) -> name('note.update');
-Route::delete('note/{id}', action: [NoteController::class, 'delete']) -> name('note.delete');
+// Almacenar, Actualizar y Eliminar Posts
+// Almacenar nueva publicación
+Route::post('store-data-posts', [PostControllerAdvance::class, 'store']);
+// Actualizar publicación existente
+Route::put('posts/{id}', [PostControllerAdvance::class, 'update']);
+// Eliminar publicación
+Route::delete('posts/{id}', [PostControllerAdvance::class, 'delete']);
 
-Route::get('author', [AuthorController::class, 'index']) -> name('author.index');
-Route::post('author', action: [AuthorController::class, 'store']);
-Route::delete('author/{author}', action: [AuthorController::class, 'delete']);
-Route::get('author/{author}', action: [AuthorController::class, 'index']);
-Route::get('author/{author}', action: [AuthorController::class, 'update']);
-
-Route::get('posts', [PostControllerAdvance::class, 'index']) -> name('posts.index');
-Route::post('posts', action: [PostControllerAdvance::class, 'store']);
-Route::get('posts/{id}', action: [PostControllerAdvance::class, 'show']);
-Route::get('posts/nearby/{latitude}/{longitude}/{radius}', action: [PostControllerAdvance::class, 'getNearbyPost']);
-Route::put('posts/{id}', action: [PostControllerAdvance::class, 'update']);
-Route::delete('posts/{id}', action: [PostControllerAdvance::class, 'delete']);
-
+// Mensajes
 Route::get('message', [MessageController::class, 'index']);
-Route::post('message', action: [MessageController::class, 'store']);
-Route::get('message/{id}', action: [MessageController::class, 'show']);
-Route::put('message/{id}', action: [MessageController::class, 'update']);
-Route::delete('message/{id}', action: [MessageController::class, 'delete']);
+Route::post('message', [MessageController::class, 'store']);
+Route::get('message/{id}', [MessageController::class, 'show']);
+Route::put('message/{id}', [MessageController::class, 'update']);
+Route::delete('message/{id}', [MessageController::class, 'delete']);
 
-Route::post('sellPost', action: [PostControllerAdvance::class, 'sellPost']);
+// Conversaciones
+Route::post('getConversation', [MessageController::class, 'getConversation']);
+Route::post('sendMessage', [MessageController::class, 'sendMessage']);
 
-Route::post('getConversation', action: [MessageController::class, 'getConversation']);
-Route::post('sendMessage', action: [MessageController::class, 'sendMessage']);
-Route::post('getImagePost', action: [PostControllerAdvance::class, 'getImagePost']);
+// Publicación de imagen de producto
+Route::get('getImagePost/2', [PostControllerAdvance::class, 'getImagePost']);
+Route::post('getImagePost', [PostControllerAdvance::class, 'getImagePost']);
