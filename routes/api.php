@@ -48,19 +48,18 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
             ->values()
             ->toArray();
     });
+    // Productos Favoritos
+    // Agregar un producto a favoritos (POST)
+    Route::post('add-favorite-post/{postId}', [PostControllerAdvance::class, 'addToFavorites']); 
+    // Quitar productos de tus favoritos
+    Route::delete('remove-favorite-post/{postId}', [PostControllerAdvance::class, 'quitarFavoritos']); 
+    // Obtener productos favoritos del usuario (GET)
+    Route::get('get-favorite-posts', [PostControllerAdvance::class, 'getFavoritePosts']);
 });
 
 // Users
 Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyPost']);
 Route::get('get-user-posts/{id}', [UserController::class, 'getUserPosts']);
-
-// Productos Favoritos
-// Agregar un producto a favoritos (POST)
-Route::post('add-favorite-post/{postId}', [PostController::class, 'addToFavorites']); 
-// Quitar productos de tus favoritos
-Route::delete('remove-favorite-post/{postId}', [PostController::class, 'quitarFavoritos']); 
-// Obtener productos favoritos del usuario (GET)
-Route::get('get-favorite-posts', [PostController::class, 'getFavoritePosts']);
 
 // Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
@@ -72,6 +71,11 @@ Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
 Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
 // Obtener detalles de una publicación
 Route::post('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
+
+
+Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, 'getUserId']);
+
+
 
 // Almacenar, Actualizar y Eliminar Posts
 // Almacenar nueva publicación

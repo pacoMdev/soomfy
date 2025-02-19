@@ -1,56 +1,58 @@
 <template>
+  <div>
+    <h1>Productos Favoritoss</h1>
+
+    <!-- Mostrar la lista de productos favoritos -->
     <div>
-      <h1>Productos Favoritos</h1>
-  
-      <!-- Mostrar si no hay favoritos -->
-      <div v-if="favoritePosts.length === 0">
-        <p>No tienes productos favoritos.</p>
-      </div>
-  
-      <!-- Mostrar la lista de productos favoritos -->
-      <div v-else>
-        <ul>
-          <li v-for="post in favoritePosts" :key="post.id">
-            <div>
-              <h3>{{ post.title }}</h3>
-              <p>{{ post.description }}</p>
-              <img :src="post.image_url" alt="Imagen del producto" />
-            </div>
-          </li>
-        </ul>
-      </div>
+      <ul>
+        <li v-for="favorite in favorites" :key="id">
+          <div>
+            <h3>{{ favorite.title }}</h3>
+            <p>{{ favorite.price }}</p>
+            <p>{{ favorite.content }}</p>
+            <p>{{ favorite.estado }}</p>
+
+          </div>
+        </li>
+      </ul>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        favoritePosts: [], // Array para almacenar los productos favoritos
-      };
-    },
-    mounted() {
-      this.getFavoritePosts(); // Cuando el componente se monta, obtenemos los productos favoritos
-    },
-    methods: {
-      // Método para obtener los productos favoritos desde la API
-      getFavoritePosts() {
-        axios
-          .get('/api/get-favorite-posts')  // Ajusta la URL a la ruta que devuelve los favoritos
-          .then((response) => {
-            this.favoritePosts = response.data;  // Guardamos los productos favoritos en el estado
-          })
-          .catch((error) => {
-            console.error('Error al obtener los favoritos:', error);
-          });
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  /* Aquí puedes agregar tus estilos personalizados */
-  </style>
-  
+  </div>
+</template>
+
+<script setup>
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+
+const favorites = ref([]);
+
+onMounted(()=>{
+  console.log("sadfsgdh");
+    getFavorites()
+  }
+);
+
+
+console.log("sadfsgdh");
+
+const getFavorites = async () => {
+  console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjj")
+  try {
+      const response = await axios.get('/api/get-favorite-posts');
+      favorites.value = response.data;
+      
+  } catch (error) {
+      console.error("Error carregant autors:", error);
+      // toast.add({
+      //       severity: "error",
+      //       summary: "Error",
+      //       detail: error.response?.data?.message || "Hi ha hagut un error al guardar l'autor",
+      //       life: 3000,
+      //   });
+
+  }
+};
+
+
+
+
+</script>

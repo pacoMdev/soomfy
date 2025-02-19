@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 
@@ -179,14 +180,18 @@ class PostControllerAdvance extends Controller
     }
 
      // Función para mostrar los productos favoritos
-     public function mostrarFavoritos()
-     {
-        $user = auth()->user(); // Obtenemos al usuario autenticado
-        $favoritos = $user->favoritos; // Obtenemos los productos favoritos
- 
-        return response()->json($favoritos);
-     }
-        
+     public function getFavoritePosts(){
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
+            }
+
+            $favoritos = $user->favoritos;
+
+            return response()->json($favoritos);
+    }
+
     public function sellPost(Request $request){
         $userSeller = User::findOrFail($request -> userSeller_id);
         $userBuyer = User::findOrFail($request -> userBuyer_id);
