@@ -137,14 +137,29 @@ export default [
         children: [
             // Subir producto
             {
+<<<<<<< Updated upstream
                 path: '',
+=======
+                path: 'cuenta',
+>>>>>>> Stashed changes
                 name: 'cuenta',
                 component: () => import('../views/user/perfil/perfil.vue'),
             },
             {
+<<<<<<< Updated upstream
                 path: 'subir-producto',
                 name: 'subir producto',
                 component: () => import('../views/user/posts/Create.vue'),
+=======
+                path: 'cuenta',
+                name: 'cuenta',
+                component: () => import('../views/perfil/perfil.vue'),
+            },
+            {
+                path: 'chat',
+                name: 'chat',
+                component: () => import('../views/chat/chat.vue'),
+>>>>>>> Stashed changes
             },
             {
                 path: 'actualizar-producto',

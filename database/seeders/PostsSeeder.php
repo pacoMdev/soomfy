@@ -144,16 +144,36 @@ class PostsSeeder extends Seeder
             // // Agregar la imagen a Spatie Media Library
             // $post->addMedia($imagePath)->toMediaCollection('images');
 
+<<<<<<< Updated upstream
             foreach($postData['image'] as $image){
                 // Copiar la imagen a storage si no existe
                 // hay que hacer un 
                 $imagePath = storage_path('app'. DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'posts' . DIRECTORY_SEPARATOR . $image);
                 if (!file_exists($imagePath)) {
                     copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
+=======
+            // Definir rutas de manera consistente
+            $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . $image);
+            $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
+
+            // Crear el directorio si no existe
+            $directory = dirname($imagePath);
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            // Verificar si el archivo de origen existe y copiarlo
+            if (file_exists($sourcePath)) {
+                if (!file_exists($imagePath)) {
+                    if (copy($sourcePath, $imagePath)) {
+                        $post->addMedia($imagePath)->toMediaCollection('images');
+                    } else {
+                        \Log::error("Error al copiar la imagen: {image}");
+                    }
+>>>>>>> Stashed changes
                 }
-    
-                // Agregar la imagen a Spatie Media Library
-                $post->addMedia($imagePath)->toMediaCollection('images');
+            } else {
+                \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
             }
         }
 

@@ -1,8 +1,13 @@
 <template>
     <div class="layout-wrapper" :class="containerClass">
         <Navbar />
+<<<<<<< Updated upstream
         <div class="">
                 <Suspense>
+=======
+        <div class="layout-main-container ">
+            <Suspense>
+>>>>>>> Stashed changes
                     <router-view></router-view>
                 </Suspense>
         </div>
