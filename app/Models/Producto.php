@@ -22,12 +22,12 @@ class Producto extends Model implements HasMedia
     // Relacion NM ( usuarios / productos )
     public function users()
     {   
-        return $this->belongsToMany(User::class, 'user_post');
+        return $this->belongsToMany(User::class, 'user_product');
     }
 
     public function images()
     {
-        return $this->hasMany(Producto_image::class, 'producto_id');
+        return $this->hasMany(Producto_image::class, 'product_id');
     }
 
     /**
@@ -35,7 +35,7 @@ class Producto extends Model implements HasMedia
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_post');
+        return $this->belongsToMany(Category::class, 'category_product');
     }
 
     public function registerMediaCollections(): void

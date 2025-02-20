@@ -17,7 +17,7 @@ class Category extends Model
     public function posts()
     {
         // $table = 'categories';
-        return $this->belongsToMany(Producto::class,'category_post');
+        return $this->belongsToMany(Producto::class,'category_product');
     }
 
     public function exercises()
