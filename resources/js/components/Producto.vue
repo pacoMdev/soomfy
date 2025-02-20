@@ -53,7 +53,7 @@ const responsiveOptions = ref([
 
 // Función para obtener productos desde la API
 const obtenerProductos = async () => {
-    const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
+    const respuesta = await axios.get('/api/get-products'); // Asegúrate de que esta URL sea la correcta
     productos.value = respuesta.data.data; // Guardamos los datos en productos
     console.log(respuesta);
 };

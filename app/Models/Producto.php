@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Manipulations;
@@ -12,12 +11,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 //use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Post extends Model implements HasMedia
+class Producto extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
     // protected $fillable = ['title', 'content', 'user_id'];
-    protected $table = 'posts';
+    protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'estado'];
     
     // Relacion NM ( usuarios / productos )
@@ -28,7 +27,7 @@ class Post extends Model implements HasMedia
 
     public function images()
     {
-        return $this->hasMany(Post_image::class, 'post_id');
+        return $this->hasMany(Producto_image::class, 'producto_id');
     }
 
     /**

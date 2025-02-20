@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Exception;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class ProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

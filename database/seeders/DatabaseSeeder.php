@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
 
 
         //en prod comentar
-        $this->call(PostsSeeder::class);
+        $this->call(ProductsSeeder::class);
         $this->call(MessageSeeder::class);
 
         // $this->call(RoleSeeder::class);

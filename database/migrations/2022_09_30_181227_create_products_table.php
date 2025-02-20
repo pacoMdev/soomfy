@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function(Blueprint $table){
+        Schema::create('products', function(Blueprint $table){
             $table -> id();
             $table -> string('title');
             $table -> string('content')-> nullable();
@@ -37,9 +37,9 @@ return new class extends Migration
             $table -> string('title');
             $table -> string('destription');
             $table -> integer('calification'); // dese 1 - 5
-            $table -> unsignedBigInteger('post_id');
+            $table -> unsignedBigInteger('product_id');
             $table -> unsignedBigInteger('user_id');
-            $table -> foreign('post_id') -> references('id') -> on('posts');
+            $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> foreign('user_id') -> references('id') -> on('users');
             $table -> timestamps();
     
@@ -49,10 +49,10 @@ return new class extends Migration
             $table -> id();
             $table -> unsignedBigInteger('userSeller_id');
             $table -> unsignedBigInteger('userBuyer_id');
-            $table -> unsignedBigInteger('post_id');
+            $table -> unsignedBigInteger('product_id');
             $table -> foreign('userSeller_id') -> references('id') -> on('users');
             $table -> foreign('userBuyer_id') -> references('id') -> on('users');
-            $table -> foreign('post_id') -> references('id') -> on('posts');
+            $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> double('initialPrice');
             $table -> double('finalPrice');
             $table -> boolean('isToSend') -> default(0);

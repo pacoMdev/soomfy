@@ -16,11 +16,11 @@ return new class extends Migration
             $table -> string('fullMessage');
             $table -> unsignedBigInteger('userDestination_id');
             $table -> unsignedBigInteger('userRemitent_id');
-            $table -> unsignedBigInteger('post_id');
+            $table -> unsignedBigInteger('product_id');
             $table -> boolean('isReaded');
             $table -> foreign('userDestination_id') -> references('id') -> on('users');
             $table -> foreign('userRemitent_id') -> references('id') -> on('users');
-            $table -> foreign('post_id') -> references('id') -> on('posts');
+            $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> timestamps();
         });
     }

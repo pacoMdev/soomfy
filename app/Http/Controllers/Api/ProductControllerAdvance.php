@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\StorePostRequest;
-use App\Http\Resources\PostResource;
+use App\Http\Requests\StoreproductRequest;
+use App\Http\Resources\ProductResource;
 
 use App\Models\Category;
-use App\Models\Post;
-use App\Models\Post_image;
+use App\Models\Producto;
+use App\Models\Producto_image;
 use App\Models\Transactions;
 use App\Models\User;
 
 use App\Mail\ConstructEmail;
 
 
-class PostControllerAdvance extends Controller
+class ProductControllerAdvance extends Controller
 {
     public function index()
     {
@@ -31,7 +31,7 @@ class PostControllerAdvance extends Controller
         if (!in_array($orderDirection, ['asc', 'desc'])) {
             $orderDirection = 'desc';
         }
-        $posts = Post::with('media')
+        $products = Producto::with('media')
             ->whereHas('categories', function ($query) {
                 if (request('search_category')) {
                     $categories = explode(",", request('search_category'));
@@ -55,132 +55,132 @@ class PostControllerAdvance extends Controller
 
                 });
             })
-            ->when(!auth()->user()->hasPermissionTo('post-all'), function ($query) {
+            ->when(!auth()->user()->hasPermissionTo('product-all'), function ($query) {
                 $query->where('user_id', auth()->id());
             })
             ->orderBy($orderColumn, $orderDirection)
             ->paginate(50);
 
-        return PostResource::collection($posts);
+        return ProductResource::collection($products);
     }
 
     /**
      * Summary of store
-     * Guarda la info del post
-     * @param \App\Http\Requests\StorePostRequest $request
-     * @return PostResource
+     * Guarda la info del product
+     * @param \App\Http\Requests\StoreproductRequest $request
+     * @return ProductResource
      */
-    public function store(StorePostRequest $request)
+    public function store(StoreproductRequest $request)
     {
 
-        $this->authorize('post-create');
+        $this->authorize('product-create');
         
         $validatedData = $request->validated();
         $validatedData['user_id'] = auth()->id();
         
 
-        $post = new Post();
-        $post -> title = $validatedData["title"];
-        $post -> content = $validatedData["content"];
-        $post -> estado = $validatedData["estado"] ?? "Nuevo";
-        $post -> price = $validatedData["price"] ?? 99.99;
+        $product = new Producto();
+        $product -> title = $validatedData["title"];
+        $product -> content = $validatedData["content"];
+        $product -> estado = $validatedData["estado"] ?? "Nuevo";
+        $product -> price = $validatedData["price"] ?? 99.99;
         // dd($validatedData, $request);
 
 
-        $post = Post::create($validatedData);
+        $product = Producto::create($validatedData);
 
         $categories = explode(",", $request->categories);
         $category = Category::findMany($categories);
-        $post->categories()->sync($category);
+        $product->categories()->sync($category);
 
 
         if ($request->hasFile('thumbnail')) {
-            $post->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
+            $product->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
         }
         
-        return new PostResource($post);
+        return new ProductResource($product);
     }
 
-    public function show(Post $post)
+    public function show(Producto $product)
     {
-        $this->authorize('post-edit');
-        if ($post->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('post-all')) {
-            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own posts']);
+        $this->authorize('product-edit');
+        if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
+            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            return new PostResource($post);
+            return new ProductResource($product);
         }
     }
 
 
     //NO edita imagen
-    public function update(Post $post, StorePostRequest $request)
+    public function update(Producto $product, StoreProductRequest $request)
     {
-        $this->authorize('post-edit');
+        $this->authorize('product-edit');
 
-        if ($post->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('post-all')) {
-            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own posts']);
+        if ($product->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('product-all')) {
+            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            $post->update($request->validated());
+            $product->update($request->validated());
 
             $category = Category::findMany($request->categories);
-            $post->categories()->sync($category);
+            $product->categories()->sync($category);
 
-            return new PostResource($post);
+            return new ProductResource($product);
         }
     }
 
-    public function destroy(Post $post)
+    public function destroy(Producto $product)
     {
-        $this->authorize('post-delete');
-        if ($post->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('post-all')) {
-            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only delete your own posts']);
+        $this->authorize('product-delete');
+        if ($product->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('product-all')) {
+            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only delete your own products']);
         } else {
-            $post->delete();
+            $product->delete();
             return response()->noContent();
         }
     }
 
-    public function getPosts()
+    public function getProducts()
     {
-        $posts = Post::with('categories')->with('media')->latest()->paginate();
-        return PostResource::collection($posts);
+        $products = Producto::with('categories')->with('media')->latest()->paginate();
+        return ProductResource::collection($products);
 
     }
 
-    public function getCategoryByPosts($id)
+    public function getCategoryByProducts($id)
     {
-        $posts = Post::whereRelation('categories', 'id', '=', $id)->paginate();
+        $products = Producto::whereRelation('categories', 'id', '=', $id)->paginate();
 
-        return PostResource::collection($posts);
+        return ProductResource::collection($products);
     }
 
-    public function getPost($id)
+    public function getProduct($id)
     {
-        return Post::with('categories', 'users', 'media')->findOrFail($id);
+        return Producto::with('categories', 'users', 'media')->findOrFail($id);
     }
 
     // Favoritos
 
     // Agregar a favoritos 
-    public function agregarFavoritos($postId){
+    public function agregarFavoritos($productId){
         $user = auth()->user();
-        $post = Post::findOrFail($postId);
+        $product = Producto::findOrFail($productId);
         // Agregar producto a favoritos, si no existe
-        $user->favoritos()->syncWithoutDetaching([$postId]);
+        $user->favoritos()->syncWithoutDetaching([$productId]);
         return back();
     }
 
-    public function quitarFavoritos($postId) {
+    public function quitarFavoritos($productId) {
         $user = auth()->user();
-        $post = Post::findOrFail($postId);
+        $product = Producto::findOrFail($productId);
          // Quitamos el producto de favoritos
-         $user->favoritos()->detach($postId);
+         $user->favoritos()->detach($productId);
 
          return back(); // Volvemos a la página anterior
     }
 
      // Función para mostrar los productos favoritos
-     public function getFavoritePosts(){
+     public function getFavoriteProducts(){
             $user = auth()->user();
 
             if (!$user) {
@@ -192,7 +192,7 @@ class PostControllerAdvance extends Controller
             return response()->json($favoritos);
     }
 
-    public function sellPost(Request $request){
+    public function sellProduct(Request $request){
         $userSeller = User::findOrFail($request -> userSeller_id);
         $userBuyer = User::findOrFail($request -> userBuyer_id);
         
@@ -209,7 +209,7 @@ class PostControllerAdvance extends Controller
         $transaction = new Transactions();
         $transaction -> userSeller_id = $userSeller -> id;
         $transaction -> userBuyer_id = $userBuyer -> id;
-        $transaction -> post_id = $request -> post_id;
+        $transaction -> product_id = $request -> product_id;
         $transaction -> initialPrice = $initialPrice;
         $transaction -> finalPrice = $finalPrice;
         $transaction -> isToSend = $request -> isToSend;
@@ -232,6 +232,6 @@ class PostControllerAdvance extends Controller
         $data_email = sendEmail($email);
 
 
-        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'post' =>$transaction]);
+        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
     }
 }

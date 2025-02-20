@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_post', function (Blueprint $table) {
+        Schema::create('user_product', function (Blueprint $table) {
             $table->id();
 
             // Clave foránea para 'user_id'
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             
-            // Clave foránea para 'post_id'
-            $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
+            // Clave foránea para 'product_id'
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
 
             $table->timestamps(); // Si es necesario
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users_posts');
+        Schema::dropIfExists('users_products');
     }
 };

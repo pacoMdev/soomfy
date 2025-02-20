@@ -4,16 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Post;
+use App\Models\Producto;
 
-class PostsSeeder extends Seeder
+class ProductsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $posts = [
+        $products = [
             [
                 'title' => 'Laptop MacBook Pro M1',
                 'content' => 'MacBook Pro con chip M1, 16GB RAM, SSD 512GB.',
@@ -113,69 +113,68 @@ class PostsSeeder extends Seeder
                 'image' => ['lampara-ikea_d68c3650_240813101635_900x900.webp']
             ]
         ];
-        foreach ($posts as $postData) {
-            // Crear el post en la base de datos
-            $post = new Post();
-            $post -> title = $postData['title'];
-            $post -> content = $postData['content'];
-            $post -> price = $postData['price'];
-            $post -> estado = $postData['estado'];
-            $post -> toSend = $postData['toSend'];
-            $post -> isDeleted = $postData['isDeleted'];
-            $post -> isBoost = $postData['isBoost'];
-            $post -> dimensionX = $postData['dimensionX'];
-            $post -> dimensionY = $postData['dimensionY'];
-            $post -> marca = $postData['marca'];
-            $post -> color = $postData['color'];
+        foreach ($products as $productData) {
+            // Crear el product en la base de datos
+            $product = new Producto();
+            $product->title = $productData['title'];
+            $product->content = $productData['content'];
+            $product->price = $productData['price'];
+            $product->estado = $productData['estado'];
+            $product->toSend = $productData['toSend'];
+            $product->isDeleted = $productData['isDeleted'];
+            $product->isBoost = $productData['isBoost'];
+            $product->dimensionX = $productData['dimensionX'];
+            $product->dimensionY = $productData['dimensionY'];
+            $product->marca = $productData['marca'];
+            $product->color = $productData['color'];
 
-            $post -> save();
-            
-            // $post = Post::create([
-            //     'title' => $postData['title'],
-            //     'content' => $postData['content'],
+            $product->save();
+
+            // $product = Producto::create([
+            //     'title' => $productData['title'],
+            //     'content' => $productData['content'],
             // ]);
 
             // // Copiar la imagen a storage si no existe
-            // $imagePath = storage_path('app/public/posts/' . $postData['image']);
+            // $imagePath = storage_path('app/public/products/' . $productData['image']);
             // if (!file_exists($imagePath)) {
-            //     copy(public_path('seed_images/' . $postData['image']), $imagePath);
+            //     copy(public_path('seed_images/' . $productData['image']), $imagePath);
             // }
 
             // // Agregar la imagen a Spatie Media Library
-            // $post->addMedia($imagePath)->toMediaCollection('images');
+            // $product->addMedia($imagePath)->toMediaCollection('images');
 
-<<<<<<< Updated upstream
-            foreach($postData['image'] as $image){
+            foreach ($productData['image'] as $image) {
                 // Copiar la imagen a storage si no existe
                 // hay que hacer un 
-                $imagePath = storage_path('app'. DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'posts' . DIRECTORY_SEPARATOR . $image);
+                $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
                 if (!file_exists($imagePath)) {
                     copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
-=======
-            // Definir rutas de manera consistente
-            $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "posts" . DIRECTORY_SEPARATOR . $image);
-            $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
+                    // Definir rutas de manera consistente
+                    $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . $image);
+                    $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
 
-            // Crear el directorio si no existe
-            $directory = dirname($imagePath);
-            if (!is_dir($directory)) {
-                mkdir($directory, 0777, true);
-            }
-
-            // Verificar si el archivo de origen existe y copiarlo
-            if (file_exists($sourcePath)) {
-                if (!file_exists($imagePath)) {
-                    if (copy($sourcePath, $imagePath)) {
-                        $post->addMedia($imagePath)->toMediaCollection('images');
-                    } else {
-                        \Log::error("Error al copiar la imagen: {image}");
+                    // Crear el directorio si no existe
+                    $directory = dirname($imagePath);
+                    if (!is_dir($directory)) {
+                        mkdir($directory, 0777, true);
                     }
->>>>>>> Stashed changes
+
+                    // Verificar si el archivo de origen existe y copiarlo
+                    if (file_exists($sourcePath)) {
+                        if (!file_exists($imagePath)) {
+                            if (copy($sourcePath, $imagePath)) {
+                                $product->addMedia($imagePath)->toMediaCollection('images');
+                            } else {
+                                \Log::error("Error al copiar la imagen: {image}");
+                            }
+                        }
+                    } else {
+                        \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
+                    }
                 }
-            } else {
-                \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
+
             }
         }
-
     }
 }

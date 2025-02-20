@@ -67,7 +67,7 @@ export default function usePosts() {
                 router.push({name: 'posts.index'})
                 swal({
                     icon: 'success',
-                    title: 'Post saved successfully'
+                    title: 'Producto saved successfully'
                 })
             })
             .catch(error => {
@@ -89,7 +89,7 @@ export default function usePosts() {
                 router.push({name: 'posts.index'})
                 swal({
                     icon: 'success',
-                    title: 'Post updated successfully'
+                    title: 'Producto updated successfully'
                 })
             })
             .catch(error => {
@@ -120,7 +120,7 @@ export default function usePosts() {
                             router.push({name: 'posts.index'})
                             swal({
                                 icon: 'success',
-                                title: 'Post deleted successfully'
+                                title: 'Producto deleted successfully'
                             })
                         })
                         .catch(error => {

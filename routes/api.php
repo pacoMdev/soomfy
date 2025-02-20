@@ -3,12 +3,12 @@
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PermissionController;
-use App\Http\Controllers\Api\PostControllerAdvance;
+use App\Http\Controllers\Api\ProductControllerAdvance;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NoteController;
-use App\Http\Controllers\Api\PostsController;
+use App\Http\Controllers\Api\productsController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
 
-    // Route::apiResource('posts', PostControllerAdvance::class);
+    // Route::apiResource('products', ProductControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
 
@@ -48,42 +48,42 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
             ->values()
             ->toArray();
     });
-    // Productos Favoritos
+    // Producto Favoritos
     // Agregar un producto a favoritos (POST)
-    Route::post('add-favorite-post/{postId}', [PostControllerAdvance::class, 'addToFavorites']); 
+    Route::post('add-favorite-post/{postId}', [ProductControllerAdvance::class, 'addToFavorites']);
     // Quitar productos de tus favoritos
-    Route::delete('remove-favorite-post/{postId}', [PostControllerAdvance::class, 'quitarFavoritos']); 
+    Route::delete('remove-favorite-post/{postId}', [ProductControllerAdvance::class, 'quitarFavoritos']);
     // Obtener productos favoritos del usuario (GET)
-    Route::get('get-favorite-posts', [PostControllerAdvance::class, 'getFavoritePosts']);
+    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteproducts']);
 });
 
 // Users
-Route::get('get-posts/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyPost']);
-Route::get('get-user-posts/{id}', [UserController::class, 'getUserPosts']);
+Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
+Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']);
 
 // Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
 
-// Posts
+// products
 // Obtener todas las publicaciones
-Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
+Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
-Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
+Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 // Obtener detalles de una publicación
-Route::post('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
+Route::post('get-post/{id}', [ProductControllerAdvance::class, 'getProduct']);
 
 
 Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, 'getUserId']);
 
 
 
-// Almacenar, Actualizar y Eliminar Posts
+// Almacenar, Actualizar y Eliminar products
 // Almacenar nueva publicación
-Route::post('store-data-posts', [PostControllerAdvance::class, 'store']);
+Route::post('store-data-products', [ProductControllerAdvance::class, 'store']);
 // Actualizar publicación existente
-Route::put('posts/{id}', [PostControllerAdvance::class, 'update']);
+Route::put('products/{id}', [ProductControllerAdvance::class, 'update']);
 // Eliminar publicación
-Route::delete('posts/{id}', [PostControllerAdvance::class, 'delete']);
+Route::delete('products/{id}', [ProductControllerAdvance::class, 'delete']);
 
 // Mensajes
 Route::get('message', [MessageController::class, 'index']);
@@ -97,5 +97,5 @@ Route::post('getConversation', [MessageController::class, 'getConversation']);
 Route::post('sendMessage', [MessageController::class, 'sendMessage']);
 
 // Publicación de imagen de producto
-Route::get('getImagePost/2', [PostControllerAdvance::class, 'getImagePost']);
-Route::post('getImagePost', [PostControllerAdvance::class, 'getImagePost']);
+Route::get('getImagePost/2', [ProductControllerAdvance::class, 'getImagePost']);
+Route::post('getImagePost', [ProductControllerAdvance::class, 'getImagePost']);
