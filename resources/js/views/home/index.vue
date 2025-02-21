@@ -72,32 +72,33 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="centrar-productos">
-                <div class="productos">
+
+                <div class="centrar-productos">
+                  <div class="productos">
                     <Producto />
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button class="secondary-button-2">¡Ver mas!</button>
+                </div>
+
+                <div class="apartado-mensaje">
+                  <h1>Dale una nueva vida a lo que ya no usas!</h1>
+                  <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
+
+                  <img src="images/cascos-decoracion.webp" alt="Cascos"class="cascos">
+                  <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota">
+                  <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj">
+                  <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato">
                 </div>
             </div>
-            <div class="d-flex justify-content-center">
-                <button class="secondary-button-2">¡Ver mas!</button>
-            </div>
-            
-            <div class="apartado-mensaje">
-                <h1>Dale una nueva vida a lo que ya no usas!</h1>
-                <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
-    
-                <img src="images/cascos-decoracion.webp" alt="Cascos"class="cascos">
-                <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota">
-                <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj">
-                <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato">
-            </div>
         </div>
-
     </div>
     <div class="d-block d-md-none">
         <div>
             <div class="contenedor-informativo">
-                <!-- falta terminar el cartel informativo -->
+
             </div>
             <div class="">
                 <!-- falta ajustar el responsive -->

@@ -24,7 +24,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
+            'content' => $this->content,
             'price' => $this->price,
             'estado' => $this->estado,
             'latitude' => $this->latitude,
@@ -35,8 +35,7 @@ class ProductResource extends JsonResource
             'marca' => $this->marca,
             'color' => $this->color,
             'categories' => $this->categories,
-            'content' => $this->content,
-            // 'original_image' => count($this->getMedia('*')) > 0 ? $this->getMedia('*')[0]->getUrl() : null,
+            'original_image' => count($this->getMedia('*')) > 0 ? $this->getMedia('*')[0]->getUrl() : null,
             'resized_image' => $resized_image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
-use App\Models\Producto;
+use App\Models\Product;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -71,11 +71,11 @@ class UserController extends Controller
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
     
-        return response()->json($user->posts); // Retorna los posts del usuario
+        return response()->json($user->posts); // Retorna los productos del usuario
     }
     /**
      * Summary of getNearbyPosts
-     * Obtiene los posts en radio base 10km, se puede ajustar
+     * Obtiene los productos en radio base 10km, se puede ajustar
      * 
      * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
      * 

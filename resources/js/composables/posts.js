@@ -1,9 +1,9 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 
-export default function usePosts() {
-    const posts = ref({})
-    const post = ref({
+export default function useProducts() {
+    const Products = ref({})
+    const Product = ref({
         title: '',
         content: '',
         category_id: '',
@@ -14,7 +14,7 @@ export default function usePosts() {
     const isLoading = ref(false)
     const swal = inject('$swal')
 
-    const getPosts = async (
+    const getProducts = async (
         page = 1,
         search_category = '',
         search_id = '',
@@ -24,7 +24,7 @@ export default function usePosts() {
         order_column = 'created_at',
         order_direction = 'desc'
     ) => {
-        axios.get('/api/posts?page=' + page +
+        axios.get('/api/Products?page=' + page +
             '&search_category=' + search_category +
             '&search_id=' + search_id +
             '&search_title=' + search_title +
@@ -34,40 +34,40 @@ export default function usePosts() {
             '&order_direction=' + order_direction)
             .then(response => {
                 console.log(response.data);
-                posts.value = response.data;
+                Products.value = response.data;
             })
     }
 
-    const getPost = async (id) => {
-        axios.get('/api/posts/' + id)
+    const getProduct = async (id) => {
+        axios.get('/api/get-products/' + id)
             .then(response => {
-                post.value = response.data.data;
+                Product.value = response.data.data;
             })
     }
 
-    const storePost = async (post) => {
+    const storeProduct = async (product) => {
         if (isLoading.value) return;
 
         isLoading.value = true
         validationErrors.value = {}
 
-        let serializedPost = new FormData()
-        for (let item in post) {
-            if (post.hasOwnProperty(item)) {
-                serializedPost.append(item, post[item])
+        let serializedProduct = new FormData()
+        for (let item in product) {
+            if (product.hasOwnProperty(item)) {
+                serializedProduct.append(item, product[item])
             }
         }
 
-        axios.post('/api/posts', serializedPost,{
+        axios.Product('/api/get-products', serializedProduct,{
             headers: {
                 "content-type": "multipart/form-data"
             }
         })
             .then(response => {
-                router.push({name: 'posts.index'})
+                router.push({name: 'products.index'})
                 swal({
                     icon: 'success',
-                    title: 'Producto saved successfully'
+                    title: 'Product saved successfully'
                 })
             })
             .catch(error => {
@@ -78,18 +78,18 @@ export default function usePosts() {
             .finally(() => isLoading.value = false)
     }
 
-    const updatePost = async (post) => {
+    const updateProduct = async (product) => {
         if (isLoading.value) return;
 
         isLoading.value = true
         validationErrors.value = {}
-        console.log(post);
-        axios.put('/api/posts/' + post.id, post)
+        console.log(Product);
+        axios.put('/api/get-products/' + Product.id, Product)
             .then(response => {
-                router.push({name: 'posts.index'})
+                router.push({name: 'Products.index'})
                 swal({
                     icon: 'success',
-                    title: 'Producto updated successfully'
+                    title: 'Product updated successfully'
                 })
             })
             .catch(error => {
@@ -100,7 +100,7 @@ export default function usePosts() {
             .finally(() => isLoading.value = false)
     }
 
-    const deletePost = async (id) => {
+    const deleteProduct = async (id) => {
         swal({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this action!',
@@ -114,13 +114,13 @@ export default function usePosts() {
         })
             .then(result => {
                 if (result.isConfirmed) {
-                    axios.delete('/api/posts/' + id)
+                    axios.delete('/api/get-products/' + id)
                         .then(response => {
-                            getPosts()
-                            router.push({name: 'posts.index'})
+                            getProducts()
+                            router.push({name: 'products.index'})
                             swal({
                                 icon: 'success',
-                                title: 'Producto deleted successfully'
+                                title: 'Product deleted successfully'
                             })
                         })
                         .catch(error => {
@@ -135,13 +135,13 @@ export default function usePosts() {
     }
 
     return {
-        posts,
-        post,
-        getPosts,
-        getPost,
-        storePost,
-        updatePost,
-        deletePost,
+        Products,
+        Product,
+        getProducts,
+        getProduct,
+        storeProduct,
+        updateProduct,
+        deleteProduct,
         validationErrors,
         isLoading
     }

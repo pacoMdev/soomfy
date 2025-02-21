@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 //use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Producto extends Model implements HasMedia
+class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
@@ -27,7 +27,7 @@ class Producto extends Model implements HasMedia
 
     public function images()
     {
-        return $this->hasMany(Producto_image::class, 'product_id');
+        return $this->hasMany(Product_image::class, 'product_id');
     }
 
     /**

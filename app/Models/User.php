@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-use App\Models\Producto;
+use App\Models\Product;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\UserResetPasswordNotification;
@@ -48,15 +48,15 @@ class User extends Authenticatable implements HasMedia
     ];
 
 
-    // Relacion NM ( usuarios / posts )
+    // Relacion NM ( usuarios / productos )
     public function posts()
     {   
-        return $this->belongsToMany(Producto::class , 'user_post');
+        return $this->belongsToMany(Product::class , 'user_post');
     }
 
-    // Relacion NM (usuarios / favoritos / posts)
+    // Relacion NM (usuarios / favoritos / productos)
     public function favoritos(){
-        return $this->belongsToMany(Producto::class, 'productos_favoritos')
+        return $this->belongsToMany(Product::class, 'productos_favoritos')
         ->withTimestamps(); // Esto añade los campos de cuando se agrego o actualizo
     }
     

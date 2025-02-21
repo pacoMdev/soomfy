@@ -48,13 +48,11 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
             ->values()
             ->toArray();
     });
-    // Producto Favoritos
+    // Product Favoritos
     // Agregar un producto a favoritos (POST)
-    Route::post('add-favorite-post/{postId}', [ProductControllerAdvance::class, 'addToFavorites']);
-    // Quitar productos de tus favoritos
-    Route::delete('remove-favorite-post/{postId}', [ProductControllerAdvance::class, 'quitarFavoritos']);
+    Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']);
     // Obtener productos favoritos del usuario (GET)
-    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteproducts']);
+    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']);
 });
 
 // Users
@@ -70,7 +68,7 @@ Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
 Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 // Obtener detalles de una publicación
-Route::post('get-post/{id}', [ProductControllerAdvance::class, 'getProduct']);
+Route::post('get-product/{id}', [ProductControllerAdvance::class, 'getProduct']);
 
 
 Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, 'getUserId']);
@@ -81,9 +79,9 @@ Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, '
 // Almacenar nueva publicación
 Route::post('store-data-products', [ProductControllerAdvance::class, 'store']);
 // Actualizar publicación existente
-Route::put('products/{id}', [ProductControllerAdvance::class, 'update']);
+Route::put('product/{id}', [ProductControllerAdvance::class, 'update']);
 // Eliminar publicación
-Route::delete('products/{id}', [ProductControllerAdvance::class, 'delete']);
+Route::delete('product/{id}', [ProductControllerAdvance::class, 'delete']);
 
 // Mensajes
 Route::get('message', [MessageController::class, 'index']);

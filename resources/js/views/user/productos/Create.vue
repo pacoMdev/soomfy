@@ -6,7 +6,7 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h3>Fotos</h3>
-                                <DropZoneV v-model="post.thumbnails" class="imagenes"/>
+                                <DropZoneV v-model="product.thumbnails" class="imagenes"/>
                         </div>
                     </div>
                     <div class="card border-0 shadow-sm">
@@ -15,7 +15,7 @@
                             <div class="d-flex gap-5">
                                 <!-- Title -->
                             <div class="mb-3 input-nombre">
-                                <input v-model="post.title" id="post-title" type="text" class="form-control" placeholder="Nombre del producto">
+                                <input v-model="product.title" id="product-title" type="text" class="form-control" placeholder="Nombre del producto">
                                 <div class="text-danger mt-1">
                                     {{ errors.title }}
                                 </div>
@@ -27,7 +27,7 @@
                             </div>
                             <!-- Category -->
                             <div class="mb-3 input-categorias">
-                                <MultiSelect v-model="post.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter placeholder="Selecciona categorias" :maxSelectedLabels="3" class="w-full md:w-80" />
+                                <MultiSelect v-model="product.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter placeholder="Selecciona categorias" :maxSelectedLabels="3" class="w-full md:w-80" />
                                 <div class="text-danger mt-1">
                                     {{ errors.categories }}
                                 </div>
@@ -40,11 +40,11 @@
                             </div>
                             <!-- Content -->
                             <div class="mb-3">
-                                <label for="post-content" class="form-label">
+                                <label for="product-content" class="form-label">
                                     Content
                                 </label>
 
-                                <Editor v-model="post.content" editorStyle="height: 320px" />
+                                <Editor v-model="product.content" editorStyle="height: 320px" />
                                 <div class="text-danger mt-1">
                                     {{ errors.content }}
                                 </div>
@@ -57,7 +57,7 @@
                             <div class="mb-3 input-estado">
                                 <label>Estado:</label>
                                 <MultiSelect 
-                                    v-model="post.estado" 
+                                    v-model="product.estado" 
                                     :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }]" 
                                     optionLabel="label" 
                                     optionValue="value"
@@ -122,7 +122,7 @@ const post = reactive({
     title,
     content,
     categories,
-    thumbnail: ''
+    thumbnails: []
 })
 
 const thefile = ref('')

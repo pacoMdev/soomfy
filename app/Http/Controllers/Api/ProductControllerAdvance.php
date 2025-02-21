@@ -11,8 +11,8 @@ use App\Http\Requests\StoreproductRequest;
 use App\Http\Resources\ProductResource;
 
 use App\Models\Category;
-use App\Models\Producto;
-use App\Models\Producto_image;
+use App\Models\Product;
+use App\Models\Product_image;
 use App\Models\Transactions;
 use App\Models\User;
 
@@ -31,7 +31,7 @@ class ProductControllerAdvance extends Controller
         if (!in_array($orderDirection, ['asc', 'desc'])) {
             $orderDirection = 'desc';
         }
-        $products = Producto::with('media')
+        $products = Product::with('media')
             ->whereHas('categories', function ($query) {
                 if (request('search_category')) {
                     $categories = explode(",", request('search_category'));
@@ -79,7 +79,7 @@ class ProductControllerAdvance extends Controller
         $validatedData['user_id'] = auth()->id();
         
 
-        $product = new Producto();
+        $product = new Product();
         $product -> title = $validatedData["title"];
         $product -> content = $validatedData["content"];
         $product -> estado = $validatedData["estado"] ?? "Nuevo";
@@ -87,7 +87,7 @@ class ProductControllerAdvance extends Controller
         // dd($validatedData, $request);
 
 
-        $product = Producto::create($validatedData);
+        $product = Product::create($validatedData);
 
         $categories = explode(",", $request->categories);
         $category = Category::findMany($categories);
@@ -101,7 +101,7 @@ class ProductControllerAdvance extends Controller
         return new ProductResource($product);
     }
 
-    public function show(Producto $product)
+    public function show(Product $product)
     {
         $this->authorize('product-edit');
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
@@ -113,7 +113,7 @@ class ProductControllerAdvance extends Controller
 
 
     //NO edita imagen
-    public function update(Producto $product, StoreProductRequest $request)
+    public function update(Product $product, StoreProductRequest $request)
     {
         $this->authorize('product-edit');
 
@@ -129,7 +129,7 @@ class ProductControllerAdvance extends Controller
         }
     }
 
-    public function destroy(Producto $product)
+    public function destroy(Product $product)
     {
         $this->authorize('product-delete');
         if ($product->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('product-all')) {
@@ -142,44 +142,48 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
-        $products = Producto::with('categories')->with('media')->latest()->paginate();
+        $products = Product::with('categories')->with('media')->latest()->paginate();
         return ProductResource::collection($products);
 
     }
 
     public function getCategoryByProducts($id)
     {
-        $products = Producto::whereRelation('categories', 'id', '=', $id)->paginate();
+        $products = Product::whereRelation('categories', 'id', '=', $id)->paginate();
 
         return ProductResource::collection($products);
     }
 
     public function getProduct($id)
     {
-        return Producto::with('categories', 'users', 'media')->findOrFail($id);
+        return Product::with('categories', 'users', 'media')->findOrFail($id);
     }
 
     // Favoritos
 
     // Agregar a favoritos 
-    public function agregarFavoritos($productId){
+    public function gestorFavoritos($productId)
+    {
         $user = auth()->user();
-        $product = Producto::findOrFail($productId);
-        // Agregar producto a favoritos, si no existe
-        $user->favoritos()->syncWithoutDetaching([$productId]);
-        return back();
+        $favoriteIds = $this->getFavoriteIdProducts();
+
+        if (in_array($productId, $favoriteIds)) {
+            $user->favoritos()->detach($productId);
+            return response()->json([
+                'message' => 'Producto eliminado de favoritos',
+                'is_favorite' => false,
+            ]);
+        } else {
+            $user->favoritos()->syncWithoutDetaching([$productId]);
+            return response()->json([
+                'message' => 'Producto añadido a favoritos',
+                'is_favorite' => true,
+            ]);
+        }
     }
 
-    public function quitarFavoritos($productId) {
-        $user = auth()->user();
-        $product = Producto::findOrFail($productId);
-         // Quitamos el producto de favoritos
-         $user->favoritos()->detach($productId);
 
-         return back(); // Volvemos a la página anterior
-    }
-
-     // Función para mostrar los productos favoritos
+    // Función para mostrar los productos favoritos
      public function getFavoriteProducts(){
             $user = auth()->user();
 
@@ -190,6 +194,18 @@ class ProductControllerAdvance extends Controller
             $favoritos = $user->favoritos;
 
             return response()->json($favoritos);
+    }
+
+    public function getFavoriteIdProducts(){
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
+        $favoritos = $user->favoritos->pluck('id')->toArray();
+
+        return response()->json($favoritos);
     }
 
     public function sellProduct(Request $request){

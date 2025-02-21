@@ -12,12 +12,12 @@ class Category extends Model
     protected $fillable = ['name'];
 
     /**
-     * Get the posts for the category.
+     * Get the productos for the category.
      */
     public function posts()
     {
         // $table = 'categories';
-        return $this->belongsToMany(Producto::class,'category_product');
+        return $this->belongsToMany(Product::class,'category_product');
     }
 
     public function exercises()

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\Producto;
+use App\Models\Product;
 
 class MessageController extends Controller
 {
@@ -91,7 +91,7 @@ class MessageController extends Controller
      */
     public function sendMessage(Request $request){
 
-        $post = Producto::findOrFail($request -> post_id, );
+        $post = Product::findOrFail($request -> post_id, );
 
         $userRemitent = User::findOrFail($request -> userRemitent);
         $userDestination = User::findOrFail($request -> userDestination);

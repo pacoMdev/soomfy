@@ -72,7 +72,7 @@
     border: 0.5px dotted var(--primary-color);
     border-style: dashed;
 }
-/* Producto */
+/* Product */
 .centrar-productos {
     width: 100%;
     display: flex;

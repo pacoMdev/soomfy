@@ -70,7 +70,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('productos');
         Schema::dropIfExists('usersOpinion');
         Schema::dropIfExists('transactions');
     }

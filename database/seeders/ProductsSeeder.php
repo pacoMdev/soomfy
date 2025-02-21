@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Producto;
+use App\Models\Product;
 
 class ProductsSeeder extends Seeder
 {
@@ -115,7 +115,7 @@ class ProductsSeeder extends Seeder
         ];
         foreach ($products as $productData) {
             // Crear el product en la base de datos
-            $product = new Producto();
+            $product = new Product();
             $product->title = $productData['title'];
             $product->content = $productData['content'];
             $product->price = $productData['price'];
@@ -130,7 +130,7 @@ class ProductsSeeder extends Seeder
 
             $product->save();
 
-            // $product = Producto::create([
+            // $product = Product::create([
             //     'title' => $productData['title'],
             //     'content' => $productData['content'],
             // ]);

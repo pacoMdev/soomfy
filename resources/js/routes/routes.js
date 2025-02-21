@@ -84,19 +84,9 @@ export default [
                 component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },
             {
-                path: 'posts',
-                name: 'public-posts.index',
-                component: () => import('../views/posts/index.vue'),
-            },
-            {
-                path: 'posts/:id',
-                name: 'public-posts.details',
-                component: () => import('../views/posts/details.vue'),
-            },
-            {
                 path: 'category/:id',
-                name: 'category-posts.index',
-                component: () => import('../views/category/posts.vue'),
+                name: 'category-productos.index',
+                component: () => import('../views/category/products.vue'),
             },
             {
                 path: 'login',
@@ -144,12 +134,12 @@ export default [
             {
                 path: 'subir-producto',
                 name: 'subir producto',
-                component: () => import('../views/user/posts/Create.vue')
+                component: () => import('../views/user/productos/Create.vue')
             },
             {
                 path: 'actualizar-producto',
                 name: 'actualizar producto',
-                component: () => import('../views/user/posts/Create.vue'),
+                component: () => import('../views/user/productos/Create.vue'),
             },
             {
                 path: 'chat',
@@ -187,20 +177,20 @@ export default [
                 meta: { breadCrumb: 'Profile' }
             },
             {
-                name: 'posts.index',
+                name: 'productos.index',
                 path: 'posts',
                 component: PostsIndex,
                 meta: { breadCrumb: 'Posts' }
             },
             {
-                name: 'posts.create',
-                path: 'posts/create',
+                name: 'productos.create',
+                path: 'productos/create',
                 component: PostsCreate,
                 meta: { breadCrumb: 'Add new post' }
             },
             {
-                name: 'posts.edit',
-                path: 'posts/edit/:id',
+                name: 'productos.edit',
+                path: 'productos/edit/:id',
                 component: PostsEdit,
                 meta: { breadCrumb: 'Edit post' }
             },
@@ -322,13 +312,13 @@ export default [
                 meta: { breadCrumb: 'Autores'},
                 children: [
                     {
-                        name: 'posts.index',
+                        name: 'productos.index',
                         path: '',
                         component: () => import('../views/admin/posts/Index.vue'),
                         meta: { breadCrumb: 'Listado' }
                     },
                     {
-                        name: 'posts.edit',
+                        name: 'productos.edit',
                         path: 'edit/:id',
                         component: () => import('../views/admin/posts/Edit.vue'),
                         meta: { breadCrumb: 'Editar autores' }

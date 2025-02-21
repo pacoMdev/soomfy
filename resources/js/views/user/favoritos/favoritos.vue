@@ -38,7 +38,7 @@ console.log("sadfsgdh");
 const getFavorites = async () => {
   console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjj")
   try {
-      const response = await axios.get('/api/get-favorite-posts');
+      const response = await axios.get('/api/get-favorite-products');
       favorites.value = response.data;
       
   } catch (error) {
