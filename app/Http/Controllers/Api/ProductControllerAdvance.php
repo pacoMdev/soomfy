@@ -187,7 +187,6 @@ class ProductControllerAdvance extends Controller
     // Agregar a favoritos 
     public function gestorFavoritos($productId) {
         $user = auth()->user();
-    
         if ($user->favoritos->contains($productId)) {
             $user->favoritos()->detach($productId);
             return response()->json(['message' => 'Producto eliminado de favoritos']);

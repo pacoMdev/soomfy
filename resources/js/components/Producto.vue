@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="'/productos/' + producto.id"
+    <router-link :to="'/productos/detalle/' + producto.id"
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
@@ -83,8 +83,10 @@ function getImages(resized_image) {
 }
 
 .producto:hover {
-    transform: scale(1.02);
     box-shadow: rgba(0, 0, 0, 0.15) 0 2px 8px;
+}
+.producto:focus {
+  transform: scale(1.02);
 }
 
 .producto i {

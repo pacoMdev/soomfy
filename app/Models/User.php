@@ -55,11 +55,12 @@ class User extends Authenticatable implements HasMedia
     }
 
     // Relacion NM (usuarios / favoritos / productos)
-    public function favoritos(){
+    public function favoritos()
+    {
         return $this->belongsToMany(Product::class, 'productos_favoritos')
-        ->withTimestamps(); // Esto añade los campos de cuando se agrego o actualizo
+            ->withTimestamps();
     }
-    
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPasswordNotification($token));

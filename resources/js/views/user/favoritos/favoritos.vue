@@ -1,37 +1,27 @@
 <template>
-  <div class="d-flex align-items-center">
-    <div class="centrar-favoritos">
-      <Producto :productos="favorites" :actualizarFavoritos="getFavorites"/>
-    </div>
+  <div class="contenedor-favoritos">
+    <h2>Mis Favoritos</h2>
+    <ProductoNew :productos="favoritos" :actualizarFavoritos="obtenerFavoritos" />
   </div>
 </template>
 
 <script setup>
-import axios from 'axios';
-import Producto from '../../../components/ProductoNew.vue';
 import { onMounted, ref } from 'vue';
+import axios from 'axios';
+import ProductoNew from '@/components/ProductoNew.vue';
 
-const favorites = ref([]);
+const favoritos = ref([]);
 
-onMounted(()=>{
-  console.log("sadfsgdh");
-    getFavorites()
-  }
-);
+onMounted(() => {
+  obtenerFavoritos();
+});
 
-
-
-console.log("sadfsgdh");
-
-const getFavorites = async () => {
+const obtenerFavoritos = async () => {
   try {
-      const response = await axios.get('/api/get-favorite-products');
-      favorites.value = response.data;
-      
+    const respuesta = await axios.get('/api/get-favorite-products');
+    favoritos.value = respuesta.data;
   } catch (error) {
-      console.error("Error carregant autors:", error);
-
+    console.error("Error al obtener favoritos:", error);
   }
 };
-
 </script>

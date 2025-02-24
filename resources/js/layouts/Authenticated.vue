@@ -34,9 +34,9 @@
                     <router-view></router-view>
                 </Suspense>
             </div>
-            <Footer />
-        </div>
 
+        </div>
+        <Footer />
         <div class="layout-mask"></div>
     </div>
 </template>
