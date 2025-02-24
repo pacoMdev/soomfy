@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Couchbase\SearchResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Manipulations;
@@ -9,12 +10,16 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+
 //use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    public function search(Request $request){
+
+    }
     // protected $fillable = ['title', 'content', 'user_id'];
     protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'estado'];

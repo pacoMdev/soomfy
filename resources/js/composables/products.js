@@ -24,7 +24,7 @@ export default function useProducts() {
         order_column = 'created_at',
         order_direction = 'desc'
     ) => {
-        axios.get('/api/Products?page=' + page +
+        axios.get('/api/get-products?page=' + page +
             '&search_category=' + search_category +
             '&search_id=' + search_id +
             '&search_title=' + search_title +
@@ -58,7 +58,7 @@ export default function useProducts() {
             }
         }
 
-        axios.Product('/api/get-products', serializedProduct,{
+        axios.post('/api/get-products', serializedProduct,{
             headers: {
                 "content-type": "multipart/form-data"
             }

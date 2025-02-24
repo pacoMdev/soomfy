@@ -1,21 +1,9 @@
 <template>
-    <h1>Productos Favoritoss</h1>
-
-    <!-- Mostrar la lista de productos favoritos -->
-    <!-- <div>
-      <ul>
-        <li v-for="favorite in favorites" :key="id">
-          <div>
-            <h3>{{ favorite.title }}</h3>
-            <p>{{ favorite.price }}</p>
-            <p>{{ favorite.content }}</p>
-            <p>{{ favorite.estado }}</p>
-
-          </div>
-        </li>
-      </ul>
-    </div> -->
-    <Producto :productos="favorites" :actualizarFavoritos="getFavorites"/>
+  <div class="d-flex align-items-center">
+    <div class="centrar-favoritos">
+      <Producto :productos="favorites" :actualizarFavoritos="getFavorites"/>
+    </div>
+  </div>
 </template>
 
 <script setup>

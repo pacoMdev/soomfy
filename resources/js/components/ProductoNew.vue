@@ -1,6 +1,6 @@
 <template>
-    
-    <div 
+
+  <router-link :to="'/productos/' + producto.id"
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
@@ -17,7 +17,7 @@
             <p class="">{{ producto.content }}</p>
             <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
         </div>
-    </div>
+    </router-link>
 
 </template>
 

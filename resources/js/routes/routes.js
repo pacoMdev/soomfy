@@ -78,8 +78,14 @@ export default [
                 component: () => import('../views/productos/productos.vue'),
             },
             {
+                path: 'productos/:search',
+                name: 'Filtro buscador',
+                component: () => import('../views/productos/productos.vue'),
+                props: true
+            },
+            {
                 // Pagina de detalle del producto vendido
-                path: 'productos/:id',
+                path: 'productos/detalle/:id',
                 name: 'detalle-producto',
                 component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },

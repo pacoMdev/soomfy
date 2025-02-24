@@ -96,7 +96,7 @@
 import {onMounted, reactive, ref} from "vue";
 import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
-import usePosts from "@/composables/posts";
+import usePosts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
 

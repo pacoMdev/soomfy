@@ -94,10 +94,11 @@ import {onMounted, reactive, ref} from "vue";
 import DropZone from "@/components/DropZone.vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
 import useCategories from "@/composables/categories";
-import usePosts from "@/composables/posts";
+import usePosts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
 import { MultiSelect } from "primevue";
+import product from "@/views/productos/product.vue";
 
 defineRule('required', required)
 defineRule('min', min);
@@ -153,19 +154,4 @@ onMounted(() => {
 }
 
 
-.p-select-label {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--p-multiselect-padding-y) / 2);
-    white-space: nowrap;
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: var(--p-multiselect-padding-y) var(--p-multiselect-padding-x);
-    color: var(--p-multiselect-color);
-}
-
-.p-select-label.p-placeholder {
-    color: var(--p-multiselect-placeholder-color);
-}
 </style>

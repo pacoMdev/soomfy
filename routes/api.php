@@ -73,7 +73,9 @@ Route::post('get-product/{id}', [ProductControllerAdvance::class, 'getProduct'])
 
 Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, 'getUserId']);
 
-
+// Filtro producto buscador
+// Le pasamos lo que hemos buscado al index
+Route::get('products/{searchTerm}', [ProductControllerAdvance::class, 'index']);
 
 // Almacenar, Actualizar y Eliminar products
 // Almacenar nueva publicación

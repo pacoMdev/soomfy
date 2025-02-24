@@ -100,7 +100,7 @@
     import { onMounted, reactive, watchEffect } from "vue";
     import { useRoute } from "vue-router";
     import useCategories from "@/composables/categories";
-    import usePosts from "@/composables/posts";
+    import usePosts from "@/composables/products.js";
     import { useForm, useField, defineRule } from "vee-validate";
     import { required, min } from "@/validation/rules"
     import DropZone from "@/components/DropZone.vue";

@@ -2,16 +2,25 @@
     <div class="separacion-general">
         <div class="d-none d-md-block">
             <div class="separacion-general-web">
-                <div class="fondoBienvenida d-flex justify-content-center">
-                    <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
-                        <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
-                        <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
-                        <div class="d-flex w-100 justify-content-center"> 
-                            <input type="text" class="buscadorProductos">
-                            <button class="secondary-button-2 no-borders-left"><i class="fas fa-search"></i> Search</button>
-                        </div>
-                    </div>
+              <div class="fondoBienvenida d-flex justify-content-center">
+                <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
+                  <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
+                  <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
+                  <form @submit.prevent="buscarProducto" class="d-flex w-100 justify-content-center">
+                    <!-- Input de búsqueda -->
+                    <input
+                        type="text"
+                        class="buscadorProductos"
+                        id="searchTerm"
+                        v-model="searchTerm"
+                        placeholder="Busca productos..." />
+                    <!-- Botón de búsqueda -->
+                    <button type="submit" class="secondary-button-2 no-borders-left">
+                      <i class="fas fa-search"></i> Search
+                    </button>
+                  </form>
                 </div>
+              </div>
                 <div class="centrar-categories">
                     <div class="categories">
                         <div class="d-flex flex-column text-center gap-2">
@@ -119,5 +128,9 @@
 
 import '../../../css/home/home.css';
 import Producto from '../../components/Producto.vue';
+
+
+
+
 
 </script>
