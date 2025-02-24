@@ -162,25 +162,18 @@ class ProductControllerAdvance extends Controller
     // Favoritos
 
     // Agregar a favoritos 
-    public function gestorFavoritos($productId)
-    {
+    public function gestorFavoritos($productId) {
         $user = auth()->user();
-        $favoriteIds = $this->getFavoriteIdProducts();
-
-        if (in_array($productId, $favoriteIds)) {
+    
+        if ($user->favoritos->contains($productId)) {
             $user->favoritos()->detach($productId);
-            return response()->json([
-                'message' => 'Producto eliminado de favoritos',
-                'is_favorite' => false,
-            ]);
+            return response()->json(['message' => 'Producto eliminado de favoritos']);
         } else {
-            $user->favoritos()->syncWithoutDetaching([$productId]);
-            return response()->json([
-                'message' => 'Producto añadido a favoritos',
-                'is_favorite' => true,
-            ]);
+            $user->favoritos()->attach($productId);
+            return response()->json(['message' => 'Producto agregado a favoritos']);
         }
     }
+    
 
 
     // Función para mostrar los productos favoritos
