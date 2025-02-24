@@ -22,10 +22,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, defineProps } from 'vue';
 
-defineProps({
-    productos: Array
+const props = defineProps({
+    productos: Array,
+    actualizarFavoritos: Function,
 })
 
 
@@ -48,6 +49,8 @@ const gestorFavoritos = async(productId) => {
   console.log("Este es el id del producto que has clicado: " + productId);
   const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
   console.log(respuesta.data);
+  await props.actualizarFavoritos();
+
 }
 // Función para obtener productos desde la API
 function getImages(resized_image) {

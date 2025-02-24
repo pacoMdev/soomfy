@@ -15,7 +15,7 @@
         </li>
       </ul>
     </div> -->
-    <Producto :productos="favorites"/>
+    <Producto :productos="favorites" :actualizarFavoritos="getFavorites"/>
 </template>
 
 <script setup>
@@ -36,24 +36,14 @@ onMounted(()=>{
 console.log("sadfsgdh");
 
 const getFavorites = async () => {
-  console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjj")
   try {
       const response = await axios.get('/api/get-favorite-products');
       favorites.value = response.data;
       
   } catch (error) {
       console.error("Error carregant autors:", error);
-      // toast.add({
-      //       severity: "error",
-      //       summary: "Error",
-      //       detail: error.response?.data?.message || "Hi ha hagut un error al guardar l'autor",
-      //       life: 3000,
-      //   });
 
   }
 };
-
-
-
 
 </script>
