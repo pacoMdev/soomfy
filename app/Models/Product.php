@@ -17,12 +17,9 @@ class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    public function search(Request $request){
-
-    }
     // protected $fillable = ['title', 'content', 'user_id'];
     protected $table = 'products';
-    protected $fillable = ['title', 'content', 'price', 'estado'];
+    protected $fillable = ['title', 'content', 'price', 'estado','categoria_id'];
     
     // Relacion NM ( usuarios / productos )
     public function users()

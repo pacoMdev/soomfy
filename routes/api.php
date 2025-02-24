@@ -38,6 +38,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/user', [ProfileController::class, 'user']);
     Route::put('/user', [ProfileController::class, 'update']);
 
+
+    Route::get('/products/{search?}', [ProductControllerAdvance::class, 'index']);
+
+
     Route::get('abilities', function(Request $request) {
         return $request->user()->roles()->with('permissions')
             ->get()
@@ -63,6 +67,8 @@ Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts'])
 Route::get('category-list', [CategoryController::class, 'getList']);
 
 // products
+Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
+
 // Obtener todas las publicaciones
 Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
