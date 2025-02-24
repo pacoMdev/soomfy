@@ -7,7 +7,9 @@ export default function useProducts() {
         title: '',
         content: '',
         category_id: '',
-        thumbnail: ''
+        price: '',
+        estado: '',
+        thumbnails: '',
     })
     const router = useRouter()
     const validationErrors = ref({})
@@ -46,6 +48,7 @@ export default function useProducts() {
     }
 
     const storeProduct = async (product) => {
+        console.log('detalles del producto', product);
         if (isLoading.value) return;
 
         isLoading.value = true
@@ -57,6 +60,7 @@ export default function useProducts() {
                 serializedProduct.append(item, product[item])
             }
         }
+        console.log('data data', serializedProduct);
 
         axios.Product('/api/get-products', serializedProduct,{
             headers: {

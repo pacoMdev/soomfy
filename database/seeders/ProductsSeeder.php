@@ -144,37 +144,50 @@ class ProductsSeeder extends Seeder
             // // Agregar la imagen a Spatie Media Library
             // $product->addMedia($imagePath)->toMediaCollection('images');
 
-            foreach ($productData['image'] as $image) {
+            foreach($productData['image'] as $image){
                 // Copiar la imagen a storage si no existe
-                // hay que hacer un 
                 $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
                 if (!file_exists($imagePath)) {
                     copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
-                    // Definir rutas de manera consistente
-                    $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . $image);
-                    $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
-
-                    // Crear el directorio si no existe
-                    $directory = dirname($imagePath);
-                    if (!is_dir($directory)) {
-                        mkdir($directory, 0777, true);
-                    }
-
-                    // Verificar si el archivo de origen existe y copiarlo
-                    if (file_exists($sourcePath)) {
-                        if (!file_exists($imagePath)) {
-                            if (copy($sourcePath, $imagePath)) {
-                                $product->addMedia($imagePath)->toMediaCollection('images');
-                            } else {
-                                \Log::error("Error al copiar la imagen: {image}");
-                            }
-                        }
-                    } else {
-                        \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
-                    }
                 }
-
+    
+                // Agregar la imagen a Spatie Media Library
+                $product->addMedia($imagePath)->toMediaCollection('images');
             }
+            // foreach ($productData['image'] as $image) {
+            //     // Copiar la imagen a storage si no existe
+            //     // hay que hacer un 
+            //     $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
+            //     if (!file_exists($imagePath)) {
+            //         copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
+            //         // Definir rutas de manera consistente
+            //         $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . $image);
+            //         $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
+
+            //         $product->addMedia($sourcePath)->toMediaCollection('images'. DIRECTORY_SEPARATOR . 'products_user');
+            //         // Crear el directorio si no existe
+            //         $directory = dirname($imagePath);
+            //         if (!is_dir($directory)) {
+            //             mkdir($directory, 0777, true);
+            //         }
+            //         dd($imagePath);
+            //         // Añade la imagen al media por SparieMedia
+
+            //         // // Verificar si el archivo de origen existe y copiarlo
+            //         // if (file_exists($sourcePath)) {
+            //         //     if (file_exists($imagePath)) {
+            //         //         dd($product);
+            //         //         // if (copy($sourcePath, $imagePath)) {
+            //         //         // } else {
+            //         //         //     \Log::error("Error al copiar la imagen: {image}");
+            //         //         // }
+            //         //     }
+            //         // } else {
+            //         //     \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
+            //         // }
+            //     }
+
+            // }
         }
     }
 }

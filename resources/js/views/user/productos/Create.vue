@@ -6,7 +6,7 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
                             <h3>Fotos</h3>
-                                <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+                                <DropZone v-model="post.thumbnails" class="imagenes"/>
                         </div>
                     </div>
                     <div class="card border-0 shadow-sm">
@@ -15,7 +15,10 @@
                             <div class="d-flex gap-5">
                                 <!-- Title -->
                             <div class="mb-3 input-nombre">
-                                <input v-model="product.title" id="product-title" type="text" class="form-control" placeholder="Nombre del producto">
+                                <FloatLabel>
+                                    <InputText v-model="post.title" id="post-title" class="form-control" />
+                                    <label for="post-title">Nombre del producto</label>
+                                </FloatLabel>
                                 <div class="text-danger mt-1">
                                     {{ errors.title }}
                                 </div>
@@ -27,7 +30,10 @@
                             </div>
                             <!-- Category -->
                             <div class="mb-3 input-categorias">
-                                <MultiSelect v-model="product.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter placeholder="Selecciona categorias" :maxSelectedLabels="3" class="w-full md:w-80" />
+                                <FloatLabel>
+                                    <MultiSelect v-model="post.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter :maxSelectedLabels="3" class="w-full md:w-80" />
+                                    <label for="categorias">Selecciona categorias</label>
+                                </FloatLabel>
                                 <div class="text-danger mt-1">
                                     {{ errors.categories }}
                                 </div>
@@ -40,11 +46,10 @@
                             </div>
                             <!-- Content -->
                             <div class="mb-3">
-                                <label for="product-content" class="form-label">
-                                    Content
-                                </label>
-
-                                <Editor v-model="product.content" editorStyle="height: 320px" />
+                                <FloatLabel>
+                                    <Textarea id="content" v-model="post.content" rows="5" cols="50" />
+                                    <label for="content">Content</label>
+                                </FloatLabel>
                                 <div class="text-danger mt-1">
                                     {{ errors.content }}
                                 </div>
@@ -54,17 +59,24 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="mb-3">
+                                <FloatLabel>
+                                    <InputNumber v-model="post.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
+                                    <label for="price-product">Precio</label>
+                                </FloatLabel>
+                            </div>
                             <div class="mb-3 input-estado">
-                                <label>Estado:</label>
-                                <MultiSelect 
-                                    v-model="product.estado" 
-                                    :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }]" 
-                                    optionLabel="label" 
-                                    optionValue="value"
-                                    placeholder="Selecciona estado" 
-                                    :maxSelectedLabels="1" 
-                                    class="w-full md:w-80" 
-                                />
+                                <FloatLabel>
+                                    <Select 
+                                        v-model="post.estado" 
+                                        :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }, { label: 'Desgastado', value: 'Desgastado' }]" 
+                                        optionLabel="label" 
+                                        optionValue="value"
+                                        :maxSelectedLabels="1" 
+                                        class="w-full md:w-80" 
+                                    />
+                                    <label for="estado">Selecciona estado</label>
+                                </FloatLabel>
                                 
                                 <div class="text-danger mt-1">
                                     {{ errors.estado }}
@@ -91,13 +103,13 @@
 </template>
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import DropZone from "@/components/DropZone.vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
+import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
 import usePosts from "@/composables/posts";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
-import { MultiSelect } from "primevue";
+import { FloatLabel, MultiSelect, Textarea } from "primevue";
 
 defineRule('required', required)
 defineRule('min', min);
@@ -108,33 +120,45 @@ const dropZoneActive = ref(true)
 const schema = {
     title: 'required|min:5',
     content: 'required|min:50',
-    categories: 'required'
+    categories: 'required',
+    price: 'required',
+    estado: 'required',
+    thumbnails: 'required'
+
 }
 // Create a form context with the validation schema
 const {validate, errors} = useForm({validationSchema: schema})
+
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
 const {value: categories} = useField('categories', null, {initialValue: '', label: 'category'});
+const {value: price} = useField('price', null, {initialValue: ''});
+const {value: estado} = useField('estado', null, {initialValue: ''});
+const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
-const {storePost, validationErrors, isLoading} = usePosts()
+const {storeProduct, validationErrors, isLoading} = usePosts()
 const post = reactive({
     title,
     content,
     categories,
-    thumbnails: []
+    thumbnails: '', 
+    price,
+    estado
 })
 
 const thefile = ref('')
 
 function submitForm() {
+    console.log(post);
     validate().then(form => {
-        if (form.valid) storePost(post)
+        if (form.valid) storeProduct(post)
     })
 }
 
 onMounted(() => {
     getCategoryList()
+    console.log(title);
 })
 
 </script>

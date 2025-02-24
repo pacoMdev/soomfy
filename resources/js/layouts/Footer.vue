@@ -61,11 +61,11 @@
                 <img src="../../../public/images/home/Icon.svg" alt="Descubre">
                 <p>Descubre</p>
             </router-link>
-            <router-link to="/" class="tx-color-secondari d-flex flex-column justify-content-center">
+            <router-link to="/favoritos" class="tx-color-secondari d-flex flex-column justify-content-center">
                 <img src="../../../public/images/home/Icon-1.svg" alt="Favoritos">
                 <p>Favoritos</p>
             </router-link>
-            <router-link to="/post" class="tx-color-secondari d-flex flex-column justify-content-center">
+            <router-link to="/subir-producto" class="tx-color-secondari d-flex flex-column justify-content-center">
                 <img src="../../../public/images/home/Icon-2.svg" alt="Publicar">
                 <p>Publicar</p>
             </router-link>
@@ -73,7 +73,7 @@
                 <img src="../../../public/images/home/Icon-3.svg" alt="Mensajes">
                 <p>Mensajes</p>
             </router-link>
-            <router-link to="/" class="tx-color-secondari d-flex flex-column justify-content-center">
+            <router-link to="/profile" class="tx-color-secondari d-flex flex-column justify-content-center">
                 <img src="../../../public/images/home/Icon-4.svg" alt="Cuenta">
                 <p>Cuenta</p>
             </router-link>               
