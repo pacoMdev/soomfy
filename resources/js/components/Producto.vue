@@ -52,7 +52,7 @@ const responsiveOptions = ref([
 const gestorFavoritos = async(productId) => {
   console.log("Este es el id del producto que has clicado: " + productId);
   const respuesta = await axios.get(`/api/gestor-favoritos/${productId}`);
-  console.log(respuesta.data.message)
+  console.log(respuesta.data.data)
 }
 
 // Función para obtener productos desde la API

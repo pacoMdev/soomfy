@@ -1,10 +1,10 @@
 <template>
     
-    <router-link :to="'/productos/' + producto.id" 
+    <div 
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
-                <i class="fa-regular fa-heart justify-content-rigth"></i>
+                <i @click="gestorFavoritos(producto.id)" class="fa-regular fa-heart justify-content-rigth"></i>
             </div>
             <Galleria :value="getImages(producto.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="height: 150px; width: 200px; border-radius: 10px;"
             :showItemNavigators="true" :showThumbnails="false">
@@ -17,7 +17,7 @@
             <p class="">{{ producto.content }}</p>
             <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
         </div>
-    </router-link>
+    </div>
 
 </template>
 
@@ -27,10 +27,6 @@ import { onMounted, ref } from 'vue';
 defineProps({
     productos: Array
 })
-onMounted(() =>{
-    console.log('qweqweqewqwqweqweqewqwqweqweqewqw');
-})
-
 
 
 const responsiveOptions = ref([
@@ -48,7 +44,11 @@ const responsiveOptions = ref([
     }
 ]);
 
-
+const gestorFavoritos = async(productId) => {
+  console.log("Este es el id del producto que has clicado: " + productId);
+  const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
+  console.log(respuesta.data);
+}
 // Función para obtener productos desde la API
 function getImages(resized_image) {
     return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
