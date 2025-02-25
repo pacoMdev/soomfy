@@ -4,7 +4,7 @@
             <div class="card border-0">
                 <div class="card-header bg-transparent">
                     <h5 class="float-start">Posts</h5>
-                    <router-link v-if="can('post-create')" :to="{ name: 'productos.create' }" class="btn btn-primary btn-sm float-end">
+                    <router-link v-if="can('post-create')" :to="{ name: 'products.create' }" class="btn btn-primary btn-sm float-end">
                         Create Post
                     </router-link>
                 </div>
@@ -138,7 +138,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     <router-link v-if="can('post-edit')"
-                                                 :to="{ name: 'productos.edit', params: { id: post.id } }" class="badge bg-primary">Edit
+                                                 :to="{ name: 'products.edit', params: { id: post.id } }" class="badge bg-primary">Edit
                                     </router-link>
                                     <a href="#" v-if="can('post-delete')" @click.prevent="deletePost(post.id)"
                                        class="ms-2 badge bg-danger">Delete</a>

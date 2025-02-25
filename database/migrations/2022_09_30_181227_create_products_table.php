@@ -26,11 +26,11 @@ return new class extends Migration
             $table -> integer('dimensionY') -> nullable();
             $table -> string('marca') -> nullable();
             $table -> string('color') -> nullable();
-            // AGREGADO - Agregar el campo categoria_id como clave foránea
-            $table->unsignedBigInteger('categoria_id')->nullable();
-            $table->foreign('categoria_id')
+            // AGREGADO - Agregar el campo category_id como clave foránea
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')
                 ->references('id')->on('categories')
-                ->onDelete('set null');
+                ->onDelete('cascade');
 
 
             $table -> timestamps();
@@ -75,7 +75,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('products');
         Schema::dropIfExists('usersOpinion');
         Schema::dropIfExists('transactions');
     }

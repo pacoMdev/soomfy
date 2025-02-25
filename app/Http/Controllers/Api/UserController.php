@@ -65,17 +65,17 @@ class UserController extends Controller
         }
     }
 
-    public function getUserPosts($id){
+    public function getUserProducts($id){
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
     
-        return response()->json($user->posts); // Retorna los productos del usuario
+        return response()->json($user->products); // Retorna los products del usuario
     }
     /**
-     * Summary of getNearbyPosts
-     * Obtiene los productos en radio base 10km, se puede ajustar
+     * Summary of getNearbyProducts
+     * Obtiene los products en radio base 10km, se puede ajustar
      * 
      * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
      * 
@@ -84,7 +84,7 @@ class UserController extends Controller
      * @param mixed $radius
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function getNearbyPost($userId, $radius = 10)
+    public function getNearbyProduct($userId, $radius = 10)
     {
         // Obtener las coordenadas del usuario que está aplicando el filtro
         $user = User::find($userId);
@@ -101,14 +101,14 @@ class UserController extends Controller
         $latitude = $user->latitude;
         $longitude = $user->longitude;
     
-        // Buscar los productos de los usuarios cercanos
+        // Buscar los products de los usuarios cercanos
         $products = Product::selectRaw("
             products.id, products.name, products.price, products.description, 
             ( 6371 * acos( cos( radians(?) ) * cos( radians( users.latitude ) ) * cos( radians( users.longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( users.latitude ) ) ) ) AS distance
         ", [$latitude, $longitude, $latitude])
         ->join('user_product', 'products.id', '=', 'user_product.product_id') // Tabla intermedia
         ->join('users', 'user_product.user_id', '=', 'users.id') // Relación con usuarios
-        ->having('distance', '<', $radius)  // Filtrar productos dentro del radio
+        ->having('distance', '<', $radius)  // Filtrar products dentro del radio
         ->orderBy('distance')  // Ordenar por distancia
         ->get();
     

@@ -19,9 +19,9 @@ class Product extends Model implements HasMedia
 
     // protected $fillable = ['title', 'content', 'user_id'];
     protected $table = 'products';
-    protected $fillable = ['title', 'content', 'price', 'estado','categoria_id'];
+    protected $fillable = ['title', 'content', 'price', 'estado','category_id'];
     
-    // Relacion NM ( usuarios / productos )
+    // Relacion NM ( usuarios / products )
     public function users()
     {   
         return $this->belongsToMany(User::class, 'user_product');
@@ -37,7 +37,7 @@ class Product extends Model implements HasMedia
      */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_product');
+        return $this->belongsTo(Category::class);
     }
 
     public function registerMediaCollections(): void

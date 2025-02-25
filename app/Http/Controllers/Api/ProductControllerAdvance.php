@@ -40,13 +40,13 @@ class ProductControllerAdvance extends Controller
         // Capturar el categoryId para filtrar por categorías y subcategorías
         $categoryId = request('categoryId');
 
-        // Consulta de productos
+        // Consulta de products
         $products = Product::with('media')
             // Filtro por categoría o subcategorías si se proporciona "categoryId"
             ->when($categoryId, function ($query) use ($categoryId) {
-                $query->where('categoria_id', $categoryId) // Directamente asociados a la categoría
+                $query->where('category_id', $categoryId) // Directamente asociados a la categoría
                 ->orWhereHas('category', function ($subQuery) use ($categoryId) {
-                    $subQuery->where('categoria_id', $categoryId); // Asociados a las subcategorías
+                    $subQuery->where('category_id', $categoryId); // Asociados a las subcategorías
                 });
             })
             // Filtro por categorías si existe 'search_category'
@@ -83,16 +83,16 @@ class ProductControllerAdvance extends Controller
                         ->orWhere('content', 'like', '%' . request('search_global') . '%');
                 });
             })
-            // Asegurarse de que el usuario autenticado solo vea sus propios productos, si no tiene permisos
+            // Asegurarse de que el usuario autenticado solo vea sus propios products, si no tiene permisos
             ->when(!auth()->user()->hasPermissionTo('product-all'), function ($query) {
                 $query->where('user_id', auth()->id());
             })
-            // Ordenar productos según la columna y dirección definidas
+            // Ordenar products según la columna y dirección definidas
             ->orderBy($orderColumn, $orderDirection)
-            // Paginación para limitar los resultados a 50 productos por página
+            // Paginación para limitar los resultados a 50 products por página
             ->paginate(50);
 
-        // Devolver los productos como una colección de recursos
+        // Devolver los products como una colección de recursos
         return ProductResource::collection($products);
     }
 
@@ -208,7 +208,7 @@ class ProductControllerAdvance extends Controller
     
 
 
-    // Función para mostrar los productos favoritos
+    // Función para mostrar los products favoritos
      public function getFavoriteProducts(){
             $user = auth()->user();
 

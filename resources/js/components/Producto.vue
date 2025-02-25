@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="'/productos/detalle/' + producto.id"
+    <router-link :to="'/products/detalle/' + producto.id"
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
@@ -55,10 +55,10 @@ const gestorFavoritos = async(productId) => {
   console.log(respuesta.data.data)
 }
 
-// Función para obtener productos desde la API
+// Función para obtener products desde la API
 const obtenerProductos = async () => {
     const respuesta = await axios.get('/api/get-products'); // Asegúrate de que esta URL sea la correcta
-    productos.value = respuesta.data.data; // Guardamos los datos en productos
+    productos.value = respuesta.data.data; // Guardamos los datos en products
     console.log(respuesta);
 };
 function getImages(resized_image) {

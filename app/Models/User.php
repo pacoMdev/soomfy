@@ -48,13 +48,13 @@ class User extends Authenticatable implements HasMedia
     ];
 
 
-    // Relacion NM ( usuarios / productos )
+    // Relacion NM ( usuarios / products )
     public function posts()
     {   
         return $this->belongsToMany(Product::class , 'user_post');
     }
 
-    // Relacion NM (usuarios / favoritos / productos)
+    // Relacion NM (usuarios / favoritos / products)
     public function favoritos()
     {
         return $this->belongsToMany(Product::class, 'productos_favoritos')

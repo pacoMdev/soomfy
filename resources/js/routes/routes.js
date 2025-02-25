@@ -3,9 +3,9 @@ import { authStore } from "../store/auth";
 const AuthenticatedLayout = () => import('../layouts/Authenticated.vue')
 const AuthenticatedUserLayout = () => import('../layouts/AuthenticatedUser.vue')
 const GuestLayout = ()  => import('../layouts/Guest.vue');
-const PostsIndex  = ()  => import('../views/admin/posts/Index.vue');
-const PostsCreate  = ()  => import('../views/admin/posts/Create.vue');
-const PostsEdit  = ()  => import('../views/admin/posts/Edit.vue');
+const ProductsIndex  = ()  => import('../views/admin/products/Index.vue');
+const ProductsCreate  = ()  => import('../views/admin/products/Create.vue');
+const ProductsEdit  = ()  => import('../views/admin/products/Edit.vue');
 
 async function requireLogin(to, from, next) {
     const auth = authStore();
@@ -73,25 +73,25 @@ export default [
                 component: () => import('../views/home/index.vue'),
             },
             {
-                path: 'productos',
-                name: 'productos',
-                component: () => import('../views/productos/productos.vue'),
+                path: 'products',
+                name: 'products',
+                component: () => import('../views/products/products.vue'),
             },
             {
-                path: 'productos/:search',
+                path: 'products/:search',
                 name: 'Filtro buscador',
-                component: () => import('../views/productos/productos.vue'),
+                component: () => import('../views/products/products.vue'),
                 props: true
             },
             {
                 // Pagina de detalle del producto vendido
-                path: 'productos/detalle/:id',
+                path: 'products/detalle/:id',
                 name: 'detalle-producto',
                 component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },
             {
                 path: 'category/:id',
-                name: 'category-productos.index',
+                name: 'category-products.index',
                 component: () => import('../views/category/products.vue'),
             },
             {
@@ -140,12 +140,12 @@ export default [
             {
                 path: 'subir-producto',
                 name: 'subir producto',
-                component: () => import('../views/user/productos/Create.vue')
+                component: () => import('../views/user/products/Create.vue')
             },
             {
                 path: 'actualizar-producto',
                 name: 'actualizar producto',
-                component: () => import('../views/user/productos/Create.vue'),
+                component: () => import('../views/user/products/Create.vue'),
             },
             {
                 path: 'chat',
@@ -183,21 +183,21 @@ export default [
                 meta: { breadCrumb: 'Profile' }
             },
             {
-                name: 'productos.index',
-                path: 'posts',
-                component: PostsIndex,
-                meta: { breadCrumb: 'Posts' }
+                name: 'products.index',
+                path: 'products',
+                component: ProductsIndex,
+                meta: { breadCrumb: 'Products' }
             },
             {
-                name: 'productos.create',
-                path: 'productos/create',
-                component: PostsCreate,
+                name: 'products.create',
+                path: 'products/create',
+                component: ProductsCreate,
                 meta: { breadCrumb: 'Add new post' }
             },
             {
-                name: 'productos.edit',
-                path: 'productos/edit/:id',
-                component: PostsEdit,
+                name: 'products.edit',
+                path: 'products/edit/:id',
+                component: ProductsEdit,
                 meta: { breadCrumb: 'Edit post' }
             },
             {
@@ -313,20 +313,20 @@ export default [
                 ]
             },
             {
-                name: 'posts',
-                path: 'posts',
+                name: 'products',
+                path: 'products',
                 meta: { breadCrumb: 'Autores'},
                 children: [
                     {
-                        name: 'productos.index',
+                        name: 'products.index',
                         path: '',
-                        component: () => import('../views/admin/posts/Index.vue'),
+                        component: () => import('../views/admin/products/Index.vue'),
                         meta: { breadCrumb: 'Listado' }
                     },
                     {
-                        name: 'productos.edit',
+                        name: 'products.edit',
                         path: 'edit/:id',
-                        component: () => import('../views/admin/posts/Edit.vue'),
+                        component: () => import('../views/admin/products/Edit.vue'),
                         meta: { breadCrumb: 'Editar autores' }
                     }
                 ]
