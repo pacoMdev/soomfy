@@ -71,7 +71,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/productos/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
@@ -99,7 +99,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/productos/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
@@ -161,7 +161,7 @@
     // Peticiones de API
     const getPost = async () => {
         const respuesta = await axios.get('/api/get-post/'+id); // Asegúrate de que esta URL sea la correcta
-        post.value = respuesta.data; // Guardamos los datos en productos
+        post.value = respuesta.data; // Guardamos los datos en products
         console.log('getPost', respuesta.data);
     };
     const getRelatedPosts = async () => {

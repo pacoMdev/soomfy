@@ -24,7 +24,7 @@ class Product extends Model implements HasMedia
     protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'estado'];
     
-    // Relacion NM ( usuarios / productos )
+    // Relacion NM ( usuarios / products )
     public function users()
     {   
         return $this->belongsToMany(User::class, 'user_product');

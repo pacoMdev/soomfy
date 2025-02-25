@@ -1,5 +1,5 @@
 <template>
-    {{ post }}
+    {{ product }}
     <form @submit.prevent="submitForm">
         <div class="row my-5">
             <div class="col-md-8">
@@ -8,10 +8,10 @@
 
                         <!-- Title -->
                         <div class="mb-3">
-                            <label for="post-title" class="form-label">
+                            <label for="product-title" class="form-label">
                                 Title
                             </label>
-                            <input v-model="post.title" id="post-title" type="text" class="form-control">
+                            <input v-model="product.title" id="product-title" type="text" class="form-control">
                             <div class="text-danger mt-1">
                                 {{ errors.title }}
                             </div>
@@ -23,10 +23,10 @@
                         </div>
                         <!-- Content -->
                         <div class="mb-3">
-                            <label for="post-content" class="form-label">
+                            <label for="product-content" class="form-label">
                                 Content
                             </label>
-                            <TextEditorComponent v-model="post.content"/>
+                            <TextEditorComponent v-model="product.content"/>
                             <div class="text-danger mt-1">
                                 {{ errors.content }}
                             </div>
@@ -66,7 +66,7 @@
                         </h6>
                         <!-- Category -->
                         <div class="mb-3">
-                            <!-- <v-select multiple v-model="post.categories" :options="categoryList" :reduce="category => category.id" label="name" class="form-control" placeholder="Select category"/> -->
+                            <!-- <v-select multiple v-model="product.categories" :options="categoryList" :reduce="category => category.id" label="name" class="form-control" placeholder="Select category"/> -->
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
                             </div>
@@ -83,7 +83,7 @@
                                     <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
                                 </svg> Thumbnail
                             </h6>
-                            <DropZone v-model="post.thumbnail"/>
+                            <DropZone v-model="product.thumbnail"/>
                             <div class="text-danger mt-1">
                                 <div v-for="message in validationErrors?.thumbnail">
                                     {{ message }}
@@ -100,7 +100,7 @@
     import { onMounted, reactive, watchEffect } from "vue";
     import { useRoute } from "vue-router";
     import useCategories from "@/composables/categories";
-    import usePosts from "@/composables/products.js";
+    import useProducts from "@/composables/products.js";
     import { useForm, useField, defineRule } from "vee-validate";
     import { required, min } from "@/validation/rules"
     import DropZone from "@/components/DropZone.vue";
@@ -120,8 +120,8 @@
     const { value: content } = useField('content', null, { initialValue: '' });
     const { value: categories } = useField('categories', null, { initialValue: '', label: 'category' });
     const { categoryList, getCategoryList } = useCategories()
-    const { post: postData, getPost, updatePost, validationErrors, isLoading } = usePosts()
-    const post = reactive({
+    const { product: productData, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
+    const product = reactive({
         title,
         content,
         categories,
@@ -129,19 +129,19 @@
     })
     const route = useRoute()
     function submitForm() {
-        validate().then(form => { if (form.valid) updatePost(post) })
+        validate().then(form => { if (form.valid) updateProduct(product) })
     }
     onMounted(() => {
-        getPost(route.params.id)
+        getProduct(route.params.id)
         getCategoryList()
     })
 
     // https://vuejs.org/api/reactivity-core.html#watcheffect
     watchEffect(() => {
-        post.id = postData.value.id
-        post.title = postData.value.title
-        post.content = postData.value.content
-        post.thumbnail = postData.value.original_image
-        post.categories = postData.value.categories
+        product.id = productData.value.id
+        product.title = productData.value.title
+        product.content = productData.value.content
+        product.thumbnail = productData.value.original_image
+        product.categories = productData.value.categories
     })
 </script>

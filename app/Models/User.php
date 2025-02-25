@@ -48,13 +48,13 @@ class User extends Authenticatable implements HasMedia
     ];
 
 
-    // Relacion NM ( usuarios / productos )
-    public function posts()
+    // Relacion NM ( usuarios / products )
+    public function products()
     {   
-        return $this->belongsToMany(Product::class , 'user_post');
+        return $this->belongsToMany(Product::class , 'user_product');
     }
 
-    // Relacion NM (usuarios / favoritos / productos)
+    // Relacion NM (usuarios / favoritos / products)
     public function favoritos(){
         return $this->belongsToMany(Product::class, 'productos_favoritos')
         ->withTimestamps(); // Esto añade los campos de cuando se agrego o actualizo

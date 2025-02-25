@@ -3,9 +3,9 @@
         <div class="col-md-12">
             <div class="card border-0">
                 <div class="card-header bg-transparent">
-                    <h5 class="float-start">Posts</h5>
-                    <router-link v-if="can('post-create')" :to="{ name: 'productos.create' }" class="btn btn-primary btn-sm float-end">
-                        Create Post
+                    <h5 class="float-start">Products</h5>
+                    <router-link v-if="can('post-create')" :to="{ name: 'products.create' }" class="btn btn-primary btn-sm float-end">
+                        Create Product
                     </router-link>
                 </div>
                 <div class="card-body shadow-sm">
@@ -115,7 +115,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="post in posts.data" :key="post.id">
+                            <tr v-for="post in products.data" :key="post.id">
                                 <td class="px-6 py-4 text-sm" width="20">
                                     {{ post.id }}
                                 </td>
@@ -138,9 +138,9 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     <router-link v-if="can('post-edit')"
-                                                 :to="{ name: 'productos.edit', params: { id: post.id } }" class="badge bg-primary">Edit
+                                                 :to="{ name: 'products.edit', params: { id: post.id } }" class="badge bg-primary">Edit
                                     </router-link>
-                                    <a href="#" v-if="can('post-delete')" @click.prevent="deletePost(post.id)"
+                                    <a href="#" v-if="can('post-delete')" @click.prevent="deleteProduct(post.id)"
                                        class="ms-2 badge bg-danger">Delete</a>
                                 </td>
                             </tr>
@@ -157,7 +157,7 @@
 
 <script setup>
     import {ref, onMounted, watch} from "vue";
-    import usePosts from "@/composables/products.js";
+    import useProducts from "@/composables/products.js";
     import useCategories from "@/composables/categories";
     import {useAbility} from '@casl/vue'
 
@@ -168,17 +168,17 @@
     const search_global = ref('')
     const orderColumn = ref('created_at')
     const orderDirection = ref('desc')
-    const {posts, getPosts, deletePost} = usePosts()
+    const {products, getProducts, deleteProduct} = useProducts()
     const {categoryList, getCategoryList} = useCategories()
     const {can} = useAbility();
     onMounted(() => {
-        getPosts()
+        getProducts()
         getCategoryList()
     })
     const updateOrdering = (column) => {
         orderColumn.value = column;
         orderDirection.value = (orderDirection.value === 'asc') ? 'desc' : 'asc';
-        getPosts(
+        getProducts(
             1,
             search_category.value,
             search_id.value,
@@ -190,7 +190,7 @@
         );
     }
     watch(search_category, (current, previous) => {
-        getPosts(
+        getProducts(
             1,
             current,
             search_id.value,
@@ -200,7 +200,7 @@
         )
     })
     watch(search_id, (current, previous) => {
-        getPosts(
+        getProducts(
             1,
             search_category.value,
             current,
@@ -210,7 +210,7 @@
         )
     })
     watch(search_title, (current, previous) => {
-        getPosts(
+        getProducts(
             1,
             search_category.value,
             search_id.value,
@@ -220,7 +220,7 @@
         )
     })
     watch(search_content, (current, previous) => {
-        getPosts(
+        getProducts(
             1,
             search_category.value,
             search_id.value,
@@ -230,7 +230,7 @@
         )
     })
     watch(search_global, _.debounce((current, previous) => {
-        getPosts(
+        getProducts(
             1,
             search_category.value,
             search_id.value,

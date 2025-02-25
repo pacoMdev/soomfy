@@ -1,6 +1,6 @@
 <template>
 
-  <router-link :to="'/productos/' + producto.id"
+  <router-link :to="'/products/' + producto.id"
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
@@ -52,7 +52,7 @@ const gestorFavoritos = async(productId) => {
   await props.actualizarFavoritos();
 
 }
-// Función para obtener productos desde la API
+// Función para obtener products desde la API
 function getImages(resized_image) {
     return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
 }

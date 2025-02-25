@@ -27,7 +27,7 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><p class="h4-p text-center">Bienvenid@ {{ authStore().user?.name }}</p></li>
                             <li><router-link v-if="true" class="dropdown-item" to="/admin">Admin</router-link></li>
-                            <li><router-link to="/admin/posts" class="dropdown-item">Post</router-link></li>
+                            <li><router-link to="/admin/products" class="dropdown-item">Post</router-link></li>
           ç                  <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a></li>
                         </ul>

@@ -98,7 +98,7 @@ import usePosts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
 import { MultiSelect } from "primevue";
-import product from "@/views/productos/product.vue";
+import product from "@/views/products/product.vue";
 
 defineRule('required', required)
 defineRule('min', min);

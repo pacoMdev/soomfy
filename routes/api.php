@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     // Product Favoritos
     // Agregar un producto a favoritos (POST)
     Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']);
-    // Obtener productos favoritos del usuario (GET)
+    // Obtener products favoritos del usuario (GET)
     Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']);
 });
 

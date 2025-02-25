@@ -22,13 +22,13 @@ export default {
   props: ['searchTerm'], // Recibe el searchTerm desde la URL
 
   setup(props) {
-    const products = ref([]);  // Definimos un ref que va a almacenar los productos
+    const products = ref([]);  // Definimos un ref que va a almacenar los products
 
-    // Función para obtener los productos
+    // Función para obtener los products
     const fetchProducts = async () => {
-      // Realiza una solicitud GET a la API para obtener los productos
+      // Realiza una solicitud GET a la API para obtener los products
       const response = await axios.get(`/api/productos/${props.searchTerm || ''}`);
-      // Asignamos los datos de los productos a la variable 'products'
+      // Asignamos los datos de los products a la variable 'products'
       products.value = response.data.data;
     };
 
