@@ -40,5 +40,5 @@ class CategoryTableSeeder extends Seeder
     }
 
 
-
+    
 }

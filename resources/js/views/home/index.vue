@@ -22,29 +22,26 @@
           </div>
         </div>
         <div class="centrar-categories">
+          <div class="categories">
+            <div v-for="category in categories" :key="category.id">
+              <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
+                <img src="images/home/categories/telefono.webp" alt="">
+                <p>{{ category.name }}</p>
+              </div>
 
-          <div class="centrar-categories">
-            <div class="categories">
-              <div v-for="category in categories" :key="category.id">
-                <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
-                  <img src="images/home/categories/telefono.webp" alt="">                          <p>{{ category.name }}</p>
-                </div>
-
-                <!-- Panel de subcategorías -->
-                <div v-if="selectedCategory === category.id" class="subcategories-panel">
-                  <div v-for="subcategory in category.subcategories"
-                       :key="subcategory.id"
-                       class="d-flex flex-column text-center gap-2">
-                    <img src="images/home/categories/telefono.webp" alt="">
-                    <p>{{ subcategory.name }}</p>
-                  </div>
+              <!-- Panel de subcategorías -->
+              <div v-if="selectedCategory === category.id" class="subcategories-panel">
+                <div v-for="subcategory in category.subcategories"
+                     :key="subcategory.id"
+                     class="d-flex flex-column text-center gap-2">
+                  <img src="images/home/categories/telefono.webp" alt="">
+                  <p>{{ subcategory.name }}</p>
                 </div>
               </div>
             </div>
           </div>
-
-
         </div>
+
 
         <div class="centrar-productos">
           <div class="productos">
