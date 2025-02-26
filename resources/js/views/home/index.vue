@@ -84,7 +84,7 @@
 
                 <div class="centrar-productos">
                   <div class="productos">
-                    <Producto />
+                    <Producto :productos="productos" :actualizarFavoritos="obtenerProductos"/>
                   </div>
                 </div>
 
@@ -127,10 +127,23 @@
 <script setup>
 
 import '../../../css/home/home.css';
-import Producto from '../../components/Producto.vue';
+  import { onMounted, ref } from 'vue';
+  import axios from 'axios';
+  import Producto from '@/components/ProductoNew.vue';
 
+  const productos = ref([]);
 
+onMounted(() => {
+  obtenerProductos();
+});
 
-
+const obtenerProductos = async () => {
+  try {
+    const respuesta = await axios.get('/api/get-products');
+    productos.value = respuesta.data.data;
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+  }
+};
 
 </script>

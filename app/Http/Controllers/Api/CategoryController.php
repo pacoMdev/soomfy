@@ -12,6 +12,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
+        // Obtener la columna y la dirección de ordenamiento con valores por defecto
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'name', 'created_at'])) {
             $orderColumn = 'created_at';
@@ -20,10 +21,14 @@ class CategoryController extends Controller
         if (!in_array($orderDirection, ['asc', 'desc'])) {
             $orderDirection = 'desc';
         }
+
+        // Obtener las categorías principales y sus subcategorías según los filtros
         $categories = Category::
-            when(request('search_id'), function ($query) {
-                $query->where('id', request('search_id'));
-            })
+        with('subcategorias') // AGREGADO NUEVO - Cargar relaciones con subcategorías
+        ->whereNull('categoria_id') // AGREGADO NUEVO - Filtrar solo categorías principales
+        ->when(request('search_id'), function ($query) {
+            $query->where('id', request('search_id'));
+        })
             ->when(request('search_title'), function ($query) {
                 $query->where('name', 'like', '%'.request('search_title').'%');
             })
@@ -31,21 +36,43 @@ class CategoryController extends Controller
                 $query->where(function($q) {
                     $q->where('id', request('search_global'))
                         ->orWhere('name', 'like', '%'.request('search_global').'%');
-
                 });
             })
             ->orderBy($orderColumn, $orderDirection)
             ->paginate(50);
+
+        // Devolver las categorías en formato de recurso con sus subcategorías
         return CategoryResource::collection($categories);
     }
 
     public function store(StoreCategoryRequest $request)
     {
+        // Verifica si el usuario tiene permiso para crear categorías
         $this->authorize('category-create');
-        $category = Category::create($request->validated());
 
+        // Obtiene y valida los datos enviados mediante el StoreCategoryRequest
+        $validatedData = $request->validated();
+
+        // Validar que si se especifica una subcategoría (categoria_id),
+        // esta categoría debe pertenecer a una categoría principal
+        if (isset($validatedData['categoria_id'])) {
+            // Busca la categoría principal según el ID proporcionado en categoria_id
+            $parentCategory = Category::find($validatedData['categoria_id']);
+
+            // Verifica que la categoría principal exista y no sea en sí misma una subcategoría
+            if (!$parentCategory || $parentCategory->categoria_id !== null) {
+                // Devuelve un error si no es válida
+                return response()->json(['error' => 'La subcategoría debe pertenecer a una categoría principal válida.'], 422);
+            }
+        }
+
+        // Crea la nueva categoría o subcategoría con los datos validados
+        $category = Category::create($validatedData);
+
+        // Devuelve la categoría recién creada como un recurso JSON
         return new CategoryResource($category);
     }
+
 
     public function show(Category $category)
     {

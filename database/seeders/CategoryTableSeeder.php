@@ -18,66 +18,56 @@ class CategoryTableSeeder extends Seeder
             [
                 'nameImg' => 'cat_chellPhone.webp',
                 'name' => 'Moviles',
+                'subcategories' => [
+                    ['name' => 'Smartphones', 'nameImg' => 'sub_smartphones.webp'],
+                    ['name' => 'Accesorios', 'nameImg' => 'sub_accesorios.webp'],
+                ],
             ],
             [
                 'nameImg' => 'cat_technology.webp',
                 'name' => 'Tecnologia',
+                'subcategories' => [
+                    ['name' => 'Portátiles', 'nameImg' => 'sub_portatiles.webp'],
+                    ['name' => 'Tablets', 'nameImg' => 'sub_tablets.webp'],
+                ],
             ],
             [
                 'nameImg' => 'cat_car.webp',
                 'name' => 'Coches',
-            ],
-            [
-                'nameImg' => 'cat_moto.webp',
-                'name' => 'Motos',
-            ],
-            [
-                'nameImg' => 'cat_inmueble.webp',
-                'name' => 'Inmueble',
-            ],
-            [
-                'nameImg' => 'cat_tools.webp',
-                'name' => 'Herramientas',
-            ],
-            [
-                'nameImg' => 'cat_moda.webp',
-                'name' => 'Moda',
+                'subcategories' => [
+                    ['name' => 'Eléctricos', 'nameImg' => 'sub_electricos.webp'],
+                    ['name' => 'Usados', 'nameImg' => 'sub_usados.webp'],
+                ],
             ],
             [
                 'nameImg' => 'cat_services.webp',
                 'name' => 'Servicios',
+                'subcategories' => [
+                    ['name' => 'Hogar', 'nameImg' => 'sub_hogar.webp'],
+                    ['name' => 'Reparaciones', 'nameImg' => 'sub_reparaciones.webp'],
+                ],
             ],
-            [
-                'nameImg' => 'cat_muebles.webp',
-                'name' => 'Muebles',
-            ],
-            [
-                'nameImg' => 'cat_empleto.webp',
-                'name' => 'Empleo',
-            ],
-            [
-                'nameImg' => 'cat_jardineria.webp',
-                'name' => 'Jardineria',
-            ],
-            [
-                'nameImg' => 'cat_deporte.webp',
-                'name' => 'Deporte',
-            ],
-            [
-                'nameImg' => 'cat_construcction.webp',
-                'name' => 'Contruccion',
-            ],
-            [
-                'nameImg' => 'cat_others.webp',
-                'name' => 'Otros...',
-            ],
+            // Puedes seguir añadiendo más categorías y subcategorías aquí...
         ];
 
         foreach ($categories as $cat) {
+            // Crear la categoría principal
             $category = new Category();
-            $category -> name = $cat['name'];
-            $category -> nameImg = $cat['nameImg'];
+            $category->name = $cat['name'];
+            $category->nameImg = $cat['nameImg'];
+            $category->categoria_id = null; // Es una categoría principal
             $category->save();
+
+            // Crear las subcategorías asociadas, si existen
+            if (isset($cat['subcategories'])) {
+                foreach ($cat['subcategories'] as $subcat) {
+                    $subcategory = new Category();
+                    $subcategory->name = $subcat['name'];
+                    $subcategory->nameImg = $subcat['nameImg'];
+                    $subcategory->categoria_id = $category->id; // Relación con categoría principal
+                    $subcategory->save();
+                }
+            }
         }
     }
 }

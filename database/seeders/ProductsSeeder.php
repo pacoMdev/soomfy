@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductsSeeder extends Seeder
 {
@@ -114,21 +115,30 @@ class ProductsSeeder extends Seeder
             ]
         ];
         foreach ($products as $productData) {
-            // Crear el product en la base de datos
-            $product = new Product();
-            $product->title = $productData['title'];
-            $product->content = $productData['content'];
-            $product->price = $productData['price'];
-            $product->estado = $productData['estado'];
-            $product->toSend = $productData['toSend'];
-            $product->isDeleted = $productData['isDeleted'];
-            $product->isBoost = $productData['isBoost'];
-            $product->dimensionX = $productData['dimensionX'];
-            $product->dimensionY = $productData['dimensionY'];
-            $product->marca = $productData['marca'];
-            $product->color = $productData['color'];
+            // Seleccionar una categoría principal aleatoria
+            $category = Category::whereNull('categoria_id')
+                ->inRandomOrder()
+                ->first();
 
-            $product->save();
+            // Seleccionar una subcategoría aleatoria si existe, si no usa la categoría principal
+            $subcategory = $category->subcategorias()->inRandomOrder()->first() ?? $category;
+
+            // Crear el producto asignado a la categoría o subcategoría
+            $product = Product::create([
+                'title' => $productData['title'],
+                'content' => $productData['content'],
+                'price' => $productData['price'],
+                'estado' => $productData['estado'],
+                'toSend' => $productData['toSend'],
+                'isDeleted' => $productData['isDeleted'],
+                'isBoost' => $productData['isBoost'],
+                'dimensionX' => $productData['dimensionX'],
+                'dimensionY' => $productData['dimensionY'],
+                'marca' => $productData['marca'],
+                'color' => $productData['color'],
+                'categoria_id' => $subcategory->id, // Relación con subcategoría o categoría
+            ]);
+
 
             // $product = Product::create([
             //     'title' => $productData['title'],

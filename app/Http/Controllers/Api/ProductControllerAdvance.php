@@ -37,10 +37,20 @@ class ProductControllerAdvance extends Controller
             $orderDirection = 'desc';
         }
 
-        // Consulta de products
+        // Capturar el categoryId para filtrar por categorías y subcategorías
+        $categoryId = request('categoryId');
+
+        // Consulta de productos
         $products = Product::with('media')
+            // Filtro por categoría o subcategorías si se proporciona "categoryId"
+            ->when($categoryId, function ($query) use ($categoryId) {
+                $query->where('categoria_id', $categoryId) // Directamente asociados a la categoría
+                ->orWhereHas('category', function ($subQuery) use ($categoryId) {
+                    $subQuery->where('categoria_id', $categoryId); // Asociados a las subcategorías
+                });
+            })
+            // Filtro por categorías si existe 'search_category'
             ->whereHas('categories', function ($query) {
-                // Filtro por categorías si existe 'search_category'
                 if (request('search_category')) {
                     $categories = explode(",", request('search_category'));
                     $query->whereIn('id', $categories);
@@ -187,7 +197,6 @@ class ProductControllerAdvance extends Controller
     // Agregar a favoritos 
     public function gestorFavoritos($productId) {
         $user = auth()->user();
-    
         if ($user->favoritos->contains($productId)) {
             $user->favoritos()->detach($productId);
             return response()->json(['message' => 'Producto eliminado de favoritos']);
