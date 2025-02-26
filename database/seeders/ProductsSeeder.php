@@ -125,13 +125,29 @@ class ProductsSeeder extends Seeder
             $product->color = $productData['color'];
             $product->save();
 
-            foreach ($productData['default_image'] as $default_image) {
-                $default_imagePath = storage_path('app/public/seed_images/products/' . $default_image);
-                if (file_exists($default_imagePath)) {
-                    $product->addMedia($default_imagePath)
-                        ->preservingOriginal()
-                        ->toMediaCollection('default_images');
+            // $product = Product::create([
+            //     'title' => $productData['title'],
+            //     'content' => $productData['content'],
+            // ]);
+
+            // // Copiar la imagen a storage si no existe
+            // $imagePath = storage_path('app/public/products/' . $productData['image']);
+            // if (!file_exists($imagePath)) {
+            //     copy(public_path('seed_images/' . $productData['image']), $imagePath);
+            // }
+
+            // // Agregar la imagen a Spatie Media Library
+            // $product->addMedia($imagePath)->toMediaCollection('images');
+
+            foreach($productData['image'] as $image){
+                // Copiar la imagen a storage si no existe
+                $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
+                if (!file_exists($imagePath)) {
+                    copy(public_path('seed_images' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image), $imagePath);
                 }
+
+                // Agregar la imagen a Spatie Media Library
+                $product->addMedia($imagePath)->toMediaCollection('product_image');
             }
         }
     }

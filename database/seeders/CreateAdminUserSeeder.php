@@ -32,10 +32,10 @@ class CreateAdminUserSeeder extends Seeder
 
         // Asignar permisos al rol user
         $permissionsUser = [
-            'post-list',
-            'post-create',
-            'post-edit',
-            'post-delete'
+            'product-list',
+            'product-create',
+            'product-edit',
+            'product-delete'
         ];
         $roleUser->syncPermissions($permissionsUser);
 

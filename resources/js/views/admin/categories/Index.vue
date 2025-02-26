@@ -4,8 +4,11 @@
             <div class="card">
 
                 <div class="card-header bg-transparent ps-0 pe-0">
-                    <h5 class="float-start mb-0">Categorías Ejercicios</h5>
+                    <h5 class="float-start mb-0">Gestor categorias:</h5>
                 </div>
+              <router-link :to="{ name: 'categories.create' }" class="btn btn-primary btn-sm float-end">
+                Create categories
+              </router-link>
 
                 <DataTable  :value="categories.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id" size="small">
 
@@ -49,6 +52,7 @@
                     </Column>
 
                 </DataTable>
+
             </div>
         </div>
     </div>

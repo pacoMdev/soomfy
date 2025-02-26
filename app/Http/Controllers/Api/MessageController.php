@@ -24,7 +24,7 @@ class MessageController extends Controller
         $message -> fullMessage = $request -> fullMessage;
         $message -> userDestination_id = $request -> userDestination_id;
         $message -> userRemitent_id = $request -> userRemitent_id;
-        $message -> post_id = $request -> post_id;
+        $message -> product_id = $request -> product_id;
         $message -> isReaded = $request -> isReaded;
 
         // Guardar en la base de datos
@@ -48,7 +48,7 @@ class MessageController extends Controller
         $message -> fullMessage = $request -> fullMessage ?? $message -> fullMessage;
         $message -> userDestination_id = $request -> userDestination_id ?? $message -> userDestination_id;
         $message -> userRemitent_id = $request -> userRemitent_id ?? $message -> userRemitent_id;
-        $message -> post_id = $request -> post_id ?? $message -> post_id;
+        $message -> product_id = $request -> product_id ?? $message -> product_id;
         $message -> isReaded = $request -> isReaded ?? $message -> isReaded;
 
         // Guardar en la base de datos
@@ -72,7 +72,7 @@ class MessageController extends Controller
      */
     public function getConversation(Request $request){   
         // El lector el el remitente     
-        $messages = Message::where('post_id', $request->post_id)->where('userRemitent_id', $request->remitent_id)->where('userDestination_id', $request->destination_id)->get();
+        $messages = Message::where('product_id', $request->product_id)->where('userRemitent_id', $request->remitent_id)->where('userDestination_id', $request->destination_id)->get();
         dd($messages);
 
         foreach($messages as $message){
@@ -91,7 +91,7 @@ class MessageController extends Controller
      */
     public function sendMessage(Request $request){
 
-        $post = Product::findOrFail($request -> post_id, );
+        $product = Product::findOrFail($request -> product_id, );
 
         $userRemitent = User::findOrFail($request -> userRemitent);
         $userDestination = User::findOrFail($request -> userDestination);
@@ -103,7 +103,7 @@ class MessageController extends Controller
         $message -> fullMessage = $request -> message;
         $message -> userDestination_id = $request -> userDestination_id;
         $message -> userRemitent_id = $request -> userRemitent;
-        $message ->  post_id= $request -> post_id;
+        $message ->  product_id= $request -> product_id;
         $message -> isReaded = false;
         $message -> save();
         
@@ -111,7 +111,7 @@ class MessageController extends Controller
         $data = [
             'userDestination' =>$userDestination,
             'userRemitent' =>$userRemitent,
-            'post' =>$post,
+            'product' =>$product,
             'message' =>$message,
 
         ];

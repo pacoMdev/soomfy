@@ -7,10 +7,10 @@
 
                         <!-- Title -->
                         <div class="mb-3">
-                            <label for="post-title" class="form-label">
+                            <label for="product-title" class="form-label">
                                 Title
                             </label>
-                            <input v-model="post.title" id="post-title" type="text" class="form-control">
+                            <input v-model="product.title" id="product-title" type="text" class="form-control">
                             <div class="text-danger mt-1">
                                 {{ errors.title }}
                             </div>
@@ -22,11 +22,11 @@
                         </div>
                         <!-- Content -->
                         <div class="mb-3">
-                            <label for="post-content" class="form-label">
+                            <label for="product-content" class="form-label">
                                 Content
                             </label>
 
-                            <Editor v-model="post.content" editorStyle="height: 320px" />
+                            <Editor v-model="product.content" editorStyle="height: 320px" />
                             <div class="text-danger mt-1">
                                 {{ errors.content }}
                             </div>
@@ -62,7 +62,7 @@
 
                         <!-- Category -->
                         <div class="mb-3">
-                            <MultiSelect v-model="post.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter placeholder="Select category" :maxSelectedLabels="3" class="w-full md:w-80" />
+                            <MultiSelect v-model="product.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter placeholder="Select category" :maxSelectedLabels="3" class="w-full md:w-80" />
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
                             </div>
@@ -79,7 +79,7 @@
                                     <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
                                 </svg> Thumbnail
                             </h6>
-                            <DropZone v-model="post.thumbnail"/>
+                            <DropZone v-model="product.thumbnail"/>
                             <div class="text-danger mt-1">
                                 <div v-for="message in validationErrors?.thumbnail">
                                     {{ message }}
@@ -96,7 +96,7 @@
 import {onMounted, reactive, ref} from "vue";
 import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
-import usePosts from "@/composables/products.js";
+import useProducts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
 
@@ -118,8 +118,8 @@ const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
 const {value: categories} = useField('categories', null, {initialValue: '', label: 'category'});
 const {categoryList, getCategoryList} = useCategories()
-const {storePost, validationErrors, isLoading} = usePosts()
-const post = reactive({
+const {storeProduct, validationErrors, isLoading} = useProducts()
+const product = reactive({
     title,
     content,
     categories,
@@ -130,7 +130,7 @@ const thefile = ref('')
 
 function submitForm() {
     validate().then(form => {
-        if (form.valid) storePost(post)
+        if (form.valid) storeProduct(product)
     })
 }
 

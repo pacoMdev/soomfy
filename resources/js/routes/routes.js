@@ -192,13 +192,13 @@ export default [
                 name: 'products.create',
                 path: 'products/create',
                 component: ProductsCreate,
-                meta: { breadCrumb: 'Add new post' }
+                meta: { breadCrumb: 'Add new product' }
             },
             {
                 name: 'products.edit',
                 path: 'products/edit/:id',
                 component: ProductsEdit,
-                meta: { breadCrumb: 'Edit post' }
+                meta: { breadCrumb: 'Edit product' }
             },
             {
                 name: 'categories',
@@ -206,13 +206,13 @@ export default [
                 meta: { breadCrumb: 'Categories'},
                 children: [
                     {
-                        name: 'products.index',
+                        name: 'categories.index',
                         path: '',
                         component: () => import('../views/admin/categories/Index.vue'),
                         meta: { breadCrumb: 'View category' }
                     },
                     {
-                        name: 'products.create',
+                        name: 'categories.create',
                         path: 'create',
                         component: () => import('../views/admin/categories/Create.vue'),
                         meta: {
@@ -221,7 +221,7 @@ export default [
                         }
                     },
                     {
-                        name: 'products.edit',
+                        name: 'categories.edit',
                         path: 'edit/:id',
                         component: () => import('../views/admin/categories/Edit.vue'),
                         meta: {

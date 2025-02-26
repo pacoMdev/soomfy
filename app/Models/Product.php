@@ -17,7 +17,6 @@ class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    // protected $fillable = ['title', 'content', 'user_id'];
     protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'estado','category_id'];
     

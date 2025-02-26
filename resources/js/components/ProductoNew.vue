@@ -45,14 +45,6 @@ const props = defineProps({
   actualizarFavoritos: Function, // Recibe función para actualizar favoritos en la vista padre
 });
 
-const gestorFavoritos = async (productId) => {
-  try {
-    await axios.post(`/api/gestor-favoritos/${productId}`);
-    await props.actualizarFavoritos(); // Llamamos a la función padre para actualizar la lista
-  } catch (error) {
-    console.error("Error al gestionar favoritos:", error);
-  }
-};
 
 const responsiveOptions = ref([
   { breakpoint: '991px', numVisible: 4 },
@@ -60,7 +52,17 @@ const responsiveOptions = ref([
   { breakpoint: '575px', numVisible: 1 }
 ]);
 
-const getImages = (resized_image) => Object.values(resized_image || {});
+const gestorFavoritos = async(productId) => {
+  console.log("Este es el id del producto que has clicado: " + productId);
+  const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
+  console.log(respuesta.data);
+  await props.actualizarFavoritos();
+
+}
+// Función para obtener products desde la API
+function getImages(resized_image) {
+    return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
+}
 </script>
 
 <style scoped>
