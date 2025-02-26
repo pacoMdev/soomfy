@@ -25,7 +25,6 @@ class CategoryTableSeeder extends Seeder
             ['name' => 'Deporte', 'default_image' => 'categories/car6.webp'],
         ];
 
-
         foreach ($categories as $categoryData) {
             $category = Category::create([
                 'name' => $categoryData['name']
