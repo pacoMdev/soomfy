@@ -16,13 +16,13 @@ class CategoryTableSeeder extends Seeder
         public function run()
     {
         $categories = [
-            ['name' => 'Vehículos', 'default_image' => 'categories/vehiculos.png'],
-            ['name' => 'Tecnología', 'default_image' => 'categories/tecnologia.png'],
-            ['name' => 'Inmuebles', 'default_image' => 'categories/inmuebles.png'],
-            ['name' => 'Hogar', 'default_image' => 'categories/hogar.png'],
-            ['name' => 'Servicios', 'default_image' => 'categories/servicios.png'],
-            ['name' => 'Empleo', 'default_image' => 'categories/empleo.png'],
-            ['name' => 'Deporte', 'default_image' => 'categories/deporte.png']
+            ['name' => 'Vehículos', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Tecnología', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Inmuebles', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Hogar', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Servicios', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Empleo', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Deporte', 'default_image' => 'categories/car.webp'],
         ];
 
         foreach ($categories as $categoryData) {

@@ -10,15 +10,16 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
-    {
 
-    }
 
     public function getCategories()
     {
-        $categories = Category::with('subcategories')->get();
+        $categories = Category::with('media', 'subcategories')->get();
+
+
         return response()->json($categories);
+
+
     }
 
     public function store(StoreCategoryRequest $request)

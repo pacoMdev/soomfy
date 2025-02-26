@@ -25,7 +25,7 @@
           <div class="categories">
             <div v-for="category in categories" :key="category.id">
               <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
-                <img src="images/home/categories/telefono.webp" alt="">
+                <img :src="category.category_image" :alt="category.name">
                 <p>{{ category.name }}</p>
               </div>
 
@@ -111,7 +111,7 @@ const obtenerProductos = async () => {
 
 const loadCategories = async () => {
   try {
-    const response = await axios.get('/api/categories')
+    const response = await axios.post('/api/categories')
     categories.value = response.data
   } catch (err) {
     console.error('Error cargando categorías:', err)

@@ -12,6 +12,12 @@ class Category extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    protected $appends = ['category_image'];
+
+    public function getCategoryImageAttribute()
+    {
+        return $this->getFirstMediaUrl('category_image');
+    }
 
     protected $fillable = ['name'];
 
