@@ -25,7 +25,7 @@
           <div class="categories">
             <div v-for="category in categories" :key="category.id">
               <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
-                <img :src="category.category_image" :alt="category.name">
+                <img :src="category.media?.[0]?.original_url" :alt="category.name">
                 <p>{{ category.name }}</p>
               </div>
 
