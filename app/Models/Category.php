@@ -27,7 +27,7 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Subcategory::class);
     }
 
-    public function products(): HasMany
+    public function products()
     {
         return $this->hasMany(Product::class);
     }
@@ -36,8 +36,10 @@ class Category extends Model implements HasMedia
     {
         $this->addMediaCollection('category_image')
             ->useDisk('public');
-
     }
+
+
+
 
 
 }
