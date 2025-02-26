@@ -46,7 +46,7 @@ const model = ref([
     {
         label: 'Posts',
         items: [
-            { label: 'Posts', icon: 'pi pi-fw pi-id-card', to: '/admin/products', permision: 'post-list' },
+            { label: 'Posts', icon: 'pi pi-fw pi-id-card', to: '/admin/products', permision: 'product-list' },
             { label: 'Categorias', icon: 'pi pi-fw pi-id-card', to: '/admin/categories', permision: 'category-list' }
 
         ]

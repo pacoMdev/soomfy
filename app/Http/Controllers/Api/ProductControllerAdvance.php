@@ -23,77 +23,7 @@ class ProductControllerAdvance extends Controller
 {
     public function index()
     {
-        // Definir el término de búsqueda desde la solicitud
-        $searchTerm = request('search_term');
 
-        // Definir columnas de orden y direcciones de forma predeterminada
-        $orderColumn = request('order_column', 'created_at');
-        if (!in_array($orderColumn, ['id', 'title', 'created_at'])) {
-            $orderColumn = 'created_at';
-        }
-
-        $orderDirection = request('order_direction', 'desc');
-        if (!in_array($orderDirection, ['asc', 'desc'])) {
-            $orderDirection = 'desc';
-        }
-
-        // Capturar el categoryId para filtrar por categorías y subcategorías
-        $categoryId = request('categoryId');
-
-        // Consulta de products
-        $products = Product::with('media')
-            // Filtro por categoría o subcategorías si se proporciona "categoryId"
-            ->when($categoryId, function ($query) use ($categoryId) {
-                $query->where('category_id', $categoryId) // Directamente asociados a la categoría
-                ->orWhereHas('category', function ($subQuery) use ($categoryId) {
-                    $subQuery->where('category_id', $categoryId); // Asociados a las subcategorías
-                });
-            })
-            // Filtro por categorías si existe 'search_category'
-            ->whereHas('products', function ($query) {
-                if (request('search_category')) {
-                    $categories = explode(",", request('search_category'));
-                    $query->whereIn('id', $categories);
-                }
-            })
-            // Filtrar por título o categorías si 'search_term' es proporcionado
-            ->when($searchTerm, function ($query) use ($searchTerm) {
-                $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhereHas('products', function ($query) use ($searchTerm) {
-                        $query->where('name', 'like', '%' . $searchTerm . '%');
-                    });
-            })
-            // Filtro por ID si se proporciona 'search_id'
-            ->when(request('search_id'), function ($query) {
-                $query->where('id', request('search_id'));
-            })
-            // Filtro por título si se proporciona 'search_title'
-            ->when(request('search_title'), function ($query) {
-                $query->where('title', 'like', '%' . request('search_title') . '%');
-            })
-            // Filtro por contenido si se proporciona 'search_content'
-            ->when(request('search_content'), function ($query) {
-                $query->where('content', 'like', '%' . request('search_content') . '%');
-            })
-            // Búsqueda global para varios campos
-            ->when(request('search_global'), function ($query) {
-                $query->where(function ($q) {
-                    $q->where('id', request('search_global'))
-                        ->orWhere('title', 'like', '%' . request('search_global') . '%')
-                        ->orWhere('content', 'like', '%' . request('search_global') . '%');
-                });
-            })
-            // Asegurarse de que el usuario autenticado solo vea sus propios products, si no tiene permisos
-            ->when(!auth()->user()->hasPermissionTo('product-all'), function ($query) {
-                $query->where('user_id', auth()->id());
-            })
-            // Ordenar products según la columna y dirección definidas
-            ->orderBy($orderColumn, $orderDirection)
-            // Paginación para limitar los resultados a 50 products por página
-            ->paginate(50);
-
-        // Devolver los products como una colección de recursos
-        return ProductResource::collection($products);
     }
 
 
@@ -175,7 +105,7 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('products')->with('media')->latest()->paginate();
+        $products = Product::with('category')->with('media')->latest()->paginate();
         return ProductResource::collection($products);
 
     }
