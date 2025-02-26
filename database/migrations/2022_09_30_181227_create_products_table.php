@@ -29,7 +29,7 @@ return new class extends Migration
             // AGREGADO - Agregar el campo category_id como clave foránea
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')
-                ->references('id')->on('products')
+                ->references('id')->on('categories')
                 ->onDelete('cascade');
 
 

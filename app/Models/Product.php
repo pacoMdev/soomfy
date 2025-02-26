@@ -18,10 +18,10 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     // protected $fillable = ['title', 'content', 'user_id'];
-    protected $table = 'seed_products';
+    protected $table = 'products';
     protected $fillable = ['title', 'content', 'price', 'estado','category_id'];
     
-    // Relacion NM ( usuarios / seed_products )
+    // Relacion NM ( usuarios / products )
     public function users()
     {   
         return $this->belongsToMany(User::class, 'user_product');
@@ -35,7 +35,7 @@ class Product extends Model implements HasMedia
     /**
      * Get the category that owns the post.
      */
-    public function categories()
+    public function category()
     {
         return $this->belongsTo(Category::class);
     }
