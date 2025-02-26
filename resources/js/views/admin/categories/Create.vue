@@ -6,10 +6,7 @@
                     <form @submit.prevent="submitForm">
 
                         <div class="mb-3">
-                            <label for="post-name" class="form-label">
-                                Title
-                            </label>
-                            <input v-model="category.name" id="post-name" type="text" class="form-control">
+                            <DropZone v-model="category.thumbnail"/>
                             <div class="text-danger mt-1">
                                 {{ errors.name }}
                             </div>
@@ -18,6 +15,20 @@
                                     {{ message }}
                                 </div>
                             </div>
+                        </div>
+                        <div class="mb-3">
+                          <label for="post-name" class="form-label">
+                            Title
+                          </label>
+                          <input v-model="category.name" id="post-name" type="text" class="form-control">
+                          <div class="text-danger mt-1">
+                            {{ errors.name }}
+                          </div>
+                          <div class="text-danger mt-1">
+                            <div v-for="message in validationErrors?.name">
+                              {{ message }}
+                            </div>
+                          </div>
                         </div>
 
                         <div class="mt-4">
@@ -37,6 +48,7 @@
     import { reactive } from "vue";
     import useCategories from "../../../composables/categories";
     import { useForm, useField, defineRule } from "vee-validate";
+    import DropZone from "@/components/DropZone.vue";
     import { required, min } from "@/validation/rules"
     defineRule('required', required)
     defineRule('min', min);
@@ -50,7 +62,8 @@
     const { value: name } = useField('name', null, { initialValue: '' });
     const { storeCategory, validationErrors, isLoading } = useCategories()
     const category = reactive({
-        name
+        name,
+        thumbnail: ''
     })
 
     function submitForm() {

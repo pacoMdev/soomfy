@@ -2,8 +2,8 @@ import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default function useProducts() {
-    const Products = ref({})
-    const Product = ref({
+    const products = ref({data:[]})
+    const product = ref({
         title: '',
         content: '',
         category_id: '',
@@ -34,14 +34,14 @@ export default function useProducts() {
             '&order_direction=' + order_direction)
             .then(response => {
                 console.log(response.data);
-                Products.value = response.data;
+                products.value = response.data;
             })
     }
 
     const getProduct = async (id) => {
         axios.get('/api/get-products/' + id)
             .then(response => {
-                Product.value = response.data.data;
+                product.value = response.data.data;
             })
     }
 
@@ -83,7 +83,7 @@ export default function useProducts() {
 
         isLoading.value = true
         validationErrors.value = {}
-        console.log(Product);
+        console.log(product);
         axios.put('/api/get-products/' + Product.id, Product)
             .then(response => {
                 router.push({name: 'Products.index'})
@@ -135,8 +135,8 @@ export default function useProducts() {
     }
 
     return {
-        Products,
-        Product,
+        products,
+        product,
         getProducts,
         getProduct,
         storeProduct,

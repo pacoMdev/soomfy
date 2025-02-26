@@ -69,9 +69,6 @@ Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts'])
 // Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
 
-// products
-Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
-
 // Obtener todas las publicaciones
 Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
