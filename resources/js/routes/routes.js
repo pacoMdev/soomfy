@@ -206,13 +206,13 @@ export default [
                 meta: { breadCrumb: 'Categories'},
                 children: [
                     {
-                        name: 'categories.index',
+                        name: 'products.index',
                         path: '',
                         component: () => import('../views/admin/categories/Index.vue'),
                         meta: { breadCrumb: 'View category' }
                     },
                     {
-                        name: 'categories.create',
+                        name: 'products.create',
                         path: 'create',
                         component: () => import('../views/admin/categories/Create.vue'),
                         meta: {
@@ -221,7 +221,7 @@ export default [
                         }
                     },
                     {
-                        name: 'categories.edit',
+                        name: 'products.edit',
                         path: 'edit/:id',
                         component: () => import('../views/admin/categories/Edit.vue'),
                         meta: {

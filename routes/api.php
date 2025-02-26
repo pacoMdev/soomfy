@@ -38,6 +38,9 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/user', [ProfileController::class, 'user']);
     Route::put('/user', [ProfileController::class, 'update']);
 
+    Route::post('/categories', [CategoryController::class, 'getCategories']);
+
+
 
     Route::get('/products/{search?}', [ProductControllerAdvance::class, 'index']);
 

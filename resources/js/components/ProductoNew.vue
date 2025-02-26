@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <router-link
-        :to="'/productos/detalle/' + producto.id"
+        :to="'/products/detalle/' + producto.id"
         v-for="producto in productos"
         :key="producto.id"
         class="producto col-6 col-md-4 col-lg-3"
@@ -41,7 +41,7 @@ import { defineProps, ref } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
-  productos: Array, // Recibe la lista de productos
+  productos: Array, // Recibe la lista de products
   actualizarFavoritos: Function, // Recibe función para actualizar favoritos en la vista padre
 });
 

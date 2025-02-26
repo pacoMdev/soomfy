@@ -40,17 +40,17 @@ class ProductControllerAdvance extends Controller
         // Capturar el categoryId para filtrar por categorías y subcategorías
         $categoryId = request('categoryId');
 
-        // Consulta de productos
+        // Consulta de products
         $products = Product::with('media')
             // Filtro por categoría o subcategorías si se proporciona "categoryId"
             ->when($categoryId, function ($query) use ($categoryId) {
-                $query->where('categoria_id', $categoryId) // Directamente asociados a la categoría
+                $query->where('category_id', $categoryId) // Directamente asociados a la categoría
                 ->orWhereHas('category', function ($subQuery) use ($categoryId) {
-                    $subQuery->where('categoria_id', $categoryId); // Asociados a las subcategorías
+                    $subQuery->where('category_id', $categoryId); // Asociados a las subcategorías
                 });
             })
             // Filtro por categorías si existe 'search_category'
-            ->whereHas('categories', function ($query) {
+            ->whereHas('products', function ($query) {
                 if (request('search_category')) {
                     $categories = explode(",", request('search_category'));
                     $query->whereIn('id', $categories);
@@ -59,7 +59,7 @@ class ProductControllerAdvance extends Controller
             // Filtrar por título o categorías si 'search_term' es proporcionado
             ->when($searchTerm, function ($query) use ($searchTerm) {
                 $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhereHas('categories', function ($query) use ($searchTerm) {
+                    ->orWhereHas('products', function ($query) use ($searchTerm) {
                         $query->where('name', 'like', '%' . $searchTerm . '%');
                     });
             })
@@ -103,7 +103,7 @@ class ProductControllerAdvance extends Controller
      * @param \App\Http\Requests\StoreproductRequest $request
      * @return ProductResource
      */
-    public function store(StoreproductRequest $request)
+    public function store(StoreProductRequest $request)
     {
 
         $this->authorize('product-create');
@@ -175,21 +175,21 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('categories')->with('media')->latest()->paginate();
+        $products = Product::with('products')->with('media')->latest()->paginate();
         return ProductResource::collection($products);
 
     }
 
     public function getCategoryByProducts($id)
     {
-        $products = Product::whereRelation('categories', 'id', '=', $id)->paginate();
+        $products = Product::whereRelation('products', 'id', '=', $id)->paginate();
 
         return ProductResource::collection($products);
     }
 
     public function getProduct($id)
     {
-        return Product::with('categories', 'users', 'media')->findOrFail($id);
+        return Product::with('products', 'users', 'media')->findOrFail($id);
     }
 
     // Favoritos

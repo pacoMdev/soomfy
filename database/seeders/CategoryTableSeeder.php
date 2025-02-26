@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryTableSeeder extends Seeder
 {
@@ -12,62 +13,33 @@ class CategoryTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+        public function run()
     {
         $categories = [
-            [
-                'nameImg' => 'cat_chellPhone.webp',
-                'name' => 'Moviles',
-                'subcategories' => [
-                    ['name' => 'Smartphones', 'nameImg' => 'sub_smartphones.webp'],
-                    ['name' => 'Accesorios', 'nameImg' => 'sub_accesorios.webp'],
-                ],
-            ],
-            [
-                'nameImg' => 'cat_technology.webp',
-                'name' => 'Tecnologia',
-                'subcategories' => [
-                    ['name' => 'Portátiles', 'nameImg' => 'sub_portatiles.webp'],
-                    ['name' => 'Tablets', 'nameImg' => 'sub_tablets.webp'],
-                ],
-            ],
-            [
-                'nameImg' => 'cat_car.webp',
-                'name' => 'Coches',
-                'subcategories' => [
-                    ['name' => 'Eléctricos', 'nameImg' => 'sub_electricos.webp'],
-                    ['name' => 'Usados', 'nameImg' => 'sub_usados.webp'],
-                ],
-            ],
-            [
-                'nameImg' => 'cat_services.webp',
-                'name' => 'Servicios',
-                'subcategories' => [
-                    ['name' => 'Hogar', 'nameImg' => 'sub_hogar.webp'],
-                    ['name' => 'Reparaciones', 'nameImg' => 'sub_reparaciones.webp'],
-                ],
-            ],
-            // Puedes seguir añadiendo más categorías y subcategorías aquí...
+            ['name' => 'Vehículos', 'default_image' => 'categories/car.webp'],
+            ['name' => 'Tecnología', 'default_image' => 'categories/car1.webp'],
+            ['name' => 'Inmuebles', 'default_image' => 'categories/car2.webp'],
+            ['name' => 'Hogar', 'default_image' => 'categories/car3.webp'],
+            ['name' => 'Servicios', 'default_image' => 'categories/car4.webp'],
+            ['name' => 'Empleo', 'default_image' => 'categories/car5.webp'],
+            ['name' => 'Deporte', 'default_image' => 'categories/car6.webp'],
         ];
 
-        foreach ($categories as $cat) {
-            // Crear la categoría principal
-            $category = new Category();
-            $category->name = $cat['name'];
-            $category->nameImg = $cat['nameImg'];
-            $category->categoria_id = null; // Es una categoría principal
-            $category->save();
 
-            // Crear las subcategorías asociadas, si existen
-            if (isset($cat['subcategories'])) {
-                foreach ($cat['subcategories'] as $subcat) {
-                    $subcategory = new Category();
-                    $subcategory->name = $subcat['name'];
-                    $subcategory->nameImg = $subcat['nameImg'];
-                    $subcategory->categoria_id = $category->id; // Relación con categoría principal
-                    $subcategory->save();
-                }
+        foreach ($categories as $categoryData) {
+            $category = Category::create([
+                'name' => $categoryData['name']
+            ]);
+
+            // Check if the specified default image exists in the public disk
+            if (Storage::disk('public')->exists($categoryData['default_image'])) {
+                // Add the image from the public disk to the media collection named 'category_image'
+                $category->addMediaFromDisk($categoryData['default_image'], 'public')
+                    ->toMediaCollection('category_image'); // Save the image
             }
         }
     }
+
+
+    
 }

@@ -34,7 +34,7 @@ class ProductResource extends JsonResource
             'isDeleted' => $this->isDeleted,
             'marca' => $this->marca,
             'color' => $this->color,
-            'categories' => $this->categories,
+            'products' => $this->categories,
             'original_image' => count($this->getMedia('*')) > 0 ? $this->getMedia('*')[0]->getUrl() : null,
             'resized_image' => $resized_image,
             'created_at' => $this->created_at,

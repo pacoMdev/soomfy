@@ -115,75 +115,32 @@ class ProductsSeeder extends Seeder
             ]
         ];
         foreach ($products as $productData) {
-            // Seleccionar una categoría principal aleatoria
-            $category = Category::whereNull('categoria_id')
-                ->inRandomOrder()
-                ->first();
+            // Crear el product en la base de datos
+            $product = new Product();
+            $product->title = $productData['title'];
+            $product->content = $productData['content'];
+            $product->price = $productData['price'];
+            $product->estado = $productData['estado'];
+            $product->toSend = $productData['toSend'];
+            $product->isDeleted = $productData['isDeleted'];
+            $product->isBoost = $productData['isBoost'];
+            $product->dimensionX = $productData['dimensionX'];
+            $product->dimensionY = $productData['dimensionY'];
+            $product->marca = $productData['marca'];
+            $product->color = $productData['color'];
 
-            // Seleccionar una subcategoría aleatoria si existe, si no usa la categoría principal
-            $subcategory = $category->subcategorias()->inRandomOrder()->first() ?? $category;
+            $product->save();
 
-            // Crear el producto asignado a la categoría o subcategoría
-            $product = Product::create([
-                'title' => $productData['title'],
-                'content' => $productData['content'],
-                'price' => $productData['price'],
-                'estado' => $productData['estado'],
-                'toSend' => $productData['toSend'],
-                'isDeleted' => $productData['isDeleted'],
-                'isBoost' => $productData['isBoost'],
-                'dimensionX' => $productData['dimensionX'],
-                'dimensionY' => $productData['dimensionY'],
-                'marca' => $productData['marca'],
-                'color' => $productData['color'],
-                'categoria_id' => $subcategory->id, // Relación con subcategoría o categoría
-            ]);
-
-
-            // $product = Product::create([
-            //     'title' => $productData['title'],
-            //     'content' => $productData['content'],
-            // ]);
-
-            // // Copiar la imagen a storage si no existe
-            // $imagePath = storage_path('app/public/products/' . $productData['image']);
-            // if (!file_exists($imagePath)) {
-            //     copy(public_path('seed_images/' . $productData['image']), $imagePath);
-            // }
-
-            // // Agregar la imagen a Spatie Media Library
-            // $product->addMedia($imagePath)->toMediaCollection('images');
-
-            foreach ($productData['image'] as $image) {
-                // Copiar la imagen a storage si no existe
-                // hay que hacer un 
-                $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
-                if (!file_exists($imagePath)) {
-                    copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
-                    // Definir rutas de manera consistente
-                    $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . $image);
-                    $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
-
-                    // Crear el directorio si no existe
-                    $directory = dirname($imagePath);
-                    if (!is_dir($directory)) {
-                        mkdir($directory, 0777, true);
-                    }
-
-                    // Verificar si el archivo de origen existe y copiarlo
-                    if (file_exists($sourcePath)) {
-                        if (!file_exists($imagePath)) {
-                            if (copy($sourcePath, $imagePath)) {
-                                $product->addMedia($imagePath)->toMediaCollection('images');
-                            } else {
-                                \Log::error("Error al copiar la imagen: {image}");
-                            }
-                        }
-                    } else {
-                        \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
-                    }
+            foreach ($productData['default_image'] as $default_image) {
+                $default_imagePath = storage_path('app/public/seed_images/products/' . $default_image);
+                if (file_exists($default_imagePath)) {
+                    $product->addMedia($default_imagePath)
+                        ->preservingOriginal()
+                        ->toMediaCollection('default_images');
                 }
 
+                // Agregar la imagen a Spatie Media Library
+                $product->addMedia($imagePath)->toMediaCollection('images');
             }
         }
     }

@@ -65,7 +65,7 @@ class UserController extends Controller
         }
     }
 
-    public function getUserproduct($id){
+    public function getUserProducts($id){
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
@@ -74,7 +74,7 @@ class UserController extends Controller
         return response()->json($user->products); // Retorna los products del usuario
     }
     /**
-     * Summary of getNearbyproduct
+     * Summary of getNearbyProducts
      * Obtiene los products en radio base 10km, se puede ajustar
      * 
      * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud

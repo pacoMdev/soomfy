@@ -26,7 +26,7 @@ class StoreProductRequest extends FormRequest
         return [
             'title' => 'required',
             'content' => 'required',
-            'categories' => 'required'
+            'category_id' => 'required'
         ];
     }
 }

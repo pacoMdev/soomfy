@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="'/productos/detalle/' + producto.id"
+    <router-link :to="'/products/detalle/' + producto.id"
     v-for="producto in productos" :key="producto.id" class="producto col-6 col-md-4 col-lg-3">
         <div class="contenido-producto">
             <div class="d-flex justify-content-end w-100">
