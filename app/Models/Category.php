@@ -36,14 +36,8 @@ class Category extends Model implements HasMedia
     {
         $this->addMediaCollection('category_image')
             ->useDisk('public');
-    }
 
-    // Sobrescribir el método que determina la ruta de almacenamiento
-    public function getMediaFolderPath(): string
-    {
-        return 'categories/' . $this->id;
     }
-
 
 
 }
