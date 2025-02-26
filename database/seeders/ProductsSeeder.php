@@ -139,16 +139,17 @@ class ProductsSeeder extends Seeder
             // // Agregar la imagen a Spatie Media Library
             // $product->addMedia($imagePath)->toMediaCollection('images');
 
-            foreach($productData['image'] as $image){
+            //Provisional
+            //foreach($productData['default_image'] as $image){
                 // Copiar la imagen a storage si no existe
-                $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
-                if (!file_exists($imagePath)) {
-                    copy(public_path('seed_images' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image), $imagePath);
-                }
+            //  $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
+            //   if (!file_exists($imagePath)) {
+            //copy(public_path('seed_images' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image), $imagePath);
+            //   }
 
                 // Agregar la imagen a Spatie Media Library
-                $product->addMedia($imagePath)->toMediaCollection('product_image');
-            }
+            //  $product->addMedia($imagePath)->toMediaCollection('product_image');
+            // }
         }
     }
 }

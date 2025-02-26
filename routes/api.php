@@ -25,9 +25,14 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
 
-    // Route::apiResource('products', ProductControllerAdvance::class);
+    Route::apiResource('products', ProductControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
+
+    Route::post('get-products', [ProductController::class, 'store'])
+        ->middleware('permission:product-create');
+
+
 
     Route::get('role-list', [RoleController::class, 'getList']);
     Route::get('role-permissions/{id}', [PermissionController::class, 'getRolePermissions']);
@@ -71,6 +76,7 @@ Route::get('category-list', [CategoryController::class, 'getList']);
 
 // Obtener todas las publicaciones
 Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
+Route::post('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
 Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 // Obtener detalles de una publicación

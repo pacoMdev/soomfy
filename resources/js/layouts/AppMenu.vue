@@ -40,14 +40,14 @@ const model = ref([
         items: [
             { label: 'Users', icon: 'pi pi-fw pi-id-card', to: '/admin/users', permision: 'user-list' },
             { label: 'Roles', icon: 'pi pi-fw pi-check-square', to: '/admin/roles', permision:'role-list' },
-            { label: 'Permisos', icon: 'pi pi-fw pi-bookmark', to: '/admin/permissions', permision:'permission-list' }
+            { label: 'Permisos', icon: 'pi pi-fw pi-bookmark', to: '/admin/permisions', permision:'permision-list' }
         ]
     },
     {
-        label: 'Posts',
+        label: 'Products',
         items: [
-            { label: 'Posts', icon: 'pi pi-fw pi-id-card', to: '/admin/products', permision: 'product-list' },
-            { label: 'Categorias', icon: 'pi pi-fw pi-id-card', to: '/admin/categories', permision: 'all' }
+            { label: 'Products', icon: 'pi pi-fw pi-id-card', to: '/admin/products', permision: 'product-list' },
+            { label: 'Categorias', icon: 'pi pi-fw pi-id-card', to: '/admin/categories', permision: 'all' },
 
         ]
     }
