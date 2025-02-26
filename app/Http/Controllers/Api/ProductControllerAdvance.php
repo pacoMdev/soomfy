@@ -40,7 +40,7 @@ class ProductControllerAdvance extends Controller
         // Capturar el categoryId para filtrar por categorías y subcategorías
         $categoryId = request('categoryId');
 
-        // Consulta de s
+        // Consulta de products
         $products = Product::with('media')
             // Filtro por categoría o subcategorías si se proporciona "categoryId"
             ->when($categoryId, function ($query) use ($categoryId) {
@@ -83,16 +83,16 @@ class ProductControllerAdvance extends Controller
                         ->orWhere('content', 'like', '%' . request('search_global') . '%');
                 });
             })
-            // Asegurarse de que el usuario autenticado solo vea sus propios s, si no tiene permisos
+            // Asegurarse de que el usuario autenticado solo vea sus propios products, si no tiene permisos
             ->when(!auth()->user()->hasPermissionTo('product-all'), function ($query) {
                 $query->where('user_id', auth()->id());
             })
-            // Ordenar s según la columna y dirección definidas
+            // Ordenar products según la columna y dirección definidas
             ->orderBy($orderColumn, $orderDirection)
-            // Paginación para limitar los resultados a 50 s por página
+            // Paginación para limitar los resultados a 50 products por página
             ->paginate(50);
 
-        // Devolver los s como una colección de recursos
+        // Devolver los products como una colección de recursos
         return ProductResource::collection($products);
     }
 
@@ -151,7 +151,7 @@ class ProductControllerAdvance extends Controller
         $this->authorize('product-edit');
 
         if ($product->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('product-all')) {
-            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own s']);
+            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
             $product->update($request->validated());
 
@@ -166,7 +166,7 @@ class ProductControllerAdvance extends Controller
     {
         $this->authorize('product-delete');
         if ($product->user_id !== auth()->id() && !auth()->user()->hasPermissionTo('product-all')) {
-            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only delete your own s']);
+            return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only delete your own products']);
         } else {
             $product->delete();
             return response()->noContent();
@@ -208,7 +208,7 @@ class ProductControllerAdvance extends Controller
     
 
 
-    // Función para mostrar los s favoritos
+    // Función para mostrar los products favoritos
      public function getFavoriteProducts(){
             $user = auth()->user();
 

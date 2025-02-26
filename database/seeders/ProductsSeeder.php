@@ -2,11 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Product;
+use App\Models\Category;
 
 class ProductsSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         $products = [
@@ -22,7 +27,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Apple',
                 'color' => 'Plata',
-                'default_image' => ['macbook-pro-m1-14-header.png']
+                'image' => ['macbook-pro-m1-14-header.png']
             ],
             [
                 'title' => 'Bicicleta de montaña Trek X-Caliber',
@@ -36,7 +41,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 8,
                 'marca' => 'Trek',
                 'color' => 'Rojo',
-                'default_image' => ['721188004_228995545_1024x576.webp', '720938388_228979212_1706x960.webp', 'dfs.jpg']
+                'image' => ['721188004_228995545_1024x576.webp', '720938388_228979212_1706x960.webp', 'dfs.jpg']
             ],
             [
                 'title' => 'TV 4K LG OLED',
@@ -50,7 +55,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 30,
                 'marca' => 'LG',
                 'color' => 'Negro',
-                'default_image' => ['TVFY23_X85L_Primary-Image.webp', '500_333.jpeg']
+                'image' => ['TVFY23_X85L_Primary-Image.webp', '500_333.jpeg']
             ],
             [
                 'title' => 'Apple Watch SE 44mm',
@@ -64,7 +69,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 3,
                 'marca' => 'Apple',
                 'color' => 'Negro',
-                'default_image' => ['apple_watch_s10_case_46_aluminum_jetblack_Side.webp']
+                'image' => ['apple_watch_s10_case_46_aluminum_jetblack_Side.webp']
             ],
             [
                 'title' => 'Cafetera Nespresso',
@@ -78,7 +83,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 12,
                 'marca' => 'Nespresso',
                 'color' => 'Negro',
-                'default_image' => ['b-5-opciones-nespresso.jpg', '450_1000.jpeg']
+                'image' => ['b-5-opciones-nespresso.jpg', '450_1000.jpeg']
             ],
             [
                 'title' => 'Maceta de Cerámica Grande',
@@ -92,7 +97,7 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Cerámica Barcelona',
                 'color' => 'Terracota',
-                'default_image' => ['WhatsApp-Image-2023-10-04-at-17.04.16.jpeg']
+                'image' => ['WhatsApp-Image-2023-10-04-at-17.04.16.jpeg']
             ],
             [
                 'title' => 'Lámpara de Mesa Ikea',
@@ -106,11 +111,11 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 10,
                 'marca' => 'Ikea',
                 'color' => 'Blanco',
-                'default_image' => ['lampara-ikea_d68c3650_240813101635_900x900.webp']
+                'image' => ['lampara-ikea_d68c3650_240813101635_900x900.webp']
             ]
         ];
-
         foreach ($products as $productData) {
+            // Crear el product en la base de datos
             $product = new Product();
             $product->title = $productData['title'];
             $product->content = $productData['content'];
@@ -123,6 +128,7 @@ class ProductsSeeder extends Seeder
             $product->dimensionY = $productData['dimensionY'];
             $product->marca = $productData['marca'];
             $product->color = $productData['color'];
+
             $product->save();
 
             foreach ($productData['default_image'] as $default_image) {
@@ -132,6 +138,9 @@ class ProductsSeeder extends Seeder
                         ->preservingOriginal()
                         ->toMediaCollection('default_images');
                 }
+
+                // Agregar la imagen a Spatie Media Library
+                $product->addMedia($imagePath)->toMediaCollection('images');
             }
         }
     }

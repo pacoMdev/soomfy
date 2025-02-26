@@ -71,11 +71,11 @@ class UserController extends Controller
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
     
-        return response()->json($user->products); // Retorna los seed_products del usuario
+        return response()->json($user->products); // Retorna los products del usuario
     }
     /**
      * Summary of getNearbyProducts
-     * Obtiene los seed_products en radio base 10km, se puede ajustar
+     * Obtiene los products en radio base 10km, se puede ajustar
      * 
      * Se puede modificar poniendo la direccion y CP luego calcular latitud | longitud
      * 
@@ -101,21 +101,21 @@ class UserController extends Controller
         $latitude = $user->latitude;
         $longitude = $user->longitude;
     
-        // Buscar los seed_products de los usuarios cercanos
+        // Buscar los products de los usuarios cercanos
         $products = Product::selectRaw("
-            seed_products.id, seed_products.name, seed_products.price, seed_products.description, 
+            products.id, products.name, products.price, products.description, 
             ( 6371 * acos( cos( radians(?) ) * cos( radians( users.latitude ) ) * cos( radians( users.longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( users.latitude ) ) ) ) AS distance
         ", [$latitude, $longitude, $latitude])
-        ->join('user_product', 'seed_products.id', '=', 'user_product.product_id') // Tabla intermedia
+        ->join('user_product', 'products.id', '=', 'user_product.product_id') // Tabla intermedia
         ->join('users', 'user_product.user_id', '=', 'users.id') // Relación con usuarios
-        ->having('distance', '<', $radius)  // Filtrar seed_products dentro del radio
+        ->having('distance', '<', $radius)  // Filtrar products dentro del radio
         ->orderBy('distance')  // Ordenar por distancia
         ->get();
     
         return response()->json([
             'status' => 200,
             'success' => true,
-            'seed_products' => $products,
+            'products' => $products,
         ]);
 }
 
