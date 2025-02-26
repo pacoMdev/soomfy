@@ -58,17 +58,17 @@ export default function useProducts() {
         for (let item in product) {
             if (product.hasOwnProperty(item)) {
                 serializedProduct.append(item, product[item])
+                console.log(item, product[item]);
             }
         }
-        console.log('data data', serializedProduct);
 
-        axios.Product('/api/get-products', serializedProduct,{
+        axios.post('/api/store-data-products', serializedProduct,{
             headers: {
                 "content-type": "multipart/form-data"
             }
         })
             .then(response => {
-                router.push({name: 'products.index'})
+                router.push({name: 'productos.index'})
                 swal({
                     icon: 'success',
                     title: 'Product saved successfully'

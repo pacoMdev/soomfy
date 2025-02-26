@@ -73,7 +73,7 @@ export default [
                 component: () => import('../views/home/index.vue'),
             },
             {
-                path: 'productos',
+                path: '/productos',
                 name: 'productos',
                 component: () => import('../views/productos/productos.vue'),
             },

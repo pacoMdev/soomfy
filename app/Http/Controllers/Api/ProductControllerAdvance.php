@@ -72,20 +72,22 @@ class ProductControllerAdvance extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-
-        $this->authorize('product-create');
         
-        $validatedData = $request->validated();
+        $this->authorize('product-create');
+        // $validatedData = $request->validated();
         $validatedData['user_id'] = auth()->id();
         
-
-        $product = new Product();
-        $product -> title = $validatedData["title"];
-        $product -> content = $validatedData["content"];
-        $product -> estado = $validatedData["estado"] ?? "Nuevo";
-        $product -> price = $validatedData["price"] ?? 99.99;
+        dd($validatedData);
+        
+        // $product = new Product();
+        // $product -> title = $validatedData["title"] ?? '';
+        // $product -> content = $validatedData["content"] ?? '';
+        // $product -> estado = $validatedData["estado"] ?? '';
+        // $product -> price = $validatedData["price"] ?? 0;
+        // $product->save();
+        // dd($product);
         // dd($validatedData, $request);
-
+        
 
         $product = Product::create($validatedData);
 
@@ -94,9 +96,9 @@ class ProductControllerAdvance extends Controller
         $product->categories()->sync($category);
 
 
-        if ($request->hasFile('thumbnail')) {
-            $product->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
-        }
+        // if ($request->hasFile('thumbnail')) {
+        //     $product->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
+        // }
         
         return new ProductResource($product);
     }

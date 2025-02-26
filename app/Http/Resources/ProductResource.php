@@ -27,8 +27,6 @@ class ProductResource extends JsonResource
             'content' => $this->content,
             'price' => $this->price,
             'estado' => $this->estado,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
             'toSend' => $this->toSend,
             'isBoost' => $this->isBoost,
             'isDeleted' => $this->isDeleted,
