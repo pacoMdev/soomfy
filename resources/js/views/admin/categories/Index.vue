@@ -23,7 +23,7 @@
                             </template>
 
                             <template #end>
-                                <Button v-if="can('category-create')"  @click="$router.push('categories/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
+                                <Button v-if="can('category-create')"  @click="$router.push('products/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
                             </template>
                         </Toolbar>
                     </template>
@@ -40,7 +40,7 @@
                         <template #body="slotProps">
 
                             <!--TODO Falta permisos-->
-                            <router-link  :to="{ name: 'categories.edit', params: { id: slotProps.data.id } }">
+                            <router-link  :to="{ name: 'products.edit', params: { id: slotProps.data.id } }">
                                 <Button icon="pi pi-pencil" severity="info" size="small" class="mr-1"/>
                             </router-link>
 

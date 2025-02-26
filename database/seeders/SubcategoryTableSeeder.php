@@ -116,38 +116,3 @@ class SubcategoryTableSeeder extends Seeder
                 'category_id' => 6,
                 'name' => 'Construcción'
             ],
-            [
-                'category_id' => 6,
-                'name' => 'Educación'
-            ],
-
-            // Subcategorías de Deporte (category_id: 7)
-            [
-                'category_id' => 7,
-                'name' => 'Fútbol'
-            ],
-            [
-                'category_id' => 7,
-                'name' => 'Ciclismo'
-            ],
-            [
-                'category_id' => 7,
-                'name' => 'Running'
-            ],
-            [
-                'category_id' => 7,
-                'name' => 'Fitness'
-            ],
-            [
-                'category_id' => 7,
-                'name' => 'Tenis'
-            ]
-
-
-        ];
-
-        foreach ($subcategories as $subcategory) {
-            Subcategory::create($subcategory);
-        }
-    }
-}

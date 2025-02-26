@@ -50,7 +50,7 @@ class ProductControllerAdvance extends Controller
                 });
             })
             // Filtro por categorías si existe 'search_category'
-            ->whereHas('categories', function ($query) {
+            ->whereHas('products', function ($query) {
                 if (request('search_category')) {
                     $categories = explode(",", request('search_category'));
                     $query->whereIn('id', $categories);
@@ -59,7 +59,7 @@ class ProductControllerAdvance extends Controller
             // Filtrar por título o categorías si 'search_term' es proporcionado
             ->when($searchTerm, function ($query) use ($searchTerm) {
                 $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhereHas('categories', function ($query) use ($searchTerm) {
+                    ->orWhereHas('products', function ($query) use ($searchTerm) {
                         $query->where('name', 'like', '%' . $searchTerm . '%');
                     });
             })
@@ -175,21 +175,21 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('categories')->with('media')->latest()->paginate();
+        $products = Product::with('products')->with('media')->latest()->paginate();
         return ProductResource::collection($products);
 
     }
 
     public function getCategoryByProducts($id)
     {
-        $products = Product::whereRelation('categories', 'id', '=', $id)->paginate();
+        $products = Product::whereRelation('products', 'id', '=', $id)->paginate();
 
         return ProductResource::collection($products);
     }
 
     public function getProduct($id)
     {
-        return Product::with('categories', 'users', 'media')->findOrFail($id);
+        return Product::with('products', 'users', 'media')->findOrFail($id);
     }
 
     // Favoritos

@@ -16,7 +16,7 @@ class SubcategoryController extends Controller
         // Aseguramos que sea una subcategoría estableciendo category_id como requerido
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id'
+            'category_id' => 'required|exists:products,id'
         ]);
 
         $subcategory = Category::create($validated);

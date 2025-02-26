@@ -126,7 +126,7 @@ class ProductsSeeder extends Seeder
             $product->save();
 
             foreach ($productData['default_image'] as $default_image) {
-                $default_imagePath = storage_path('app/public/seed_products/' . $default_image);
+                $default_imagePath = storage_path('app/public/seed_images/products/' . $default_image);
                 if (file_exists($default_imagePath)) {
                     $product->addMedia($default_imagePath)
                         ->preservingOriginal()

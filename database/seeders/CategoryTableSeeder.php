@@ -12,38 +12,47 @@ class CategoryTableSeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Tecnología',
-                'image' => ['tecnologia.jpg', 'tecnologia2.jpg']
+                'name' => 'Vehículos',
+                'default_image' => ['vehiculos.jpg']
             ],
             [
-                'name' => 'Deportes',
-                'image' => ['deportes.jpg']
+                'name' => 'Tecnología',
+                'default_image' => ['tecnologia.jpg', 'tecnologia2.jpg']
             ],
             [
                 'name' => 'Hogar',
-                'image' => ['hogar.jpg', 'hogar2.jpg']
+                'default_image' => ['hogar.jpg', 'hogar2.jpg']
             ],
             [
                 'name' => 'Jardín',
-                'image' => ['jardin.jpg']
+                'default_image' => ['jardin.jpg']
             ],
             [
                 'name' => 'Electrónica',
-                'image' => ['electronica.jpg']
+                'default_image' => ['electronica.jpg']
+            ],
+            [
+                'name' => 'Empleo',
+                'default_image' => ['empleo.jpg']
+            ],
+            [
+                'name' => 'Deportes',
+                'default_image' => ['deportes.jpg']
             ]
         ];
+
 
         foreach ($categories as $categoryData) {
             $category = new Category();
             $category->name = $categoryData['name'];
             $category->save();
 
-            foreach ($categoryData['image'] as $image) {
-                $imagePath = storage_path('app/public/seed_category/' . $image);
-                if (file_exists($imagePath)) {
-                    $category->addMedia($imagePath)
+            foreach ($categoryData['default_image'] as $default_image) {
+                $default_imagePath = storage_path('app/public/seed_images/categories/' . $default_image);
+                if (file_exists($default_imagePath)) {
+                    $category->addMedia($default_imagePath)
                         ->preservingOriginal()
-                        ->toMediaCollection('images');
+                        ->toMediaCollection('default_images');
                 }
             }
         }

@@ -48,12 +48,12 @@
                         <Column field="email" header="Email" sortable></Column>
                         <Column field="created_at" header="Creado el" sortable></Column>
 
-<!--                        <Column header="categories" sortable-->
-<!--                                sortField="categories.name"-->
-<!--                                filterField="categories"-->
+<!--                        <Column header="products" sortable-->
+<!--                                sortField="products.name"-->
+<!--                                filterField="products"-->
 <!--                                :showFilterMatchModes="false">-->
 <!--                            <template #body="slotProps">-->
-<!--                            <span v-for="cat in slotProps.data.categories" class="ms-2 badge  bg-secondary bg-gradient">-->
+<!--                            <span v-for="cat in slotProps.data.products" class="ms-2 badge  bg-secondary bg-gradient">-->
 <!--                                {{ cat.name }}-->
 <!--                            </span>-->
 <!--                            </template>-->

@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
 
     // Route::apiResource('seed_products', ProductControllerAdvance::class);
-    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('products', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
 
     Route::get('role-list', [RoleController::class, 'getList']);
@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/user', [ProfileController::class, 'user']);
     Route::put('/user', [ProfileController::class, 'update']);
 
-    Route::post('/categories', [CategoryController::class, 'getCategories']);
+    Route::post('/products', [CategoryController::class, 'getCategories']);
 
 
 

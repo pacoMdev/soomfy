@@ -20,7 +20,7 @@ return new class extends Migration
             $table -> boolean('isReaded');
             $table -> foreign('userDestination_id') -> references('id') -> on('users');
             $table -> foreign('userRemitent_id') -> references('id') -> on('users');
-            $table -> foreign('product_id') -> references('id') -> on('seed_products');
+            $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> timestamps();
         });
     }

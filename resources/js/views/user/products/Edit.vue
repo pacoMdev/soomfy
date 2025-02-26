@@ -66,7 +66,7 @@
                         </h6>
                         <!-- Category -->
                         <div class="mb-3">
-                            <!-- <v-select multiple v-model="post.categories" :options="categoryList" :reduce="category => category.id" label="name" class="form-control" placeholder="Select category"/> -->
+                            <!-- <v-select multiple v-model="post.products" :options="categoryList" :reduce="category => category.id" label="name" class="form-control" placeholder="Select category"/> -->
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
                             </div>

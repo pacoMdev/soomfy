@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             
             // Clave foránea para 'product_id'
-            $table->foreignId('product_id')->constrained('seed_products')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
 
             $table->timestamps(); // Si es necesario
         });
