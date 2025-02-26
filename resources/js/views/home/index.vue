@@ -103,7 +103,7 @@
             <div class="">
                 <!-- falta ajustar el responsive -->
                 <div class="productos">
-                    <Producto />
+                    <ProductoNew :productos='producto' />
                 </div>
             </div>
             <div class="d-flex justify-content-center">
@@ -118,6 +118,40 @@
 <script setup>
 
 import '../../../css/home/home.css';
-import Producto from '../../components/Producto.vue';
+import ProductoNew from '../../components/ProductoNew.vue';
 
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+
+// Estado reactivo
+const productos = ref([]);
+
+// Ejecutar la función cuando el componente se monte
+onMounted(() => {
+    obtenerProductos();
+});
+
+const responsiveOptions = ref([
+    {
+        breakpoint: '991px',
+        numVisible: 4
+    },
+    {
+        breakpoint: '767px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '575px',
+        numVisible: 1
+    }
+]);
+
+// Función para obtener productos desde la API
+const obtenerProductos = async () => {
+    const respuesta = await axios.get('/api/get-products'); // Asegúrate de que esta URL sea la correcta
+    // const respuesta = await axios.get('/api/get-user-products'); // Asegúrate de que esta URL sea la correcta
+    productos.value = respuesta.data.data; // Guardamos los datos en productos
+    console.log(respuesta);
+};
 </script>

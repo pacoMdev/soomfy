@@ -13,7 +13,7 @@
                             <!-- IMAGE PRODUCT ---------------------------------------------------- -->
                             <div class="card-body">
                                 <h3>Fotos</h3>
-                                    <DropZone v-model="post.thumbnails" class="imagenes"/>
+                                    <DropZoneV v-model="post.thumbnails" class="imagenes"/>
                             </div>
                             <!-- TITLE ---------------------------------------------------- -->
                             <div class="mb-3 input-nombre">
@@ -107,7 +107,6 @@
                                 <span v-if="isLoading">Processing...</span>
                                 <span v-else>Publish</span>
                             </button>
-                            <input type="submit">
                             <!-- <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" /> -->
                         </div>
                     </StepPanel>
@@ -148,7 +147,8 @@ const schema = {
     content: 'required|min:5',
     categories: 'required',
     price: 'required',
-    estado: 'required'
+    estado: 'required',
+    // thumbnails: 'required'
 
 }
 // Create a form context with the validation schema
@@ -160,26 +160,28 @@ const {value: content} = useField('content', null, {initialValue: ''});
 const {value: categories} = useField('categories', null, {initialValue: '', label: 'category'});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estado} = useField('estado', null, {initialValue: ''});
-const {value: thumbnails} = useField('thumbnails', null, {initialValue: ''});
+const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeProduct, validationErrors, isLoading} = usePosts()
 const post = reactive({
     title,
     content,
     categories,
-    thumbnails: '', 
+    thumbnails: [
+        { img: "", file: null }, // Contenedor 1
+        { img: "", file: null }, // Contenedor 2
+        { img: "", file: null }  // Contenedor 3
+    ], 
     price,
     estado
 })
-
-const thefile = ref('')
 
 function submitForm() {
     console.log('submitForm', post);
     console.log('thumbnails', post.thumbnails)
     validate().then(form => {
         console.log('validando informacion')
-        if (!form.valid) storeProduct(post)
+        if (form.valid) storeProduct(post)
     })
 }
 

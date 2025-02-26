@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-3 gap-5 w-100">
     <div
-      v-for="(item, index) in containers"
+      v-for="(item, index) in thumbnails"
       :key="index"
       @click="activarInput"
       class="dropzone-container tamaño-imagen input-imagen"
@@ -16,7 +16,7 @@
         class="hidden-input backgroundIcon"
         @change="(e) => onChange(e, index)"
         :ref="`refFiles${index}`"
-        accept=".webp"
+        accept=".webp, .png, .jpg, .heic, .avif"
       />
       <div class="file-label" @click="() => triggerFileInput(index)">
         <!-- Si hay imagen -->
@@ -40,11 +40,65 @@
   </div>
 </template>
 
+
+
+<script setup>
+import { defineProps, defineEmits } from "vue";
+
+// Recibir `modelValue` desde el padre
+const props = defineProps({
+  modelValue: Array, // `post.thumbnails` del padre
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+// Función de arrastre
+const dragover = (e) => {
+  e.preventDefault();
+};
+
+const dragleave = () => {};
+
+const drop = (e, index) => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    const file = files[0];
+
+    // Clonar el array y actualizar el elemento
+    const updatedThumbnails = [...props.modelValue];
+    updatedThumbnails[index] = { img: URL.createObjectURL(file), file };
+
+    // Emitir el nuevo array para actualizar el padre
+    emit("update:modelValue", updatedThumbnails);
+  }
+};
+
+// Manejar cambio de imagen desde el input
+const onChange = (e, index) => {
+  const file = e.target.files[0];
+  if (file) {
+    const updatedThumbnails = [...props.modelValue];
+    updatedThumbnails[index] = { img: URL.createObjectURL(file), file };
+
+    // Emitir el nuevo array
+    emit("update:modelValue", updatedThumbnails);
+  }
+};
+
+// Función para disparar el input cuando se hace clic
+const triggerFileInput = (index) => {
+  document.querySelectorAll('input[type="file"]')[index].click();
+};
+</script>
+
+
+
 <script setup>
 import { ref } from "vue";
 
 // Usar ref en Vue para referirse a los inputs dinámicos
-const containers = ref([
+const thumbnails = ref([
   { img: "", file: null }, // Contenedor 1
   { img: "", file: null }, // Contenedor 2
   { img: "", file: null }  // Contenedor 3
@@ -64,17 +118,18 @@ const drop = (e, index) => {
   const files = e.dataTransfer.files;
   if (files.length > 0) {
     const file = files[0];
-    containers.value[index].img = URL.createObjectURL(file);
-    containers.value[index].file = file;
+    thumbnails.value[index].img = URL.createObjectURL(file);
+    thumbnails.value[index].file = file;
   }
 };
 
 // Manejar cambio de imagen desde el input
 const onChange = (e, index) => {
+  console.log('thumbnails -->', thumbnails);
   const file = e.target.files[0];
   if (file) {
-    containers.value[index].img = URL.createObjectURL(file);
-    containers.value[index].file = file;
+    thumbnails.value[index].img = URL.createObjectURL(file);
+    thumbnails.value[index].file = file;
   }
 };
 

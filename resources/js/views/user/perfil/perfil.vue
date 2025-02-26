@@ -51,17 +51,18 @@
     import ProductoNew from '../../../components/ProductoNew.vue';
 
     const value = ref(4);
-    const productos = ref([]);
+    const products = ref([]);
 
     
     onMounted(()=>{
+        console.log('products -->', products);
         obtenerProductos();
     })
     
     // llamada a api
     const obtenerProductos = async () => {
     const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
-    productos.value = respuesta.data.data; // Guardamos los datos en productos
+    products.value = respuesta.data.data; // Guardamos los datos en productos
     console.log(respuesta);
 };
 

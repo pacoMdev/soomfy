@@ -38,6 +38,10 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Category::class, 'category_product');
     }
 
+    public function products(){
+        return $this->belongsToMany(User_product::class, 'user_product');
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
