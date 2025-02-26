@@ -22,13 +22,13 @@ export default {
   props: ['searchTerm'], // Recibe el searchTerm desde la URL
 
   setup(props) {
-    const products = ref([]);  // Definimos un ref que va a almacenar los products
+    const products = ref([]);  // Definimos un ref que va a almacenar los seed_products
 
-    // Función para obtener los products
+    // Función para obtener los seed_products
     const fetchProducts = async () => {
-      // Realiza una solicitud GET a la API para obtener los products
+      // Realiza una solicitud GET a la API para obtener los seed_products
       const response = await axios.get(`/api/productos/${props.searchTerm || ''}`);
-      // Asignamos los datos de los products a la variable 'products'
+      // Asignamos los datos de los seed_products a la variable 'seed_products'
       products.value = response.data.data;
     };
 
@@ -37,7 +37,7 @@ export default {
       fetchProducts();
     });
 
-    // Retornamos la referencia de 'products' para que esté disponible en el template
+    // Retornamos la referencia de 'seed_products' para que esté disponible en el template
     return {
       products
     };

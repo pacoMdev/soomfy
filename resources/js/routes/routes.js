@@ -78,20 +78,20 @@ export default [
                 component: () => import('../views/products/products.vue'),
             },
             {
-                path: 'products/:search',
+                path: 'seed_products/:search',
                 name: 'Filtro buscador',
                 component: () => import('../views/products/products.vue'),
                 props: true
             },
             {
                 // Pagina de detalle del producto vendido
-                path: 'products/detalle/:id',
+                path: 'seed_products/detalle/:id',
                 name: 'detalle-producto',
                 component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },
             {
                 path: 'category/:id',
-                name: 'category-products.index',
+                name: 'category-seed_products.index',
                 component: () => import('../views/category/products.vue'),
             },
             {
@@ -183,20 +183,20 @@ export default [
                 meta: { breadCrumb: 'Profile' }
             },
             {
-                name: 'products.index',
+                name: 'seed_products.index',
                 path: 'products',
                 component: ProductsIndex,
                 meta: { breadCrumb: 'Products' }
             },
             {
-                name: 'products.create',
-                path: 'products/create',
+                name: 'seed_products.create',
+                path: 'seed_products/create',
                 component: ProductsCreate,
                 meta: { breadCrumb: 'Add new post' }
             },
             {
-                name: 'products.edit',
-                path: 'products/edit/:id',
+                name: 'seed_products.edit',
+                path: 'seed_products/edit/:id',
                 component: ProductsEdit,
                 meta: { breadCrumb: 'Edit post' }
             },
@@ -318,13 +318,13 @@ export default [
                 meta: { breadCrumb: 'Autores'},
                 children: [
                     {
-                        name: 'products.index',
+                        name: 'seed_products.index',
                         path: '',
                         component: () => import('../views/admin/products/Index.vue'),
                         meta: { breadCrumb: 'Listado' }
                     },
                     {
-                        name: 'products.edit',
+                        name: 'seed_products.edit',
                         path: 'edit/:id',
                         component: () => import('../views/admin/products/Edit.vue'),
                         meta: { breadCrumb: 'Editar autores' }

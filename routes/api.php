@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
 
-    // Route::apiResource('products', ProductControllerAdvance::class);
+    // Route::apiResource('seed_products', ProductControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
 
@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
 
 
-    Route::get('/products/{search?}', [ProductControllerAdvance::class, 'index']);
+    Route::get('/seed_products/{search?}', [ProductControllerAdvance::class, 'index']);
 
 
     Route::get('abilities', function(Request $request) {
@@ -58,24 +58,24 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     // Product Favoritos
     // Agregar un producto a favoritos (POST)
     Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']);
-    // Obtener products favoritos del usuario (GET)
-    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']);
+    // Obtener seed_products favoritos del usuario (GET)
+    Route::get('get-favorite-seed_products', [ProductControllerAdvance::class, 'getFavoriteProducts']);
 });
 
 // Users
 Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
-Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']);
+Route::get('get-user-seed_products/{id}', [UserController::class, 'getUserProducts']);
 
 // Categorías
 Route::get('category-list', [CategoryController::class, 'getList']);
 
-// products
-Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
+// seed_products
+Route::get('get-seed_products', [ProductControllerAdvance::class, 'getProducts']);
 
 // Obtener todas las publicaciones
-Route::get('get-products', [ProductControllerAdvance::class, 'getProducts']);
+Route::get('get-seed_products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
-Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
+Route::get('get-category-seed_products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 // Obtener detalles de una publicación
 Route::post('get-product/{id}', [ProductControllerAdvance::class, 'getProduct']);
 
@@ -84,11 +84,11 @@ Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, '
 
 // Filtro producto buscador
 // Le pasamos lo que hemos buscado al index
-Route::get('products/{searchTerm}', [ProductControllerAdvance::class, 'index']);
+Route::get('seed_products/{searchTerm}', [ProductControllerAdvance::class, 'index']);
 
-// Almacenar, Actualizar y Eliminar products
+// Almacenar, Actualizar y Eliminar seed_products
 // Almacenar nueva publicación
-Route::post('store-data-products', [ProductControllerAdvance::class, 'store']);
+Route::post('store-data-seed_products', [ProductControllerAdvance::class, 'store']);
 // Actualizar publicación existente
 Route::put('product/{id}', [ProductControllerAdvance::class, 'update']);
 // Eliminar publicación

@@ -18,10 +18,10 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     // protected $fillable = ['title', 'content', 'user_id'];
-    protected $table = 'products';
+    protected $table = 'seed_products';
     protected $fillable = ['title', 'content', 'price', 'estado','category_id'];
     
-    // Relacion NM ( usuarios / products )
+    // Relacion NM ( usuarios / seed_products )
     public function users()
     {   
         return $this->belongsToMany(User::class, 'user_product');
@@ -42,7 +42,7 @@ class Product extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')
+        $this->addMediaCollection('product_image')
             ->useFallbackUrl('/images/placeholder.jpg')
             ->useFallbackPath(public_path('/images/placeholder.jpg'));
     }

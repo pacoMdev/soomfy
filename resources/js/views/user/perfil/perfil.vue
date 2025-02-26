@@ -61,7 +61,7 @@
     // llamada a api
     const obtenerProductos = async () => {
     const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
-    productos.value = respuesta.data.data; // Guardamos los datos en products
+    productos.value = respuesta.data.data; // Guardamos los datos en seed_products
     console.log(respuesta);
 };
 

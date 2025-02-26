@@ -67,7 +67,7 @@
 <!--            <div class="card">-->
 <!--                <h5>Recent Sales</h5>-->
 
-<!--                <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">-->
+<!--                <DataTable :value="seed_products" :rows="5" :paginator="true" responsiveLayout="scroll">-->
 <!--                    <Column style="width: 15%">-->
 <!--                        <template #header> Image </template>-->
 <!--                        <template #body="slotProps">-->

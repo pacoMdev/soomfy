@@ -8,37 +8,48 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-        public function run()
+    public function run(): void
     {
         $categories = [
-            ['name' => 'Vehículos', 'default_image' => 'categories/car.webp'],
-            ['name' => 'Tecnología', 'default_image' => 'categories/car1.webp'],
-            ['name' => 'Inmuebles', 'default_image' => 'categories/car2.webp'],
-            ['name' => 'Hogar', 'default_image' => 'categories/car3.webp'],
-            ['name' => 'Servicios', 'default_image' => 'categories/car4.webp'],
-            ['name' => 'Empleo', 'default_image' => 'categories/car5.webp'],
-            ['name' => 'Deporte', 'default_image' => 'categories/car6.webp'],
+            [
+                'name' => 'Tecnología',
+                'image' => ['tecnologia.jpg', 'tecnologia2.jpg']
+            ],
+            [
+                'name' => 'Deportes',
+                'image' => ['deportes.jpg']
+            ],
+            [
+                'name' => 'Hogar',
+                'image' => ['hogar.jpg', 'hogar2.jpg']
+            ],
+            [
+                'name' => 'Jardín',
+                'image' => ['jardin.jpg']
+            ],
+            [
+                'name' => 'Electrónica',
+                'image' => ['electronica.jpg']
+            ]
         ];
 
         foreach ($categories as $categoryData) {
-            $category = Category::create([
-                'name' => $categoryData['name']
-            ]);
+            $category = new Category();
+            $category->name = $categoryData['name'];
+            $category->save();
 
-            // Check if the specified default image exists in the public disk
-            if (Storage::disk('public')->exists($categoryData['default_image'])) {
-                // Add the image from the public disk to the media collection named 'category_image'
-                $category->addMediaFromDisk($categoryData['default_image'], 'public')
-                    ->toMediaCollection('category_image'); // Save the image
+            foreach ($categoryData['image'] as $image) {
+                $imagePath = storage_path('app/public/seed_category/' . $image);
+                if (file_exists($imagePath)) {
+                    $category->addMedia($imagePath)
+                        ->preservingOriginal()
+                        ->toMediaCollection('images');
+                }
             }
         }
     }
 
 
-    
-}
+
+
+    }

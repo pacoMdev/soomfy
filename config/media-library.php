@@ -71,7 +71,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => App\Services\CategoryPathGenerator::class,
+    'path_generator' =>  Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
 
 
     /*
@@ -79,6 +79,7 @@ return [
      */
     'custom_path_generators' => [
         App\Models\Category::class => App\Services\CategoryPathGenerator::class,
+        App\Models\Product::class => App\Services\ProductPathGenerator::class,
     ],
 
     /*

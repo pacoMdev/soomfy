@@ -105,7 +105,7 @@ const obtenerProductos = async () => {
     const respuesta = await axios.get('/api/get-products');
     productos.value = respuesta.data.data;
   } catch (error) {
-    console.error("Error al obtener products:", error);
+    console.error("Error al obtener seed_products:", error);
   }
 };
 

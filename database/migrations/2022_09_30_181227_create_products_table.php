@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function(Blueprint $table){
+        Schema::create('seed_products', function(Blueprint $table){
             $table -> id();
             $table -> string('title');
             $table -> string('content')-> nullable();
@@ -44,7 +44,7 @@ return new class extends Migration
             $table -> integer('calification'); // dese 1 - 5
             $table -> unsignedBigInteger('product_id');
             $table -> unsignedBigInteger('user_id');
-            $table -> foreign('product_id') -> references('id') -> on('products');
+            $table -> foreign('product_id') -> references('id') -> on('seed_products');
             $table -> foreign('user_id') -> references('id') -> on('users');
             $table -> timestamps();
     
@@ -57,7 +57,7 @@ return new class extends Migration
             $table -> unsignedBigInteger('product_id');
             $table -> foreign('userSeller_id') -> references('id') -> on('users');
             $table -> foreign('userBuyer_id') -> references('id') -> on('users');
-            $table -> foreign('product_id') -> references('id') -> on('products');
+            $table -> foreign('product_id') -> references('id') -> on('seed_products');
             $table -> double('initialPrice');
             $table -> double('finalPrice');
             $table -> boolean('isToSend') -> default(0);
@@ -75,7 +75,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('seed_products');
         Schema::dropIfExists('usersOpinion');
         Schema::dropIfExists('transactions');
     }
