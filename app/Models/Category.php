@@ -25,4 +25,18 @@ class Category extends Model
         return $this->belongsToMany(Exercises::class,'category_exercise');
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('category_image')
+            ->useDisk('public');
+    }
+
+    // Sobrescribir el método que determina la ruta de almacenamiento
+    public function getMediaFolderPath(): string
+    {
+        return 'categories/' . $this->id;
+    }
+
+
+
 }
