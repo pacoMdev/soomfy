@@ -24,9 +24,10 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:products,id'
+            'name' => 'required|unique:categories',
+            'image' => 'nullable|image|mimes:png,jpg,webp|max:2048'
         ];
+
 
     }
 }

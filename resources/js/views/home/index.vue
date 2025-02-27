@@ -25,18 +25,8 @@
           <div class="categories">
             <div v-for="category in categories" :key="category.id">
               <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
-                <img :src="category.media?.[0]?.original_url" :alt="category.name">
+                <img :src="category.original_image" :alt="category.original_image">
                 <p>{{ category.name }}</p>
-              </div>
-
-              <!-- Panel de subcategorías -->
-              <div v-if="selectedCategory === category.id" class="subcategories-panel">
-                <div v-for="subcategory in category.subcategories"
-                     :key="subcategory.id"
-                     class="d-flex flex-column text-center gap-2">
-                  <img src="images/home/categories/telefono.webp" alt="">
-                  <p>{{ subcategory.name }}</p>
-                </div>
               </div>
             </div>
           </div>
@@ -111,17 +101,13 @@ const obtenerProductos = async () => {
 
 const loadCategories = async () => {
   try {
-    const response = await axios.post('/api/categories')
-    categories.value = response.data
+    const response = await axios.get('/api/categories')
+    categories.value = response.data.data
   } catch (err) {
     console.error('Error cargando categorías:', err)
   }
 }
 
-// Nueva función para manejar la selección de categorías
-const toggleCategory = (categoryId) => {
-  selectedCategory.value = selectedCategory.value === categoryId ? null : categoryId;
-}
 </script>
 
 

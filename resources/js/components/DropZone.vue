@@ -61,7 +61,7 @@ const props = defineProps({
     modelValue: String
 });
 
-const thumbnail = ref('')
+const thumbnail = ref(null)
 const isDragging = ref(false)
 const refFiles = ref(null)
 let img = ref('')
@@ -72,9 +72,10 @@ const emit = defineEmits(['update:modelValue'])
 
 
 const onChange = (() => {
-    thumbnail.value = refFiles.value.files;
-    img = URL.createObjectURL(refFiles.value.files[0]);
-    //console.log(img);
+  if (refFiles.value?.files?.[0]) {
+    thumbnail.value = refFiles.value.files
+    img.value = URL.createObjectURL(refFiles.value.files[0])
+  }
 })
 
 /*
@@ -103,9 +104,13 @@ const makeName = ((name) => {
 })
 
 const remove = ((i) => {
-    thumbnail.value = ""
-    img = ""
-    emit('update:modelValue', "")
+    thumbnail.value = null
+    img = null
+    emit('update:modelValue', null)
+    if (refFiles.value) {
+      refFiles.value.value = ''  // Limpiar input file
+    }
+
 })
 
 const dragover = ((e) => {

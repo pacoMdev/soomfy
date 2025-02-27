@@ -42,24 +42,41 @@ export default function useCategories() {
     const storeCategory = async (category) => {
         if (isLoading.value) return;
 
-        isLoading.value = true
-        validationErrors.value = {}
+        isLoading.value = true;
+        validationErrors.value = {};
 
-        axios.post('/api/categories', category)
-            .then(response => {
-                router.push({name: 'categories.index'})
-                swal({
-                    icon: 'success',
-                    title: 'Category saved successfully'
-                })
-            })
-            .catch(error => {
-                if (error.response?.data) {
-                    validationErrors.value = error.response.data.errors
+        // Creo una funcion de formData para almacenar los datos del formulario
+        const formData = new FormData();
+
+        // Almacenamos los datos del formulario al formData
+        formData.append('name', category.name);
+
+        if (category.thumbnail) {
+            console.log('Archivo a enviar:', category.thumbnail);
+            formData.append('image', category.thumbnail);
+        }
+
+        // Se envia el formData
+        try {
+            await axios.post('/api/categories', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
-            })
-            .finally(() => isLoading.value = false)
-    }
+            });
+
+            router.push({name: 'categories.index'});
+            swal({
+                icon: 'success',
+                title: 'Categoría creada exitosamente'
+            });
+        } catch (error) {
+            if (error.response?.data) {
+                validationErrors.value = error.response.data.errors;
+            }
+        } finally {
+            isLoading.value = false;
+        }
+    };
 
     const updateCategory = async (category) => {
         if (isLoading.value) return;

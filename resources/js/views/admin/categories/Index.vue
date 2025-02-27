@@ -6,9 +6,6 @@
                 <div class="card-header bg-transparent ps-0 pe-0">
                     <h5 class="float-start mb-0">Gestor categorias:</h5>
                 </div>
-              <router-link :to="{ name: 'categories.create' }" class="btn btn-primary btn-sm float-end">
-                Create categories
-              </router-link>
 
                 <DataTable  :value="categories.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id" size="small">
 
@@ -26,7 +23,7 @@
                             </template>
 
                             <template #end>
-                                <Button v-if="can('category-create')"  @click="$router.push('products/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
+                                <Button v-if="can('category-create')"  @click="$router.push('categories/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
                             </template>
                         </Toolbar>
                     </template>
@@ -38,12 +35,23 @@
                             {{ data.id }}
                         </template>
                     </Column>
+                    <Column header="Imagen" style="width: 100px">
+                      <template #body="{ data }">
+                        <img
+                            v-if="data.original_image"
+                            :src="data.original_image"
+                            :alt="data.name"
+                            style="width: 40px; height: 40px; object-fit: cover;"
+                        />
+                        <i v-else class="pi pi-image text-500"></i>
+                      </template>
+                    </Column>
                     <Column field="name" header="name" sortable></Column>
                     <Column class="pe-0 me-0 icon-column-2">
                         <template #body="slotProps">
 
                             <!--TODO Falta permisos-->
-                            <router-link  :to="{ name: 'products.edit', params: { id: slotProps.data.id } }">
+                            <router-link  :to="{ name: 'categories.edit', params: { id: slotProps.data.id } }">
                                 <Button icon="pi pi-pencil" severity="info" size="small" class="mr-1"/>
                             </router-link>
 

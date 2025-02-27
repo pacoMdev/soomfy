@@ -49,8 +49,17 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        $categories = Category::create($request->validated());
-        return new CategoryResource($categories);
+        // El StoreCategoryRequest ya debe tener las reglas de validación para 'name'
+        $category = Category::create($request->validated());
+
+        // La imagen se maneja por separado ya que va a la tabla media
+        if ($request->hasFile('image')) {
+            $category->addMediaFromRequest('image')
+                ->toMediaCollection('original_image');
+        }
+
+        return new CategoryResource($category);
+
     }
 
 

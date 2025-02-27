@@ -13,19 +13,9 @@ class Category extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
-    protected $appends = ['category_image'];
-
-    public function getCategoryImageAttribute()
-    {
-        return $this->getFirstMediaUrl('category_image');
-    }
 
     protected $fillable = ['name'];
 
-    public function subcategories(): HasMany
-    {
-        return $this->hasMany(Subcategory::class);
-    }
 
     public function products()
     {
@@ -34,14 +24,11 @@ class Category extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('category_image')
+        $this->addMediaCollection('original_image')
+            ->singleFile()
             ->useDisk('public');
     }
-    // Sobrescribir el método que determina la ruta de almacenamiento
-    public function getMediaFolderPath(): string
-    {
-        return 'categories/' . $this->id;
-    }
+
 
 
 
