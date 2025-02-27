@@ -6,10 +6,10 @@
           <form @submit.prevent="submitForm">
             <DropZone v-model="category.thumbnail" />
             <div class="text-danger mt-1">
-              {{ errors.name }}
+              {{ errors.thumbnail }}
             </div>
             <div class="text-danger mt-1">
-              <div v-for="message in validationErrors?.name">
+              <div v-for="message in validationErrors?.thumbnail">
                 {{ message }}
               </div>
             </div>
@@ -63,7 +63,14 @@ const category = reactive({
   thumbnail: null
 })
 
+
 function submitForm() {
+  console.log('Archivo Create.vue' +
+      'Categoria:', {
+    nombre: category.name,
+    imagen: category.thumbnail
+  });
+
   validate().then(form => { if (form.valid) storeCategory(category) })
 }
 </script>

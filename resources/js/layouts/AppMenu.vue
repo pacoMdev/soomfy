@@ -40,7 +40,7 @@ const model = ref([
         items: [
             { label: 'Users', icon: 'pi pi-fw pi-id-card', to: '/admin/users', permision: 'user-list' },
             { label: 'Roles', icon: 'pi pi-fw pi-check-square', to: '/admin/roles', permision:'role-list' },
-            { label: 'Permisos', icon: 'pi pi-fw pi-bookmark', to: '/admin/permisions', permision:'permision-list' }
+            { label: 'Permisos', icon: 'pi pi-fw pi-bookmark', to: '/admin/permissions', permision:'permission-list' }
         ]
     },
     {

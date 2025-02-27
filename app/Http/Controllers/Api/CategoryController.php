@@ -41,7 +41,7 @@ class CategoryController extends Controller
 
     public function getCategories()
     {
-        $categories = Category::with('media', 'subcategories')->get();
+        $categories = Category::with('media')->get();
         return CategoryResource::collection($categories);
 
 
@@ -49,10 +49,8 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        // El StoreCategoryRequest ya debe tener las reglas de validación para 'name'
         $category = Category::create($request->validated());
 
-        // La imagen se maneja por separado ya que va a la tabla media
         if ($request->hasFile('image')) {
             $category->addMediaFromRequest('image')
                 ->toMediaCollection('original_image');
@@ -75,6 +73,15 @@ class CategoryController extends Controller
         $this->authorize('category-edit');
         $category->update($request->validated());
 
+        if($request->hasFile('image')) {
+            // clearMediaCollection, borra lo que este asociad al original_image
+            $category->clearMediaCollection('original_image');
+            // Para luego agregarlo
+            $category->addMediaFromRequest('image')
+                ->toMediaCollection('original_image');
+        }
+
+
         return new CategoryResource($category);
     }
 
@@ -89,8 +96,5 @@ class CategoryController extends Controller
     {
         return CategoryResource::collection(Category::all());
     }
-    public function getCategory(){
-        $category = Category::all();
-        return response()->json(['code' => 200, 'status'=>'done', 'category' => $category]);
-    }
+
 }

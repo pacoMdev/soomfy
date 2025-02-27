@@ -6,10 +6,10 @@
                     <form @submit.prevent="submitForm">
                       <DropZone v-model="category.thumbnail" />
                       <div class="text-danger mt-1">
-                        {{ errors.name }}
+                        {{ errors.thumbnail }}
                       </div>
                       <div class="text-danger mt-1">
-                        <div v-for="message in validationErrors?.name">
+                        <div v-for="message in validationErrors?.thumbnail">
                           {{ message }}
                         </div>
                       </div>
@@ -51,28 +51,28 @@ import DropZone from "@/components/DropZone.vue";
 defineRule('required', required)
 defineRule('min', min);
 
-    const schema = {
-        name: 'required|min:3'
-    }
+  const schema = {
+      name: 'required|min:3'
+  }
 
-    const { validate, errors, resetForm } = useForm({ validationSchema: schema })
-    const { value: name } = useField('name', null, { initialValue: '' });
-    const { category: postData, getCategory, updateCategory, validationErrors, isLoading } = useCategories()
-    const category = reactive({
-        name,
-        thumbnail: null
-    })
-    const route = useRoute()
-    function submitForm() {
-        validate().then(form => { if (form.valid) updateCategory(category) })
-    }
-    onMounted(() => {
-        getCategory(route.params.id)
-    })
-    
-    // https://vuejs.org/api/reactivity-core.html#watcheffect
-    watchEffect(() => {
-        category.id = postData.value.id
-        category.name = postData.value.name
-    })
+  const { validate, errors, resetForm } = useForm({ validationSchema: schema })
+  const { value: name } = useField('name', null, { initialValue: '' });
+  const { category: productData, getCategory, updateCategory, validationErrors, isLoading } = useCategories()
+  const category = reactive({
+      name,
+      thumbnail: null
+  })
+  const route = useRoute()
+  function submitForm() {
+      validate().then(form => { if (form.valid) updateCategory(category) })
+  }
+  onMounted(() => {
+      getCategory(route.params.id)
+  })
+
+  // https://vuejs.org/api/reactivity-core.html#watcheffect
+  watchEffect(() => {
+      category.id = productData.value.id
+      category.name = productData.value.name
+  })
 </script>

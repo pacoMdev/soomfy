@@ -26,7 +26,7 @@ class CategoryTableSeeder extends Seeder
         ];
 
         foreach ($categories as $categoryData) {
-            $category = Category::create([
+            $categories = Category::create([
                 'name' => $categoryData['name']
             ]);
 

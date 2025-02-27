@@ -72,10 +72,9 @@ const emit = defineEmits(['update:modelValue'])
 
 
 const onChange = (() => {
-  if (refFiles.value?.files?.[0]) {
-    thumbnail.value = refFiles.value.files
-    img.value = URL.createObjectURL(refFiles.value.files[0])
-  }
+    thumbnail.value = refFiles.value.files;
+    img = URL.createObjectURL(refFiles.value.files[0]);
+    //console.log(img);
 })
 
 /*
@@ -104,13 +103,9 @@ const makeName = ((name) => {
 })
 
 const remove = ((i) => {
-    thumbnail.value = null
-    img = null
-    emit('update:modelValue', null)
-    if (refFiles.value) {
-      refFiles.value.value = ''  // Limpiar input file
-    }
-
+    thumbnail.value = ""
+    img = ""
+    emit('update:modelValue', "")
 })
 
 const dragover = ((e) => {
