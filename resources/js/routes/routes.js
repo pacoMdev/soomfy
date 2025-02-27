@@ -234,7 +234,7 @@ export default [
             {
                 name: 'permissions',
                 path: 'permissions',
-                meta: { breadCrumb: 'Permisos'},
+                meta: { breadCrumb: 'Permission'},
                 children: [
                     {
                         name: 'permissions.index',
@@ -265,20 +265,20 @@ export default [
             {
                 name: 'users',
                 path: 'users',
-                meta: { breadCrumb: 'Usuarios'},
+                meta: { breadCrumb: 'Users'},
                 children: [
                     {
                         name: 'users.index',
                         path: '',
                         component: () => import('../views/admin/users/Index.vue'),
-                        meta: { breadCrumb: 'Usuarios' }
+                        meta: { breadCrumb: 'Users' }
                     },
                     {
                         name: 'users.create',
                         path: 'create',
                         component: () => import('../views/admin/users/Create.vue'),
                         meta: {
-                            breadCrumb: 'Crear Usuario',
+                            breadCrumb: 'Create Users',
                             linked: false
                         }
                     },
@@ -287,31 +287,13 @@ export default [
                         path: 'edit/:id',
                         component: () => import('../views/admin/users/Edit.vue'),
                         meta: {
-                            breadCrumb: 'Editar Usuario',
+                            breadCrumb: 'Edit Users',
                             linked: false
                         }
                     }
                 ]
             },
-            {
-                name: 'products',
-                path: 'products',
-                meta: { breadCrumb: 'Autores'},
-                children: [
-                    {
-                        name: 'products.index',
-                        path: '',
-                        component: () => import('../views/admin/products/Index.vue'),
-                        meta: { breadCrumb: 'Listado' }
-                    },
-                    {
-                        name: 'products.edit',
-                        path: 'edit/:id',
-                        component: () => import('../views/admin/products/Edit.vue'),
-                        meta: { breadCrumb: 'Editar autores' }
-                    }
-                ]
-            },
+
 
 
             //TODO Organizar rutas
