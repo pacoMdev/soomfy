@@ -27,6 +27,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('users/updateimg', [UserController::class,'updateimg']);
     // Actualiza imagen de perfil (usuario)
     Route::post('profile/updateimg', [ProfileController::class,'updateimg']);
+    Route::get('profile', [ProfileController::class, 'index']);
+
 
     Route::apiResource('products', ProductControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);

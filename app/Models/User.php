@@ -69,18 +69,11 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images/users')
+        $this->addMediaCollection('avatar')
+            ->singleFile()
             ->useFallbackUrl('/images/placeholder.jpg')
             ->useFallbackPath(public_path('/images/placeholder.jpg'));
     }
 
-    public function registerMediaConversions(Media $media = null): void
-    {
-        if (env('RESIZE_IMAGE') === true) {
 
-            $this->addMediaConversion('resized-image')
-                ->width(env('IMAGE_WIDTH', 300))
-                ->height(env('IMAGE_HEIGHT', 300));
-        }
-    }
 }
