@@ -49,7 +49,7 @@ class User extends Authenticatable implements HasMedia
 
 
     // Relacion NM ( usuarios / products )
-    public function posts()
+    public function products()
     {   
         return $this->belongsToMany(Product::class , 'user_post');
     }
@@ -64,11 +64,6 @@ class User extends Authenticatable implements HasMedia
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPasswordNotification($token));
-    }
-
-    public function assignaments()
-    {
-        return $this->hasMany(UserAssignment::class,'user_id');
     }
 
 

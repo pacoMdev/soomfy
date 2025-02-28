@@ -1,98 +1,171 @@
 <template>
-    <main>
-        <div class="">
-            <!-- imagen de perfil -->
-            <div class="">
-                <div class="upper">
-                    <img src="http://localhost:8000/storage/defaultPhotoProfile/bannerIcons.svg" style="height: 200px; width:100%; object-fit:cover;">
-                </div>
-                <div class="user text-center">
-                    <div class="profile">
-                        <img src="http://localhost:8000/storage/defaultPhotoProfile/githubProfile.svg" class="rounded-circle" style="width: 80px; background-color: aqua;">
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex allign-items-center justify-content-center py-5">
-                <div class="container-info-profile">
-                    <p>Nombre de usuario</p>
-                    <div class="d-flex gap-2 container-rating">
-                        <Rating v-model="value" readonly />
-                        <p>(8)</p>
-                    </div>
-                    <p>Aspirante a gran vendedor</p>
-                </div>
-                <div class="d-flex flex-wrap gap-3 w-100 container container-contador">
-                    <button class="secondary-button-2"><i class="pi pi-box" style="font-size: 1.5rem"></i>Compras</button>
-                    <button class="secondary-button-2"><i class="pi pi-dollar" style="font-size: 1.5rem"></i>Ventas</button>
-                    <button class="secondary-button-2"><i class="pi pi-comment" style="font-size: 1.5rem"></i>Valoaraciones</button>
-                </div>
-            </div>
-            <div>
-                <div class="d-flex gap-3 w-100 justify-content-center">
-                    <button class="secondary-button-2"><i class="pi pi-box" style="font-size: 1.5rem"></i>Compras</button>
-                    <button class="secondary-button-2"><i class="pi pi-dollar" style="font-size: 1.5rem"></i>Ventas</button>
-                    <button class="secondary-button-2"><i class="pi pi-comment" style="font-size: 1.5rem"></i>Valoaraciones</button>
-                </div>
-                <div class="container w-100 d-flex gap-5">
-                    <ProductoNew :productos="productos" />
-                </div>
-            </div>
-        </div>
-    </main>
+  <div class="user-avatar">
+    <FileUpload
+      name="picture"
+      url="/api/profile/updateimg"
+      @before-upload="onBeforeUpload"
+      @upload="onTemplatedUpload($event)"
+      accept="image/*"
+      :maxFileSize="1500000"
+      @select="onSelectedFiles"
+      pt:content:class="fu-content"
+      pt:buttonbar:class="fu-header"
+      pt:root:class="fu"
+      class="fu">
+
+    <!-- Template para los botones -->
+    <template #header="{ chooseCallback, uploadCallback, clearCallback, files, uploadedFiles }">
+      <div class="flex gap-2">
+        <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
+        <Button @click="uploadEvent(uploadCallback, uploadedFiles)"
+                icon="pi pi-cloud-upload"
+                rounded outlined
+                severity="success"
+                :disabled="!files || files.length === 0">
+        </Button>
+        <Button @click="clearCallback()"
+                icon="pi pi-times"
+                rounded outlined
+                severity="danger"
+                :disabled="!files || files.length === 0">
+        </Button>
+      </div>
+    </template>
+
+    <!-- Añade este template para el contenido -->
+    <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+      <img v-if="files.length > 0"
+           v-for="(file, index) of files"
+           :key="file.name + file.type + file.size"
+           role="presentation"
+           :alt="file.name"
+           :src="file.objectURL"
+           class="object-fit-cover w-100 h-100 img-profile" />
+      <div v-else>
+        <img v-if="uploadedFiles.length > 0"
+             :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size"
+             role="presentation"
+             :alt="uploadedFiles[uploadedFiles.length-1].name"
+             :src="uploadedFiles[uploadedFiles.length-1].objectURL"
+             class="object-fit-cover w-100 h-100 img-profile" />
+      </div>
+    </template>
+
+    <!-- Template para mostrar la imagen -->
+    <template #empty>
+      <img v-if="profile.avatar" :src="profile.avatar" alt="Avatar" class="object-fit-cover w-100 h-100 img-profile">
+      <img v-else src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-100 h-100 img-profile">
+    </template>
+  </FileUpload>
+  </div>
 </template>
 
-
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import axios from 'axios';
+import { ref, reactive } from 'vue';
+import useProfile from '@/composables/profile';
+import { useToast } from 'primevue/usetoast';
+import FileUpload from 'primevue/fileupload';
+import Button from 'primevue/button';
 
-    import 'primeicons/primeicons.css';
-    import Rating from 'primevue/rating';
-    import ProductoNew from '../../../components/ProductoNew.vue';
+const toast = useToast();
+const { profile, updateProfile, validationErrors, isLoading } = useProfile();
 
-    const value = ref(4);
-    const productos = ref([]);
+// Variables para el manejo de archivos
+const totalSize = ref(0);
+const totalSizePercent = ref(0);
+const files = ref([]);
 
-    
-    onMounted(()=>{
-        obtenerProductos();
-    })
-    
-    // llamada a api
-    const obtenerProductos = async () => {
-    const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
-    productos.value = respuesta.data.data; // Guardamos los datos en products
-    console.log(respuesta);
+// Funciones para el manejo de la subida
+const onBeforeUpload = (event) => {
+  event.formData.append('id', profile.id);
 };
 
+const onSelectedFiles = (event) => {
+  files.value = event.files;
+  if (event.files.length > 1) {
+    event.files = event.files.splice(0, 1);
+  }
+  totalSize.value = parseInt(formatSize(files.value[0].size));
+};
+
+const formatSize = (bytes) => {
+  const k = 1024;
+  const dm = 3;
+  const sizes = $primevue.config.locale.fileSizeTypes;
+
+  if (bytes === 0) {
+    return `0 ${sizes[0]}`;
+  }
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+  return `${formattedSize} ${sizes[i]}`;
+};
+const uploadEvent = async (callback, uploadedFiles) => {
+  try {
+    totalSizePercent.value = totalSize.value / 10;
+    await callback();
+    console.log('Subida completada');
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Error al subir la imagen',
+      life: 3000
+    });
+  }
+};
+
+const onTemplatedUpload = (event) => {
+  if (event.xhr.status === 200) {
+    toast.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: 'Imagen de perfil actualizada',
+      life: 3000
+    });
+  }
+};
 </script>
 
 <style scoped>
-    .container-info-profile{
-        width: auto;
-        max-height: 350px;
-    }
-    .container-info-profile fieldset{
-        width: 100%;
-        max-height: 350px;
-        object-fit: contain;
-        position: fixed;
-        top: 200px;
-    }
-    .container-info-profile fieldset img{
-        width: 50% !important;
-        max-height: 350px;
-        object-fit: contain;
-    }
-    .container-info-profile legend{
-        height: 50px;
-        width: 50px;
-        border: solid 1px black;
-        top: 10%;
-        right: 25%;
+.user-avatar {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+.fu-content {
+  padding: 0px !important;
+  border: 0px !important;
+  border-radius: 6px;
+}
 
-    }
-    .profile{
-        top: 200px;
-    }
+.fu-header {
+  border: 0px !important;
+  border-radius: 6px;
+}
+
+.fu {
+  display: flex;
+  flex-direction: column-reverse;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+
+.img-profile {
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  aspect-ratio: 1/1;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  margin-bottom: 0.3rem;
+}
 </style>

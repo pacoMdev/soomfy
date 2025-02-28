@@ -23,7 +23,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::apiResource('users', UserController::class);
 
-    Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
+    // Actualizar imagen de perfil (admin)
+    Route::post('users/updateimg', [UserController::class,'updateimg']);
+    // Actualiza imagen de perfil (usuario)
+    Route::post('profile/updateimg', [ProfileController::class,'updateimg']);
 
     Route::apiResource('products', ProductControllerAdvance::class);
     Route::apiResource('categories', CategoryController::class);

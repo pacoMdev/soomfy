@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -23,6 +24,20 @@ class ProfileController extends Controller
             return $this->successResponse($profile, 'User updated');;
         }
         return response()->json(['status' => 403, 'success' => false]);
+    }
+
+    public function updateimg(Request $request)
+    {
+
+        $user = User::find($request->id);
+
+        if($request->hasFile('picture')) {
+            $user->media()->delete();
+            $media = $user->addMediaFromRequest('picture')->preservingOriginal()->toMediaCollection('images-users');
+
+        }
+        $user =  User::with('media')->find($request->id);
+        return  $user;
     }
 
     public function user(Request $request)

@@ -57,7 +57,7 @@ defineRule('min', min);
 
   const { validate, errors, resetForm } = useForm({ validationSchema: schema })
   const { value: name } = useField('name', null, { initialValue: '' });
-  const { category: productData, getCategory, updateCategory, validationErrors, isLoading } = useCategories()
+  const { category: categoryData, getCategory, updateCategory, validationErrors, isLoading } = useCategories()
   const category = reactive({
       name,
       thumbnail: null
@@ -72,7 +72,7 @@ defineRule('min', min);
 
   // https://vuejs.org/api/reactivity-core.html#watcheffect
   watchEffect(() => {
-      category.id = productData.value.id
-      category.name = productData.value.name
+      category.id = categoryData.value.id
+      category.name = categoryData.value.name
   })
 </script>

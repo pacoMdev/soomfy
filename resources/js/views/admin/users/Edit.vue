@@ -318,6 +318,21 @@ const formatSize = (bytes) => {
 </script>
 
 <style>
+.user-avatar {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.account-settings {
+  padding: 0.5rem;
+}
+
+.user-profile {
+  text-align: center;
+  margin-bottom: 1rem;
+}
 .fu-content {
     padding: 0px !important;
     border: 0px !important;
