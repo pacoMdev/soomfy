@@ -35,7 +35,7 @@
 
         <div class="centrar-productos">
           <div class="productos">
-            <Producto :productos="productos" :actualizarFavoritos="obtenerProductos"/>
+            <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
           </div>
         </div>
 
@@ -79,7 +79,7 @@
 import '../../../css/home/home.css';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
-import Producto from '@/components/ProductoNew.vue';
+import ProductoNew from '@/components/ProductoNew.vue';
 
 const productos = ref([]);
 const categories = ref([]);
@@ -109,17 +109,3 @@ const loadCategories = async () => {
 }
 
 </script>
-
-
-<style scoped>
-.subcategories-panel {
-  position: absolute;
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  z-index: 10;
-  margin-top: 10px;
-}
-
-</style>

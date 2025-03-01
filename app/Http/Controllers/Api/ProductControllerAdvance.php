@@ -129,10 +129,16 @@ class ProductControllerAdvance extends Controller
         $user = auth()->user();
         if ($user->favoritos->contains($productId)) {
             $user->favoritos()->detach($productId);
-            return response()->json(['message' => 'Producto eliminado de favoritos']);
+            return response()->json([
+                'message' => 'Producto eliminado de favoritos',
+                'productoAgregado' => false
+                ]);
         } else {
             $user->favoritos()->attach($productId);
-            return response()->json(['message' => 'Producto agregado a favoritos']);
+            return response()->json([
+                'message' => 'Producto agregado a favoritos',
+                'productoAgregado' => true
+            ]);
         }
     }
     
@@ -148,19 +154,7 @@ class ProductControllerAdvance extends Controller
 
             $favoritos = $user->favoritos;
 
-            return response()->json($favoritos);
-    }
-
-    public function getFavoriteIdProducts(){
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no autenticado'], 401);
-        }
-
-        $favoritos = $user->favoritos->pluck('id')->toArray();
-
-        return response()->json($favoritos);
+            return ProductResource::collection($favoritos);
     }
 
     public function sellProduct(Request $request){

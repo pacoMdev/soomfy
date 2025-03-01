@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Exception;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ProductResource extends JsonResource
 {
@@ -21,6 +22,10 @@ class ProductResource extends JsonResource
         } catch (Exception $e) {
             $resized_image="";
         }
+        $esFavorito = false;
+        if(Auth::user()->favoritos()->where('product_id', $this->id)->exists()){
+            $esFavorito = true;
+        }
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -37,6 +42,7 @@ class ProductResource extends JsonResource
             'products' => $this->categories,
             'original_image' => count($this->getMedia('*')) > 0 ? $this->getMedia('*')[0]->getUrl() : null,
             'resized_image' => $resized_image,
+            'esFavorito' => $esFavorito,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
