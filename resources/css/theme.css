@@ -78,8 +78,19 @@
     padding: 0px !important;
 }
 
-/* Tamaño default iconos */
+/* COLOR VUE COMPONENTS */
+.p-button {
+background-color: var(--primary-color) !important;
+border-color: var(--primary-color) !important;
+color: white !important;
+}
 
+.p-button:hover {
+background-color: var(--primary-color) !important;
+border-color: var(--secondary-color) !important;
+}
+
+  
 
 /* Boton principal */
 
@@ -193,6 +204,7 @@
 /* Hover: cambia color y muestra el ícono */
 .secondary-button-2:hover {
     background-color: var(--secondary-color);
+    border: solid 2px var(--primary-color);
     color: var(--primary-color);
     display: flex;
     column-gap: 15px;

@@ -7,6 +7,9 @@ const ProductsIndex  = ()  => import('../views/admin/products/Index.vue');
 const ProductsCreate  = ()  => import('../views/admin/products/Create.vue');
 const ProductsEdit  = ()  => import('../views/admin/products/Edit.vue');
 
+const ProductsUserCreate  = ()  => import('../views/user/products/Create.vue');
+const ProductsUserEdit  = ()  => import('../views/admin/products/Edit.vue');
+
 async function requireLogin(to, from, next) {
     const auth = authStore();
     let isLogin = !!auth.authenticated;
@@ -73,15 +76,9 @@ export default [
                 component: () => import('../views/home/index.vue'),
             },
             {
-                path: 'products',
-                name: 'products',
-                component: () => import('../views/products/products.vue'),
-            },
-            {
-                path: 'products/:search',
-                name: 'Filtro buscador',
-                component: () => import('../views/products/products.vue'),
-                props: true
+                path: '/productos',
+                name: 'productos',
+                component: () => import('../views/productos/productos.vue'),
             },
             {
                 // Pagina de detalle del producto vendido
@@ -133,29 +130,54 @@ export default [
         children: [
             // Subir producto
             {
-                path: '',
+                path: '/profile',
                 name: 'cuenta',
                 component: () => import('../views/user/perfil/perfil.vue'),
             },
             {
-                path: 'subir-producto',
+                path: '/subir-producto',
                 name: 'subir producto',
                 component: () => import('../views/user/products/Create.vue')
             },
             {
-                path: 'actualizar-producto',
+                path: '/actualizar-producto',
                 name: 'actualizar producto',
                 component: () => import('../views/user/products/Create.vue'),
             },
             {
-                path: 'chat',
+                path: '/chat',
                 name: 'chat',
                 component: () => import('../views/user/chat/chat.vue'),
             },
             {
-                path: 'favoritos',
+                path: '/favoritos',
                 name: 'favoritos',
                 component: () => import('../views/user/favoritos/favoritos.vue'),
+            },
+            {
+                name: 'products',
+                path: 'products',
+                meta: { breadCrumb: 'Products'},
+                children: [
+                    {
+                        name: 'products.index',
+                        path: 'products',
+                        component: ProductsIndex,
+                        meta: { breadCrumb: 'Products' }
+                    },
+                    {
+                        name: 'products.create',
+                        path: 'products/create',
+                        component: ProductsCreate,
+                        meta: { breadCrumb: 'Add new product' }
+                    },
+                    {
+                        name: 'products.edit',
+                        path: 'products/edit/:id',
+                        component: ProductsEdit,
+                        meta: { breadCrumb: 'Edit product' }
+                    },
+                ]
             }
         ]
     },
@@ -181,24 +203,6 @@ export default [
                 path: 'profile',
                 component: () => import('../views/admin/profile/index.vue'),
                 meta: { breadCrumb: 'Profile' }
-            },
-            {
-                name: 'products.index',
-                path: 'products',
-                component: ProductsIndex,
-                meta: { breadCrumb: 'Products' }
-            },
-            {
-                name: 'products.create',
-                path: 'products/create',
-                component: ProductsCreate,
-                meta: { breadCrumb: 'Add new product' }
-            },
-            {
-                name: 'products.edit',
-                path: 'products/edit/:id',
-                component: ProductsEdit,
-                meta: { breadCrumb: 'Edit product' }
             },
             {
                 name: 'categories',

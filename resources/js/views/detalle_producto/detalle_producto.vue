@@ -139,9 +139,7 @@
     onMounted(() => {
         
         getPost();
-        getRelatedPosts();
-        console.log(relatedPost
-        );
+        getRelatedProducts();
         // getUserPosts();
     })
 
@@ -160,17 +158,18 @@
 
     // Peticiones de API
     const getPost = async () => {
-        const respuesta = await axios.get('/api/get-post/'+id); // Asegúrate de que esta URL sea la correcta
-        post.value = respuesta.data; // Guardamos los datos en products
+        console.log(id);
+        const respuesta = await axios.get('/api/get-product/'+id); // Asegúrate de que esta URL sea la correcta
+        post.value = respuesta.data; // Guardamos los datos en productos
         console.log('getPost', respuesta.data);
     };
-    const getRelatedPosts = async () => {
-        const respuesta = await axios.get('/api/get-posts');
+    const getRelatedProducts = async () => {
+        const respuesta = await axios.get('/api/get-products');
         relatedPost.value = respuesta.data;
-        console.log('getRelatedPosts', respuesta.data);
+        console.log('getRelatedProducts', respuesta.data);
     };
     const getUserPosts = async () => {
-        const respuesta = await axios.get('/api/get-post/');
+        const respuesta = await axios.get('/api/get-products/');
         post.value = respuesta.data;
         console.log('getUserPosts', respuesta.data);
     };

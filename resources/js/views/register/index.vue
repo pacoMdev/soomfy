@@ -1,17 +1,19 @@
 <template>
     <div class="container vh-100 d-grid align-items-center">
         <div class="row justify-content-center my-5">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-                        <img src="../../../../public/images/logo.svg" alt="">
+            <div class="col-md-8">
+                <div class="border-0 shadow-sm d-flex rounded">
+                    <div class="d-flex justify-content-center align-items-center vh-50 bg-bs-color-secondary rounded">
+                        <div class="w-50 text-center d-flex flex-column gap-2">
+                            <h3>Hey, mercader!</h3>
+                            <p>Ya tienes cuenta? pues inicia sesion y empieza a vender!</p>
+                            <router-link to="/login" class="secondary-button-2 w-100 mx-auto">SIGN IN</router-link>
+                        </div>
+                    </div>
+                    <div class="p-3 mx-auto w-50">
                         <form @submit.prevent="submitRegister">
                             <div class="text-center d-flex flex-column row-gap-2 py-5">
-                                <h3 class="m-0">Registro de sesión</h3>
-                                <div class="d-flex justify-content-center gap-2">
-                                    <p class="h1-p">¿Ya tienes una cuenta?</p>
-                                    <router-link to="/login" class="h1-p">Iniciar sesión!</router-link>
-                                </div>
+                                <h3 class="m-0 fw-bold">Crear Cuenta</h3>
                                 <!-- Email -->
                                 <div class="mb-3">
                                     <FloatLabel>
@@ -64,8 +66,8 @@
 
                                 <!-- Buttons -->
                                 <div class="flex items-center justify-end mt-4">
-                                    <button class="w-100 secondary-button-2" :class="{ 'opacity-25': processing }" :disabled="processing">
-                                        {{ $t('register') }}
+                                    <button class="w-50 secondary-button-2 mx-auto" :class="{ 'opacity-25': processing }" :disabled="processing">
+                                        {{ $t('SING UP') }}
                                     </button>
                                 </div>
                             </div>

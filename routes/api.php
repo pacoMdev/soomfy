@@ -84,7 +84,9 @@ Route::post('get-products', [ProductControllerAdvance::class, 'getProducts']);
 // Obtener publicaciones por categoría
 Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 // Obtener detalles de una publicación
-Route::post('get-product/{id}', [ProductControllerAdvance::class, 'getProduct']);
+Route::get('get-product/{id}', [ProductControllerAdvance::class, 'getProduct']);
+// Obtencion productos de usuario
+Route::get('get-user-products', [ProductControllerAdvance::class, 'getUserProducts']);
 
 
 Route::middleware('auth:sanctum')->get('/get-user-id', [UserController::class, 'getUserId']);

@@ -7,7 +7,9 @@ export default function useProducts() {
         title: '',
         content: '',
         category_id: '',
-        thumbnail: ''
+        price: '',
+        estado: '',
+        thumbnails: '',
     })
     const router = useRouter()
     const validationErrors = ref({})
@@ -46,6 +48,7 @@ export default function useProducts() {
     }
 
     const storeProduct = async (product) => {
+        console.log('detalles del producto', product);
         if (isLoading.value) return;
 
         isLoading.value = true
@@ -55,6 +58,7 @@ export default function useProducts() {
         for (let item in product) {
             if (product.hasOwnProperty(item)) {
                 serializedProduct.append(item, product[item])
+                console.log(item, product[item]);
             }
         }
 
@@ -64,7 +68,7 @@ export default function useProducts() {
             }
         })
             .then(response => {
-                router.push({name: 'products.index'})
+                router.push({name: 'productos.index'})
                 swal({
                     icon: 'success',
                     title: 'Product saved successfully'

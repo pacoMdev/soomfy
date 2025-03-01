@@ -35,33 +35,46 @@ class ProductControllerAdvance extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+        dd($request);
 
-        $this->authorize('product-create');
-        
-        $validatedData = $request->validated();
-        $validatedData['user_id'] = auth()->id();
-        
 
+        // dd($request);
+        // $this->authorize('product-create');
+        // $validatedData = $request->validated();
+        // $validatedData['user_id'] = auth()->id();
+        
+        // dd($validatedData);
+        
         $product = new Product();
-        $product -> title = $validatedData["title"];
-        $product -> content = $validatedData["content"];
-        $product -> estado = $validatedData["estado"] ?? "Nuevo";
-        $product -> price = $validatedData["price"] ?? 99.99;
-        // dd($validatedData, $request);
+        $product -> title = $request["title"] ?? '';
+        $product -> content = $request["content"] ?? '';
+        $product -> estado = $request["estado"] ?? '';
+        $product -> price = $request["price"] ?? 0;
 
+        $product->save();
 
-        $product = Product::create($validatedData);
-
+        // Acocia las categorias del producto con las extraidas de $request
         $categories = explode(",", $request->categories);
         $category = Category::findMany($categories);
         $product->categories()->sync($category);
-
-
-        if ($request->hasFile('thumbnail')) {
-            $product->addMediaFromRequest('thumbnail')->preservingOriginal()->toMediaCollection('images');
-        }
         
-        return new ProductResource($product);
+        // Asocia las imagenes al posts
+        // falta modificar para que sean el array de imagenes(thrumbnail)
+        if ($request->hasFile('thumbnails')) {
+            foreach($request->thumbnails as $thumbnail){
+                $product->addMediaFromRequest($thumbnail)->preservingOriginal()->toMediaCollection('images');
+            }
+        }
+
+        dd($product);
+
+        // Asociacion de producto user
+
+        // $userProduct = new userProduct();
+        // $userProduct -> user_id = $user_id;
+        // $userProduct -> product_id = $product->id;
+
+        // return new ProductResource($product);
     }
 
     public function show(Product $product)
@@ -198,5 +211,13 @@ class ProductControllerAdvance extends Controller
 
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
+    }
+    function getUserProducts(){
+
+        $user = auth()->user();
+        // dd($user);
+        $products = Product::with('user_product')->latest()->paginate();
+
+        return $products;
     }
 }
