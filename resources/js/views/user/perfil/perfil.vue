@@ -6,10 +6,55 @@
         <div class="user text-center">
           <div class="profile">
             <img :src="imgProfile.avatar" alt="">
-            <form @submit.prevent = "onFormSubmit ">
-             <Dropzone v-model="imgProfile.thumbnail" />
-              <button type="submit" class="secondary-button-2">Cambiar imagen</button>
-            </form>>
+            <FileUpload
+              name="image"
+              url="/api/profile/updateimg"
+              @before-upload="onBeforeUpload"
+              @upload="onTemplateUpload($event)"
+              accept="image/webp"
+              :maxFileSize="1500000"
+              @select="onSelectedFiles"
+
+            >
+              <!-- Botones de control -->
+              <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+                <div class="flex gap-2">
+                  <Button @click="chooseCallback()"
+                          class="secondary-button-2"
+                          label="Seleccionar"
+                          rounded
+                          outlined />
+                  <Button @click="uploadCallback()"
+                          class="secondary-button-2"
+                          label="Actualizar"
+                          rounded
+                          outlined
+                          severity="success"
+                          :disabled="!files || files.length === 0" />
+                  <Button @click="clearCallback()"
+                          class="secondary-button-2"
+                          label="Eliminar"
+                          rounded
+                          outlined
+                          severity="danger"
+                          :disabled="!files || files.length === 0" />
+                </div>
+              </template>
+
+              <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+                <img v-if=" files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="file.name" :src="file.objectURL" class="object-fit-cover w-100 h-100 img-profile" />
+                <div v-else>
+                  <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="object-fit-cover w-100 h-100 img-profile" />
+                </div>
+              </template>
+
+              <template #empty>
+                <img v-if="user.avatar" :src=user.avatar alt="Avatar" class="object-fit-cover w-100 h-100 img-profile">
+                <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-100 h-100 img-profile">
+              </template>
+
+
+            </FileUpload>
           </div>
         </div>
       </div>
@@ -56,63 +101,21 @@ import authStore from "@/composables/auth.js";
 const { router,validationErrors
   ,imgProfile, profile, getProfile, updateProfile,updateImgProfile } = useProfile()
 
-// Asignamos mensajes de error en español
-
-yum.setLocale(es);
 
 const toast = useToast();
+const files = ref([]);
 
-// Creamos variable para almacenar los errores
-const errors = ref({});
-
-// Variable de validación datos con yup
-const schema = yum.object({
-  id: yup.number().required(),
-  thumbnail: yum.string().required()
-})
-
-// Obtener datos
-onMounted(async()=> {
-  try {
-    // Obtengo los datos del usuario autenticado
-    const response = await axios.get('/api/profile');
-    // Modificamos el valor de la variable ref de profile.js
-    imgProfile.value = response.data.data;
-    console.log(imgProfile.value);
-  } catch (error) {
-    console.error("Error al guardar el usuario: ",error);
-    toast.add({
-      severity:'error',
-      summary:'Error',
-      detail:'Error al guardar el usuario',
-      life: 3000
-    });
-  }
-})
-
-const onFormSubmit = () => {
-  schema.validate(imgProfile.value)
-      .then(() => {
-        updateImgProfile(imgProfile.value)
-      })
-      .catch(error => {
-        errors.value = {};  // Reiniciem els errors
-        if (error.inner) {
-          error.inner.forEach(err => {
-            errors.value[err.path] = err.message;
-          });
-        } else {
-          errors.value = { general: error.message };
-        }
-
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Si us plau, revisa els camps del formulari',
-          life: 3000
-        });
-      });
+const onBeforeUpload = (event) => {
+  event.formData.append('id', user.id)
 }
+
+const onSelectedFiles = (event) => {
+
+}
+const onTemplateUpload = (event) => {
+
+}
+
 
 
 import 'primeicons/primeicons.css';

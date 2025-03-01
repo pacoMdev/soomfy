@@ -1,7 +1,9 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import useAuth from '@/composables/auth';
 
 export default function useProfile() {
+    const auth = useAuth();
     const profile = ref({
         name: '',
         surname1: '',
@@ -11,7 +13,7 @@ export default function useProfile() {
     })
 
     const imgProfile = ref({
-        thumbnail: ''
+        avatar: null
     })
 
     const router = useRouter()
@@ -20,7 +22,7 @@ export default function useProfile() {
     const swal = inject('$swal')
 
     const getProfile = async () => {
-        profile.value = auth.user.value;
+        profile.value = auth.user;
     }
 
     const updateProfile = async (profile) => {
@@ -53,7 +55,7 @@ export default function useProfile() {
         validationErrors.value = {}
         // Crear formData para enviar la imagen
         const formData = new FormData();
-        formData.append('thumbnail', imgProfile.value.thumbnail);
+        formData.append('avatar', imgProfile.value.avatar);
 
         axios.post('/api/profile/updateimg', formData, {
                 headers: {

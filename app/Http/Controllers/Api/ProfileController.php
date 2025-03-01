@@ -17,7 +17,11 @@ class ProfileController extends Controller
     public function index()
     {
         $profile = Auth::user()->load('media');
-        return $this->successResponse($profile, 'User found');
+        \Log::info('Media cargado:', [
+            'tiene_media' => $profile->getMedia('*')->count(),
+            'media_collection' => $profile->getMedia('*')->toArray()
+        ]);
+        return new UserResource($profile);
 
     }
     /**
