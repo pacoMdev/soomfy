@@ -91,12 +91,12 @@ const gestorFavoritos = async(productId) => {
   console.log("Este es el id del producto que has clicado: " + productId);
   const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
   if (respuesta.data.productoAgregado) {
-    // swal({
-//       icon: 'success',
-//       title: 'Producto agregado a favoritos',
-//       showConfirmButton: false,
-//       timer: 1500,
-//     });
+    swal({
+      icon: 'success',
+      title: 'Producto agregado a favoritos',
+      showConfirmButton: false,
+      timer: 1500,
+    });
   } 
   if (props.esVistaFavoritos){
       await props.actualizarFavoritos();

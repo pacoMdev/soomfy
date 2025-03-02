@@ -47,40 +47,55 @@ export default function useProducts() {
             })
     }
 
-    const storeProduct = async (product) => {
-        console.log('detalles del producto', product);
-        if (isLoading.value) return;
-
-        isLoading.value = true
-        validationErrors.value = {}
-
-        let serializedProduct = new FormData()
-        for (let item in product) {
-            if (product.hasOwnProperty(item)) {
-                serializedProduct.append(item, product[item])
-                console.log(item, product[item]);
-            }
+    const storeProduct = async (formData) => {
+        // Verificar contenido
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
         }
 
-        axios.post('/api/get-products', serializedProduct,{
+        if (isLoading.value) return;
+        isLoading.value = true;
+        validationErrors.value = {};
+
+        const response = await axios.post('/api/post-products', formData, {
             headers: {
-                "content-type": "multipart/form-data"
+                "Content-Type": "multipart/form-data"
             }
-        })
-            .then(response => {
-                router.push({name: 'productos.index'})
-                swal({
-                    icon: 'success',
-                    title: 'Product saved successfully'
-                })
-            })
-            .catch(error => {
-                if (error.response?.data) {
-                    validationErrors.value = error.response.data.errors
-                }
-            })
-            .finally(() => isLoading.value = false)
-    }
+        });
+
+        await  swal({
+            icon: 'success',
+            title: 'Producto guardado exitosamente',
+            showConfirmButton: true,
+            timer: 2000
+        });
+        await router.push({name: 'products.index'});
+    };
+    const storeUserProduct = async (formData) => {
+        // Verificar contenido
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        if (isLoading.value) return;
+        isLoading.value = true;
+        validationErrors.value = {};
+
+        const response = await axios.post('/api/post-products', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        await  swal({
+            icon: 'success',
+            title: 'Producto guardado exitosamente',
+            showConfirmButton: true,
+            timer: 2000
+        });
+        await router.push({name: 'products.index'});
+    };
+
 
     const updateProduct = async (product) => {
         if (isLoading.value) return;
@@ -144,6 +159,7 @@ export default function useProducts() {
         getProducts,
         getProduct,
         storeProduct,
+        storeUserProduct,
         updateProduct,
         deleteProduct,
         validationErrors,

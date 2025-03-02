@@ -76,9 +76,9 @@ export default [
                 component: () => import('../views/home/index.vue'),
             },
             {
-                path: '/productos',
-                name: 'productos',
-                component: () => import('../views/productos/productos.vue'),
+                path: 'products',
+                name: 'products',
+                component: () => import('../views/products/products.vue'),
             },
             {
                 // Pagina de detalle del producto vendido
@@ -197,6 +197,38 @@ export default [
                 path: '',
                 component: () => import('../views/admin/index.vue'),
                 meta: { breadCrumb: 'Admin' }
+            },
+            {
+                name: 'products',
+                path: 'products',
+                meta: { breadCrumb: 'Products'},
+                children: [
+                    {
+                        name: 'products.index',
+                        path: '',
+                        component: () => import('../views/admin/products/Index.vue'),
+                        meta: { breadCrumb: 'View category' }
+                    },
+                    {
+                        name: 'products.create',
+                        path: 'create',
+                        component: () => import('../views/admin/products/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Add new category' ,
+                            linked: false,
+                        }
+                    },
+                    {
+                        name: 'products.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/products/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit category',
+                            linked: false,
+                        }
+                    }
+
+                ]
             },
             {
                 name: 'profile.index',

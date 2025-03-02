@@ -35,48 +35,32 @@ class ProductControllerAdvance extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        dd($request);
+        // Validar los datos
+        $validatedData = $request->validated();
 
-
-        // dd($request);
-        // $this->authorize('product-create');
-        // $validatedData = $request->validated();
-        // $validatedData['user_id'] = auth()->id();
-        
-        // dd($validatedData);
-        
+        // Crear el producto
         $product = new Product();
-        $product -> title = $request["title"] ?? '';
-        $product -> content = $request["content"] ?? '';
-        $product -> estado = $request["estado"] ?? '';
-        $product -> price = $request["price"] ?? 0;
+        $product->title = $validatedData['title'];
+        $product->content = $validatedData['content'];
+        $product->estado = $validatedData['estado'];
+        $product->price = $validatedData['price'];
+        $product->category_id = $validatedData['category_id'];
 
         $product->save();
 
-        // Acocia las categorias del producto con las extraidas de $request
-        $categories = explode(",", $request->categories);
-        $category = Category::findMany($categories);
-        $product->categories()->sync($category);
-        
-        // Asocia las imagenes al posts
-        // falta modificar para que sean el array de imagenes(thrumbnail)
+        // Manejar imágenes - Corregido el manejo de thumbnails
         if ($request->hasFile('thumbnails')) {
-            foreach($request->thumbnails as $thumbnail){
-                $product->addMediaFromRequest($thumbnail)->preservingOriginal()->toMediaCollection('images');
+            foreach ($request->file('thumbnails') as $thumbnail) {
+                $product->addMedia($thumbnail)  // Cambiado aquí
+                ->preservingOriginal()
+                    ->toMediaCollection('images');
             }
         }
 
-        dd($product);
+        return new ProductResource($product);
 
-        // Asociacion de producto user
 
-        // $userProduct = new userProduct();
-        // $userProduct -> user_id = $user_id;
-        // $userProduct -> product_id = $product->id;
-
-        // return new ProductResource($product);
     }
-
     public function show(Product $product)
     {
         $this->authorize('product-edit');

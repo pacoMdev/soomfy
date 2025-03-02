@@ -108,12 +108,6 @@ const loadCategories = async () => {
   }
 }
 
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-
-// Estado reactivo
-const productos = ref([]);
 
 // Ejecutar la función cuando el componente se monte
 onMounted(() => {
@@ -135,11 +129,4 @@ const responsiveOptions = ref([
     }
 ]);
 
-// Función para obtener productos desde la API
-const obtenerProductos = async () => {
-    const respuesta = await axios.get('/api/get-products'); // Asegúrate de que esta URL sea la correcta
-    // const respuesta = await axios.get('/api/get-user-products'); // Asegúrate de que esta URL sea la correcta
-    productos.value = respuesta.data.data; // Guardamos los datos en productos
-    console.log(respuesta);
-};
 </script>

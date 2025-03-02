@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('roles', RoleController::class);
 
-    Route::post('get-products', [ProductControllerAdvance::class, 'store']);
+    Route::post('post-products', [ProductControllerAdvance::class, 'store']);
 
 
 
@@ -44,6 +44,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::apiResource('permissions', PermissionController::class);
 
     Route::get('category-list', [CategoryController::class, 'getList']);
+
+
     Route::get('/user', [ProfileController::class, 'user']);
     Route::put('/user', [ProfileController::class, 'update']);
 

@@ -122,15 +122,30 @@
                                 <td class="px-6 py-4 text-sm">
                                     {{ product.title }}
                                 </td>
-                                <td class="px-6 py-4 text-sm">
-                                    <img :src="product.original_image" alt="image" height="70">
-                                </td>
-                                <td class="px-6 py-4 text-sm">
-                                    <div v-for="category in product.categories">
-                                        {{ category.name }}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm">
+                              <td class="px-6 py-4 text-sm">
+                                <Galleria
+                                    :value="getProductImages(product.resized_image)"
+                                    :responsiveOptions="responsiveOptions"
+                                    :numVisible="5"
+                                    :circular="true"
+                                    containerStyle="height: 150px; width: 200px; border-radius: 10px;"
+                                    :showItemNavigators="true"
+                                    :showThumbnails="false"
+                                >
+                                  <template #item="slotProps">
+                                    <img
+                                        :src="slotProps.item.original_url"
+                                        :alt="slotProps.item.name"
+                                        style="width: 150px; object-fit: contain; display: block; margin: auto;"
+                                    />
+                                  </template>
+                                </Galleria>
+                              </td>
+
+                              <td class="px-6 py-4 text-sm">
+                                {{ product?.category?.name }}
+                              </td>
+                              <td class="px-6 py-4 text-sm">
                                     <div v-html="product.content.slice(0, 100) + '...'"></div>
                                 </td>
                                 <td class="px-6 py-4 text-sm">
@@ -156,7 +171,7 @@
 </template>
 
 <script setup>
-    import {ref, onMounted, watch} from "vue";
+import {ref, onMounted, watch, computed} from "vue";
     import useProducts from "@/composables/products.js";
     import useCategories from "@/composables/categories";
     import {useAbility} from '@casl/vue'
@@ -171,6 +186,43 @@
     const {products, getProducts, deleteProduct} = useProducts()
     const {categoryList, getCategoryList} = useCategories()
     const {can} = useAbility();
+
+    const props = defineProps({
+      product: {
+        type: Object,
+        required: true
+      },
+      category: {
+        type: Object,
+        required: true
+      }
+
+    });
+
+    // Convertir las imágenes al formato que espera Galleria
+    const getProductImages = (resizedImages) => {
+      if (!resizedImages) return [];
+      return Object.values(resizedImages);
+    };
+
+    // Obtenemos la categoria de cada uno,
+
+// Opciones responsive para la galería
+    const responsiveOptions = ref([
+      {
+        breakpoint: '1024px',
+        numVisible: 3
+      },
+      {
+        breakpoint: '768px',
+        numVisible: 2
+      },
+      {
+        breakpoint: '560px',
+        numVisible: 1
+      }
+    ]);
+
     onMounted(() => {
         getProducts()
         getCategoryList()

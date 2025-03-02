@@ -31,7 +31,7 @@
           <div class="overlay">
             <i class="fas fa-edit edit-icon"></i>
           </div>
-          <div class="placeholder"> 
+          <div class="placeholder">
             <font-awesome-icon :icon="['fad', 'image']" />
           </div>
         </div>
@@ -42,60 +42,21 @@
 
 
 
-<script setup>
-import { defineProps, defineEmits } from "vue";
 
-// Recibir `modelValue` desde el padre
+<script setup>
+import { ref, watch} from "vue";
+
+// Definimos las propiedades del componente
 const props = defineProps({
-  modelValue: Array, // `post.thumbnails` del padre
+  // La propiedad modelValue es un Array que se utiliza como valor para el binding
+  // Se utiliza para recibir datos desde un componente padre y vincularlos al componente hijo, permitiendo actualizar el valor externo (utilizando v-model para la sincronización bidireccional).
+  modelValue: {
+    type: Array, // Tipo esperado: Array, ya que debe contener múltiples elementos (imágenes o datos relacionados).
+    default: () => [] // Valor por defecto: un array vacío. Esto asegura que siempre haya una estructura inicial para trabajar dentro del componente.
+  }
 });
+const emit = defineEmits(['update:modelValue']);
 
-const emit = defineEmits(["update:modelValue"]);
-
-// Función de arrastre
-const dragover = (e) => {
-  e.preventDefault();
-};
-
-const dragleave = () => {};
-
-const drop = (e, index) => {
-  e.preventDefault();
-  const files = e.dataTransfer.files;
-  if (files.length > 0) {
-    const file = files[0];
-
-    // Clonar el array y actualizar el elemento
-    const updatedThumbnails = [...props.modelValue];
-    updatedThumbnails[index] = { img: URL.createObjectURL(file), file };
-
-    // Emitir el nuevo array para actualizar el padre
-    emit("update:modelValue", updatedThumbnails);
-  }
-};
-
-// Manejar cambio de imagen desde el input
-const onChange = (e, index) => {
-  const file = e.target.files[0];
-  if (file) {
-    const updatedThumbnails = [...props.modelValue];
-    updatedThumbnails[index] = { img: URL.createObjectURL(file), file };
-
-    // Emitir el nuevo array
-    emit("update:modelValue", updatedThumbnails);
-  }
-};
-
-// Función para disparar el input cuando se hace clic
-const triggerFileInput = (index) => {
-  document.querySelectorAll('input[type="file"]')[index].click();
-};
-</script>
-
-
-
-<script setup>
-import { ref } from "vue";
 
 // Usar ref en Vue para referirse a los inputs dinámicos
 const thumbnails = ref([
@@ -103,6 +64,23 @@ const thumbnails = ref([
   { img: "", file: null }, // Contenedor 2
   { img: "", file: null }  // Contenedor 3
 ]);
+
+// Este watcher observa los cambios en la estructura de thumbnails.
+// Su finalidad principal es detectar cualquier modificación en la propiedad `file` de los objetos 
+// que componen el array `thumbnails`.
+watch(thumbnails, (newVal) => {
+  // Filtra los elementos de thumbnails que contienen archivos válidos (donde `file` no es null).
+  const archivosValidos = newVal.filter(item => item.file !== null);
+
+  // Utiliza el evento de emisión para actualizar la propiedad reactiva `modelValue`
+  // en el componente padre, asegurando sincronización de datos.
+  emit('update:modelValue', archivosValidos);
+}, {
+  // Con deep: true, se asegura que se detecten cambios dentro de las propiedades anidadas de los objetos.
+  deep: true
+});
+
+
 
 const hoverIndex = ref(null);
 
@@ -120,6 +98,11 @@ const drop = (e, index) => {
     const file = files[0];
     thumbnails.value[index].img = URL.createObjectURL(file);
     thumbnails.value[index].file = file;
+
+    // Envia las imagenes al padre (Al formulario de creacion)
+    const archivosValidos = thumbnails.value.filter(item => item.file !== null);
+    emit('update:modelValue', archivosValidos);
+
   }
 };
 
@@ -130,6 +113,11 @@ const onChange = (e, index) => {
   if (file) {
     thumbnails.value[index].img = URL.createObjectURL(file);
     thumbnails.value[index].file = file;
+
+    // Envia las imagenes al padre (Al formulario de creacion)
+    const archivosValidos = thumbnails.value.filter(item => item.file !== null);
+    emit('update:modelValue', archivosValidos);
+
   }
 };
 

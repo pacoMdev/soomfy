@@ -56,8 +56,16 @@
                         <!-- CATEGORY ---------------------------------------------------- -->
                         <div class="mb-3 input-categorias">
                             <FloatLabel>
-                                <MultiSelect v-model="post.categories" :options="categoryList" optionLabel="name" modelValue="id" optionValue="id" filter :maxSelectedLabels="3" class="w-full md:w-80" />
-                                <label for="categorias">Selecciona categorias</label>
+                              <Select
+                                  v-model="post.category_id"
+                                  :options="categoryList"
+                                  optionLabel="name"
+                                  optionValue="id"
+                                  :loading="isLoading"
+                                  :disabled="isLoading"
+                                  class="w-full md:w-80"
+                              />
+                              <label>Selecciona categoría</label>
                             </FloatLabel>
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
@@ -118,7 +126,7 @@
 
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
 import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
@@ -145,10 +153,10 @@ const dropZoneActive = ref(true)
 const schema = {
     title: 'required|min:5',
     content: 'required|min:5',
-    categories: 'required',
+    category_id: 'required',
     price: 'required',
     estado: 'required',
-    // thumbnails: 'required'
+    thumbnails: 'required'
 
 }
 // Create a form context with the validation schema
@@ -157,16 +165,16 @@ const {validate, errors} = useForm({validationSchema: schema})
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
-const {value: categories} = useField('categories', null, {initialValue: '', label: 'category'});
+const {value: categories} = useField('category_id', null, {initialValue: '', label: 'category'});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estado} = useField('estado', null, {initialValue: ''});
 const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
-const {storeProduct, validationErrors, isLoading} = usePosts()
+const {storeUserProduct, validationErrors, isLoading} = usePosts()
 const post = reactive({
     title,
     content,
-    categories,
+    category_id: categories,
     thumbnails: [
         { img: "", file: null }, // Contenedor 1
         { img: "", file: null }, // Contenedor 2
@@ -176,17 +184,62 @@ const post = reactive({
     estado
 })
 
+// Dentro de tu script setup
+watch(() => categoryList.value, (newValue) => {
+  console.log('Lista de categorías actualizada:', newValue);
+}, { deep: true });
+
+watch(() => post.category_id, (newValue) => {
+  console.log('Categoría seleccionada:', newValue);
+});
+
+
+
+
 function submitForm() {
-    console.log('submitForm', post);
-    console.log('thumbnails', post.thumbnails)
-    validate().then(form => {
-        console.log('validando informacion')
-        if (form.valid) storeProduct(post)
-    })
+  console.log('Iniciando validación del formulario...');
+  const imagenes = post.thumbnails.filter(imagen => imagen.file !== null);
+  console.log('Imágenes a enviar:', imagenes.length);
+
+  // Verificar si hay al menos una imagen
+  if (imagenes.length === 0) {
+    console.error('Error: Se requiere al menos una imagen');
+    errors.thumbnails = 'Se requiere al menos una imagen';
+    return;
+  }
+
+  validate().then(form => {
+    if (form.valid) {
+      // Crear FormData
+      const formData = new FormData();
+
+      // Añadir campos básicos
+      formData.append('title', post.title);
+      formData.append('content', post.content);
+      formData.append('price', post.price);
+      formData.append('estado', post.estado);
+
+      // Añadir categorías como JSON string
+      formData.append('category_id', post.category_id);
+
+      // Añadir imágenes
+      post.thumbnails.forEach((imagen, index) => {
+        if (imagen.file) {
+          formData.append(`thumbnails[${index}]`, imagen.file);
+        }
+      });
+
+      // Enviar formData
+      storeUserProduct(formData);
+    }
+  });
 }
+
 
 onMounted(() => {
     getCategoryList()
+    console.log('Categorías cargadas:', categoryList.value);
+
 })
 
 </script>
