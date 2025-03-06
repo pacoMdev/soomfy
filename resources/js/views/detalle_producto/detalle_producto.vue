@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <div class="container py-5">
         <div class="w-100">
             <div class="col-md-6 col-lg-8 col-xl-8 w-100 container-product">
@@ -7,7 +7,7 @@
                     <div class="col-md-7 col-lg-7 col-xl-8 container-left">
                         <div class="container-carrusel">
                             <!-- Estaria bien que con hover cambia de imagen -->
-                            <Galleria :value="getImage(post.media)" :responsiveOptions="responsiveOptions" :numVisible="6" :indicatorsPosition="position" containerStyle=" max-height: 450px;">
+                            <Galleria :value="getImage(product.media)" :responsiveOptions="responsiveOptions" :numVisible="6" :indicatorsPosition="position" containerStyle=" max-height: 450px;">
                                 <template #item="slotProps" class="height: 100%;">
                                     <img :src="slotProps.item.original_url" :alt="slotProps.item.name" style="width: 45%;" />
                                 </template>
@@ -18,13 +18,13 @@
                         </div>
                     </div>
                     <div class="col-md-5 col-lg-5 col-xl-4 d-flex flex-column gap-4 container-right">
-                        <div v-if="post" class="container-info-prod p-5 d-flex flex-column gap-3">
-                            <h3 class="m-0">{{ post.price }} €</h3>
-                            <p class="m-0">{{ post.title }}</p>
-                            <p class="m-0">{{ post.content }}</p>
-                            <p class="m-0">{{ post.state }}</p>
+                        <div v-if="product" class="container-info-prod p-5 d-flex flex-column gap-3">
+                            <h3 class="m-0">{{ product.price }} €</h3>
+                            <p class="m-0">{{ product.title }}</p>
+                            <p class="m-0">{{ product.content }}</p>
+                            <p class="m-0">{{ product.state }}</p>
                             <div class="container-categories d-flex gap-2 flex-wrap">
-                                <p v-for="category in post.categories" class="cont-category">{{category.name}}</p>
+                                <p v-for="category in product.categories" class="cont-category">{{category.name}}</p>
                             </div>
                             <div class="button d-flex gap-3">
                                 <Button label="Comprar" variant="outlined" class="w-50" />
@@ -49,7 +49,7 @@
                             <img src="../../../../public/images/trust-icon.png" alt="trust icon">
                             <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
-                        <div class="d-flex gap-3 align-items-center p-4 info-profile-post">
+                        <div class="d-flex gap-3 align-items-center p-4 info-profile-product">
                             <img src="../../../../public/images/Github.svg" alt="">
                             <div>
                                 <h4>Ramon Gallardo</h4>
@@ -138,7 +138,7 @@
 
     onMounted(() => {
         
-        getPost();
+        getProduct();
         getRelatedProducts();
         // getUserPosts();
     })
@@ -148,7 +148,7 @@
     const segments = path.split('/');
     const id = segments.pop();  // obtiene ultimo elemento (id)
 
-    const post = ref([]);
+    const product = ref([]);
     const relatedPost = ref([]);
     const relatedUserPost = ref([]);
 
@@ -157,20 +157,20 @@
 
 
     // Peticiones de API
-    const getPost = async () => {
+    const getProduct = async () => {
         console.log(id);
-        const respuesta = await axios.get('/api/get-product/'+id); // Asegúrate de que esta URL sea la correcta
-        post.value = respuesta.data; // Guardamos los datos en productos
-        console.log('getPost', respuesta.data);
+        const respuesta = await axios.get('/api/products/'+id); // Asegúrate de que esta URL sea la correcta
+        product.value = respuesta.data; // Guardamos los datos en productos
+        console.log('getProduct', respuesta.data);
     };
     const getRelatedProducts = async () => {
-        const respuesta = await axios.get('/api/get-products');
+        const respuesta = await axios.get('/api/products');
         relatedPost.value = respuesta.data;
         console.log('getRelatedProducts', respuesta.data);
     };
     const getUserPosts = async () => {
-        const respuesta = await axios.get('/api/get-products/');
-        post.value = respuesta.data;
+        const respuesta = await axios.get('/api/products/');
+        product.value = respuesta.data;
         console.log('getUserPosts', respuesta.data);
     };
 
@@ -235,11 +235,11 @@ const getSeverity = (status) => {
 
 </script>
 <style scoped>
-    .info-profile-post {
+    .info-profile-product {
         border: solid 1px grey;
         border-radius: 14px;
     }
-    .info-profile-post img{
+    .info-profile-product img{
         background-color: #042A2D;
         border-radius: 100px;
         height: 50px;

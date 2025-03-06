@@ -67,7 +67,6 @@ class ProfileController extends Controller
         }
         $user->avatar = $avatar;
 
-
         return $this->successResponse($user, 'User found');
     }
 

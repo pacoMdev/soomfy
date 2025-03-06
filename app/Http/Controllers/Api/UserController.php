@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Product;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -123,6 +124,26 @@ class UserController extends Controller
         $user->delete();
 
         return response()->noContent();
+    }
+
+    function getAuthProducts(){
+        $user = auth()->user();
+        // dd($user);
+        $products = Product::with('user_product')
+            ->where('user_id', $user->id)
+            ->latest()->paginate();
+
+        return $products;
+    }
+
+    function getUserProducts($id){
+        // dd($user);
+        $products = Product::with('user_product')
+            ->where('user_id', $id)
+            ->latest()
+            ->paginate();
+
+        return $products;
     }
 
 

@@ -24,7 +24,6 @@ export const authStore = defineStore("authStore", () => {
         })
     }
     async function getUser(data) {
-
         await axios.get('/api/user').then(response => {
             user.value = response.data.data
             authenticated.value = true

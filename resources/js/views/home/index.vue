@@ -92,7 +92,7 @@ onMounted(() => {
 
 const obtenerProductos = async () => {
   try {
-    const respuesta = await axios.get('/api/get-products');
+    const respuesta = await axios.get('/api/products');
     productos.value = respuesta.data.data;
   } catch (error) {
     console.error("Error al obtener products:", error);

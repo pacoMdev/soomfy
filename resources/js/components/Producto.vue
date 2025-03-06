@@ -57,7 +57,7 @@ const gestorFavoritos = async(productId) => {
 
 // Función para obtener products desde la API
 const obtenerProductos = async () => {
-    const respuesta = await axios.get('/api/get-products'); // Asegúrate de que esta URL sea la correcta
+    const respuesta = await axios.get('/api/products'); // Asegúrate de que esta URL sea la correcta
     productos.value = respuesta.data.data; // Guardamos los datos en products
     console.log(respuesta);
 };

@@ -23,9 +23,13 @@ class ProductResource extends JsonResource
             $resized_image="";
         }
         $esFavorito = false;
-        if(Auth::user()->favoritos()->where('product_id', $this->id)->exists()){
-            $esFavorito = true;
+        if (Auth::check()) { // Verificamos que hay usuario autenticado
+            $user = Auth::user();
+            if ($user->favoritos()->where('product_id', $this->id)->exists()) {
+                $esFavorito = true;
+            }
         }
+
         return [
             'id' => $this->id,
             'title' => $this->title,

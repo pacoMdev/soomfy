@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row gap-5 justify-items-left justify-content-center">
     <router-link
         :to="'/products/detalle/' + producto.id"
         v-for="producto in productos"
@@ -97,7 +97,7 @@ const gestorFavoritos = async(productId) => {
       showConfirmButton: false,
       timer: 1500,
     });
-  } 
+  }
   if (props.esVistaFavoritos){
       await props.actualizarFavoritos();
   } else {
@@ -112,7 +112,6 @@ function getImages(resized_image) {
 
 <style scoped>
 .producto {
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;

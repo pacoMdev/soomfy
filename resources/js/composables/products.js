@@ -26,7 +26,7 @@ export default function useProducts() {
         order_column = 'created_at',
         order_direction = 'desc'
     ) => {
-        axios.get('/api/get-products?page=' + page +
+        axios.get('/api/products?page=' + page +
             '&search_category=' + search_category +
             '&search_id=' + search_id +
             '&search_title=' + search_title +
@@ -41,7 +41,7 @@ export default function useProducts() {
     }
 
     const getProduct = async (id) => {
-        axios.get('/api/get-products/' + id)
+        axios.get('/api/products/' + id)
             .then(response => {
                 product.value = response.data.data;
             })
@@ -57,7 +57,7 @@ export default function useProducts() {
         isLoading.value = true;
         validationErrors.value = {};
 
-        const response = await axios.post('/api/post-products', formData, {
+        const response = await axios.post('/products', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -81,7 +81,7 @@ export default function useProducts() {
         isLoading.value = true;
         validationErrors.value = {};
 
-        const response = await axios.post('/api/post-products', formData, {
+        const response = await axios.post('/api/products', formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -103,7 +103,7 @@ export default function useProducts() {
         isLoading.value = true
         validationErrors.value = {}
         console.log(product);
-        axios.put('/api/get-products/' + Product.id, Product)
+        axios.put('/api/products/' + product.id, product)
             .then(response => {
                 router.push({name: 'Products.index'})
                 swal({
@@ -133,7 +133,7 @@ export default function useProducts() {
         })
             .then(result => {
                 if (result.isConfirmed) {
-                    axios.delete('/api/get-products/' + id)
+                    axios.delete('/api/products/' + id)
                         .then(response => {
                             getProducts()
                             router.push({name: 'products.index'})

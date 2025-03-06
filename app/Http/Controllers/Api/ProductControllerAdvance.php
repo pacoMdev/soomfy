@@ -196,12 +196,4 @@ class ProductControllerAdvance extends Controller
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
     }
-    function getUserProducts(){
-
-        $user = auth()->user();
-        // dd($user);
-        $products = Product::with('user_product')->latest()->paginate();
-
-        return $products;
-    }
 }
