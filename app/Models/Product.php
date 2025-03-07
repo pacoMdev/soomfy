@@ -26,6 +26,12 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(User::class, 'user_product');
     }
 
+    // Relacion: Obtener el usuario del producto
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function images()
     {
         return $this->hasMany(Product_image::class, 'product_id');
@@ -37,10 +43,6 @@ class Product extends Model implements HasMedia
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function products(){
-        return $this->belongsToMany(User_product::class, 'user_product');
     }
 
     public function registerMediaCollections(): void

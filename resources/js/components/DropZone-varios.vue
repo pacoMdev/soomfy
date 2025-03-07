@@ -55,8 +55,8 @@ const props = defineProps({
     default: () => [] // Valor por defecto: un array vacío. Esto asegura que siempre haya una estructura inicial para trabajar dentro del componente.
   }
 });
-const emit = defineEmits(['update:modelValue']);
 
+const emit = defineEmits(['update:modelValue']);
 
 // Usar ref en Vue para referirse a los inputs dinámicos
 const thumbnails = ref([
@@ -65,20 +65,51 @@ const thumbnails = ref([
   { img: "", file: null }  // Contenedor 3
 ]);
 
-// Este watcher observa los cambios en la estructura de thumbnails.
-// Su finalidad principal es detectar cualquier modificación en la propiedad `file` de los objetos 
-// que componen el array `thumbnails`.
-watch(thumbnails, (newVal) => {
-  // Filtra los elementos de thumbnails que contienen archivos válidos (donde `file` no es null).
-  const archivosValidos = newVal.filter(item => item.file !== null);
+// Watcher para sincronicar datos desde Edit.vue hasta este archivo
+// Ejemplo:
+// <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+// En este ejemplo el v-model es igual a las imagenes, por lo tanto con props lo que hacemos
+// es leer las imagenes enviadas desde el formulario padre (Edit.vue)
+watch(
+    () => props.modelValue,
+    (newVal) => {
+      const filledThumbnails = newVal.map((item, index) => ({
+        img: item?.img || thumbnails.value[index]?.img || "",
+        file: item?.file || thumbnails.value[index]?.file || null,
+      }));
 
-  // Utiliza el evento de emisión para actualizar la propiedad reactiva `modelValue`
-  // en el componente padre, asegurando sincronización de datos.
-  emit('update:modelValue', archivosValidos);
-}, {
-  // Con deep: true, se asegura que se detecten cambios dentro de las propiedades anidadas de los objetos.
-  deep: true
-});
+      // Rellena hasta la longitud máxima (3 elementos)
+      while (filledThumbnails.length < thumbnails.value.length) {
+        filledThumbnails.push({ img: "", file: null });
+      }
+
+      // Compara los valores antes de reemplazar
+      if (JSON.stringify(thumbnails.value) !== JSON.stringify(filledThumbnails)) {
+        thumbnails.value = JSON.parse(JSON.stringify(filledThumbnails)); // Actualizar si son distintos
+      }
+    },
+    { immediate: true }
+);
+
+
+
+// Watcher para sincronizar datos desde este archivo a Create.vue
+// Este watcher observa los cambios en la estructura de thumbnails.
+// Su finalidad principal es detectar cualquier modificación en la propiedad `file` de los objetos
+// que componen el array `thumbnails`.
+watch(
+    thumbnails,
+    (archivosValidos) => {
+      if (JSON.stringify(archivosValidos) !== JSON.stringify(props.modelValue)) {
+        emit('update:modelValue', archivosValidos); // Emitir solo si hay diferencias
+      }
+    },
+    {
+      deep: true
+    }
+);
+
+
 
 
 
@@ -100,8 +131,7 @@ const drop = (e, index) => {
     thumbnails.value[index].file = file;
 
     // Envia las imagenes al padre (Al formulario de creacion)
-    const archivosValidos = thumbnails.value.filter(item => item.file !== null);
-    emit('update:modelValue', archivosValidos);
+    emit("update:modelValue", JSON.parse(JSON.stringify(thumbnails.value)));
 
   }
 };
@@ -115,8 +145,7 @@ const onChange = (e, index) => {
     thumbnails.value[index].file = file;
 
     // Envia las imagenes al padre (Al formulario de creacion)
-    const archivosValidos = thumbnails.value.filter(item => item.file !== null);
-    emit('update:modelValue', archivosValidos);
+    emit("update:modelValue",thumbnails.value);
 
   }
 };

@@ -125,64 +125,7 @@ class ProductsSeeder extends Seeder
             $product->color = $productData['color'];
             $product->save();
 
-            // $product = Product::create([
-            //     'title' => $productData['title'],
-            //     'content' => $productData['content'],
-            // ]);
 
-            // // Copiar la imagen a storage si no existe
-            // $imagePath = storage_path('app/public/products/' . $productData['image']);
-            // if (!file_exists($imagePath)) {
-            //     copy(public_path('seed_images/' . $productData['image']), $imagePath);
-            // }
-
-            // // Agregar la imagen a Spatie Media Library
-            // $product->addMedia($imagePath)->toMediaCollection('images');
-
-            foreach($productData['image'] as $image){
-                // Copiar la imagen a storage si no existe
-                $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
-                if (!file_exists($imagePath)) {
-                    copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
-                }
-    
-                // Agregar la imagen a Spatie Media Library
-                $product->addMedia($imagePath)->toMediaCollection('images');
-            }
-            // foreach ($productData['image'] as $image) {
-            //     // Copiar la imagen a storage si no existe
-            //     // hay que hacer un 
-            //     $imagePath = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $image);
-            //     if (!file_exists($imagePath)) {
-            //         copy(public_path('seed_images' . DIRECTORY_SEPARATOR . $image), $imagePath);
-            //         // Definir rutas de manera consistente
-            //         $imagePath = storage_path("app" . DIRECTORY_SEPARATOR . "public" . DIRECTORY_SEPARATOR . "products" . DIRECTORY_SEPARATOR . $image);
-            //         $sourcePath = public_path("seed_images" . DIRECTORY_SEPARATOR . $image);
-
-            //         $product->addMedia($sourcePath)->toMediaCollection('images'. DIRECTORY_SEPARATOR . 'products_user');
-            //         // Crear el directorio si no existe
-            //         $directory = dirname($imagePath);
-            //         if (!is_dir($directory)) {
-            //             mkdir($directory, 0777, true);
-            //         }
-            //         dd($imagePath);
-            //         // Añade la imagen al media por SparieMedia
-
-            //         // // Verificar si el archivo de origen existe y copiarlo
-            //         // if (file_exists($sourcePath)) {
-            //         //     if (file_exists($imagePath)) {
-            //         //         dd($product);
-            //         //         // if (copy($sourcePath, $imagePath)) {
-            //         //         // } else {
-            //         //         //     \Log::error("Error al copiar la imagen: {image}");
-            //         //         // }
-            //         //     }
-            //         // } else {
-            //         //     \Log::warning("La imagen no existe en la carpeta de origen: {$sourcePath}");
-            //         // }
-            //     }
-
-            // }
         }
     }
 }

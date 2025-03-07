@@ -13,6 +13,7 @@ const ProductsUserEdit  = ()  => import('../views/admin/products/Edit.vue');
 async function requireLogin(to, from, next) {
     const auth = authStore();
     let isLogin = !!auth.authenticated;
+    console.log("¿Guard ejecutado? Autenticado:", isLogin); // Agrega este log para depurar
 
     if (isLogin) {
         next()

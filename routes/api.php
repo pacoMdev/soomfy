@@ -31,7 +31,6 @@ Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); //
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 
 // Productos favoritos
-Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']); // Obtener products favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
 // Productos por ubicacion del usuario (EN PROCESO)
@@ -39,7 +38,6 @@ Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController
 
 // protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
-
     // ApiResource hace lo siguiente
     // GET /users` - Index (Listar todos los usuarios)
     // POST /users` - Store (Crear un nuevo usuario)
@@ -50,13 +48,15 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     // Perfil
     Route::get('profile', [ProfileController::class, 'index']);
     Route::post('profile/updateimg', [ProfileController::class,'updateimg']); // Actualizar imagen (usuario)
-    Route::get('auth-user', [ProfileController::class, 'user']);
+    Route::get('user', [ProfileController::class, 'user']); // Responsable de determinar si estas iniciado sesion o no
     Route::put('profile', [ProfileController::class, 'update']);
 
     // Usuario
     Route::apiResource('users', UserController::class);
     Route::post('users/updateimg', [UserController::class,'updateimg']); // Actualizar imagen de perfil (udmin)
 
+    // Productos favoritos
+    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']); // Obtener products favoritos
 
     // Mensajes
     Route::get('message', [MessageController::class, 'index']);

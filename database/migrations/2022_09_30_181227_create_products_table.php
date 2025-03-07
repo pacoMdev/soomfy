@@ -26,6 +26,12 @@ return new class extends Migration
             $table -> integer('dimensionY') -> nullable();
             $table -> string('marca') -> nullable();
             $table -> string('color') -> nullable();
+
+            // AGREGADO - Agregar el campo user_id como clave foránea
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade');
             // AGREGADO - Agregar el campo category_id como clave foránea
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')

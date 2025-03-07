@@ -153,7 +153,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     <router-link v-if="can('product-edit')"
-                                                 :to="{ name: 'products.edit', params: { id: product.id } }" class="badge bg-primary">Edit
+                                                 :to="{ name: 'products.edit', params: { id: product.id } }" class="primary-button">Edit
                                     </router-link>
                                     <a href="#" v-if="can('product-delete')" @click.prevent="deleteProduct(product.id)"
                                        class="ms-2 badge bg-danger">Delete</a>

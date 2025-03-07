@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                
+
 
                 <!-- ARTICULOS DEL USUARIO   --------------------------------------------- -->
                 <div class="container-user-products">
@@ -92,7 +92,7 @@
                         </Carousel>
                     </div>
                 </div>
-                
+
                 <!-- ARTICULOS RELACIONADOS   --------------------------------------------- -->
                 <div class="container-related-products">
                     <h2>Articulos relacionados</h2>
@@ -175,14 +175,14 @@
     };
 
     // Funciones transaccionales
-    
+
     function getImage(resized_image){
         return Object.values(resized_image || {});
     }
 
     const images = ref();
     const position = ref('left');
-    
+
     const responsiveOptions = ref([
         {
             breakpoint: '1300px',

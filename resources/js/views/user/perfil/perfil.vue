@@ -6,6 +6,7 @@
         <div class="user text-center">
           <div class="profile">
             <img :src="imgProfile.avatar" alt="">
+            <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
             <FileUpload
               name="image"
               url="/api/profile/updateimg"
@@ -48,10 +49,6 @@
                 </div>
               </template>
 
-              <template #empty>
-                <img v-if="user.avatar" :src=user.avatar alt="Avatar" class="object-fit-cover w-100 h-100 img-profile">
-                <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-100 h-100 img-profile">
-              </template>
 
 
             </FileUpload>

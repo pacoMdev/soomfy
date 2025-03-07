@@ -39,6 +39,7 @@
     "primevue": "^4.2.4",
     "prismjs": "^1.29.0",
     "quill": "^2.0.3",
+    "sweetalert": "^2.1.2",
     "templatelaravelvue": "file:",
     "vee-validate": "^4.14.7",
     "vnodes": "^1.4.0",

@@ -72,30 +72,57 @@ export default function useProducts() {
         await router.push({name: 'products.index'});
     };
     const storeUserProduct = async (formData) => {
-        // Verificar contenido
+        // Verificar contenido de formData en consola (opcional, para debug)
         for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
+            console.log(pair[0] + ':', pair[1]);
         }
 
-        if (isLoading.value) return;
-        isLoading.value = true;
-        validationErrors.value = {};
+        if (isLoading.value) return; // Prevenir envíos múltiples
+        isLoading.value = true; // Activar estado de carga
+        validationErrors.value = {}; // Asegurar limpieza previa de errores
 
-        const response = await axios.post('/api/products', formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
+        try {
+            // Intentar realizar la solicitud POST
+            const response = await axios.post('/api/products', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            // Mostrar mensaje de éxito si la solicitud fue exitosa
+            await swal({
+                icon: 'success',
+                title: 'Producto guardado exitosamente',
+                showConfirmButton: true,
+                timer: 2000
+            });
+
+            // Redirigir al índice de productos
+            await router.push({ name: 'products.index' });
+
+        } catch (error) {
+            // Manejo de errores
+            console.error("Error al guardar el producto:", error);
+
+            // Verificar si el error es de validación (422)
+            if (error.response && error.response.status === 422) {
+                // Asignar los errores de validación al estado reactivo
+                validationErrors.value = error.response.data.errors || {};
+                console.error("Errores de validación:", validationErrors.value);
+            } else {
+                // Mostrar error inesperado
+                await swal({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: 'No se pudo guardar el producto. Por favor, inténtalo de nuevo.',
+                    showConfirmButton: true
+                });
             }
-        });
-
-        await  swal({
-            icon: 'success',
-            title: 'Producto guardado exitosamente',
-            showConfirmButton: true,
-            timer: 2000
-        });
-        await router.push({name: 'products.index'});
+        } finally {
+            // Asegurar que el estado de carga termine
+            isLoading.value = false;
+        }
     };
-
 
     const updateProduct = async (product) => {
         if (isLoading.value) return;
@@ -108,7 +135,7 @@ export default function useProducts() {
                 router.push({name: 'Products.index'})
                 swal({
                     icon: 'success',
-                    title: 'Product updated successfully'
+                    title: 'Product actualizado correctamente'
                 })
             })
             .catch(error => {

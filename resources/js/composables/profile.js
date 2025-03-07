@@ -22,7 +22,18 @@ export default function useProfile() {
     const swal = inject('$swal')
 
     const getProfile = async () => {
-        profile.value = auth.user;
+        isLoading.value = true;
+        try {
+            const response = await axios.get('/api/profile');
+            imgProfile.value = response.data.data;
+            return response.data;
+        } catch (e) {
+            error.value = 'Error al obtener el perfil';
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+
     }
 
     const updateProfile = async (profile) => {
@@ -48,7 +59,7 @@ export default function useProfile() {
             })
             .finally(() => isLoading.value = false)
     }
-    const updateImgProfile = async (profile) => {
+    const updateImgProfile = async () => {
         if (isLoading.value) return;
 
         isLoading.value = true

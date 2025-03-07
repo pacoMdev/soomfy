@@ -11,13 +11,13 @@
           <i
               v-if="!producto.esFavorito"
               @click.stop.prevent="gestorFavoritos(producto.id)"
-              class="fa-regular fa-heart"
+              class="fa-regular fa-heart pb-1"
               style="color: #e66565;"
           ></i>
           <i
               v-else
               @click.stop.prevent="gestorFavoritos(producto.id)"
-              class="fa-solid fa-heart"
+              class="fa-solid fa-heart pb-1"
               style="color: #e66565;"
           ></i>
         </div>
@@ -26,7 +26,7 @@
             :responsiveOptions="responsiveOptions"
             :numVisible="5"
             :circular="true"
-            containerStyle="height: 150px; width: 200px; border-radius: 10px;"
+            containerStyle="height: 150px; width: 100%; border-radius: 10px;"
             :showItemNavigators="true"
             :showThumbnails="false"
         >
@@ -90,14 +90,6 @@ const swal = inject('$swal')
 const gestorFavoritos = async(productId) => {
   console.log("Este es el id del producto que has clicado: " + productId);
   const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
-  if (respuesta.data.productoAgregado) {
-    swal({
-      icon: 'success',
-      title: 'Producto agregado a favoritos',
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
   if (props.esVistaFavoritos){
       await props.actualizarFavoritos();
   } else {
@@ -123,6 +115,7 @@ function getImages(resized_image) {
   padding: 15px;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
+  overflow-wrap: break-word;
 }
 
 .producto:hover {

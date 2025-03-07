@@ -13,13 +13,13 @@
                             <!-- IMAGE PRODUCT ---------------------------------------------------- -->
                             <div class="card-body">
                                 <h3>Fotos</h3>
-                                    <DropZoneV v-model="post.thumbnails" class="imagenes"/>
+                                    <DropZoneV v-model="product.thumbnails" class="imagenes"/>
                             </div>
                             <!-- TITLE ---------------------------------------------------- -->
                             <div class="mb-3 input-nombre">
                                 <FloatLabel>
-                                    <InputText v-model="post.title" id="post-title" />
-                                    <label for="post-title">Nombre del producto</label>
+                                    <InputText v-model="product.title" id="product-title" />
+                                    <label for="product-title">Nombre del producto</label>
                                 </FloatLabel>
                                 <div class="text-danger mt-1">
                                     {{ errors.title }}
@@ -41,7 +41,7 @@
                         <!-- CONTENT ---------------------------------------------------- -->
                         <div class="mb-3">
                             <FloatLabel>
-                                <Textarea id="content" v-model="post.content" rows="5" cols="50" />
+                                <Textarea id="content" v-model="product.content" rows="5" cols="50" />
                                 <label for="content">Content</label>
                             </FloatLabel>
                             <div class="text-danger mt-1">
@@ -57,7 +57,7 @@
                         <div class="mb-3 input-categorias">
                             <FloatLabel>
                               <Select
-                                  v-model="post.category_id"
+                                  v-model="product.category_id"
                                   :options="categoryList"
                                   optionLabel="name"
                                   optionValue="id"
@@ -81,7 +81,7 @@
                         <div class="mb-3 input-estado">
                             <FloatLabel>
                                 <Select 
-                                    v-model="post.estado" 
+                                    v-model="product.estado" 
                                     :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }, { label: 'Desgastado', value: 'Desgastado' }]" 
                                     optionLabel="label" 
                                     optionValue="value"
@@ -103,7 +103,7 @@
                         <!-- PRICE ---------------------------------------------------- -->
                         <div class="mb-3 input-price">
                             <FloatLabel>
-                                <InputNumber v-model="post.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
+                                <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
                                 <label for="price-product">Precio</label>
                             </FloatLabel>
                         </div>
@@ -171,7 +171,7 @@ const {value: estado} = useField('estado', null, {initialValue: ''});
 const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, validationErrors, isLoading} = usePosts()
-const post = reactive({
+const product = reactive({
     title,
     content,
     category_id: categories,
@@ -189,7 +189,7 @@ watch(() => categoryList.value, (newValue) => {
   console.log('Lista de categorías actualizada:', newValue);
 }, { deep: true });
 
-watch(() => post.category_id, (newValue) => {
+watch(() => product.category_id, (newValue) => {
   console.log('Categoría seleccionada:', newValue);
 });
 
@@ -198,7 +198,7 @@ watch(() => post.category_id, (newValue) => {
 
 function submitForm() {
   console.log('Iniciando validación del formulario...');
-  const imagenes = post.thumbnails.filter(imagen => imagen.file !== null);
+  const imagenes = product.thumbnails.filter(imagen => imagen.file !== null);
   console.log('Imágenes a enviar:', imagenes.length);
 
   // Verificar si hay al menos una imagen
@@ -214,16 +214,15 @@ function submitForm() {
       const formData = new FormData();
 
       // Añadir campos básicos
-      formData.append('title', post.title);
-      formData.append('content', post.content);
-      formData.append('price', post.price);
-      formData.append('estado', post.estado);
+      formData.append('title', product.title);
+      formData.append('content', product.content);
+      formData.append('price', product.price);
+      formData.append('estado', product.estado);
 
-      // Añadir categorías como JSON string
-      formData.append('category_id', post.category_id);
+      formData.append('category_id', product.category_id);
 
       // Añadir imágenes
-      post.thumbnails.forEach((imagen, index) => {
+      product.thumbnails.forEach((imagen, index) => {
         if (imagen.file) {
           formData.append(`thumbnails[${index}]`, imagen.file);
         }

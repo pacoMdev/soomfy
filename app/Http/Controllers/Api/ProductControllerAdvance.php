@@ -45,6 +45,7 @@ class ProductControllerAdvance extends Controller
         $product->estado = $validatedData['estado'];
         $product->price = $validatedData['price'];
         $product->category_id = $validatedData['category_id'];
+        $product->user_id = auth()->id();
 
         $product->save();
 
@@ -67,6 +68,7 @@ class ProductControllerAdvance extends Controller
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
             return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
+            $product->load('user','category');
             return new ProductResource($product);
         }
     }
@@ -82,8 +84,8 @@ class ProductControllerAdvance extends Controller
         } else {
             $product->update($request->validated());
 
-            $category = Category::findMany($request->categories);
-            $product->categories()->sync($category);
+            $category = Category::find($request->category);
+            $product->category()->sync($category);
 
             return new ProductResource($product);
         }
@@ -116,7 +118,7 @@ class ProductControllerAdvance extends Controller
 
     public function getProduct($id)
     {
-        return Product::with('products', 'users', 'media')->findOrFail($id);
+        return Product::with('users', 'media')->findOrFail($id);
     }
 
     // Favoritos
@@ -129,7 +131,7 @@ class ProductControllerAdvance extends Controller
             return response()->json([
                 'message' => 'Producto eliminado de favoritos',
                 'productoAgregado' => false
-                ]);
+            ]);
         } else {
             $user->favoritos()->attach($productId);
             return response()->json([
@@ -137,6 +139,7 @@ class ProductControllerAdvance extends Controller
                 'productoAgregado' => true
             ]);
         }
+
     }
     
 

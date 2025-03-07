@@ -103,6 +103,16 @@ class UserController extends Controller
         }
     }
 
+    public function getNearbyProducts($latitude, $longitude, $radius)
+    {
+        // Encontramos el usuario dentro del radio especificado
+        $users = User::where('latitude', $latitude)
+            ->where('longitude', $longitude)
+            ->where('radius', $radius)
+            ->get();
+    }
+
+
 
     public function updateimg(Request $request)
     {
