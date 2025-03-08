@@ -7,24 +7,40 @@
                     <div class="col-md-7 col-lg-7 col-xl-8 container-left">
                         <div class="container-carrusel">
                             <!-- Estaria bien que con hover cambia de imagen -->
-                            <Galleria :value="getImage(product.media)" :responsiveOptions="responsiveOptions" :numVisible="6" :indicatorsPosition="position" containerStyle=" max-height: 450px;">
-                                <template #item="slotProps" class="height: 100%;">
-                                    <img :src="slotProps.item.original_url" :alt="slotProps.item.name" style="width: 45%;" />
-                                </template>
-                                <template #thumbnail="slotProps">
-                                    <img :src="slotProps.item.original_url" :alt="slotProps.item.name" style="width: 10%;" />
-                                </template>
-                            </Galleria>
+                          <Galleria
+                              :value="getImage(product.resized_image)"
+                              :responsiveOptions="responsiveOptions"
+                              :numVisible="6"
+                              :indicatorsPosition="position"
+                              containerStyle="max-height: 450px;">
+                            <template #item="slotProps">
+                              <img
+                                  v-if="slotProps.item && slotProps.item.original_url"
+                                  :src="slotProps.item.original_url"
+                                  :alt="slotProps.item.name || product.title"
+                                  class="gallery-image"
+                              />
+                            </template>
+                            <template #thumbnail="slotProps">
+                              <img
+                                  v-if="slotProps.item && slotProps.item.original_url"
+                                  :src="slotProps.item.original_url"
+                                  :alt="slotProps.item.name || product.title"
+                                  class="gallery-thumbnail"
+                              />
+                            </template>
+                          </Galleria>
+
                         </div>
                     </div>
                     <div class="col-md-5 col-lg-5 col-xl-4 d-flex flex-column gap-4 container-right">
                         <div v-if="product" class="container-info-prod p-5 d-flex flex-column gap-3">
                             <h3 class="m-0">{{ product.price }} €</h3>
-                            <p class="m-0">{{ product.title }}</p>
-                            <p class="m-0">{{ product.content }}</p>
-                            <p class="m-0">{{ product.state }}</p>
-                            <div class="container-categories d-flex gap-2 flex-wrap">
-                                <p v-for="category in product.categories" class="cont-category">{{category.name}}</p>
+                            <h2 class="m-0">{{ product.title }}</h2>
+                            <p class="m-0 h2-p">{{ product.content }}</p>
+                            <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
+                          <div class="container-categories d-flex gap-2 flex-wrap">
+                              <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
                             </div>
                             <div class="button d-flex gap-3">
                                 <Button label="Comprar" variant="outlined" class="w-50" />
@@ -44,23 +60,23 @@
                                 <Button label="Chat" raised class="w-50" />
                             </div>
                         </div>
-                        <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
-                            <!-- imagen de informacion se seguridad -->
-                            <img src="../../../../public/images/trust-icon.png" alt="trust icon">
-                            <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
+                      <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
+                        <!-- imagen de informacion se seguridad -->
+                        <img src="../../../../public/images/trust-icon.png" alt="trust icon">
+                        <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
+                      </div>
+                      <div class="d-flex gap-3 align-items-center p-4 info-profile-post">
+                        <img src="../../../../public/images/Github.svg" alt="">
+                        <div>
+                          <h4 v-if="product.user && product.user.name">{{ product.user.name }}</h4>
+                          <h4 v-else>Cargando usuario...</h4>
+                          <Rating v-model="value" readonly />
+                          <div>
+                            <img src="" alt="">
+                            <p>Molins de Rei, 08750, Barcelona</p>
+                          </div>
                         </div>
-                        <div class="d-flex gap-3 align-items-center p-4 info-profile-product">
-                            <img src="../../../../public/images/Github.svg" alt="">
-                            <div>
-                                <h4>Ramon Gallardo</h4>
-                                <Rating v-model="value" readonly />
-
-                                <div>
-                                    <img src="" alt="">
-                                    <p>Molins de Rei, 08750, Barcelona</p>
-                                </div>
-                            </div>
-                        </div>
+                      </div>
                     </div>
                 </div>
 
@@ -84,8 +100,8 @@
                                         </Galleria>
                                         <p class="h1-p">{{ slotProps.data.price }}€</p>
                                         <p class="h4-p">{{ slotProps.data.title }}</p>
-                                        <p class="">{{ slotProps.data.content }}</p>
-                                        <p class="tamaño-estadoProducto">{{ slotProps.data.estado }}</p>
+                                      <p class="" v-if="slotProps.data.content">{{ slotProps.data.content }}</p>
+                                      <p class="tamaño-estadoProducto">{{ slotProps.data.estado.name }}</p>
                                     </div>
                                 </router-link>
                             </template>
@@ -113,7 +129,7 @@
                                         <p class="h1-p">{{ slotProps.data.price }}€</p>
                                         <p class="h4-p">{{ slotProps.data.title }}</p>
                                         <p class="">{{ slotProps.data.content }}</p>
-                                        <p class="tamaño-estadoProducto">{{ slotProps.data.estado }}</p>
+                                        <p class="tamaño-estadoProducto">{{ slotProps.data.estado.name }}</p>
                                     </div>
                                 </router-link>
                             </template>
@@ -130,10 +146,7 @@
     import Carousel from 'primevue/carousel';
     import Rating from 'primevue/rating';
 
-
     import '../../../../resources/css/theme.css'
-
-
 
 
     onMounted(() => {
@@ -160,8 +173,8 @@
     const getProduct = async () => {
         console.log(id);
         const respuesta = await axios.get('/api/products/'+id); // Asegúrate de que esta URL sea la correcta
-        product.value = respuesta.data; // Guardamos los datos en productos
-        console.log('getProduct', respuesta.data);
+        product.value = respuesta.data.data; // Guardamos los datos en productos
+        console.log('getProduct', respuesta.data.data);
     };
     const getRelatedProducts = async () => {
         const respuesta = await axios.get('/api/products');
@@ -285,4 +298,22 @@ const getSeverity = (status) => {
         border-radius: 100px;
         padding: 5px;
      }
+
+    .gallery-image,
+    .gallery-thumbnail {
+      width: 100%; /* Ajusta al contenedor */
+      height: 250px; /* Altura consistente */
+      object-fit: cover; /* Ajusta la imagen conservando su proporción */
+      border-radius: 8px; /* Opcional, para esquinas redondeadas */
+      display: block; /* Asegura el comportamiento como bloque */
+    }
+
+    /* Miniaturas en la galería */
+    .gallery-thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+
 </style>

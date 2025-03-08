@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Estado extends Model
 {
     protected $fillable = [
-        'nombre',
+        'name',
     ];
 
     public function products(): HasMany

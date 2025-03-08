@@ -1,7 +1,7 @@
 <template>
   <div class="contenedor-favoritos w-100 py-7">
-    <div class="centrar-favoritos">
-      <h2>Mis Favoritos</h2>
+    <div class="centrar-favoritos flex-column">
+      <h2 class="text-center">Mis Favoritos</h2>
       <ProductoNew
           :esVistaFavoritos="true"
           :productos="favoritos"

@@ -132,7 +132,7 @@
                   {{ product?.category?.name || 'Sin categoría' }}
                 </td>
                 <td class="px-6 py-4 text-sm">
-                  {{ product?.estado?.nombre || 'Sin estado' }}
+                  {{ product?.estado?.name || 'Sin estado' }}
                 </td>
                 <td class="px-6 py-4 text-sm">
                   <div v-html="product.content.slice(0, 100) + '...'"></div>

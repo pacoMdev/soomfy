@@ -103,7 +103,7 @@ onMounted(()=>{
 }
 
 .fixed-bottom {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     left: 0;
     width: 100%;

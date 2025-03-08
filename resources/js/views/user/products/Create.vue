@@ -83,7 +83,7 @@
                           <Select
                               v-model="product.estado_id"
                               :options="estadoList"
-                              optionLabel="nombre"
+                              optionLabel="name"
                               optionValue="id"
                               :loading="isLoadingEstados"
                               class="w-full md:w-80"

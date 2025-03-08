@@ -30,12 +30,17 @@ export default function useProducts() {
         search_global = '',
         order_column = 'created_at',
         order_direction = 'desc',
-        order_date = 'created_at',
         order_price = '',
+        // Ubicacion
+        search_latitude = '',
+        search_longitude = '',
+        search_radius = ''
+
     ) => {
         axios.get('/api/products?page=' + page +
             '&search_category=' + search_category +
             '&search_id=' + search_id +
+            '&search_title=' + search_title +
             '&min_price=' + min_price +
             '&max_price=' + max_price +
             '&search_estado=' + search_estado +
@@ -44,11 +49,14 @@ export default function useProducts() {
             '&search_global=' + search_global +
             '&order_column=' + order_column +
             '&order_direction=' + order_direction +
-            '&order_date=' + order_date +
-            '&order_price=' + order_price)
-            .then(response => {
-                console.log(response.data);
-                products.value = response.data;
+            '&order_price=' + order_price +
+            '&search_latitude=' + search_latitude +
+            '&search_longitude=' + search_longitude +
+            '&search_radius=' + search_radius
+        )
+        .then(response => {
+            console.log("Respuesta completa:", response.data);
+            products.value = response.data;
             })
 
     }

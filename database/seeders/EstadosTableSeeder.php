@@ -10,11 +10,11 @@ class EstadosTableSeeder extends Seeder
     public function run(): void
     {
         $estados = [
-            ['nombre' => 'Nuevo'],
-            ['nombre' => 'Como nuevo'],
-            ['nombre' => 'Buen estado'],
-            ['nombre' => 'Aceptable'],
-            ['nombre' => 'Para reparar'],
+            ['name' => 'Nuevo'],
+            ['name' => 'Como nuevo'],
+            ['name' => 'Buen estado'],
+            ['name' => 'Aceptable'],
+            ['name' => 'Para reparar'],
         ];
 
         foreach ($estados as $estado) {

@@ -29,6 +29,14 @@
     <script>
         window.config = @json($config);
     </script>
+
+    <!-- Google Maps API -->
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdFFlc6UvNFI251Z9BeD_4rxyUBHberx0&libraries=places"
+            async
+            defer
+    ></script>
+
     <!-- Scripts -->
 {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
         @vite(['resources/sass/app.scss', 'resources/js/app.js'])

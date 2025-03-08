@@ -100,8 +100,25 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
+
+        $orderColumn = request('order_column', 'created_at');
+        $orderDate = request('order_direction', 'desc');
+        if (!in_array($orderDate, ['asc', 'desc'])) {
+            $orderDate = 'desc';
+        }
+
+        $orderPrice = request('order_price', null);
+        if (!in_array($orderPrice, ['asc', 'desc'])) {
+            $orderPrice = 'desc';
+        }
+
+        // Obtenemos la latitud y longitud
+        $latitude = request('search_latitude', null);
+        $longitude = request('search_longitude', null);
+
+
         // Muestra todos los productos con su categoria y foto
-        $products = Product::with('estado','category', 'media')
+        $products = Product::with('user','estado','category', 'media')
             // Se ejecutara si existe el parametro search_category
             ->when(request('search_category'), function($query) {
                 // Busca los prooductos que tengan una relacion con la tabla categorias
@@ -112,19 +129,57 @@ class ProductControllerAdvance extends Controller
                     );
                 });
             })
+            // Filtrar por estado
+            ->when(request('search_estado'), function($query) {
+                // Busca los prooductos que tengan una relacion con la tabla estados
+                $query->whereHas('estado', function($q) {
+                    // Si el nombre de la estado pasada por parametro coincide con alguna relacion producto - estado
+                    // Devolvera solo los productos con ese estado
+                    $q->whereRaw('LOWER(name) = ?', [strtolower(request('search_estado'))]
+                    );
+                });
+            })
             // Filtro por título
             ->when(request('search_title'), function($query) {
-                $query->where('title', 'like', '%' . request('search_title') . '%');
+                $searchTitle = request('search_title');
+                $query->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchTitle) . '%']);
             })
             // Filtro por fecha
             ->when(request('search_date'), function($query) {
                 $query->whereDate('created_at', request('search_date'));
             })
-            // Filtro por precio máximo
-            ->when(request('search_price'), function($query) {
-                $query->where('price', '<=', request('search_price'));
+            // Filtro por precio min-max
+            ->when(request('min_price') && request('max_price'), function($query) {
+                $query->whereBetween('price', [ request('min_price'), request('max_price')]);
             })
-            ->latest()
+            // Filtro por ubicacion
+            ->when($latitude && $longitude, function ($query) use ($latitude, $longitude) {
+                $radius = request('search_radius', 1000); // Por defecto, 5 km
+                if ($radius == 0) {
+                    // Ubicación exacta
+                    $query->whereHas('user', function ($q) use ($latitude, $longitude) {
+                        $q->whereRaw('users.latitude = ? AND users.longitude = ?', [$latitude, $longitude]);
+                    });
+                } else {
+                    // Filtro por radio
+                    $query->whereHas('user', function ($q) use ($latitude, $longitude, $radius) {
+                        $q->whereRaw('ST_Distance_Sphere(point(users.longitude, users.latitude), point(?, ?)) < ?', [
+                            $longitude, $latitude, $radius
+                        ]);
+                    });
+                }
+
+            })
+
+
+            // Agregar múltiples órdenes condicionalmente
+            // Ordenar por precio si existe
+            ->when($orderPrice, function ($query) use ($orderPrice) {
+                $query->orderBy('price', $orderPrice);
+            })
+            ->when($orderColumn && $orderDate, function ($query) use ($orderColumn, $orderDate) {
+                $query->orderBy($orderColumn, $orderDate);
+            })
             ->paginate();
 
         return ProductResource::collection($products);
