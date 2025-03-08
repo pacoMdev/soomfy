@@ -6,7 +6,9 @@
                     <img src="../../../public//images/logo.svg" class="logo-size" alt="Soomfy">
                     <div class="tx-color-secondari">Soomfy</div>
                 </router-link>
-                <div class="align-items-center">
+
+              <SearchBar v-if="!isRestrictedRoute" />
+              <div class="align-items-center">
                     <ul class="navbar-nav align-items-center gap-2">
                         <button class="primary-button">Como funciona</button>
                         <router-link to="/chat" class="nav-link d-flex align-items-center gap-2">
@@ -46,12 +48,12 @@
             </div>
         </div>
         <div class="d-block d-md-none w-100 justify-content-center">
-            <div class="d-flex flex-column justify-content-center w-100">
+            <div class="d-flex flex-column justify-content-center w-100 py-4">
                 <router-link to="/" class="d-flex align-items-center py-4 mx-auto">
                     <img src="/images/logo.svg" class="logo-size" alt="Soomfy">
                     <p>Soomfy</p>
                 </router-link>
-                <input type="text" class="buscadorProductosH mx-auto" placeholder="Buscar">
+                <SearchBar v-if="!isRestrictedRoute" />
             </div>
         </div>
     </nav>
@@ -63,15 +65,19 @@
 import useAuth from "@/composables/auth";
 import LocaleSwitcher from "../components/LocaleSwitcher.vue";
 import { authStore } from "../store/auth";
+import SearchBar from "@/components/SearchBar.vue";
+import {computed} from "vue";
+import {useRoute} from "vue-router";
 
 const { processing, logout } = useAuth();
+const route = useRoute(); // Añadimos esta línea
+
+// Verificar si estamos en una ruta restringida
+const isRestrictedRoute = computed(() => {
+  const restrictedRoutes = ['home', 'login', 'register'];
+  return restrictedRoutes.includes(route.name);
+});
+
+
+
 </script>
-<style>
-.buscadorProductosH {
-    height: 40px;
-    border-radius: 25px;
-    border: 1px solid var(--primary-color);
-    padding-left: 25px;
-    width: 75%;
-}
-</style>

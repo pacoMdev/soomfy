@@ -174,6 +174,8 @@ export default function useCategories() {
             })
     }
 
+
+
     return {
         categoryList,
         categories,

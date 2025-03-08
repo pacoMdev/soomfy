@@ -18,7 +18,6 @@ return new class extends Migration
             $table -> string('title');
             $table -> string('content')-> nullable();
             $table -> double('price') -> nullable();
-            $table -> string('estado') -> nullable();
             $table -> boolean('toSend') -> nullable();
             $table -> boolean('isDeleted') -> nullable();
             $table -> boolean('isBoost') -> nullable();
@@ -37,7 +36,11 @@ return new class extends Migration
             $table->foreign('category_id')
                 ->references('id')->on('categories')
                 ->onDelete('cascade');
-
+            // AGREGADO - Agregar el campo estado_id como clave foránea
+            $table->unsignedBigInteger('estado_id')->nullable();
+            $table->foreign('estado_id')
+                ->references('id')->on('estados')
+                ->onDelete('cascade');
 
             $table -> timestamps();
         });

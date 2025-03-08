@@ -41,7 +41,7 @@
         <p class="h1-p">{{ producto.price }}€</p>
         <p class="h4-p">{{ producto.title }}</p>
         <p class="">{{ producto.content }}</p>
-        <p class="tamaño-estadoProducto">{{ producto.estado }}</p>
+        <p class="tamaño-estadoProducto">{{ producto.estado.nombre }}</p>
       </div>
     </router-link>
   </div>

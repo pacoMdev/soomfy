@@ -10,8 +10,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryTableSeeder::class);
         $this->call(PermissionTableSeeder::class);
         $this->call(CreateAdminUserSeeder::class);
-
-
+        $this->call(EstadosTableSeeder::class);
 
         //en prod comentar
         $this->call(ProductsSeeder::class);

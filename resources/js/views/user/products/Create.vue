@@ -78,29 +78,30 @@
                         </div>
 
                         <!-- ESTADO ---------------------------------------------------- -->
-                        <div class="mb-3 input-estado">
-                            <FloatLabel>
-                                <Select 
-                                    v-model="product.estado" 
-                                    :options="[{ label: 'Nuevo', value: 'Nuevo' }, { label: 'Usado', value: 'Usado' }, { label: 'Desgastado', value: 'Desgastado' }]" 
-                                    optionLabel="label" 
-                                    optionValue="value"
-                                    :maxSelectedLabels="1" 
-                                    class="w-full md:w-80" 
-                                />
-                                <label for="estado">Selecciona estado</label>
-                            </FloatLabel>
-                            
-                            <div class="text-danger mt-1">
-                                {{ errors.estado }}
-                            </div>
-                            <div class="text-danger mt-1">
-                                <div v-for="message in validationErrors?.estado">
-                                    {{ message }}
-                                </div>
-                            </div>
+                      <div class="mb-3 input-estado">
+                        <FloatLabel>
+                          <Select
+                              v-model="product.estado_id"
+                              :options="estadoList"
+                              optionLabel="nombre"
+                              optionValue="id"
+                              :loading="isLoadingEstados"
+                              class="w-full md:w-80"
+                          />
+                          <label for="estado">Selecciona estado</label>
+                        </FloatLabel>
+
+                        <div class="text-danger mt-1">
+                          {{ errors.estado_id }}
                         </div>
-                        <!-- PRICE ---------------------------------------------------- -->
+                        <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.estado_id">
+                            {{ message }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- PRICE ---------------------------------------------------- -->
                         <div class="mb-3 input-price">
                             <FloatLabel>
                                 <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
@@ -130,7 +131,7 @@ import {onMounted, reactive, ref, watch} from "vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
 import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
-import usePosts from "@/composables/products.js";
+import useProducts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
 import {required, min} from "@/validation/rules"
 import { FloatLabel, MultiSelect, Textarea } from "primevue";
@@ -155,7 +156,7 @@ const schema = {
     content: 'required|min:5',
     category_id: 'required',
     price: 'required',
-    estado: 'required',
+    estado_id: 'required',
     thumbnails: 'required'
 
 }
@@ -167,10 +168,11 @@ const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
 const {value: categories} = useField('category_id', null, {initialValue: '', label: 'category'});
 const {value: price} = useField('price', null, {initialValue: 0});
-const {value: estado} = useField('estado', null, {initialValue: ''});
+const {value: estados} = useField('estado_id', null, {initialValue: ''});
 const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
-const {storeUserProduct, validationErrors, isLoading} = usePosts()
+const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
+
 const product = reactive({
     title,
     content,
@@ -179,9 +181,9 @@ const product = reactive({
         { img: "", file: null }, // Contenedor 1
         { img: "", file: null }, // Contenedor 2
         { img: "", file: null }  // Contenedor 3
-    ], 
+    ],
     price,
-    estado
+    estado_id: estados,
 })
 
 // Dentro de tu script setup
@@ -193,13 +195,11 @@ watch(() => product.category_id, (newValue) => {
   console.log('Categoría seleccionada:', newValue);
 });
 
-
-
-
 function submitForm() {
   console.log('Iniciando validación del formulario...');
+  // Solo tomar las imágenes que realmente tienen un archivo
   const imagenes = product.thumbnails.filter(imagen => imagen.file !== null);
-  console.log('Imágenes a enviar:', imagenes.length);
+  console.log('Imágenes filtradas:', imagenes);
 
   // Verificar si hay al menos una imagen
   if (imagenes.length === 0) {
@@ -210,25 +210,30 @@ function submitForm() {
 
   validate().then(form => {
     if (form.valid) {
-      // Crear FormData
       const formData = new FormData();
 
       // Añadir campos básicos
       formData.append('title', product.title);
       formData.append('content', product.content);
       formData.append('price', product.price);
-      formData.append('estado', product.estado);
-
+      formData.append('estado_id', product.estado_id);
       formData.append('category_id', product.category_id);
 
-      // Añadir imágenes
-      product.thumbnails.forEach((imagen, index) => {
+      // Solo enviar las imágenes que tienen archivo
+      let imageIndex = 0;
+      imagenes.forEach(imagen => {
         if (imagen.file) {
-          formData.append(`thumbnails[${index}]`, imagen.file);
+          // Usar simplemente thumbnails[] en lugar de thumbnails[index]
+          formData.append('thumbnails[]', imagen.file);
+          imageIndex++;
         }
       });
 
-      // Enviar formData
+      // Verificar lo que se está enviando
+      for (let pair of formData.entries()) {
+        console.log('Enviando:', pair[0], pair[1]);
+      }
+
       storeUserProduct(formData);
     }
   });
@@ -236,9 +241,10 @@ function submitForm() {
 
 
 onMounted(() => {
-    getCategoryList()
+    getCategoryList();
+    getEstadoList();
     console.log('Categorías cargadas:', categoryList.value);
-
+    console.log('Estados cargados:', estadoList.value);
 })
 
 </script>

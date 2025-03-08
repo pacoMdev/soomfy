@@ -1,22 +1,22 @@
 <template>
   <div class="grid grid-cols-3 gap-5 w-100">
     <div
-      v-for="(item, index) in thumbnails"
-      :key="index"
-      @click="activarInput"
-      class="dropzone-container tamaño-imagen input-imagen"
-      @dragover="dragover"
-      @dragleave="dragleave"
-      @drop="(e) => drop(e, index)"
-      @mouseenter="() => hoverIndex = index"
-      @mouseleave="() => hoverIndex = null"
+        v-for="(item, index) in thumbnails"
+        :key="index"
+        @click="activarInput"
+        class="dropzone-container tamaño-imagen input-imagen"
+        @dragover="dragover"
+        @dragleave="dragleave"
+        @drop="(e) => drop(e, index)"
+        @mouseenter="() => hoverIndex = index"
+        @mouseleave="() => hoverIndex = null"
     >
       <input
-        type="file"
-        class="hidden-input backgroundIcon"
-        @change="(e) => onChange(e, index)"
-        :ref="`refFiles${index}`"
-        accept=".webp, .png, .jpg, .heic, .avif"
+          type="file"
+          class="hidden-input backgroundIcon"
+          @change="(e) => onChange(e, index)"
+          :ref="`refFiles${index}`"
+          accept=".webp, .png, .jpg, .heic, .avif"
       />
       <div class="file-label" @click="() => triggerFileInput(index)">
         <!-- Si hay imagen -->

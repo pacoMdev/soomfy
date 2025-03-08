@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 
 export default function useProducts() {
     const products = ref({data:[]})
+    const estadoList = ref([])
     const product = ref({
         title: '',
         content: '',
@@ -21,23 +22,35 @@ export default function useProducts() {
         search_category = '',
         search_id = '',
         search_title = '',
+        min_price = '',
+        max_price = '',
+        search_estado = '',
+        search_location = '',
         search_content = '',
         search_global = '',
         order_column = 'created_at',
-        order_direction = 'desc'
+        order_direction = 'desc',
+        order_date = 'created_at',
+        order_price = '',
     ) => {
         axios.get('/api/products?page=' + page +
             '&search_category=' + search_category +
             '&search_id=' + search_id +
-            '&search_title=' + search_title +
+            '&min_price=' + min_price +
+            '&max_price=' + max_price +
+            '&search_estado=' + search_estado +
+            '&search_location=' + search_location +
             '&search_content=' + search_content +
             '&search_global=' + search_global +
             '&order_column=' + order_column +
-            '&order_direction=' + order_direction)
+            '&order_direction=' + order_direction +
+            '&order_date=' + order_date +
+            '&order_price=' + order_price)
             .then(response => {
                 console.log(response.data);
                 products.value = response.data;
             })
+
     }
 
     const getProduct = async (id) => {
@@ -145,7 +158,12 @@ export default function useProducts() {
             })
             .finally(() => isLoading.value = false)
     }
-
+    const getEstadoList = async () => {
+        axios.get('/api/estado-list')
+            .then(response => {
+                estadoList.value = response.data.data;
+            })
+    }
     const deleteProduct = async (id) => {
         swal({
             title: 'Are you sure?',
@@ -181,6 +199,8 @@ export default function useProducts() {
     }
 
     return {
+        getEstadoList,
+        estadoList,
         products,
         product,
         getProducts,

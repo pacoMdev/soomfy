@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Estado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,11 +22,6 @@ use App\Mail\ConstructEmail;
 
 class ProductControllerAdvance extends Controller
 {
-    public function index()
-    {
-
-    }
-
 
     /**
      * Summary of store
@@ -42,7 +38,7 @@ class ProductControllerAdvance extends Controller
         $product = new Product();
         $product->title = $validatedData['title'];
         $product->content = $validatedData['content'];
-        $product->estado = $validatedData['estado'];
+        $product->estado_id = $validatedData['estado_id'];
         $product->price = $validatedData['price'];
         $product->category_id = $validatedData['category_id'];
         $product->user_id = auth()->id();
@@ -68,7 +64,7 @@ class ProductControllerAdvance extends Controller
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
             return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            $product->load('user','category');
+            $product->load('user','category','estado', 'media');
             return new ProductResource($product);
         }
     }
@@ -104,10 +100,36 @@ class ProductControllerAdvance extends Controller
 
     public function getProducts()
     {
-        $products = Product::with('category')->with('media')->latest()->paginate();
-        return ProductResource::collection($products);
+        // Muestra todos los productos con su categoria y foto
+        $products = Product::with('estado','category', 'media')
+            // Se ejecutara si existe el parametro search_category
+            ->when(request('search_category'), function($query) {
+                // Busca los prooductos que tengan una relacion con la tabla categorias
+                $query->whereHas('category', function($q) {
+                    // Si el nombre de la categoria pasada por parametro coincide con alguna relacion producto - categoria
+                    // Devolvera solo los productos con esa categoria
+                    $q->whereRaw('LOWER(name) = ?', [strtolower(request('search_category'))]
+                    );
+                });
+            })
+            // Filtro por título
+            ->when(request('search_title'), function($query) {
+                $query->where('title', 'like', '%' . request('search_title') . '%');
+            })
+            // Filtro por fecha
+            ->when(request('search_date'), function($query) {
+                $query->whereDate('created_at', request('search_date'));
+            })
+            // Filtro por precio máximo
+            ->when(request('search_price'), function($query) {
+                $query->where('price', '<=', request('search_price'));
+            })
+            ->latest()
+            ->paginate();
 
+        return ProductResource::collection($products);
     }
+
 
     public function getCategoryByProducts($id)
     {
@@ -116,11 +138,12 @@ class ProductControllerAdvance extends Controller
         return ProductResource::collection($products);
     }
 
-    public function getProduct($id)
+    public function getEstadoList()
     {
-        return Product::with('users', 'media')->findOrFail($id);
-    }
+        $estados = Estado::all();
+        return response()->json(['data' => $estados]);
 
+    }
     // Favoritos
 
     // Agregar a favoritos 

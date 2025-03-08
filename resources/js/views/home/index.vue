@@ -6,25 +6,17 @@
           <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
             <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
             <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
-            <form @submit.prevent="buscarProducto" class="d-flex w-100 justify-content-center">
-              <!-- Input de búsqueda -->
-              <input
-                  type="text"
-                  class="buscadorProductos"
-                  id="searchTerm"
-                  v-model="searchTerm"
-                  placeholder="Busca productos..." />
-              <!-- Botón de búsqueda -->
-              <button type="submit" class="secondary-button-2 no-borders-left">
-                <i class="fas fa-search"></i> Search
-              </button>
-            </form>
+            <SearchBar />
           </div>
         </div>
         <div class="centrar-categories">
           <div class="categories">
+            <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
+              <img src="/path/to/default/image.jpg" alt="Todas">
+              <p>Todas</p>
+            </div>
             <div v-for="category in categories" :key="category.id">
-              <div class="d-flex flex-column text-center gap-2" @click="toggleCategory(category.id)">
+              <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
                 <img :src="category.original_image" :alt="category.original_image">
                 <p>{{ category.name }}</p>
               </div>
@@ -62,8 +54,8 @@
       </div>
       <div class="">
         <!-- falta ajustar el responsive -->
-        <div class="productos">
-          <Producto />
+        <div class="productos w-100">
+          <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
         </div>
       </div>
       <div class="d-flex justify-content-center">
@@ -80,6 +72,10 @@ import '../../../css/home/home.css';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import ProductoNew from '@/components/ProductoNew.vue';
+import { useRouter } from 'vue-router';
+import router from "@/routes/index.js";
+import SearchBar from "@/components/SearchBar.vue";
+
 
 const productos = ref([]);
 const categories = ref([]);
@@ -108,6 +104,25 @@ const loadCategories = async () => {
   }
 }
 
+// Cada vez que hagas clic a una categoria, lo que hara es llamar a esta funcion pasandole la categoria
+const redirectCategory = (category) => {
+  // Y te redirigira al apartado de categorias, filtrado por categoria
+  router.push({
+    name: 'public.products',
+    // Y agregara searc_category en la url
+    query: {
+      search_category: category.name
+    }
+  });
+};
+
+const redirectAll = () => {
+  // Y te redirigira al apartado de categorias, filtrado por categoria
+  router.push({
+    name: 'public.products',
+  });
+};
+
 
 // Ejecutar la función cuando el componente se monte
 onMounted(() => {
@@ -130,3 +145,14 @@ const responsiveOptions = ref([
 ]);
 
 </script>
+
+<style scoped>
+/* Falta la etiqueta de apertura <style> */
+.buscadorProductos {
+  height: 40px;
+  border-radius: 25px;
+  border: 1px solid var(--primary-color);
+  padding-left: 25px;
+  width: 75%;
+}
+</style>

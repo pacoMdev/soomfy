@@ -78,7 +78,7 @@ export default [
             },
             {
                 path: 'products',
-                name: 'products',
+                name: 'public.products',
                 component: () => import('../views/products/products.vue'),
             },
             {
@@ -161,21 +161,21 @@ export default [
                 meta: { breadCrumb: 'Products'},
                 children: [
                     {
-                        name: 'products.index',
+                        name: 'auth.products',
                         path: 'products',
                         component: ProductsIndex,
                         meta: { breadCrumb: 'Products' }
                     },
                     {
-                        name: 'products.create',
+                        name: 'auth.products.create',
                         path: 'products/create',
-                        component: ProductsCreate,
+                        component: ProductsUserCreate,
                         meta: { breadCrumb: 'Add new product' }
                     },
                     {
-                        name: 'products.edit',
+                        name: 'auth.products.edit',
                         path: 'products/edit/:id',
-                        component: ProductsEdit,
+                        component: ProductsUserEdit,
                         meta: { breadCrumb: 'Edit product' }
                     },
                 ]

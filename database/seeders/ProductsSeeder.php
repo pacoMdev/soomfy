@@ -14,7 +14,8 @@ class ProductsSeeder extends Seeder
                 'title' => 'Laptop MacBook Pro M1',
                 'content' => 'MacBook Pro con chip M1, 16GB RAM, SSD 512GB.',
                 'price' => 1200,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 2, // ID de la categoría "Tecnología"
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -22,13 +23,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Apple',
                 'color' => 'Plata',
-                'default_image' => ['macbook-pro-m1-14-header.png']
             ],
             [
                 'title' => 'Bicicleta de montaña Trek X-Caliber',
                 'content' => 'Bicicleta en perfecto estado, ideal para montaña.',
                 'price' => 650,
-                'estado' => 'Usado',
+                'estado_id' => 2, // ID del estado "Usado"
+                'category_id' => 7, // ID de la categoría "Deporte"
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -36,13 +37,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 8,
                 'marca' => 'Trek',
                 'color' => 'Rojo',
-                'default_image' => ['721188004_228995545_1024x576.webp', '720938388_228979212_1706x960.webp', 'dfs.jpg']
             ],
             [
                 'title' => 'TV 4K LG OLED',
                 'content' => 'Televisión de 55 pulgadas, en perfecto estado.',
                 'price' => 800,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 2, // ID de la categoría "Tecnología"
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -50,13 +51,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 30,
                 'marca' => 'LG',
                 'color' => 'Negro',
-                'default_image' => ['TVFY23_X85L_Primary-Image.webp', '500_333.jpeg']
             ],
             [
                 'title' => 'Apple Watch SE 44mm',
                 'content' => 'Reloj deportivo, resistente al agua.',
                 'price' => 100,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 2, // ID de la categoría "Tecnología"
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -64,13 +65,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 3,
                 'marca' => 'Apple',
                 'color' => 'Negro',
-                'default_image' => ['apple_watch_s10_case_46_aluminum_jetblack_Side.webp']
             ],
             [
                 'title' => 'Cafetera Nespresso',
                 'content' => 'Cafetera de cápsulas Nespresso en excelente estado.',
                 'price' => 120,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 4, // ID de la categoría "Hogar"
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -78,13 +79,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 12,
                 'marca' => 'Nespresso',
                 'color' => 'Negro',
-                'default_image' => ['b-5-opciones-nespresso.jpg', '450_1000.jpeg']
             ],
             [
                 'title' => 'Maceta de Cerámica Grande',
                 'content' => 'Maceta de cerámica ideal para interiores.',
                 'price' => 25,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 4, // ID de la categoría "Hogar"
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -92,13 +93,13 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 20,
                 'marca' => 'Cerámica Barcelona',
                 'color' => 'Terracota',
-                'default_image' => ['WhatsApp-Image-2023-10-04-at-17.04.16.jpeg']
             ],
             [
                 'title' => 'Lámpara de Mesa Ikea',
                 'content' => 'Lámpara de mesa de estilo moderno, nueva.',
                 'price' => 30,
-                'estado' => 'Nuevo',
+                'estado_id' => 1, // ID del estado "Nuevo"
+                'category_id' => 4, // ID de la categoría "Hogar"
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -106,7 +107,6 @@ class ProductsSeeder extends Seeder
                 'dimensionY' => 10,
                 'marca' => 'Ikea',
                 'color' => 'Blanco',
-                'default_image' => ['lampara-ikea_d68c3650_240813101635_900x900.webp']
             ]
         ];
 
@@ -115,7 +115,8 @@ class ProductsSeeder extends Seeder
             $product->title = $productData['title'];
             $product->content = $productData['content'];
             $product->price = $productData['price'];
-            $product->estado = $productData['estado'];
+            $product->estado_id = $productData['estado_id'];
+            $product->category_id = $productData['category_id'];
             $product->toSend = $productData['toSend'];
             $product->isDeleted = $productData['isDeleted'];
             $product->isBoost = $productData['isBoost'];
@@ -124,8 +125,6 @@ class ProductsSeeder extends Seeder
             $product->marca = $productData['marca'];
             $product->color = $productData['color'];
             $product->save();
-
-
         }
     }
 }

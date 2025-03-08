@@ -20,6 +20,10 @@ Route::apiResource('categories', CategoryController::class);
 Route::get('/categories', [CategoryController::class, 'getCategories']); // Obtener todas las categorias
 Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene las categorias (Uso: selects)
 
+
+// Estado
+Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); // Obtiene las categorias (Uso: selects)
+
     // Obtener publicaciones por categoría
     Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 

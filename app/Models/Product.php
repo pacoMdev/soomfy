@@ -18,12 +18,18 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'products';
-    protected $fillable = ['title', 'content', 'price', 'estado','category_id', 'user_id'];
+    protected $fillable = ['title', 'content', 'price', 'estado','category_id', 'user_id','estado_id'];
     
     // Relacion NM ( usuarios / products )
     public function users()
     {   
         return $this->belongsToMany(User::class, 'user_product');
+    }
+
+    // Relacion 1N tabla estados
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
     }
 
     // Relacion: Obtener el usuario del producto
