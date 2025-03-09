@@ -19,20 +19,7 @@
                               <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ new Date(item.created_at).toLocaleDateString("es-ES", {day: "2-digit", month: "2-digit", year: "numeric", }) }}</span>
 
                                 <div class="flex flex-col md:items-end gap-8">
-                                    <!-- VENTA A FAVOR ---------------------- -->
-                                    <span v-if="item.finalPrice < item.initialPrice && authStore().user.email != item.seller.email" class="text-xl font-semibold" style="color: green;">
-                                        <div class="pi pi-sort-amount-down"></div>
-                                        {{ item.finalPrice }} €
-                                    </span>
-                                    <!-- VENTA A CONTRA ---------------------- -->
-                                    <span v-else-if="item.finalPrice < item.initialPrice" class="text-xl font-semibold" style="color: red;">
-                                        <div class="pi pi-sort-amount-down"></div>
-                                        {{ item.finalPrice }} €
-                                    </span>
-                                    <span v-else class="text-xl font-semibold">${{ item.finalPrice }}</span>
-                                    <Button asChild v-slot="slotProps">
-                                      <RouterLink :to="'/products/detalle/' + item.product_id" :class="slotProps.class" icon="pi pi-eye" class="flex-auto md:flex-initial whitespace-nowrap">Ver</RouterLink>
-                                    </Button>
+                                    asdasd
                                 </div>
                             </div>
                           </div>

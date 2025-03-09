@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\UserOpinion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -84,14 +85,19 @@ class ProfileController extends Controller
     }
     
     public function getSales($userId){
-        $sales = User::find($userId)->sales;
+        $purchase = User::find($userId)->sales()
+        ->with(['product', 'seller', 'buyer'])
+        ->get();
 
-        return $sales;
+        return $this->successResponse($purchase, 'Transaction found');
     }
     public function getValorations($userId){
-        $valoration = User::with('valorations')->findOrFail($userId);
-
-        return $this->successResponse($valoration, 'Valorations found');
+        $reviews = UserOpinion::whereIn('product_id', function ($query) use ($userId) {
+            $query->select('product_id')
+                  ->from('transactions')
+                  ->where('userSeller_id', $userId);
+        })->with(['user', 'product'])->get();
+        return $this->successResponse($reviews, 'Reviews found');
     }
 
 }

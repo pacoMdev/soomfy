@@ -61,17 +61,6 @@ class User extends Authenticatable implements HasMedia
     {   
         return $this->hasMany(Transactions::class , 'userSeller_id');
     }
-    public function valorations()
-    {   
-        return $this->hasManyThrough(
-            UserOpinion::class,
-            Transactions::class,
-            'userSeller_id',
-            'product_id',
-            'id',
-            'product_id'
-        );
-    }
 
     // Relacion NM (usuarios / favoritos / products)
     public function favoritos()

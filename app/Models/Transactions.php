@@ -10,7 +10,7 @@ class Transactions extends Model
     use HasFactory;
     
     protected $table = 'transactions';
-    protected $fillable = ['producto_id', 'seller_id', 'buyer_id'];
+    protected $fillable = ['producto_id', 'userSeller_id', 'userBuyer_id'];
 
     // REL Producto
     public function product()
