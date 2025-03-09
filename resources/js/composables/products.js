@@ -9,7 +9,7 @@ export default function useProducts() {
         content: '',
         category_id: '',
         price: '',
-        estado: '',
+        estado_id: '',
         thumbnails: '',
     })
     const router = useRouter()

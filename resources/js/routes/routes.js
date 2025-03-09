@@ -52,7 +52,7 @@ async function requireAdmin(to, from, next) {
         if( hasAdmin(user.roles)){
             next()
         }else{
-            next('/app')
+            next('/app/profile')
         }
     } else {
         next('/login')
@@ -131,7 +131,7 @@ export default [
         children: [
             // Subir producto
             {
-                path: '/profile',
+                path: 'profile',
                 name: 'cuenta',
                 component: () => import('../views/user/perfil/perfil.vue'),
             },

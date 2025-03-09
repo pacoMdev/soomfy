@@ -77,15 +77,19 @@
       </div>
 
       <div class="col-md-9">
-        <div v-if="products.data.length">
+        <div v-if="products && products.data && products.data.length > 0">
           <div class="productos">
-            <ProductoNew :productos="products.data" :actualizarProductos="fetchProducts"/>
+            <ProductoNew
+                :productos="products.data"
+                :actualizarProductos="fetchProducts"
+            />
           </div>
         </div>
         <div v-else>
           <p>No se encontraron productos.</p>
         </div>
       </div>
+
 
     </div>
   </div>
@@ -132,13 +136,12 @@ const fetchProducts = async () => {
 };
 
 
-const latitude = ref(41.3851); // Coordenadas iniciales (ejemplo: Barcelona)
-const longitude = ref(2.1734);
+const latitude = ref(41.38740000);
+const longitude = ref(2.16860000);
 
 const categoriaSeleccionada = ref('');
 const buscarTitulo = ref('');
 const buscarEstado = ref('');
-const buscarUbicacion = ref('');
 const buscarPrecioMin = ref();
 const buscarPrecioMax = ref();
 
@@ -158,21 +161,27 @@ const aplicarFiltro = async () => {
       search_category: categoriaSeleccionada.value || '',
       search_title: buscarTitulo.value || '',
       search_estado: buscarEstado.value || '',
+      order_column: 'created_at',
       order_direction: ordenarFecha.value || 'desc',
       order_price: ordenarPrecio.value || '',
-      search_location: buscarUbicacion.value || '',
       min_price: buscarPrecioMin.value || '',
       max_price: buscarPrecioMax.value || '',
-      search_latitude: latitude.value || '',
-      search_longitude: longitude.value || '',
-      search_radius: buscarRadio.value || 0,
     };
+
+    // Solo agregamos los parámetros de ubicación si hay un radio seleccionado
+    if (buscarRadio.value) {
+      filtros.search_latitude = latitude.value;
+      filtros.search_longitude = longitude.value;
+      filtros.search_radius = buscarRadio.value;
+    }
 
     console.log("Filtros a enviar:", filtros);
 
     // Eliminar los filtros vacíos (solo claves con valores no vacíos)
     const filtrosLimpios = Object.fromEntries(
-        Object.entries(filtros).filter(([_, value]) => value !== '')
+        Object.entries(filtros).filter(([_, value]) =>
+            value !== '' && value !== null && value !== undefined
+        )
     );
 
     console.log("Filtros limpios:", filtrosLimpios);
@@ -199,7 +208,7 @@ const aplicarFiltro = async () => {
         filtrosLimpios.order_price || '' ,// Precio ordenado
         filtrosLimpios.search_latitude || '', // Pasar la latitud
         filtrosLimpios.search_longitude || '', // Pasar la longitud
-        filtrosLimpios.search_radius || 0
+        filtrosLimpios.search_radius || ''
 
   );
 
@@ -213,22 +222,26 @@ const limpiarFiltros = async () => {
   categoriaSeleccionada.value = '';
   buscarTitulo.value = '';
   buscarEstado.value = '';
-  buscarUbicacion.value = '';
   buscarTitulo.value = '';
   ordenarFecha.value = '';
   ordenarPrecio.value = '';
-
-  await router.push({ query: {} });
-  await fetchProducts();
+  latitude.value = 41.38740000;
+  longitude.value = 2.16860000;
+  buscarPrecioMin.value = '';
+  buscarPrecioMax.value = '';
+  buscarRadio.value = 0;
 };
 
 watch(
     () => route.query,
-    () => {
-      fetchProducts();
+    async (newQuery, oldQuery) => {
+      if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+        await fetchProducts();
+      }
     },
-    { immediate: true }
+    { deep: true }
 );
+
 
 onMounted(() => {
   // Creamos el mapa en el div que tiene como id "map"
