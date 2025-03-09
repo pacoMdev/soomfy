@@ -9,8 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Http\Resources\ProductResource;
+
 
 class ProfileController extends Controller
 {
@@ -68,6 +68,30 @@ class ProfileController extends Controller
         $user->avatar = $avatar;
 
         return $this->successResponse($user, 'User found');
+    }
+
+    public function getAllToSell($userId){
+        $products = User::find($userId)->products;
+
+        return ProductResource::collection($products);
+    }
+    public function getPurchase($userId){
+        $purchase = User::find($userId)->purchase()
+        ->with(['product', 'seller', 'buyer'])
+        ->get();
+
+        return $this->successResponse($purchase, 'Transaction found');
+    }
+    
+    public function getSales($userId){
+        $sales = User::find($userId)->sales;
+
+        return $sales;
+    }
+    public function getValorations($userId){
+        $valoration = User::with('valorations')->findOrFail($userId);
+
+        return $this->successResponse($valoration, 'Valorations found');
     }
 
 }

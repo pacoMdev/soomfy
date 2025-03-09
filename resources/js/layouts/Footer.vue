@@ -73,7 +73,7 @@
                 <img src="../../../public/images/home/Icon-3.svg" alt="Mensajes">
                 <p>Mensajes</p>
             </router-link>
-            <router-link to="/profile" class="tx-color-secondari d-flex flex-column justify-content-center">
+            <router-link to="/app/profile" class="tx-color-secondari d-flex flex-column justify-content-center">
                 <img src="../../../public/images/home/Icon-4.svg" alt="Cuenta">
                 <p>Cuenta</p>
             </router-link>               

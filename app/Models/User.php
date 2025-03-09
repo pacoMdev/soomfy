@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use App\Models\Product;
+use App\Models\Transactions;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\UserResetPasswordNotification;
@@ -11,7 +12,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
@@ -52,6 +52,25 @@ class User extends Authenticatable implements HasMedia
     public function products()
     {   
         return $this->belongsToMany(Product::class , 'user_product');
+    }
+    public function purchase()
+    {   
+        return $this->hasMany(Transactions::class , 'userBuyer_id');
+    }
+    public function sales()
+    {   
+        return $this->hasMany(Transactions::class , 'userSeller_id');
+    }
+    public function valorations()
+    {   
+        return $this->hasManyThrough(
+            UserOpinion::class,
+            Transactions::class,
+            'userSeller_id',
+            'product_id',
+            'id',
+            'product_id'
+        );
     }
 
     // Relacion NM (usuarios / favoritos / products)

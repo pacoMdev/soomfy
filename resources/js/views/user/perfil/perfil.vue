@@ -1,83 +1,73 @@
 <template>
   <main>
-    <div class="">
-      <!-- imagen de perfil -->
-      <div class="">
-        <div class="user text-center">
-          <div class="profile">
-            <img :src="imgProfile.avatar" alt="">
-            <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
-            <FileUpload
-              name="image"
-              url="/api/profile/updateimg"
-              @before-upload="onBeforeUpload"
-              @upload="onTemplateUpload($event)"
-              accept="image/webp"
-              :maxFileSize="1500000"
-              @select="onSelectedFiles"
+    <div class="">      
+      <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
+        <div v-if="user.email" class="container-info d-flex gap-5">
+          <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" alt="">
+          <img v-else src="/images/GitHub.svg"  alt="default-image">
 
-            >
-              <!-- Botones de control -->
-              <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
-                <div class="flex gap-2">
-                  <Button @click="chooseCallback()"
-                          class="secondary-button-2"
-                          label="Seleccionar"
-                          rounded
-                          outlined />
-                  <Button @click="uploadCallback()"
-                          class="secondary-button-2"
-                          label="Actualizar"
-                          rounded
-                          outlined
-                          severity="success"
-                          :disabled="!files || files.length === 0" />
-                  <Button @click="clearCallback()"
-                          class="secondary-button-2"
-                          label="Eliminar"
-                          rounded
-                          outlined
-                          severity="danger"
-                          :disabled="!files || files.length === 0" />
-                </div>
-              </template>
-
-              <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                <img v-if=" files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="file.name" :src="file.objectURL" class="object-fit-cover w-100 h-100 img-profile" />
-                <div v-else>
-                  <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="object-fit-cover w-100 h-100 img-profile" />
-                </div>
-              </template>
-
-
-
-            </FileUpload>
+          <div class="container-info-profile d-flex flex-column gap-1">
+            <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
+            <div class="d-flex gap-2 container-rating">
+              <Rating v-model="value" readonly />
+              <p>(0)</p>
+            </div>
+            <p>Vendedor novel</p>
           </div>
         </div>
-      </div>
-      <div class="d-flex allign-items-center justify-content-center py-5">
-        <div class="container-info-profile">
-          <p>Nombre de usuario</p>
-          <div class="d-flex gap-2 container-rating">
-            <Rating v-model="value" readonly />
-            <p>(8)</p>
-          </div>
-          <p>Aspirante a gran vendedor</p>
-        </div>
-        <div class="d-flex flex-wrap gap-3 w-100 container container-contador">
-          <button class="secondary-button-2"><i class="pi pi-box" style="font-size: 1.5rem"></i>Compras</button>
-          <button class="secondary-button-2"><i class="pi pi-dollar" style="font-size: 1.5rem"></i>Ventas</button>
-          <button class="secondary-button-2"><i class="pi pi-comment" style="font-size: 1.5rem"></i>Valoaraciones</button>
+
+        <!-- Botones de acciones -->
+        <div class="d-flex flex-wrap gap-3 w-auto h-100 container-extra-info">
+          <Button @click="fetchProducts(`getPurchase/${user.id}`, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+          <Button @click="fetchProducts(`getSales/${user.id}`, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+          <Button label="Localización" icon="pi pi-map-marker" rounded />
+          <Button @click="logout" label="Cerrar sesión" icon="pi pi-lock" rounded />
         </div>
       </div>
+
       <div>
         <div class="d-flex gap-3 w-100 justify-content-center">
-          <button class="secondary-button-2"><i class="pi pi-box" style="font-size: 1.5rem"></i>Compras</button>
-          <button class="secondary-button-2"><i class="pi pi-dollar" style="font-size: 1.5rem"></i>Ventas</button>
-          <button class="secondary-button-2"><i class="pi pi-comment" style="font-size: 1.5rem"></i>Valoaraciones</button>
+          <Button @click="fetchProducts(`getAllToSell/${user.id}`, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+          <Button @click="fetchProducts(`getValorations/${user.id}`, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
         </div>
+
         <div class="container w-100 d-flex gap-5">
-          <ProductoNew :productos="productos" />
+          <div v-if="loading">Cargando...</div>
+          <div v-if="error" style="color: red;">{{ error }}</div>
+
+           <!-- COMPRAS -------------------------------------------------------------------------------------------- -->
+          <div v-if="selectedTab === 'purchases'" class="w-100">
+            <h4>Historial de Compras</h4>
+            <div v-if="purchases.length > 0">
+              <HistoricInfo :historic="purchases" />
+            </div>
+            <h1 v-else>No hay Compras</h1>
+          </div>
+          <!-- VENTAS -------------------------------------------------------------------------------------------- -->
+          <div v-if="selectedTab === 'sales'" class="w-100">
+            <h4>Historial de Ventas</h4>
+            <div v-if="sales.length > 0">
+              <HistoricInfo :historic="sales" />
+            </div>
+            <h1 v-else>No hay Ventas</h1>
+          </div>
+          <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
+          <div v-if="selectedTab === 'activeProducts'">
+            <h4>Mis Productos</h4>
+            <div v-if="activeProducts.length > 0">
+              <ProductoNew :productos="activeProducts" :actualizarProductos="fetchProducts" />
+            </div>
+            <h1 v-else>No hay Productos</h1>
+          </div>
+          <!-- OPINIONES -------------------------------------------------------------------------------------------- -->
+          <div v-if="selectedTab === 'reviews'" class="w-100">
+            <h4>Valoraciones</h4>
+            <div v-if="reviews.length > 0">
+              <h1>Hay valoraciones</h1>
+              <!-- <HistoricInfo :historic="reviews" /> -->
+            </div>
+            <h1 v-else>No hay Valoraciones</h1>
+          </div>
         </div>
       </div>
     </div>
@@ -86,83 +76,82 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
-import Dropzone from '../../../components/Dropzone.vue';
-import * as yum from "yup";
-import { es } from "yup-locales";
-import useProfile from "@/composables/profile.js";
-import authStore from "@/composables/auth.js";
-
-// Importo imgProfile de profile.js
-const { router,validationErrors
-  ,imgProfile, profile, getProfile, updateProfile,updateImgProfile } = useProfile()
-
-
-const toast = useToast();
-const files = ref([]);
-
-const onBeforeUpload = (event) => {
-  event.formData.append('id', user.id)
-}
-
-const onSelectedFiles = (event) => {
-
-}
-const onTemplateUpload = (event) => {
-
-}
-
-
-
-import 'primeicons/primeicons.css';
+import useAuth from "@/composables/auth";
 import Rating from 'primevue/rating';
 import ProductoNew from '../../../components/ProductoNew.vue';
-import {useRoute} from "vue-router";
-import {useToast} from "primevue/usetoast";
-import * as yup from "yup";
+import HistoricInfo from '../../../components/historicInfo.vue';
 
-const value = ref(4);
-const productos = ref([]);
-onMounted(()=>{
-  obtenerProductos();
-})
 
-// llamada a api
-const obtenerProductos = async () => {
-  const respuesta = await axios.get('/api/get-posts'); // Asegúrate de que esta URL sea la correcta
-  productos.value = respuesta.data.data; // Guardamos los datos en products
-  console.log(respuesta);
+const value = ref(0);
+const activeProducts = ref([]);
+const purchases = ref([]);
+const sales = ref([]);
+const reviews = ref([]);
+const loading = ref(false);
+const error = ref(null);
+const { logout } = useAuth();
+const user = ref({});
+const selectedTab = ref(null);
+
+onMounted(async () => {
+  await getDataProfile();
+  ProductService.getProductsSmall().then((data) => (products.value = data));
+
+});
+
+// ejecuta fetchProducts cuando userData este disponible
+watch(user, (newUser) => {
+  if (newUser.id) {
+    fetchProducts(`getPurchase/${newUser.id}`, 'purchases');
+    fetchProducts(`getSales/${newUser.id}`, 'sales');
+    fetchProducts(`getValorations/${newUser.id}`, 'reviews');
+    fetchProducts(`getAllToSell/${newUser.id}`, 'activeProducts');
+  }
+});
+
+const fetchProducts = async (endpoint, type) => {
+  loading.value = true;
+  error.value = null;
+  selectedTab.value = type; // guardamos que se esta viendo
+
+  try {
+    const response = await axios.get(`/api/${endpoint}`);
+    
+    // guarda info segun seccion
+    if (type === 'purchases') purchases.value = response.data.data || [];
+    else if (type === 'sales') sales.value = response.data.data || [];
+    else if (type === 'activeProducts') activeProducts.value = response.data.data || [];
+    else if (type === 'reviews') reviews.value = response.data.data || [];
+    console.log('purchase -->', purchases);
+    console.log('sales -->', sales);
+    console.log('activeProducts -->', activeProducts);
+    console.log('reviews -->', reviews);
+
+  } catch (err) {
+    error.value = "Error al obtener los datos.";
+  } finally {
+    loading.value = false;
+  }
 };
 
+const getDataProfile = async () => {
+  try {
+    const respuesta = await axios.get('/api/user');
+    user.value = respuesta.data.data || {};
+  } catch (error) {
+    console.error("Error al obtener usuario:", error);
+  }
+};
 </script>
 
-<style scoped>
-.container-info-profile{
-  width: auto;
-  max-height: 350px;
-}
-.container-info-profile fieldset{
-  width: 100%;
-  max-height: 350px;
-  object-fit: contain;
-  position: fixed;
-  top: 200px;
-}
-.container-info-profile fieldset img{
-  width: 50% !important;
-  max-height: 350px;
-  object-fit: contain;
-}
-.container-info-profile legend{
-  height: 50px;
-  width: 50px;
-  border: solid 1px black;
-  top: 10%;
-  right: 25%;
 
-}
-.profile{
-  width: 200px;
+<style scoped>
+.container-info img {
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+  background-color: var(--primary-color);
 }
 </style>
