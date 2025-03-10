@@ -170,6 +170,15 @@ import {ref, onMounted, watch, computed} from "vue";
     const search_global = ref('')
     const orderColumn = ref('created_at')
     const orderDirection = ref('desc')
+    const min_price = ref('')
+    const max_price = ref('')
+    const search_estado = ref('')
+    const search_location = ref('')
+    const search_latitude = ref('')
+    const search_longitude = ref('')
+    const search_radius = ref('')
+    const order_price = ref('')
+
     const {products, getProducts, deleteProduct} = useProducts()
     const {categoryList, getCategoryList} = useCategories()
     const {can} = useAbility();
@@ -214,69 +223,133 @@ import {ref, onMounted, watch, computed} from "vue";
         getProducts()
         getCategoryList()
     })
-    const updateOrdering = (column) => {
-        orderColumn.value = column;
-        orderDirection.value = (orderDirection.value === 'asc') ? 'desc' : 'asc';
-        getProducts(
-            1,
-            search_category.value,
-            search_id.value,
-            search_title.value,
-            search_content.value,
-            search_global.value,
-            orderColumn.value,
-            orderDirection.value
-        );
-    }
-    watch(search_category, (current, previous) => {
-        getProducts(
-            1,
-            current,
-            search_id.value,
-            search_title.value,
-            search_content.value,
-            search_global.value
-        )
-    })
-    watch(search_id, (current, previous) => {
-        getProducts(
-            1,
-            search_category.value,
-            current,
-            search_title.value,
-            search_content.value,
-            search_global.value
-        )
-    })
-    watch(search_title, (current, previous) => {
-        getProducts(
-            1,
-            search_category.value,
-            search_id.value,
-            current,
-            search_content.value,
-            search_global.value
-        )
-    })
-    watch(search_content, (current, previous) => {
-        getProducts(
-            1,
-            search_category.value,
-            search_id.value,
-            search_title.value,
-            current,
-            search_global.value
-        )
-    })
-    watch(search_global, _.debounce((current, previous) => {
-        getProducts(
-            1,
-            search_category.value,
-            search_id.value,
-            search_title.value,
-            search_content.value,
-            current
-        )
-    }, 200))
+const updateOrdering = (column) => {
+  orderColumn.value = column;
+  orderDirection.value = (orderDirection.value === 'asc') ? 'desc' : 'asc';
+  getProducts(
+      1,
+      search_category.value,
+      search_id.value,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      search_content.value,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+}
+
+// Watches corregidos
+watch(search_category, (current) => {
+  getProducts(
+      1,
+      current,
+      search_id.value,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      search_content.value,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+});
+
+watch(search_id, (current) => {
+  getProducts(
+      1,
+      search_category.value,
+      current,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      search_content.value,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+});
+
+watch(search_title, (current) => {
+  getProducts(
+      1,
+      search_category.value,
+      search_id.value,
+      current,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      search_content.value,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+});
+
+watch(search_content, (current) => {
+  getProducts(
+      1,
+      search_category.value,
+      search_id.value,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      current,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+});
+
+watch(search_global, _.debounce((current) => {
+  getProducts(
+      1,
+      search_category.value,
+      search_id.value,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      search_estado.value,
+      search_location.value,
+      search_content.value,
+      current,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+}, 200));
 
 </script>

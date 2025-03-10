@@ -102,6 +102,10 @@ class ProductControllerAdvance extends Controller
     {
 
         $orderColumn = request('order_column', 'created_at');
+        if (!in_array($orderColumn, ['id', 'title', 'created_at', 'price'])) {
+            $orderColumn = 'created_at';
+        }
+
         $orderDate = request('order_direction', 'desc');
         if (!in_array($orderDate, ['asc', 'desc'])) {
             $orderDate = 'desc';
