@@ -88,6 +88,11 @@ export default [
                 component: () => import('../views/detalle_producto/detalle_producto.vue'),
             },
             {
+                path: 'profile/detalle/:id',
+                name: 'detalle-profile',
+                component: () => import('../views/perfil/Perfil.vue'),
+            },
+            {
                 path: 'category/:id',
                 name: 'category-products.index',
                 component: () => import('../views/category/products.vue'),

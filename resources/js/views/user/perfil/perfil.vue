@@ -3,14 +3,14 @@
     <div class="">      
       <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
         <div v-if="user.email" class="container-info d-flex gap-5">
-          <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" alt="">
+          <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
           <img v-else src="/images/GitHub.svg"  alt="default-image">
 
           <div class="container-info-profile d-flex flex-column gap-1">
             <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
             <div class="d-flex gap-2 container-rating">
               <Rating v-model="value" readonly />
-              <p>(0)</p>
+              <p>({{ reviews.length }})</p>
             </div>
             <p>Vendedor novel</p>
           </div>
@@ -63,8 +63,7 @@
           <div v-if="selectedTab === 'reviews'" class="w-100">
             <h4>Valoraciones</h4>
             <div v-if="reviews.length > 0">
-              <h1>Hay valoraciones</h1>
-              <!-- <HistoricInfo :historic="reviews" /> -->
+              <ValorationInfo :reviews="reviews" />
             </div>
             <h1 v-else>No hay Valoraciones</h1>
           </div>
@@ -82,6 +81,7 @@ import useAuth from "@/composables/auth";
 import Rating from 'primevue/rating';
 import ProductoNew from '../../../components/ProductoNew.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
+import ValorationInfo from '../../../components/valorationInfo.vue';
 
 
 const value = ref(0);

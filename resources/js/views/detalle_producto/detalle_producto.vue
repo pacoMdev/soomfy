@@ -42,8 +42,8 @@
                           <div class="container-categories d-flex gap-2 flex-wrap">
                               <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
                             </div>
-                            <div class="button d-flex gap-3">
-                                <Button label="Comprar" variant="outlined" class="w-50" />
+                            <div class="button d-flex gap-3 ">
+                                <Button v-if="product.toSend==1" label="Comprar" variant="outlined" class="w-50" />
                                 <Button label="Chat" raised class="w-50" />
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                         <img src="../../../../public/images/trust-icon.png" alt="trust icon">
                         <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                       </div>
-                      <div class="d-flex gap-3 align-items-center p-4 info-profile-post">
+                      <router-link :to="'/profile/detalle/2'" class="d-flex gap-3 align-items-center p-4 info-profile-post">
                         <img src="../../../../public/images/Github.svg" alt="">
                         <div>
                           <h4 v-if="product.user && product.user.name">{{ product.user.name }}</h4>
@@ -76,7 +76,7 @@
                             <p>Molins de Rei, 08750, Barcelona</p>
                           </div>
                         </div>
-                      </div>
+                    </router-link>
                     </div>
                 </div>
 
@@ -153,7 +153,6 @@
         
         getProduct();
         getRelatedProducts();
-        // getUserPosts();
     })
 
 
@@ -163,8 +162,6 @@
 
     const product = ref([]);
     const relatedPost = ref([]);
-    const relatedUserPost = ref([]);
-
     // Valoracion media de los usuarios
     const value = ref(3);
 
@@ -174,17 +171,12 @@
         console.log(id);
         const respuesta = await axios.get('/api/products/'+id); // Asegúrate de que esta URL sea la correcta
         product.value = respuesta.data.data; // Guardamos los datos en productos
-        console.log('getProduct', respuesta.data.data);
+        console.log('PRODUCT:', respuesta.data.data);
     };
     const getRelatedProducts = async () => {
         const respuesta = await axios.get('/api/products');
         relatedPost.value = respuesta.data;
-        console.log('getRelatedProducts', respuesta.data);
-    };
-    const getUserPosts = async () => {
-        const respuesta = await axios.get('/api/products/');
-        product.value = respuesta.data;
-        console.log('getUserPosts', respuesta.data);
+        console.log('RELATED PRODUCTS:', respuesta.data);
     };
 
     // Funciones transaccionales

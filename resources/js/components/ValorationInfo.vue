@@ -1,25 +1,26 @@
 <template>
-    <DataView :value="historic" paginator :rows="5">
+    <DataView :value="reviews" paginator :rows="5">
               <template #list="slotProps">
                   <div class="flex flex-column w-100">
                       <div v-for="(item, index) in slotProps.items" :key="index">
                           <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4 w-100" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                             <div class="md:w-40 relative">
-                                <img class="block xl:block mx-auto rounded w-full" :src="item.product.media[0]['original_url']" style="height: 80px!important; width: 80px!important; object-fit: contain; background-color: antiquewhite;" />
+                                <img class="block xl:block mx-auto rounded w-full" :src="item.user.media[0]['original_url']" style="height: 80px!important; width: 80px!important; object-fit: contain; background-color: antiquewhite;" />
                             </div>
                             <div class="flex flex-row md:flex-col justify-between items-start gap-2">
                                 <div>
                                     <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">OTROS</span>
-                                    <div v-if="authStore().user.email != item.seller.email" class="text-lg font-small mt-2">{{ item.seller.name }} {{ item.seller.surname1 }}</div>
-                                    <div v-else class="text-lg font-small mt-2">{{ item.buyer.name }} {{ item.buyer.surname1 }}</div>
-                                    <div class="text-lg font-medium mt-2">{{ item.product.title }}</div>
+                                    <div class="text-lg font-small mt-2" style="font-weight: 500;">{{ item.user.name }} {{ item.user.surname1 }}</div>
+                                    <Rating :model-v-model="item.rating" readonly />
+                                    <div class="text-lg font-medium mt-2">{{ item.title }}</div>
+                                    <div class="text-lg font-medium mt-2">{{ item.description }}</div>
                                 </div>
                             </div>
                             <div class="flex flex-col md:flex-row justify-content-end md:items-center flex-1 gap-6 w-100">
                               <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ new Date(item.created_at).toLocaleDateString("es-ES", {day: "2-digit", month: "2-digit", year: "numeric", }) }}</span>
 
                                 <div class="flex flex-col md:items-end gap-8">
-                                    asdasd
+                                    
                                 </div>
                             </div>
                           </div>
@@ -32,10 +33,10 @@
 
     import { defineProps } from 'vue';
     import DataView from 'primevue/dataview';
-    import { authStore } from "../store/auth";
+    import { Rating } from 'primevue';
 
     const props = defineProps({
-    historic: Array,
+    reviews: Array,
     });
 </script>
 <style scoped>

@@ -7,10 +7,12 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserOpinion;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProductResource;
+use Symfony\Component\HttpFoundation\Test\Constraint\ResponseIsSuccessful;
 
 
 class ProfileController extends Controller
@@ -23,6 +25,13 @@ class ProfileController extends Controller
             'media_collection' => $profile->getMedia('*')->toArray()
         ]);
         return new UserResource($profile);
+
+    }
+    public function getUserInfo($userId)
+    {
+        $profile = User::with('media')->findOrFail($userId);
+
+    return new UserResource($profile);
 
     }
     /**
@@ -99,5 +108,12 @@ class ProfileController extends Controller
         })->with(['user', 'product'])->get();
         return $this->successResponse($reviews, 'Reviews found');
     }
+
+    public function getUserByProductId($productId){
+        $producto = Product::with('userProd')->findOrFail($productId)->with('media')->get();
+
+        
+        return $producto;
+}
 
 }

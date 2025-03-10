@@ -33,6 +33,7 @@ Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Pro
 // Productos del usuario
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
+Route::get('/producto/{id}/usuario', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
 
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
@@ -54,7 +55,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('profile/updateimg', [ProfileController::class,'updateimg']); // Actualizar imagen (usuario)
     Route::get('user', [ProfileController::class, 'user']); // Responsable de determinar si estas iniciado sesion o no
     Route::put('profile', [ProfileController::class, 'update']);
-    Route::get('profile/{id}', [ProfileController::class, 'index']);
+    Route::get('profile/{id}', [ProfileController::class, 'getUserInfo']);
     Route::get('getAllToSell/{userId}', [ProfileController::class, 'getAllToSell']);
     Route::get('getPurchase/{userId}', [ProfileController::class, 'getPurchase']);
     Route::get('getSales/{userId}', [ProfileController::class, 'getSales']);
