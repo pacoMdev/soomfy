@@ -3,7 +3,7 @@
         <div class="d-none d-md-block w-100">
             <div class="px-5 m-0 d-flex flex-row justify-content-between w-100">
                 <router-link to="/" class="align-items-center d-flex">
-                    <img src="../../../public//images/logo.svg" class="logo-size" alt="Soomfy">
+                    <img src="/images/logo.svg" class="logo-size" alt="Soomfy">
                     <div class="tx-color-secondari">Soomfy</div>
                 </router-link>
 
@@ -19,7 +19,7 @@
                             <img src="/images/favoritos.svg" class="icons-size" alt="">
                         </router-link>
                         <template v-if="!authStore().user?.name">
-                            <router-link class="nav-link" to="/register">
+                            <router-link class="nav-link" to="/login">
                                 <img src="/images/logoUser.svg" class="icons-size">
                             </router-link>
                         </template>
@@ -30,7 +30,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><p class="h4-p text-center">Bienvenid@ {{ authStore().user?.name }}</p></li>
                                 <li><router-link class="dropdown-item" v-if="authStore().isAdmin" to="/admin">Admin</router-link></li>
-                                <li><router-link to="/profile" class="dropdown-item">Cuenta</router-link></li>
+                                <li><router-link to="/app/profile" class="dropdown-item">Cuenta</router-link></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a></li>
                             </ul>

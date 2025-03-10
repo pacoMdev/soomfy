@@ -54,8 +54,8 @@
       </div>
       <div class="">
         <!-- falta ajustar el responsive -->
-        <div class="productos w-100">
-          <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
+        <div class="productos">
+           <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
         </div>
       </div>
       <div class="d-flex justify-content-center">

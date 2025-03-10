@@ -87,7 +87,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/products/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
@@ -115,7 +115,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/products/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
