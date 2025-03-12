@@ -53,43 +53,54 @@ const props = defineProps({
   modelValue: {
     type: Array, // Tipo esperado: Array, ya que debe contener múltiples elementos (imágenes o datos relacionados).
     default: () => [] // Valor por defecto: un array vacío. Esto asegura que siempre haya una estructura inicial para trabajar dentro del componente.
+  },
+  maxImages: {  // Definimos un maximo de imagenes a subir
+    type: Number,
+    default: 3
   }
-});
 
-const emit = defineEmits(['update:modelValue']);
+
+});
 
 // Usar ref en Vue para referirse a los inputs dinámicos
 const thumbnails = ref([
-  { img: "", file: null }, // Contenedor 1
-  { img: "", file: null }, // Contenedor 2
-  { img: "", file: null }  // Contenedor 3
+  Array(props.maxImages).fill(null).map(() => ({
+    img: "",
+    file: null
+  }))
 ]);
 
-// Watcher para sincronicar datos desde Edit.vue hasta este archivo
-// Ejemplo:
-// <DropZoneV v-model="product.thumbnails" class="imagenes"/>
-// En este ejemplo el v-model es igual a las imagenes, por lo tanto con props lo que hacemos
-// es leer las imagenes enviadas desde el formulario padre (Edit.vue)
+const emit = defineEmits(['update:modelValue']);
+
+// Watcher que sincroniza las imagenes recibidas desde el formulario Edit.vue hasta el Dropzone
 watch(
     () => props.modelValue,
     (newVal) => {
-      const filledThumbnails = newVal.map((item, index) => ({
-        img: item?.img || thumbnails.value[index]?.img || "",
-        file: item?.file || thumbnails.value[index]?.file || null,
-      }));
+      const valores = Array.isArray(newVal) ? newVal : [];
 
-      // Rellena hasta la longitud máxima (3 elementos)
-      while (filledThumbnails.length < thumbnails.value.length) {
-        filledThumbnails.push({ img: "", file: null });
-      }
+      const filledThumbnails = Array(props.maxImages).fill(null).map((_, index) => {
+        // Si tenemos un valor existente en el modelValue
+        if (valores[index]) {
+          return {
+            img: valores[index].img,
+            file: valores[index].file
+          };
+        }
 
-      // Compara los valores antes de reemplazar
-      if (JSON.stringify(thumbnails.value) !== JSON.stringify(filledThumbnails)) {
-        thumbnails.value = JSON.parse(JSON.stringify(filledThumbnails)); // Actualizar si son distintos
-      }
+        // Si ya existe un blob en thumbnails, lo mantenemos
+        if (thumbnails.value[index]?.img?.startsWith('blob:')) {
+          return thumbnails.value[index];
+        }
+
+        // Si no hay nada, retornamos un espacio vacío
+        return { img: "", file: null };
+      });
+
+      thumbnails.value = filledThumbnails;
     },
-    { immediate: true }
+    { immediate: true }  // Asegura que se ejecute inmediatamente
 );
+
 
 
 
@@ -110,9 +121,6 @@ watch(
 );
 
 
-
-
-
 const hoverIndex = ref(null);
 
 // Función de arrastre
@@ -127,22 +135,36 @@ const drop = (e, index) => {
   const files = e.dataTransfer.files;
   if (files.length > 0) {
     const file = files[0];
-    thumbnails.value[index].img = URL.createObjectURL(file);
-    thumbnails.value[index].file = file;
+
+    // Si hay una URL de blob anterior, la revocamos
+    if(thumbnails.value[index]?.img?.startsWith('blob:')) {
+      URL.revokeObjectURL(thumbnails.value[index].img);
+    }
+    thumbnails.value[index] = {
+      img: URL.createObjectURL(file),
+      file: file
+    };
 
     // Envia las imagenes al padre (Al formulario de creacion)
-    emit("update:modelValue", JSON.parse(JSON.stringify(thumbnails.value)));
+    emit("update:modelValue",thumbnails.value);
 
   }
 };
 
 // Manejar cambio de imagen desde el input
 const onChange = (e, index) => {
-  console.log('thumbnails -->', thumbnails);
   const file = e.target.files[0];
   if (file) {
-    thumbnails.value[index].img = URL.createObjectURL(file);
-    thumbnails.value[index].file = file;
+    /// Revocar URL anterior si existe
+    if (thumbnails.value[index]?.img?.startsWith('blob:')) {
+      URL.revokeObjectURL(thumbnails.value[index].img);
+    }
+
+    thumbnails.value[index] = {
+      img: URL.createObjectURL(file),
+      file: file
+    };
+
 
     // Envia las imagenes al padre (Al formulario de creacion)
     emit("update:modelValue",thumbnails.value);
