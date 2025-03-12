@@ -55,7 +55,7 @@
           <div v-if="selectedTab === 'activeProducts'">
             <h4>Mis Productos</h4>
             <div v-if="activeProducts.length > 0">
-              <ProductoNew :productos="activeProducts" :actualizarProductos="fetchProducts" />
+              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
             <h1 v-else>No hay Productos</h1>
           </div>
@@ -78,8 +78,8 @@
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import useAuth from "@/composables/auth";
-import Rating from 'primevue/rating';
-import ProductoNew from '../../../components/ProductoNew.vue';
+import { Rating } from 'primevue';
+import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
 
@@ -94,6 +94,9 @@ const error = ref(null);
 const { logout } = useAuth();
 const user = ref({});
 const selectedTab = ref(null);
+
+const visible = ref(false);
+
 
 onMounted(async () => {
   await getDataProfile();
