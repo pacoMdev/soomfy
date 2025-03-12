@@ -60,23 +60,31 @@
                                 <Button label="Chat" raised class="w-50" />
                             </div>
                         </div>
-                      <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
-                        <!-- imagen de informacion se seguridad -->
-                        <img src="../../../../public/images/trust-icon.png" alt="trust icon">
-                        <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
-                      </div>
-                      <router-link :to="'/profile/detalle/2'" class="d-flex gap-3 align-items-center p-4 info-profile-post">
-                        <img src="../../../../public/images/Github.svg" alt="">
-                        <div>
-                          <h4 v-if="product.user && product.user.name">{{ product.user.name }}</h4>
-                          <h4 v-else>Cargando usuario...</h4>
-                          <Rating v-model="value" readonly />
-                          <div>
-                            <img src="" alt="">
-                            <p>Molins de Rei, 08750, Barcelona</p>
-                          </div>
+                        <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
+                            <!-- imagen de informacion se seguridad -->
+                            <img src="../../../../public/images/trust-icon.png" alt="trust icon">
+                            <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
-                    </router-link>
+                        <router-link v-if="product.user && product.user.length > 0" :to="'/profile/detalle/'+product.user[0].id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
+                            <img src="../../../../public/images/Github.svg" alt="">
+                            <div>
+                                <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
+                                <h4>{{ product.user[0].name }} {{ product.user[0].surname1 }}</h4>
+                                <div>
+                                    <p>Molins de Rei, 08750, Barcelona</p>
+                                </div>
+                            </div>
+                        </router-link>
+                        <div v-else class="d-flex gap-3 align-items-center p-4 info-profile-product">
+                            <img src="../../../../public/images/Github.svg" alt="">
+                            <div>
+                                <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
+                                <Skeleton width="10rem" class="mb-2"></Skeleton>
+                                <div>
+                                    <p>Molins de Rei, 08750, Barcelona</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -87,7 +95,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
@@ -115,7 +123,7 @@
                     <div class="card">
                         <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
                             <template #item="slotProps">
-                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" class="producto col-6 col-md-4 col-lg-3">
+                                <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
@@ -142,9 +150,8 @@
 </template>
 <script setup>
 
-    import { ref, onMounted } from 'vue';
-    import Carousel from 'primevue/carousel';
-    import Rating from 'primevue/rating';
+    import { ref, onMounted, watch } from 'vue';
+    import { Skeleton, Rating, Carousel } from 'primevue';
 
     import '../../../../resources/css/theme.css'
 
@@ -282,6 +289,10 @@ const getSeverity = (status) => {
         border: solid 1px grey;
         border-radius: 14px;
 
+     }
+     .info-profile-product{
+        border: solid 1px grey;
+        border-radius: 14px;
      }
      .container-security-info img {
         height: 50px;
