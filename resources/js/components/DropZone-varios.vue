@@ -44,7 +44,7 @@
 
 
 <script setup>
-import { ref, watch} from "vue";
+import { ref, watch, onMounted} from "vue";
 
 // Definimos las propiedades del componente
 const props = defineProps({

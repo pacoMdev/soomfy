@@ -75,13 +75,18 @@
             <div class="mb-3">
               <label for="product-estado" class="form-label">Estado</label>
               <select
-                  v-model="product.estado_id"
+                  v-model="product.estado"
                   id="product-estado"
                   class="form-select"
               >
                 <option value="" disabled>Select a state</option>
-                <option value="Nuevo">Nuevo</option>
-                <option value="Usado">Usado</option>
+                <option
+                    v-for="estado in estadoList"
+                    :key="estado.id"
+                    :value="estado.id"
+                >
+                  {{ estado.name }}
+                </option>
               </select>
               <div class="text-danger mt-1">
                 {{ errors.estado }}
@@ -92,7 +97,7 @@
             <div class="mb-3">
               <label for="product-category" class="form-label">Category</label>
               <select
-                  v-model="product.category_id"
+                  v-model="product.category"
                   id="product-category"
                   class="form-select"
               >
@@ -150,10 +155,10 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
 
     // Define a validation schema
     const schema = {
-        title: 'required|min:5',
-        content: 'required|min:5',
-        category_id: null,
-        price: null,
+        title: 'required|min:8',
+        content: 'required|min:25',
+        category: null,
+        price: 'required|min:1',
         estado: null,
         thumbnails: null
     }
@@ -164,24 +169,25 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
     const { value: content } = useField('content', null, { initialValue: '' });
     const { value: price } = useField('price', null, { initialValue: '' });
     const { value: estado } = useField('estado', null, { initialValue: '' });
-    const { value: category_id } = useField('category_id', null, { initialValue: '', label: 'category' });
-    const { value: thumbnails } = useField('thumbnails', null, { initialValue: '' });
+    const { value: category } = useField('category', null, { initialValue: '', label: 'category' });
+    const { value: thumbnails } = useField('thumbnails', null, { initialValue: [] });
     const { categoryList, getCategoryList } = useCategories()
-    const { product: productData, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
+    const { product: productData,getEstadoList,estadoList, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
 
-    const product = reactive({
+    const product = ref({
         title,
-        content: "",
+        content,
         price,
         estado,
-        category_id,
-        thumbnails: []
+        category,
+        thumbnails
     })
     const route = useRoute()
 
     onMounted(() => {
         getProduct(route.params.id)
         getCategoryList()
+        getEstadoList()
     })
 
     const originalProduct = ref({});
@@ -190,61 +196,80 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
     watchEffect(() => {
       if (productData.value) {
         // Asignar valores del producto
-        product.id = productData.value.id;
-        product.title = productData.value.title;
-        product.content = productData.value.content;
-        product.price = productData.value.price;
-        product.estado = productData.value.estado;
+        product.value.id = productData.value.id;
+        product.value.title = productData.value.title;
+        product.value.content = productData.value.content;
+        product.value.price = productData.value.price;
+        product.value.estado = productData.value.estado?.id || '';
+        product.value.category = productData.value.category?.id || '';
 
         // Validar imágenes en resized_image o thumbnails
-        if (productData.value.resized_image) {
-          product.thumbnails = Object.values(productData.value.resized_image).map((img) => ({
+        if (productData.value.media && productData.value.media.length > 0) {
+          product.value.thumbnails = productData.value.media.map((img) => ({
             img: img.original_url,
             file: null,
           }));
-        } else if (productData.value.thumbnails) {
-          product.thumbnails = productData.value.thumbnails; // Si thumbnails ya está procesado
         } else {
-          product.thumbnails = [];
+          product.value.thumbnails = [];
         }
-
-        product.category_id = productData.value.category_id;
-
-        // Guardar una copia inmutable del producto original
-        originalProduct.value = { ...productData.value };
-
-        // Depuración
-        console.log('Thumbnails procesados:', JSON.parse(JSON.stringify(product.thumbnails)));
 
       }
     });
 
-    function submitFormForUpdate() {
+    function submitForm() {
+      const formData = new FormData();
+      const productId = product.value.id;
+      formData.append('id', productId);
+      formData.append('title', product.value.title);
+      formData.append('content', product.value.content);
+      formData.append('price', product.value.price);
+      formData.append('estado_id', product.value.estado);
+      formData.append('category_id', product.value.category);
+      if(product.value.thumbnails && product.value.thumbnails.length > 0) {
+        product.value.thumbnails.forEach((item, index) => {
+          // Verifica si hi ha un nou fitxer o si és una imatge ja existent
+          if (item.file instanceof File) {
+            formData.append(`thumbnails[]`, item.file);
+            console.log(`Afegint fitxer nou: ${item.file.name}`);
+          }
+        });
+      }
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]));
+      }
+
       validate().then((form) => {
         if (form.valid) {
-          // Llamar a la función de actualización de producto con los valores reactivos
-          updateProduct(product)
-              .then(() => {
-                swal({
-                  icon: 'success',
-                  title: 'Éxito',
-                  text: 'El producto se ha actualizado correctamente.',
-                });
-              })
-              .catch((error) => {
-                console.error("Error al actualizar el producto:", error);
-                swal({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'Hubo un problema al actualizar el producto. Por favor, intente de nuevo.',
-                });
-              });
+          updateProduct(formData, productId)
         } else {
           // Desplegar los errores de validación si los datos no son válidos
           console.log("Errores de validación:", errors);
         }
       });
     }
-    
+
+onMounted(async () => {
+  try {
+    // Suposem que ja tens carregat el producte en 'product.value'
+
+    // Convertir les imatges del format del servidor al format del Dropzone
+    if (product.value.resized_image) {
+      // Converteix l'objecte d'imatges a un array
+      const mediaArray = Object.values(product.value.resized_image);
+
+      // Mapeja cada imatge al format que espera el Dropzone
+      thumbnails.value = mediaArray.map(media => ({
+        img: media.original_url, // URL de la imatge
+        file: null, // No tenim l'arxiu original, només la URL
+        id: media.uuid // Guardar el UUID per si necessitem eliminar-la després
+      }));
+    }
+  } catch (error) {
+    console.error('Error al carregar les imatges:', error);
+  }
+});
+
+
 
 </script>

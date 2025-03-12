@@ -36,7 +36,6 @@ class ProductResource extends JsonResource
             'content' => $this->content,
             'category' => $this->category,
             'user' => $this->users,
-            'category_id' => $this->category_id,
             'price' => $this->price,
             'estado' => $this->estado,
             'toSend' => $this->toSend,

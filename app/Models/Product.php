@@ -18,7 +18,7 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'products';
-    protected $fillable = ['title', 'content', 'price', 'estado','category_id', 'user_id','estado_id'];
+    protected $fillable = ['title', 'content', 'price','category_id', 'user_id','estado_id'];
     
     // Relacion NM ( usuarios / products )
     public function users()
