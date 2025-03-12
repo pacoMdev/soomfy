@@ -41,7 +41,7 @@
       </router-link>
       <Button label="Vender" @click.stop="openDialog(producto)" />
         <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 450px; height: 400px; ">
-          <form @submit.prevent="submitForm">
+          <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
                   <Step value="1">Usuario al que vender</Step>
@@ -49,16 +49,17 @@
               </StepList>
               <StepPanels>
                   <StepPanel v-slot="{ activateCallback }" value="1">
+                    <div>
                       <div class="flex flex-col h-48">
                         <!-- Usuario al que se vende ------------------------------------------------ -->
                           <div class="w-100">
                             <FloatLabel>
-                              <Select name="city" :options="usersInterested" optionLabel="name" fluid class="w-100">
-                                <template #option="slotProps">
+                              <Select v-model="selectedUserId" name="name" :options="usersInterested" optionLabel="name" optionValue="id" fluid class="w-100" required>
+                                <template #option="{option: user}">
                                   <div class="flex items-center">
-                                      <img :alt="slotProps.option.label" src="http://127.0.0.1:8000/storage/17/Imagen.PNG" :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`" style="width: 18px" />
-                                      <div>{{ slotProps.option.name }}</div>
-                                  </div>
+                                      <img alt="imagen" :src="user.media?.[0].original_url || ''" :class="`mr-2`" style="width: 50px; height: 50px; border-radius: 50%;" />
+                                    </div>
+                                    <h4 class="d-flex align-items-center m-0">{{ user.name }}</h4>
                                 </template>
                               </Select>
                               <label>Comprador</label>
@@ -68,27 +69,27 @@
                       <div class="flex pt-6 justify-end">
                           <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
                       </div>
+                    </div>
                   </StepPanel>
                   <StepPanel v-slot="{ activateCallback }" value="2">
+                    <div class="d-flex flex-column gap-5">
                       <!-- precio al que se vende ------------------------------------------------ -->
                       <div>
                         <p>Precio del producto {{ selectedProduct?.price }} €</p>
                         <FloatLabel>
-                            <InputNumber inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
+                            <InputNumber v-model="finalPrice" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
                             <label for="price-product">Precio final</label>
                         </FloatLabel>
                       </div>
-                      <div class="flex pt-6 justify-between">
+                      <div class="flex pt-6 w-100 justify-between gap-5">
                           <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
+                          <Button type="submit" label="Vender" outlined severity="secondary" @click="visible = false" autofocus />
                       </div>
+                    </div>
                   </StepPanel>
               </StepPanels>
             </Stepper>
           </form>
-        <template #footer>
-            <Button label="Cancelar" text severity="secondary" @click="visible = false" autofocus />
-            <Button label="Vender" outlined severity="secondary" @click="visible = false" autofocus />
-        </template>
       </Dialog>
     </div>
 
@@ -107,38 +108,34 @@ import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel } from 'primev
 // Variables del Dialog
 const visible = ref(false);
 const selectedProduct = ref(null);
-const userInterested = ref(null);
+const usersInterested = ref([]);
+const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
+const finalPrice = ref(0);
+
 const openDialog = async (producto) => {
   selectedProduct.value = producto; 
   visible.value = true; // abre el Dialog
-  console.log('SELECTEDPRODUCT -->', selectedProduct);
+  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
+  getInterested(producto.id);
+};
 
-
-  fetchProducts = async (endpoint, type) => {
-  loading.value = true;
-  error.value = null;
-  selectedTab.value = type; // guardamos que se esta viendo
-
+const getInterested = async (productId) => {
   try {
-    const response = await axios.get(`/api/getUsersConversations/${producto.id}`);
-    // guarda info segun seccion
-    if (type === 'purchases') purchases.value = response.data.data || [];
+    const response = await axios.get(`/api/getUsersConversations/${productId}`);
+    usersInterested.value = response.data || [];
+    console.log('🔎 USERS INTERESTED  --->', usersInterested);
   } catch (err) {
-    error.value = "Error al obtener los datos.";
-  } finally {
-    loading.value = false;
+    console.log("Error al obtener los datos.");
   }
 };
 
-};
-const usersInterested = ref([
-    { name: 'Admin', code: '1' },
-    { name: 'Manolo', code: '2' },
-    { name: 'Paco', code: '3' },
-    { name: 'Ramon', code: '4' },
-    { name: 'Monica', code: '5' }
-]);
-// const usersInterested = ref([]);
+// const usersInterested = ref([
+//     { name: 'Admin', code: '1' },
+//     { name: 'Manolo', code: '2' },
+//     { name: 'Paco', code: '3' },
+//     { name: 'Ramon', code: '4' },
+//     { name: 'Monica', code: '5' }
+// ]);
 
 
 const props = defineProps({
@@ -173,7 +170,20 @@ onMounted(async () => {
 });
 
 
-const swal = inject('$swal')
+const sellProduct = async () => {
+  try{
+    const response = await axios.post('/api/sellProduct', {
+      userBuyer_id: selectedUserId.value,
+      product_id: selectedProduct.value.id,
+      finalPrice: finalPrice.value,
+      isToSend: false,
+    });
+    console.log("Producto vendido -->", response.data);
+
+  }catch(error){
+    console.error('Error al vender el producto:', error);
+  }
+}
 
 
 const gestorFavoritos = async(productId) => {

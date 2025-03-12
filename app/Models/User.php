@@ -47,6 +47,10 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function userMessages()
+    {
+        return $this->belongsTo(User::class, 'message', 'product_id', 'user_id');
+    }
 
     // Relacion NM ( usuarios / products )
     public function products()

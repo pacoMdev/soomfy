@@ -110,10 +110,8 @@ class ProfileController extends Controller
     }
 
     public function getUserByProductId($productId){
-        $producto = Product::with('userProd')->findOrFail($productId)->with('media')->get();
-
-        
-        return $producto;
-}
+        $product = Product::find( $productId)->load([ 'user' ]);
+        return new ProductResource($product);
+    }
 
 }

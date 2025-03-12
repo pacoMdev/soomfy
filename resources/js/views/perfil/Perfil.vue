@@ -9,7 +9,7 @@
             <div class="container-info-profile d-flex flex-column gap-1">
               <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
               <div class="d-flex gap-2 container-rating">
-                <Rating v-model="value" readonly />
+                <Rating v-model="mediaRating" readonly />
                 <p>({{ reviews.length }})</p>
               </div>
               <p>Vendedor novel</p>
@@ -83,7 +83,7 @@
   import ValorationInfo from '../../components/valorationInfo.vue';
   
   
-  const value = ref(0);
+  const mediaRating = ref(0);
   const activeProducts = ref([]);
   const purchases = ref([]);
   const sales = ref([]);
@@ -127,7 +127,7 @@
       if (type === 'purchases') purchases.value = response.data.data || [];
       else if (type === 'sales') sales.value = response.data.data || [];
       else if (type === 'activeProducts') activeProducts.value = response.data.data || [];
-      else if (type === 'reviews') reviews.value = response.data.data || [];
+      else if (type === 'reviews') {reviews.value = response.data.data || []; calcularMediaRating();};
       console.log('purchase -->', purchases);
       console.log('sales -->', sales);
       console.log('activeProducts -->', activeProducts);
@@ -150,6 +150,14 @@
       console.error("Error al obtener usuario:", error);
     }
   };
+  const calcularMediaRating = () => {
+  if (reviews.value.length === 0) {
+    mediaRating.value = 0;
+    return;
+  }
+  const total = reviews.value.reduce((sum, review) => sum + review.calification, 0);
+  mediaRating.value = total / reviews.value.length;
+};
   </script>
   
   

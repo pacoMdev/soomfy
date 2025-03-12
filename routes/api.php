@@ -28,12 +28,12 @@ Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); /
     Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 
 // Productos
-Route::apiResource('products', ProductControllerAdvance::class);
+// Route::apiResource('products', ProductControllerAdvance::class);
 Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Provisional
-// Productos del usuario
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
-Route::get('/producto/{id}/usuario', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
+Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
+Route::get('/getUsersConversations/{id}', [ProductControllerAdvance::class, 'getUsersConversations']); // Productos del id de usuario recibido
 
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
@@ -49,6 +49,11 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     // GET /users/{user}` - Show (Mostrar un usuario específico)
     // PUT/PATCH /users/{user}` - Update (Actualizar un usuario)
     // DELETE /users/{user}` - Destroy (Eliminar un usuario)
+
+    // Buy || Sell
+    Route::post('sellProduct', [ProductControllerAdvance::class, 'sellProduct']);
+    Route::post('buyProduct', [ProductControllerAdvance::class, 'buyProduct']);
+
 
     // Perfil
     Route::get('profile', [ProfileController::class, 'index']);

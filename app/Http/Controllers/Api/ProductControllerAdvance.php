@@ -13,6 +13,7 @@ use App\Http\Resources\ProductResource;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Message;
 use App\Models\Product_image;
 use App\Models\Transactions;
 use App\Models\User;
@@ -240,23 +241,24 @@ class ProductControllerAdvance extends Controller
     }
 
     public function sellProduct(Request $request){
-        $userSeller = User::findOrFail($request -> userSeller_id);
+        $userSeller = auth()->user();
         $userBuyer = User::findOrFail($request -> userBuyer_id);
+        $product = Product::findOrFail($request -> product_id);
         
-        if ($request -> initialPrice != $request -> finalPrice){
-            $initialPrice = $request -> initialPrice;
+        if ($request -> finalPrice == 0){
+            $initialPrice = $product-> price;
+            $finalPrice = $product -> price;
+            $isRegated = false;
+        }else{
+            $initialPrice = $product -> price;
             $finalPrice = $request -> finalPrice;
             $isRegated = true;
-        }else{
-            $initialPrice = $request -> initialPrice;
-            $finalPrice = $request -> finalPrice;
-            $isRegated = false;
         }
 
         $transaction = new Transactions();
         $transaction -> userSeller_id = $userSeller -> id;
         $transaction -> userBuyer_id = $userBuyer -> id;
-        $transaction -> product_id = $request -> product_id;
+        $transaction -> product_id = $product -> id;
         $transaction -> initialPrice = $initialPrice;
         $transaction -> finalPrice = $finalPrice;
         $transaction -> isToSend = $request -> isToSend;
@@ -265,20 +267,38 @@ class ProductControllerAdvance extends Controller
         $transaction -> save();
 
         $data = [
-            'from_email' => 'soomfy@gmail.com',
-            'from_name' => 'Soomfy',
-            'to_email' => $userSeller['email'],
-            'to_name' => $userSeller['name'],
-            'subject' => 'Hey acabas de vender un producto',
-            'view' => 'emails.welcome',
-            'finalPrice' => $finalPrice,
-            'userSeller' => $userSeller,
-            'userBuyer' => $userBuyer,
+            'from_email'    => 'soomfy@gmail.com',
+            'from_name'     => 'Soomfy Seller',
+            'to_email'      => $userSeller -> email,
+            'to_name'       => $userSeller -> name,
+            'subject'       => 'Hey acabas de vender un producto',
+            'view'          => 'emails.sellProduct',
+            'finalPrice'    => $finalPrice,
+            'userSeller'    => $userSeller,
+            'userBuyer'     => $userBuyer,
+            'product'       => $product,
+            'saleDate'      => $transaction -> created_at,
+            'productUrl'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
         ];
+        // Manda el email
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
 
+        dd($data_email);
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
+    }
+
+    public function getUsersConversations($productId){
+    $productOwnerId = Product::find( $productId)->load([ 'users' ]);
+    // dd($productOwnerId['users'][0]['id']);
+    
+    $userIds = Message::where('product_id', $productId)
+        ->pluck('userRemitent_id')
+        ->unique()
+        ->reject(fn($id) => $id == $productOwnerId['users'][0]['id']);
+    $allUsers = User::whereIn('id', $userIds)->with('media')->get();
+    // dd($allUsers);
+    return $allUsers;
     }
 }

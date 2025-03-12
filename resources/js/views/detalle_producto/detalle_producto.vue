@@ -48,10 +48,10 @@
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
-                            <h3>Cargando precio</h3>
-                            <h4>Cargando title</h4>
-                            <h4>Cargando description </h4>
-                            <h5>Cargando state </h5>
+                            <Skeleton width="10rem" class="mb-2"></Skeleton>
+                            <Skeleton width="15rem" class="mb-2"></Skeleton>
+                            <Skeleton width="14rem" class="mb-2"></Skeleton>
+                            <Skeleton width="8rem" class="mb-2"></Skeleton>
                             <div class="container-categories d-flex gap-2">
                                 <p class="cont-category">Cargando categoria</p>
                             </div>
@@ -76,12 +76,11 @@
                             </div>
                         </router-link>
                         <div v-else class="d-flex gap-3 align-items-center p-4 info-profile-product">
-                            <img src="../../../../public/images/Github.svg" alt="">
+                            <Skeleton shape="circle" size="4rem" class="mb-2"></Skeleton>
                             <div>
-                                <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
                                 <Skeleton width="10rem" class="mb-2"></Skeleton>
                                 <div>
-                                    <p>Molins de Rei, 08750, Barcelona</p>
+                                    <Skeleton width="15rem" class="mb-2"></Skeleton>
                                 </div>
                             </div>
                         </div>

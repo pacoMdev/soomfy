@@ -41,6 +41,12 @@ class ConstructEmail extends Mailable
                         'color_primary' => $this->data['color_primary'] ?? null,
                         'color_secondary' => $this->data['color_secondary'] ?? null,
                         'logo' => $this->data['logo'] ?? null,
+                        'finalPrice' => $this->data['finalPrice'] ?? null,
+                        'userSeller' => $this->data['userSeller'] ?? null,
+                        'userBuyer' => $this->data['userBuyer'] ?? null,
+                        'product' => $this->data['product'] ?? null,
+                        'saleDate' => $this->data['saleDate'] ?? null,
+                        'productUrl' => $this->data['productUrl'] ?? null,
                     ]
                 );
         return $email;
