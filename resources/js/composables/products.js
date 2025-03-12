@@ -145,27 +145,45 @@ export default function useProducts() {
         }
     };
 
-    const updateProduct = async (product) => {
+    const updateProduct = async (formData, productId) => {
         if (isLoading.value) return;
 
         isLoading.value = true
         validationErrors.value = {}
-        console.log(product);
-        axios.put('/api/products/' + product.id, product)
+
+        formData.append('_method', 'PUT');
+
+        // Canviar aquest mètode de put a post
+        axios.post('/api/products/' + productId, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        })
             .then(response => {
-                router.push({name: 'Products.index'})
+                console.log("Resposta del servidor:", response.data);
+                // router.push({name: 'products.index'})
                 swal({
                     icon: 'success',
-                    title: 'Product actualizado correctamente'
+                    title: 'Product actualizado correctamente',
+                    showConfirmButton: true,
+                    timer: 2000
                 })
             })
             .catch(error => {
+                console.error("Error en actualitzar:", error.response?.data);
+                swal({
+                    icon: 'error',
+                    title: 'Producto no actualizado correctamente',
+                    showConfirmButton: true,
+                    timer: 2000
+                })
                 if (error.response?.data) {
                     validationErrors.value = error.response.data.errors
                 }
             })
             .finally(() => isLoading.value = false)
     }
+
     const getEstadoList = async () => {
         axios.get('/api/estado-list')
             .then(response => {

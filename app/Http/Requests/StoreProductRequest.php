@@ -24,12 +24,12 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'content' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required',
-            'estado_id' => 'required|exists:estados,id',
-            'thumbnails.*' => 'required|image|mimes:webp,jpeg,png,jpg|max:2048'
+            'title' => 'sometimes|string|max:255',
+            'content' => 'sometimes|string',
+            'category_id' => 'sometimes|exists:categories,id',
+            'price' => 'sometimes|numeric|min:0',
+            'estado_id' => 'sometimes|exists:estados,id',
+            'thumbnails.*' => 'nullable|image|mimes:webp,jpeg,png,jpg|max:2048'
         ];
     }
 }

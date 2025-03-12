@@ -80,8 +80,16 @@ class ProductControllerAdvance extends Controller
         } else {
             $product->update($request->validated());
 
-            $category = Category::find($request->category);
-            $product->category()->sync($category);
+            if($request->hasFile('thumbnails')){
+                $product->clearMediaCollection('images');
+                foreach ($request->file('thumbnails') as $thumbnail) {
+                    if($thumbnail->isValid()){
+                        $product->addMedia($thumbnail)
+                            ->toMediaCollection('images');
+                    }
+                }
+            }
+            $product->load('user','category','estado', 'media');
 
             return new ProductResource($product);
         }
