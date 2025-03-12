@@ -75,7 +75,7 @@
             <div class="mb-3">
               <label for="product-estado" class="form-label">Estado</label>
               <select
-                  v-model="product.estado"
+                  v-model="product.estado_id"
                   id="product-estado"
                   class="form-select"
               >

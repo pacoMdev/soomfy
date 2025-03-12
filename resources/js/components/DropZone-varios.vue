@@ -63,12 +63,12 @@ const props = defineProps({
 });
 
 // Usar ref en Vue para referirse a los inputs dinámicos
-const thumbnails = ref([
+const thumbnails = ref(
   Array(props.maxImages).fill(null).map(() => ({
     img: "",
     file: null
   }))
-]);
+);
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -79,17 +79,17 @@ watch(
       const valores = Array.isArray(newVal) ? newVal : [];
 
       const filledThumbnails = Array(props.maxImages).fill(null).map((_, index) => {
+        // Si ya existe un blob en thumbnails, lo mantenemos
+        if (thumbnails.value[index]?.img?.startsWith('blob:')) {
+          return thumbnails.value[index];
+        }
+
         // Si tenemos un valor existente en el modelValue
         if (valores[index]) {
           return {
             img: valores[index].img,
             file: valores[index].file
           };
-        }
-
-        // Si ya existe un blob en thumbnails, lo mantenemos
-        if (thumbnails.value[index]?.img?.startsWith('blob:')) {
-          return thumbnails.value[index];
         }
 
         // Si no hay nada, retornamos un espacio vacío
@@ -140,10 +140,16 @@ const drop = (e, index) => {
     if(thumbnails.value[index]?.img?.startsWith('blob:')) {
       URL.revokeObjectURL(thumbnails.value[index].img);
     }
+
+    if (thumbnails.value[index]?.img) {
+      URL.revokeObjectURL(thumbnails.value[index].img);
+    }
+
     thumbnails.value[index] = {
       img: URL.createObjectURL(file),
       file: file
     };
+
 
     // Envia las imagenes al padre (Al formulario de creacion)
     emit("update:modelValue",thumbnails.value);
@@ -157,6 +163,10 @@ const onChange = (e, index) => {
   if (file) {
     /// Revocar URL anterior si existe
     if (thumbnails.value[index]?.img?.startsWith('blob:')) {
+      URL.revokeObjectURL(thumbnails.value[index].img);
+    }
+
+    if (thumbnails.value[index]?.img) {
       URL.revokeObjectURL(thumbnails.value[index].img);
     }
 
