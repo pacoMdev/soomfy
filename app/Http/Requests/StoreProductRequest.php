@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
             'category_id' => 'required|exists:categories,id',
             'price' => 'required',
             'estado_id' => 'required|exists:estados,id',
-            'thumbnails.*' => 'required|image|mimes:webp,jpeg,png,jpg,gif|max:2048'
+            'thumbnails.*' => 'required|image|mimes:webp,jpeg,png,jpg|max:2048'
         ];
     }
 }

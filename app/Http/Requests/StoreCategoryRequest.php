@@ -24,7 +24,7 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:categories',
+            'name' => 'required|unique:categories,name,' . $this->category?->id,
             'image' => 'nullable|image|mimes:png,jpg,webp|max:2048'
         ];
 

@@ -178,9 +178,7 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
         thumbnails: []
     })
     const route = useRoute()
-    function submitForm() {
-        validate().then(form => { if (form.valid) updateProduct(product) })
-    }
+
     onMounted(() => {
         getProduct(route.params.id)
         getCategoryList()

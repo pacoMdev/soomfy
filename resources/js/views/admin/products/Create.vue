@@ -1,4 +1,5 @@
 <template>
+  <div class="show"></div>
   <form @submit.prevent="submitForm">
     <div class="row my-5">
       <div class="col-md-8">
@@ -80,6 +81,7 @@
                     optionValue="id"
                     :loading="isLoading"
                     class="w-full md:w-80"
+                    appendTo=".show"
                 />
                 <label>Selecciona categoría</label>
               </FloatLabel>
@@ -108,6 +110,7 @@
                     optionValue="id"
                     :loading="isLoadingEstados"
                     class="w-full md:w-80"
+                    appendTo=".show"
                 />
                 <label>Selecciona estado</label>
               </FloatLabel>

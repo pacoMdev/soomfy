@@ -64,7 +64,7 @@ class ProductControllerAdvance extends Controller
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
             return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            $product->load('users','category','estado', 'media');
+            $product->load('user','category','estado', 'media');
             return new ProductResource($product);
         }
     }

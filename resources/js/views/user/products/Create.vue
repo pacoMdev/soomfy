@@ -1,5 +1,6 @@
 
 <template>
+  <div class="show"></div>
     <form @submit.prevent="submitForm">
         <div class="card flex justify-center">
             <Stepper value="1" class="basis-[50rem]">
@@ -64,6 +65,7 @@
                                   :loading="isLoading"
                                   :disabled="isLoading"
                                   class="w-full md:w-80"
+                                  appendTo=".show"
                               />
                               <label>Selecciona categoría</label>
                             </FloatLabel>
@@ -87,6 +89,7 @@
                               optionValue="id"
                               :loading="isLoadingEstados"
                               class="w-full md:w-80"
+                              appendTo=".show"
                           />
                           <label for="estado">Selecciona estado</label>
                         </FloatLabel>
