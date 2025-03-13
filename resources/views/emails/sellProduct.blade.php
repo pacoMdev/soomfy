@@ -25,7 +25,7 @@
         <p>Ponte en contacto con el comprador para coordinar la entrega.</p>
 
         <p style="text-align: center; margin-top: 20px;">
-            <a href="{{ $productUrl }}" style="background: #28a745; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ver Producto</a>
+            <a href="{{ $url }}" style="background: #28a745; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ver Producto</a>
         </p>
 
         <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #666;">

@@ -294,6 +294,7 @@ class ProductControllerAdvance extends Controller
 
         $transaction -> save();
 
+        // EMAIL VENTA ---------------------------------------------------------------------------------------
         $data = [
             'from_email'    => 'soomfy@gmail.com',
             'from_name'     => 'Soomfy Seller',
@@ -306,7 +307,26 @@ class ProductControllerAdvance extends Controller
             'userBuyer'     => $userBuyer,
             'product'       => $product,
             'saleDate'      => $transaction -> created_at,
-            'productUrl'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
+            'url'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
+        ];
+        // Manda el email
+        $email = new ConstructEmail($data);
+        $data_email = sendEmail($email);
+
+        // EMAIL OPINION ---------------------------------------------------------------------------------------
+        $data = [
+            'from_email'    => 'soomfy@gmail.com',
+            'from_name'     => 'Soomfy Seller',
+            'to_email'      => $userBuyer -> email,
+            'to_name'       => $userBuyer -> name,
+            'subject'       => 'Hey acabas de vender un producto',
+            'view'          => 'emails.valoration',
+            'finalPrice'    => $finalPrice,
+            'userSeller'    => $userSeller,
+            'userBuyer'     => $userBuyer,
+            'product'       => $product,
+            'saleDate'      => $transaction -> created_at,
+            'url'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
         ];
         // Manda el email
         $email = new ConstructEmail($data);

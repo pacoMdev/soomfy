@@ -81,7 +81,8 @@ class ProfileController extends Controller
         return $this->successResponse($user, 'User found');
     }
 
-    public function getAllToSell($userId){
+    public function getAllToSell(Request $request){
+        $userId = $request->userId;
         $products = User::find($userId)->products;
 
         $soldProductIds = Transactions::pluck('product_id'); // IDs de productos vendidos/comprados
@@ -93,7 +94,8 @@ class ProfileController extends Controller
 
         return ProductResource::collection($filteredProducts);
     }
-    public function getPurchase($userId){
+    public function getPurchase(Request $request){
+        $userId = $request->userId;
         $purchase = User::find($userId)->purchase()
         ->with(['product', 'seller', 'buyer'])
         ->get();
@@ -101,14 +103,16 @@ class ProfileController extends Controller
         return $this->successResponse($purchase, 'Transaction found');
     }
     
-    public function getSales($userId){
+    public function getSales(Request $request){
+        $userId = $request->userId;
         $purchase = User::find($userId)->sales()
         ->with(['product', 'seller', 'buyer'])
         ->get();
 
         return $this->successResponse($purchase, 'Transaction found');
     }
-    public function getValorations($userId){
+    public function getValorations(Request $request){
+        $userId = $request->userId;
         $reviews = UserOpinion::whereIn('product_id', function ($query) use ($userId) {
             $query->select('product_id')
                   ->from('transactions')

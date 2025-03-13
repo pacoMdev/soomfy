@@ -161,6 +161,11 @@ export default [
                 component: () => import('../views/user/favoritos/favoritos.vue'),
             },
             {
+                path: '/opinion',
+                name: 'opinion',
+                component: () => import('../views/user/valoration/Create.vue'),
+            },
+            {
                 name: 'products',
                 path: 'products',
                 meta: { breadCrumb: 'Products'},
