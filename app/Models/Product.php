@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Couchbase\SearchResult;
+use App\Models\Transactions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Image\Manipulations;
@@ -41,6 +42,10 @@ class Product extends Model implements HasMedia
     public function userProd()
     {
         return $this->belongsToMany(User::class, 'user_product', 'product_id', 'user_id') ;
+    }
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class, 'product_id');
     }
 
     public function images()

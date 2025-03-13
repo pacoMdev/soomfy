@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProductResource;
+use App\Models\Transactions;
 use Symfony\Component\HttpFoundation\Test\Constraint\ResponseIsSuccessful;
 
 
@@ -83,7 +84,14 @@ class ProfileController extends Controller
     public function getAllToSell($userId){
         $products = User::find($userId)->products;
 
-        return ProductResource::collection($products);
+        $soldProductIds = Transactions::pluck('product_id'); // IDs de productos vendidos/comprados
+        $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
+            return $soldProductIds->contains($product->id);
+            
+        });
+        // dd($filteredProducts);
+
+        return ProductResource::collection($filteredProducts);
     }
     public function getPurchase($userId){
         $purchase = User::find($userId)->purchase()

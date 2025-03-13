@@ -208,9 +208,14 @@ class ProductControllerAdvance extends Controller
             ->when($orderColumn && $orderDate, function ($query) use ($orderColumn, $orderDate) {
                 $query->orderBy($orderColumn, $orderDate);
             })
-            ->paginate();
+            ->get();
+            // excluye los productos ya vendidos de transactions
+            $soldProductIds = Transactions::pluck('product_id');
+            $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
+                return $soldProductIds->contains($product->id);
+            });
 
-        return ProductResource::collection($products);
+        return ProductResource::collection($filteredProducts);
     }
 
 
@@ -307,7 +312,6 @@ class ProductControllerAdvance extends Controller
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
 
-        dd($data_email);
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
     }

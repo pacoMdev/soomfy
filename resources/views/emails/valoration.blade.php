@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a {{ config('app.name') }}</title>
+    <title>Valora tu compra</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +18,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             margin: auto;
-            text-align: center;
         }
         .button {
             display: inline-block;
@@ -38,18 +37,19 @@
 </head>
 <body>
     <div class="container">
-        <h2>¡Bienvenido!</h2>
-        <p>Gracias por unirte a <strong>Soomfy</strong>. Estamos encantados de tenerte con nosotros.</p>
-        <p>Ahora puedes explorar, comprar y vender productos de manera fácil y segura.</p>
+        <h2>Hola {{ $user->name }},</h2>
+        <p>Gracias por completar tu compra del producto <strong>{{ $product->title }}</strong>.</p>
+        <p>Queremos saber tu opinión sobre la transacción y el vendedor <strong>{{ $seller->name }}</strong>.</p>
+        <p>Tu valoración nos ayuda a mejorar la comunidad y la experiencia de compra.</p>
 
         <p style="text-align: center;">
-            <a href="" class="button">Ir a la aplicación</a>
+            <a href="{{ $ratingUrl }}" class="button">Valorar ahora</a>
         </p>
 
-        <p>Si tienes alguna pregunta, no dudes en contactarnos. ¡Disfruta de la experiencia!</p>
-        <p>Atentamente, <br> El equipo de Soomfy</p>
+        <p>¡Gracias por tu tiempo!</p>
+        <p>Atentamente, <br> El equipo de {{ config('app.name') }}</p>
 
-        <p class="footer">Si no creaste esta cuenta, ignora este mensaje.</p>
+        <p class="footer">Si no realizaste esta compra, ignora este mensaje.</p>
     </div>
 </body>
 </html>
