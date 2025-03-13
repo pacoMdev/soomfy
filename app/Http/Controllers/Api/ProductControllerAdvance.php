@@ -97,13 +97,13 @@ class ProductControllerAdvance extends Controller
                     $mediaItems[] = $product
                         ->addMedia($thumbnail)
                         ->preservingOriginal()
-                        ->toMediaCollection('images', 'public');
+                        ->toMediaCollection('images');
                 }
 
                 // Sincronizar con la colección (eliminará las imágenes antiguas)
                 $product->syncMedia($mediaItems, 'images');
 
-
+            }
 
                 $product->load('user','category','estado', 'media');
 

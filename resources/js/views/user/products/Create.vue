@@ -58,7 +58,7 @@
                         <div class="mb-3 input-categorias">
                             <FloatLabel>
                               <Select
-                                  v-model="product.category_id"
+                                  v-model="product.category"
                                   :options="categoryList"
                                   optionLabel="name"
                                   optionValue="id"
@@ -83,7 +83,7 @@
                       <div class="mb-3 input-estado">
                         <FloatLabel>
                           <Select
-                              v-model="product.estado_id"
+                              v-model="product.estado_"
                               :options="estadoList"
                               optionLabel="name"
                               optionValue="id"
@@ -169,9 +169,9 @@ const {validate, errors} = useForm({validationSchema: schema})
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
-const {value: categories} = useField('category_id', null, {initialValue: '', label: 'category'});
+const {value: categories} = useField('category', null, {initialValue: '', label: 'category'});
 const {value: price} = useField('price', null, {initialValue: 0});
-const {value: estados} = useField('estado_id', null, {initialValue: ''});
+const {value: estados} = useField('estado', null, {initialValue: ''});
 const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
@@ -189,14 +189,7 @@ const product = reactive({
     estado_id: estados,
 })
 
-// Dentro de tu script setup
-watch(() => categoryList.value, (newValue) => {
-  console.log('Lista de categorías actualizada:', newValue);
-}, { deep: true });
 
-watch(() => product.category_id, (newValue) => {
-  console.log('Categoría seleccionada:', newValue);
-});
 
 function submitForm() {
   console.log('Iniciando validación del formulario...');
@@ -219,8 +212,8 @@ function submitForm() {
       formData.append('title', product.title);
       formData.append('content', product.content);
       formData.append('price', product.price);
-      formData.append('estado_id', product.estado_id);
-      formData.append('category_id', product.category_id);
+      formData.append('estado_id', product.estado);
+      formData.append('category_id', product.category);
 
       // Solo enviar las imágenes que tienen archivo
       let imageIndex = 0;
