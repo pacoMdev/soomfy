@@ -209,9 +209,22 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
             img: img.original_url,
             file: null,
           }));
-        } else {
-          product.value.thumbnails = [];
+        } else if (productData.value.resized_image && Object.keys(productData.value.resized_image).length > 0) {
+          // Convertir el objeto de imágenes a un array
+          product.value.thumbnails = Object.values(productData.value.resized_image).map(img => ({
+            img: img.original_url,
+            file: null,
+            id: img.uuid
+          }));
         }
+        else {
+            product.value.thumbnails = [];
+        }
+        // Asegúrate de que haya suficientes slots para el máximo de imágenes
+        while (product.value.thumbnails.length < 3) {
+          product.value.thumbnails.push({ img: "", file: null });
+        }
+
 
       }
     });
@@ -225,15 +238,17 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
       formData.append('price', product.value.price);
       formData.append('estado_id', product.value.estado);
       formData.append('category_id', product.value.category);
-      if(product.value.thumbnails && product.value.thumbnails.length > 0) {
-        product.value.thumbnails.forEach((item, index) => {
-          // Verifica si hi ha un nou fitxer o si és una imatge ja existent
-          if (item.file instanceof File) {
-            formData.append(`thumbnails[]`, item.file);
-            console.log(`Afegint fitxer nou: ${item.file.name}`);
-          }
+      if (product.value.thumbnails && product.value.thumbnails.length > 0) {
+        // Solo enviar las imágenes modificadas
+        const modifiedThumbnails = product.value.thumbnails.filter(item => item.isModified && item.file);
+
+        modifiedThumbnails.forEach((item) => {
+          // Para cada imagen modificada, enviamos el archivo y su posición
+          formData.append(`thumbnail_files[]`, item.file);
+          formData.append(`thumbnail_positions[]`, item.slotIndex);
         });
       }
+
 
       for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]));

@@ -81,16 +81,31 @@ class ProductControllerAdvance extends Controller
         } else {
             $product->update($request->validated());
 
-            if($request->hasFile('thumbnails')){
-                $product->clearMediaCollection('images');
-                foreach ($request->file('thumbnails') as $thumbnail) {
-                    if($thumbnail->isValid()){
-                        $product->addMedia($thumbnail)
-                            ->toMediaCollection('images');
+            if ($request->hasFile('thumbnails')) {
+                $mediaItems = [];
+
+                // Mantener imágenes existentes que no se están reemplazando
+                $existingMedia = $product->getMedia('images');
+                foreach ($existingMedia as $index => $media) {
+                    if (!isset($request->file('thumbnails')[$index])) {
+                        $mediaItems[] = $media;
                     }
                 }
-            }
-            $product->load('user','category','estado', 'media');
+
+                // Procesar nuevas imágenes
+                foreach ($request->file('thumbnails') as $index => $thumbnail) {
+                    $mediaItems[] = $product
+                        ->addMedia($thumbnail)
+                        ->preservingOriginal()
+                        ->toMediaCollection('images', 'public');
+                }
+
+                // Sincronizar con la colección (eliminará las imágenes antiguas)
+                $product->syncMedia($mediaItems, 'images');
+
+
+
+                $product->load('user','category','estado', 'media');
 
             return new ProductResource($product);
         }

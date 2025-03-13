@@ -28,7 +28,7 @@ Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); /
     Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 
 // Productos
-// Route::apiResource('products', ProductControllerAdvance::class);
+Route::apiResource('products', ProductControllerAdvance::class);
 Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Provisional
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
