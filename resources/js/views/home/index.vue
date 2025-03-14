@@ -12,7 +12,7 @@
         <div class="centrar-categories">
           <div class="categories">
             <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
-              <img src="/path/to/default/image.jpg" alt="Todas">
+              <img src="" alt="Todas">
               <p>Todas</p>
             </div>
             <div v-for="category in categories" :key="category.id">

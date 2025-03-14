@@ -82,30 +82,35 @@ class ProductControllerAdvance extends Controller
             $product->update($request->validated());
 
             if ($request->hasFile('thumbnails')) {
-                $mediaItems = [];
-
-                // Mantener imágenes existentes que no se están reemplazando
+                $thumbnails = $request->file('thumbnails');
                 $existingMedia = $product->getMedia('images');
-                foreach ($existingMedia as $index => $media) {
-                    if (!isset($request->file('thumbnails')[$index])) {
-                        $mediaItems[] = $media;
-                    }
-                }
 
-                // Procesar nuevas imágenes
-                foreach ($request->file('thumbnails') as $index => $thumbnail) {
-                    $mediaItems[] = $product
-                        ->addMedia($thumbnail)
+                // Para cada nueva imagen subida
+                foreach ($thumbnails as $index => $thumbnail) {
+                    // Si hay una imagen existente en esta posición, eliminarla
+                    if (isset($existingMedia[$index])) {
+                        $existingMedia[$index]->delete();
+                    }
+
+                    // Agregamos la nueva imagen
+                    $product->addMedia($thumbnail)
                         ->preservingOriginal()
                         ->toMediaCollection('images');
                 }
 
-                // Sincronizar con la colección (eliminará las imágenes antiguas)
-                $product->syncMedia($mediaItems, 'images');
-
+                // Actualizamos las posiciones de todas las imágenes
+                $allMedia = $product->getMedia('images');
+                foreach ($allMedia as $i => $media) {
+                    $media->order_column = $i;
+                    $media->save();
+                }
             }
 
-                $product->load('user','category','estado', 'media');
+
+
+
+            $product->refresh();
+            $product->load('user','category','estado', 'media');
 
             return new ProductResource($product);
         }
@@ -130,9 +135,9 @@ class ProductControllerAdvance extends Controller
             $orderColumn = 'created_at';
         }
 
-        $orderDate = request('order_direction', 'desc');
-        if (!in_array($orderDate, ['asc', 'desc'])) {
-            $orderDate = 'desc';
+        $orderDirection = request('order_direction', 'desc');
+        if (!in_array($orderDirection, ['asc', 'desc'])) {
+            $orderDirection = 'desc';
         }
 
         $orderPrice = request('order_price', null);
@@ -144,10 +149,27 @@ class ProductControllerAdvance extends Controller
         $latitude = request('search_latitude', null);
         $longitude = request('search_longitude', null);
 
+        // Búsqueda global
+        $searchGlobal = request('search_global', null);
 
         // Muestra todos los productos con su categoria y foto
         $products = Product::with('user','estado','category', 'media')
-            // Se ejecutara si existe el parametro search_category
+            // Busqueda global
+            ->when($searchGlobal = request('search_global'), function($query) use ($searchGlobal) {
+                $query->where(function($q) use ($searchGlobal) {
+                    $q->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
+                        ->orWhereRaw('LOWER(content) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
+                        ->orWhere('id', 'LIKE', '%' . $searchGlobal . '%')
+                        ->orWhereHas('category', function($categoryQuery) use ($searchGlobal) {
+                            $categoryQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
+                        })
+                        ->orWhereHas('estado', function($estadoQuery) use ($searchGlobal) {
+                            $estadoQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
+                        });
+                });
+            })
+
+                // Se ejecutara si existe el parametro search_category
             ->when(request('search_category'), function($query) {
                 // Busca los prooductos que tengan una relacion con la tabla categorias
                 $query->whereHas('category', function($q) {
@@ -171,6 +193,10 @@ class ProductControllerAdvance extends Controller
             ->when(request('search_title'), function($query) {
                 $searchTitle = request('search_title');
                 $query->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchTitle) . '%']);
+            })
+            ->when(request('search_id'), function($query) {
+                $searchTitle = request('search_id');
+                $query->whereRaw('LOWER(id) LIKE ?', ['%' . strtolower($searchTitle) . '%']);
             })
             // Filtro por fecha
             ->when(request('search_date'), function($query) {
@@ -198,15 +224,32 @@ class ProductControllerAdvance extends Controller
                 }
 
             })
-
-
             // Agregar múltiples órdenes condicionalmente
+            // Ordenar por id
+            ->when($orderColumn == 'id', function ($query) use ($orderDirection) {
+                // Si específicamente queremos ordenar por ID
+                $query->orderBy('id', $orderDirection);
+            })
+            // Ordenar por orden de creación
+            ->when($orderColumn == 'created_at', function ($query) use ($orderDirection) {
+                $query->orderBy('created_at', $orderDirection);
+            })
+            // Ordenar por titulo
+            ->when($orderColumn == 'title', function ($query) use ($orderDirection) {
+                // Si específicamente queremos ordenar por ID
+                $query->orderBy('title', $orderDirection);
+            })
+            // Ordenar por categoria
+            ->when($orderColumn == 'category_id', function ($query) use ($orderDirection) {
+                // Si específicamente queremos ordenar por ID
+                $query->orderBy('category_id', $orderDirection);
+            })
             // Ordenar por precio si existe
             ->when($orderPrice, function ($query) use ($orderPrice) {
                 $query->orderBy('price', $orderPrice);
             })
-            ->when($orderColumn && $orderDate, function ($query) use ($orderColumn, $orderDate) {
-                $query->orderBy($orderColumn, $orderDate);
+            ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
+                $query->orderBy($orderColumn, $orderDirection);
             })
             ->get();
             // excluye los productos ya vendidos de transactions

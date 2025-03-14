@@ -56,7 +56,7 @@ const buscarProductos = () => {
     router.push({
       name: 'public.products',
       query: {
-        search_category: searchTerm.value
+        search_global: searchTerm.value
       }
     });
   }

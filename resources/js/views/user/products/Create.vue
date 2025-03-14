@@ -83,7 +83,7 @@
                       <div class="mb-3 input-estado">
                         <FloatLabel>
                           <Select
-                              v-model="product.estado_"
+                              v-model="product.estado"
                               :options="estadoList"
                               optionLabel="name"
                               optionValue="id"
@@ -157,9 +157,9 @@ const dropZoneActive = ref(true)
 const schema = {
     title: 'required|min:5',
     content: 'required|min:5',
-    category_id: 'required',
+    category: 'required',
     price: 'required',
-    estado_id: 'required',
+    estado: 'required',
     thumbnails: 'required'
 
 }
@@ -176,17 +176,17 @@ const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
-const product = reactive({
+const product = ref({
     title,
     content,
-    category_id: categories,
+    category: categories,
     thumbnails: [
         { img: "", file: null }, // Contenedor 1
         { img: "", file: null }, // Contenedor 2
         { img: "", file: null }  // Contenedor 3
     ],
     price,
-    estado_id: estados,
+    estado: estados,
 })
 
 
@@ -209,19 +209,16 @@ function submitForm() {
       const formData = new FormData();
 
       // Añadir campos básicos
-      formData.append('title', product.title);
-      formData.append('content', product.content);
-      formData.append('price', product.price);
-      formData.append('estado_id', product.estado);
-      formData.append('category_id', product.category);
+      formData.append('title', product.value.title);
+      formData.append('content', product.value.content);
+      formData.append('price', product.value.price);
+      formData.append('estado_id', product.value.estado);
+      formData.append('category_id', product.value.category);
 
-      // Solo enviar las imágenes que tienen archivo
-      let imageIndex = 0;
-      imagenes.forEach(imagen => {
+      imagenes.value.forEach(imagen => {
         if (imagen.file) {
           // Usar simplemente thumbnails[] en lugar de thumbnails[index]
-          formData.append('thumbnails[]', imagen.file);
-          imageIndex++;
+          formData.append(`thumbnails[${index}]`, imagen.file);
         }
       });
 

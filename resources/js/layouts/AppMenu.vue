@@ -46,8 +46,9 @@ const model = ref([
     {
         label: 'Products',
         items: [
-            { label: 'Products', icon: 'pi pi-fw pi-id-card', to: '/admin/products', permision: 'product-list' },
-            { label: 'Categorias', icon: 'pi pi-fw pi-id-card', to: '/admin/categories', permision: 'all' },
+            { label: 'Products', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/products', permision: 'product-list' },
+            { label: 'Categorias', icon: 'pi pi-fw pi-tags', to: '/admin/categories', permision: 'all' },
+            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/estados', permision: 'all' },
 
         ]
     }

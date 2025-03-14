@@ -25,6 +25,14 @@
                 <th class="px-6 py-3 bg-gray-50 text-left">
                 </th>
                 <th class="px-6 py-3 bg-gray-50 text-left">
+                  <input v-model="search_category" type="text" class="inline-block mt-1 form-control" placeholder="Filter by Category">
+                </th>
+                <th class="px-6 py-3 bg-gray-50 text-left">
+                  <input v-model="search_estado" type="text" class="inline-block mt-1 form-control" placeholder="Filter by Estado">
+                </th>
+                <th class="px-6 py-3 bg-gray-50 text-left">
+                </th>
+                <th class="px-6 py-3 bg-gray-50 text-left">
                   <input v-model="search_content" type="text" class="inline-block mt-1 form-control" placeholder="Filter by Content">
                 </th>
                 <th class="px-6 py-3 bg-gray-50 text-left">
@@ -226,6 +234,7 @@ import {ref, onMounted, watch, computed} from "vue";
 const updateOrdering = (column) => {
   orderColumn.value = column;
   orderDirection.value = (orderDirection.value === 'asc') ? 'desc' : 'asc';
+
   getProducts(
       1,
       search_category.value,
@@ -256,6 +265,27 @@ watch(search_category, (current) => {
       min_price.value,
       max_price.value,
       search_estado.value,
+      search_location.value,
+      search_content.value,
+      search_global.value,
+      orderColumn.value,
+      orderDirection.value,
+      order_price.value,
+      search_latitude.value,
+      search_longitude.value,
+      search_radius.value
+  );
+});
+
+watch(search_estado, (current) => {
+  getProducts(
+      1,
+      search_category.value,
+      search_id.value,
+      search_title.value,
+      min_price.value,
+      max_price.value,
+      current,
       search_location.value,
       search_content.value,
       search_global.value,

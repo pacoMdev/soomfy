@@ -238,14 +238,13 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
       formData.append('price', product.value.price);
       formData.append('estado_id', product.value.estado);
       formData.append('category_id', product.value.category);
-      if (product.value.thumbnails && product.value.thumbnails.length > 0) {
-        // Solo enviar las imágenes modificadas
-        const modifiedThumbnails = product.value.thumbnails.filter(item => item.isModified && item.file);
-
-        modifiedThumbnails.forEach((item) => {
-          // Para cada imagen modificada, enviamos el archivo y su posición
-          formData.append(`thumbnail_files[]`, item.file);
-          formData.append(`thumbnail_positions[]`, item.slotIndex);
+      if (product.value.thumbnails && product.value.thumbnails.length) {
+        product.value.thumbnails.forEach((item, index) => {
+          if (item instanceof File || (item.file && item.file instanceof File)) {
+            const file = item instanceof File ? item : item.file;
+            formData.append(`thumbnails[${index}]`, file);
+            formData.append(`positions[${index}]`, index.toString());
+          }
         });
       }
 
