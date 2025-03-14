@@ -19,7 +19,8 @@ use App\Models\Transactions;
 use App\Models\User;
 
 use App\Mail\ConstructEmail;
-use App\Models\UserOpinion;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
 
 class ProductControllerAdvance extends Controller
 {
@@ -82,37 +83,40 @@ class ProductControllerAdvance extends Controller
             $product->update($request->validated());
 
             if ($request->hasFile('thumbnails')) {
-                $thumbnails = $request->file('thumbnails');
-                $existingMedia = $product->getMedia('images');
+                // Recorrem totes les noves imatges
+                foreach ($request->file('thumbnails') as $index => $image) {
+                    // Obtenim l'UUID anterior (si existeix)
+                    $previousId = $request->input("thumbnails_previous_id.$index");
 
-                // Para cada nueva imagen subida
-                foreach ($thumbnails as $index => $thumbnail) {
-                    // Si hay una imagen existente en esta posición, eliminarla
-                    if (isset($existingMedia[$index])) {
-                        $existingMedia[$index]->delete();
+                    // Obtenim l'ordre de la imatge
+                    $order = $request->input("thumbnails_order.$index");
+
+                    // Si tenim un UUID anterior, això significa que estem reemplaçant una imatge
+                    if ($previousId) {
+                        // Elimina la imatge antiga pel seu UUID
+                        Media::where('uuid', $previousId)->where('model_id', $product->id)->delete();
                     }
 
-                    // Agregamos la nueva imagen
-                    $product->addMedia($thumbnail)
-                        ->preservingOriginal()
-                        ->toMediaCollection('images');
-                }
+                    // Afegim la nova imatge amb l'ordre especificat
+                    $mediaItem = $product->addMedia($image)
+                        ->withResponsiveImages()
+                        ->toMediaCollection('thumbnails');
 
-                // Actualizamos las posiciones de todas las imágenes
-                $allMedia = $product->getMedia('images');
-                foreach ($allMedia as $i => $media) {
-                    $media->order_column = $i;
-                    $media->save();
+                    // Si volem guardar l'ordre, podem afegir custom properties
+                    if ($order !== null) {
+                        $mediaItem->setCustomProperty('order', $order); // Esto hace que se agregue la imagen en el slot correspondiente?
+                        $mediaItem->save();
+                    }
                 }
             }
 
 
 
 
-            $product->refresh();
             $product->load('user','category','estado', 'media');
 
             return new ProductResource($product);
+
         }
     }
 

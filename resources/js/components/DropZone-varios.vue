@@ -64,15 +64,18 @@ const props = defineProps({
 
 // Usar ref en Vue para referirse a los inputs dinámicos
 const thumbnails = ref(
-  Array(props.maxImages).fill(null).map(() => ({
+  Array(props.maxImages).fill(null).map((_,index) => ({
     img: "",
-    file: null
+    file: null,
+    id: null,
+    order: index
   }))
 );
 
 const emit = defineEmits(['update:modelValue']);
 
 // Watcher que sincroniza las imagenes recibidas desde el formulario Edit.vue hasta el Dropzone
+// Rellenamos las imagenes
 watch(
     () => props.modelValue,
     (newVal) => {
@@ -81,19 +84,30 @@ watch(
       const filledThumbnails = Array(props.maxImages).fill(null).map((_, index) => {
         // Si ya existe un blob en thumbnails, lo mantenemos
         if (thumbnails.value[index]?.img?.startsWith('blob:')) {
-          return thumbnails.value[index];
+          return {
+            ...thumbnails.value[index],
+            order: index
+
+          }
         }
 
         // Si tenemos un valor existente en el modelValue
         if (valores[index]) {
           return {
             img: valores[index].img,
-            file: valores[index].file
+            file: valores[index].file,
+            id: valores[index].id || null,
+            order: index
           };
         }
 
         // Si no hay nada, retornamos un espacio vacío
-        return { img: "", file: null };
+        return {
+          img: "",
+          file: null,
+          id: null,
+          order: index
+        };
       });
 
       thumbnails.value = filledThumbnails;
@@ -147,7 +161,10 @@ const drop = (e, index) => {
 
     thumbnails.value[index] = {
       img: URL.createObjectURL(file),
-      file: file
+      file: file,
+      id:  thumbnails.value[index]?.id || null,
+      order: index
+
     };
 
 
@@ -172,7 +189,9 @@ const onChange = (e, index) => {
 
     thumbnails.value[index] = {
       img: URL.createObjectURL(file),
-      file: file
+      file: file,
+      id:  thumbnails.value[index]?.id || null,
+      order: index
     };
 
 

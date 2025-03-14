@@ -142,7 +142,7 @@
 
 </template>
 <script setup>
-import {onMounted, reactive, ref, watchEffect} from "vue";
+import {onMounted, ref, watchEffect} from "vue";
     import { useRoute } from "vue-router";
     import useCategories from "@/composables/categories";
     import useProducts from "@/composables/products.js";
@@ -240,10 +240,24 @@ import {onMounted, reactive, ref, watchEffect} from "vue";
       formData.append('category_id', product.value.category);
       if (product.value.thumbnails && product.value.thumbnails.length) {
         product.value.thumbnails.forEach((item, index) => {
+          console.log(`Thumbnail ${index}: ORDER = ${product.value.thumbnails[index].order}, ID = ${product.value.thumbnails[index].id}`);
+
           if (item instanceof File || (item.file && item.file instanceof File)) {
             const file = item instanceof File ? item : item.file;
+            // Imagen insertada
             formData.append(`thumbnails[${index}]`, file);
-            formData.append(`positions[${index}]`, index.toString());
+            // Comprobamos si el id del thumbnails existe, si existe se agrega
+            if(item.id) {
+              formData.append(`thumbnails_previous_id[${index}]`, item.id);
+            }
+
+            // Adjuntamos el orden que tiene que tener
+            formData.append(`thumbnails_order[${index}]`, item.order || index);
+            console.log(`Nova imatge a posició ${index}:`);
+            console.log(`- Fitxer: ${file.name}`);
+            console.log(`- UUID anterior: ${item.id || 'No hi havia imatge prèvia'}`);
+            console.log(`- Ordre: ${item.order || index}`);
+
           }
         });
       }
