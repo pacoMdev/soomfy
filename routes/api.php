@@ -61,10 +61,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('user', [ProfileController::class, 'user']); // Responsable de determinar si estas iniciado sesion o no
     Route::put('profile', [ProfileController::class, 'update']);
     Route::get('profile/{id}', [ProfileController::class, 'getUserInfo']);
-    Route::get('getAllToSell/{userId}', [ProfileController::class, 'getAllToSell']);
-    Route::get('getPurchase/{userId}', [ProfileController::class, 'getPurchase']);
-    Route::get('getSales/{userId}', [ProfileController::class, 'getSales']);
-    Route::get('getValorations/{userId}', [ProfileController::class, 'getValorations']);
+    Route::post('getAllToSell', [ProfileController::class, 'getAllToSell']);
+    Route::post('getPurchase', [ProfileController::class, 'getPurchase']);
+    Route::post('getSales', [ProfileController::class, 'getSales']);
+    Route::post('getValorations', [ProfileController::class, 'getValorations']);
 
     // Usuario
     Route::apiResource('users', UserController::class);

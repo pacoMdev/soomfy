@@ -39,8 +39,11 @@
         <p class="tamaño-estadoProducto">{{ producto.estado.name }}</p>
         
       </router-link>
-      <Button label="Vender" @click.stop="openDialog(producto)" />
-        <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 450px; height: 400px; ">
+      <div class="d-flex gap-5">
+        <Button label="Vender" @click.stop="openSellProduct(producto)" />
+        <Button label="Editar" @click.stop="openEditProduct(producto)" />
+      </div>
+        <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
           <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
@@ -91,6 +94,9 @@
             </Stepper>
           </form>
       </Dialog>
+      <Dialog v-model:visible="visibleEdit" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+
+      </Dialog>
     </div>
 
   </div>
@@ -107,16 +113,22 @@ import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel } from 'primev
 
 // Variables del Dialog
 const visible = ref(false);
+const visibleEdit = ref(false);
 const selectedProduct = ref(null);
 const usersInterested = ref([]);
 const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
 const finalPrice = ref(0);
 
-const openDialog = async (producto) => {
+const openSellProduct = async (producto) => {
   selectedProduct.value = producto; 
-  visible.value = true; // abre el Dialog
+  visible.value = true;
   console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
   getInterested(producto.id);
+};
+const openEditProduct = async (producto) => {
+  selectedProduct.value = producto; 
+  visibleEdit.value = true; 
+  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
 };
 
 const getInterested = async (productId) => {
@@ -128,15 +140,6 @@ const getInterested = async (productId) => {
     console.log("Error al obtener los datos.");
   }
 };
-
-// const usersInterested = ref([
-//     { name: 'Admin', code: '1' },
-//     { name: 'Manolo', code: '2' },
-//     { name: 'Paco', code: '3' },
-//     { name: 'Ramon', code: '4' },
-//     { name: 'Monica', code: '5' }
-// ]);
-
 
 const props = defineProps({
   productos: Array, // Recibe la lista de products

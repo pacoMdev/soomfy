@@ -18,16 +18,16 @@
   
           <!-- Botones de acciones -->
           <div class="d-flex flex-wrap gap-3 w-auto h-100 container-extra-info">
-            <Button @click="fetchProducts(`getPurchase/${user.id}`, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
-            <Button @click="fetchProducts(`getSales/${user.id}`, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
             <Button label="Localización" icon="pi pi-map-marker" rounded />
           </div>
         </div>
   
         <div>
           <div class="d-flex gap-3 w-100 justify-content-center">
-            <Button @click="fetchProducts(`getAllToSell/${user.id}`, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
-            <Button @click="fetchProducts(`getValorations/${user.id}`, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+            <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
           </div>
   
           <div class="container w-100 d-flex gap-5">
@@ -108,20 +108,22 @@
   // ejecuta fetchProducts cuando userData este disponible
   watch(user, (newUser) => {
     if (newUser.id) {
-      fetchProducts(`getPurchase/${newUser.id}`, 'purchases');
-      fetchProducts(`getSales/${newUser.id}`, 'sales');
-      fetchProducts(`getValorations/${newUser.id}`, 'reviews');
-      fetchProducts(`getAllToSell/${newUser.id}`, 'activeProducts');
+      fetchProducts(`getPurchase`, newUser.id, 'purchases');
+      fetchProducts(`getSales`, newUser.id, 'sales');
+      fetchProducts(`getValorations`, newUser.id, 'reviews');
+      fetchProducts(`getAllToSell`, newUser.id, 'activeProducts');
     }
   });
   
-  const fetchProducts = async (endpoint, type) => {
+  const fetchProducts = async (endpoint, id, type) => {
     loading.value = true;
     error.value = null;
     selectedTab.value = type; // guardamos que se esta viendo
   
     try {
-      const response = await axios.get(`/api/${endpoint}`);
+      const response = await axios.post(`/api/${endpoint}`, {
+        userId: id,
+      });
       
       // guarda info segun seccion
       if (type === 'purchases') purchases.value = response.data.data || [];

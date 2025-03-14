@@ -37,17 +37,17 @@
 </head>
 <body>
     <div class="container">
-        <h2>Hola {{ $user->name }},</h2>
+        <h2>Hola {{ $userBuyer->name }},</h2>
         <p>Gracias por completar tu compra del producto <strong>{{ $product->title }}</strong>.</p>
-        <p>Queremos saber tu opinión sobre la transacción y el vendedor <strong>{{ $seller->name }}</strong>.</p>
+        <p>Queremos saber tu opinión sobre la transacción y el vendedor <strong>{{ $userSeller->name }}</strong>.</p>
         <p>Tu valoración nos ayuda a mejorar la comunidad y la experiencia de compra.</p>
 
         <p style="text-align: center;">
-            <a href="{{ $ratingUrl }}" class="button">Valorar ahora</a>
+            <a href="{{ $url }}" class="button">Valorar ahora</a>
         </p>
 
         <p>¡Gracias por tu tiempo!</p>
-        <p>Atentamente, <br> El equipo de {{ config('app.name') }}</p>
+        <p>Atentamente, <br> El equipo de Soomfy</p>
 
         <p class="footer">Si no realizaste esta compra, ignora este mensaje.</p>
     </div>
