@@ -46,7 +46,7 @@ class ConstructEmail extends Mailable
                         'userBuyer' => $this->data['userBuyer'] ?? null,
                         'product' => $this->data['product'] ?? null,
                         'saleDate' => $this->data['saleDate'] ?? null,
-                        'url' => $this->data['productUrl'] ?? null,
+                        'url' => $this->data['url'] ?? null,
                     ]
                 );
         return $email;

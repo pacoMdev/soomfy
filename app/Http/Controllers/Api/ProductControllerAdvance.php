@@ -19,7 +19,7 @@ use App\Models\Transactions;
 use App\Models\User;
 
 use App\Mail\ConstructEmail;
-
+use App\Models\UserOpinion;
 
 class ProductControllerAdvance extends Controller
 {
@@ -350,13 +350,15 @@ class ProductControllerAdvance extends Controller
             'userBuyer'     => $userBuyer,
             'product'       => $product,
             'saleDate'      => $transaction -> created_at,
-            'url'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
+            'url'           => getenv('APP_URL') . '/products/detalle/' . $product -> id,
         ];
         // Manda el email
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
 
         // EMAIL OPINION ---------------------------------------------------------------------------------------
+        $token=bin2hex(random_bytes(32));
+
         $data = [
             'from_email'    => 'soomfy@gmail.com',
             'from_name'     => 'Soomfy Seller',
@@ -369,7 +371,7 @@ class ProductControllerAdvance extends Controller
             'userBuyer'     => $userBuyer,
             'product'       => $product,
             'saleDate'      => $transaction -> created_at,
-            'url'    => getenv('APP_URL') . '/products/detalle/' . $product -> id,
+            'url'           => getenv('APP_URL') . '/opinion?userIdS=' . $userSeller->id . '&userIdB=' . $userBuyer->id . '&productId=' . $product->id . '&token=' . $token,
         ];
         // Manda el email
         $email = new ConstructEmail($data);
@@ -390,5 +392,28 @@ class ProductControllerAdvance extends Controller
     $allUsers = User::whereIn('id', $userIds)->with('media')->get();
     // dd($allUsers);
     return $allUsers;
+    }
+
+    public function checkReview(Request $request){
+        $valoration = UserOpinion::where('token', $request->token)->first();
+        if($valoration!=null){
+            return response()->json(['check'=>true]);
+        }
+        return response()->json(['check'=>false]);
+    }
+    public function valorate(Request $request){
+        $userOpinion = new UserOpinion();
+        $userOpinion -> title = $request -> title;
+        $userOpinion -> destription = $request -> description;
+        $userOpinion -> calification = $request -> rating;
+        $userOpinion -> product_id = $request -> productId;
+        $userOpinion -> user_id = $request -> userBuyer;
+        $userOpinion -> token = $request -> token;
+
+        $userOpinion -> save();
+
+        dd($$userOpinion);
+
+
     }
 }

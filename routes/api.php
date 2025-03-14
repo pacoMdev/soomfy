@@ -34,7 +34,8 @@ Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); //
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
 Route::get('/getUsersConversations/{id}', [ProductControllerAdvance::class, 'getUsersConversations']); // Productos del id de usuario recibido
-
+Route::get('/checkReview', [ProductControllerAdvance::class, 'checkReview']);
+Route::post('/valorate', [ProductControllerAdvance::class, 'valorate']);
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
@@ -65,6 +66,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('getPurchase', [ProfileController::class, 'getPurchase']);
     Route::post('getSales', [ProfileController::class, 'getSales']);
     Route::post('getValorations', [ProfileController::class, 'getValorations']);
+    Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
 
     // Usuario
     Route::apiResource('users', UserController::class);

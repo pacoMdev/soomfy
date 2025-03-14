@@ -10,6 +10,7 @@ use App\Models\UserOpinion;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProductResource;
 use App\Models\Transactions;
@@ -124,6 +125,23 @@ class ProfileController extends Controller
     public function getUserByProductId($productId){
         $product = Product::find( $productId)->load([ 'user' ]);
         return new ProductResource($product);
+    }
+
+    public function getGeoLocation(Request $request){
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $apiKey = env('GOOGLE_API_KEY');
+
+        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
+            'latlng' => "$latitude,$longitude",
+            'key' => $apiKey
+        ]);
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Error al obtener la dirección'], 500);
+        }
+
+        return response()->json($response->json());
     }
 
 }

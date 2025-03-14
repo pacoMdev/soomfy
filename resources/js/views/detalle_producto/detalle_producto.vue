@@ -12,7 +12,7 @@
                               :responsiveOptions="responsiveOptions"
                               :numVisible="6"
                               :indicatorsPosition="position"
-                              containerStyle="max-height: 450px;">
+                              containerStyle="max-height: 625px;">
                             <template #item="slotProps">
                               <img
                                   v-if="slotProps.item && slotProps.item.original_url"
@@ -69,9 +69,9 @@
                             <img src="../../../../public/images/Github.svg" alt="">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
-                                <h4>{{ product.user.name }} {{ product.user.surname1 }}</h4>
+                                <h4>{{ product.user[0]?.name }} {{ product.user[0].surname1 }}</h4>
                                 <div>
-                                    <p>Molins de Rei, 08750, Barcelona</p>
+                                    <p>{{ fullAddress?.results[0].formatted_address }}</p>
                                 </div>
                             </div>
                         </router-link>
@@ -151,32 +151,36 @@
 
     import { ref, onMounted, watch } from 'vue';
     import { Skeleton, Rating, Carousel } from 'primevue';
-
     import '../../../../resources/css/theme.css'
-
-
-    onMounted(() => {
-        
-        getProduct();
-        getRelatedProducts();
-    })
-
 
     const path = window.location.pathname; // obtiene url
     const segments = path.split('/');
     const id = segments.pop();  // obtiene ultimo elemento (id)
-
     const product = ref([]);
     const relatedPost = ref([]);
-    // Valoracion media de los usuarios
-    const value = ref(3);
+    const images = ref();
+    const address = ref('null');
+    const fullAddress = ref(null);
+    const position = ref('left');
+
+    onMounted(async () => {
+        await getProduct();
+        getRelatedProducts();
+    })
+
+    watch(product, (standProduct) => {
+        if (standProduct?.id) {
+            getGeoLocation();
+        }
+    });
+    
 
 
     // Peticiones de API
     const getProduct = async () => {
         console.log(id);
         const respuesta = await axios.get('/api/products/'+id); // Asegúrate de que esta URL sea la correcta
-        product.value = respuesta.data.data; // Guardamos los datos en productos
+        product.value = respuesta.data.data || {}; // Guardamos los datos en productos
         console.log('PRODUCT:', respuesta.data.data);
     };
     const getRelatedProducts = async () => {
@@ -185,14 +189,26 @@
         console.log('RELATED PRODUCTS:', respuesta.data);
     };
 
-    // Funciones transaccionales
+
+    const getGeoLocation = async () => {
+        try{
+            const latitude = product.value.user[0].latitude;
+            const longitude = product.value.user[0].longitude;
+
+            const respuesta = await axios.get('/api/geoLocation', {
+                params: {latitude, longitude}
+            });
+            fullAddress.value = respuesta.data || {};
+            console.log('FULLADDRESS -->', fullAddress);
+
+        }catch(err){
+            console.log('Falla en API: ', err);
+        }
+    };
 
     function getImage(resized_image){
         return Object.values(resized_image || {});
     }
-
-    const images = ref();
-    const position = ref('left');
 
     const responsiveOptions = ref([
         {
@@ -205,44 +221,29 @@
         }
     ]);
     const products = ref();
-const responsiveOptions2 = ref([
-    {
-        breakpoint: '1400px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '1199px',
-        numVisible: 3,
-        numScroll: 1
-    },
-    {
-        breakpoint: '767px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '575px',
-        numVisible: 1,
-        numScroll: 1
-    }
-]);
+    const responsiveOptions2 = ref([
+        {
+            breakpoint: '1400px',
+            numVisible: 2,
+            numScroll: 1
+        },
+        {
+            breakpoint: '1199px',
+            numVisible: 3,
+            numScroll: 1
+        },
+        {
+            breakpoint: '767px',
+            numVisible: 2,
+            numScroll: 1
+        },
+        {
+            breakpoint: '575px',
+            numVisible: 1,
+            numScroll: 1
+        }
+    ]);
 
-const getSeverity = (status) => {
-    switch (status) {
-        case 'INSTOCK':
-            return 'success';
-
-        case 'LOWSTOCK':
-            return 'warn';
-
-        case 'OUTOFSTOCK':
-            return 'danger';
-
-        default:
-            return null;
-    }
-};
 
 </script>
 <style scoped>
@@ -304,7 +305,7 @@ const getSeverity = (status) => {
     .gallery-image,
     .gallery-thumbnail {
       width: 100%; /* Ajusta al contenedor */
-      height: 250px; /* Altura consistente */
+      height: 510px; /* Altura consistente */
       object-fit: cover; /* Ajusta la imagen conservando su proporción */
       border-radius: 8px; /* Opcional, para esquinas redondeadas */
       display: block; /* Asegura el comportamiento como bloque */

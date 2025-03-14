@@ -2,20 +2,6 @@
   <div class="row gap-5 justify-items-left justify-content-center">
     <div v-for="producto in productos" class="producto col-6 col-md-4 col-lg-3">
       <router-link :to="'/products/detalle/' + producto.id" :key="producto.id" class="contenido-producto">
-        <div class="d-flex justify-content-end w-100">
-          <i
-              v-if="!producto.esFavorito"
-              @click.stop.prevent="gestorFavoritos(producto.id)"
-              class="fa-regular fa-heart pb-1"
-              style="color: #e66565;"
-          ></i>
-          <i
-              v-else
-              @click.stop.prevent="gestorFavoritos(producto.id)"
-              class="fa-solid fa-heart pb-1"
-              style="color: #e66565;"
-          ></i>
-        </div>
         <Galleria
             :value="getImages(producto.resized_image)"
             :responsiveOptions="responsiveOptions"
@@ -42,6 +28,7 @@
       <div class="d-flex gap-5">
         <Button label="Vender" @click.stop="openSellProduct(producto)" />
         <Button label="Editar" @click.stop="openEditProduct(producto)" />
+        <Button label="Eliminar" @click.stop="openDeleteProduct(producto)" style="background-color: #B51200!important; border: #b51500!important;" />
       </div>
         <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
           <form @submit.prevent="sellProduct">
@@ -97,16 +84,22 @@
       <Dialog v-model:visible="visibleEdit" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
 
       </Dialog>
+      <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+        <div class="card flex justify-center">
+          <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
+          <InputOtp v-model="confirmationDelete" integerOnly />
+        </div>
+      </Dialog>
     </div>
 
   </div>
 </template>
 
 <script setup>
-import {defineProps, inject, onMounted, ref} from 'vue';
+import {defineProps, ref} from 'vue';
 import axios from 'axios';
 import { Dialog } from 'primevue';
-import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel } from 'primevue';
+import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp } from 'primevue';
 
 
 
@@ -114,10 +107,13 @@ import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel } from 'primev
 // Variables del Dialog
 const visible = ref(false);
 const visibleEdit = ref(false);
+const visibleDelete = ref(false);
 const selectedProduct = ref(null);
 const usersInterested = ref([]);
 const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
 const finalPrice = ref(0);
+const confirmationDelete = ref(null);
+
 
 const openSellProduct = async (producto) => {
   selectedProduct.value = producto; 
@@ -128,6 +124,11 @@ const openSellProduct = async (producto) => {
 const openEditProduct = async (producto) => {
   selectedProduct.value = producto; 
   visibleEdit.value = true; 
+  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
+};
+const openDeleteProduct = async (producto) => {
+  selectedProduct.value = producto; 
+  visibleDelete.value = true; 
   console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
 };
 
@@ -143,9 +144,6 @@ const getInterested = async (productId) => {
 
 const props = defineProps({
   productos: Array, // Recibe la lista de products
-  actualizarFavoritos: Function, // Recibe función para actualizar favoritos en la vista padre
-  esVistaFavoritos: Boolean,
-  actualizarProductos: Function,
 });
 
 
@@ -154,24 +152,6 @@ const responsiveOptions = ref([
   { breakpoint: '767px', numVisible: 3 },
   { breakpoint: '575px', numVisible: 1 }
 ]);
-
-const favoritos = ref([
-]);
-
-// Sincronizamos la lista de favoritos al montar el componente
-onMounted(async () => {
-  if (props.actualizarFavoritos) {
-    try {
-      const favoritosData = await props.actualizarFavoritos();
-      // Asegúrate de que favoritosData sea un array
-      favoritos.value = Array.isArray(favoritosData) ? favoritosData : [];
-    } catch (error) {
-      console.error('Error al cargar favoritos:', error);
-      favoritos.value = [];
-    }
-  }
-});
-
 
 const sellProduct = async () => {
   try{
@@ -188,16 +168,6 @@ const sellProduct = async () => {
   }
 }
 
-
-const gestorFavoritos = async(productId) => {
-  console.log("Este es el id del producto que has clicado: " + productId);
-  const respuesta = await axios.post(`/api/gestor-favoritos/${productId}`);
-  if (props.esVistaFavoritos){
-      await props.actualizarFavoritos();
-  } else {
-      await props.actualizarProductos();
-  }
-}
 // Función para obtener products desde la API
 function getImages(resized_image) {
     return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID

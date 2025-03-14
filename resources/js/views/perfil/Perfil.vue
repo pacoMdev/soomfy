@@ -20,7 +20,7 @@
           <div class="d-flex flex-wrap gap-3 w-auto h-100 container-extra-info">
             <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
             <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            <Button label="Localización" icon="pi pi-map-marker" rounded />
+            <Button :label="fullAddress?.results[0].formatted_address" icon="pi pi-map-marker" rounded />
           </div>
         </div>
   
@@ -93,6 +93,7 @@
   const { logout } = useAuth();
   const user = ref({});
   const selectedTab = ref(null);
+  const fullAddress = ref(null);
   
   onMounted(async () => {
     await getDataProfile();
@@ -112,6 +113,7 @@
       fetchProducts(`getSales`, newUser.id, 'sales');
       fetchProducts(`getValorations`, newUser.id, 'reviews');
       fetchProducts(`getAllToSell`, newUser.id, 'activeProducts');
+      getGeoLocation();
     }
   });
   
@@ -153,13 +155,29 @@
     }
   };
   const calcularMediaRating = () => {
-  if (reviews.value.length === 0) {
-    mediaRating.value = 0;
-    return;
-  }
-  const total = reviews.value.reduce((sum, review) => sum + review.calification, 0);
-  mediaRating.value = total / reviews.value.length;
+    if (reviews.value.length === 0) {
+      mediaRating.value = 0;
+      return;
+    }
+    const total = reviews.value.reduce((sum, review) => sum + review.calification, 0);
+    mediaRating.value = total / reviews.value.length;
+  };
+  const getGeoLocation = async () => {
+    try{
+        const latitude = user.value.latitude;
+        const longitude = user.value.longitude;
+
+        const respuesta = await axios.get('/api/geoLocation', {
+            params: {latitude, longitude}
+        });
+        fullAddress.value = respuesta.data || {};
+        console.log('FULLADDRESS -->', fullAddress);
+
+    }catch(err){
+        console.log('Falla en API: ', err);
+    }
 };
+
   </script>
   
   

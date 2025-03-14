@@ -21,7 +21,7 @@
           <div class="d-flex gap-3 mx-auto">
             <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
             <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            <Button label="Localización" icon="pi pi-map-marker" rounded />
+            <Button :label="fullAddress?.results[0].formatted_address" icon="pi pi-map-marker" rounded />
           </div>
           <div class="d-flex gap-3 mx-auto">
             <Button label="Editar perfil" @click.stop="openEditProfile(user)" rounded />
@@ -185,12 +185,14 @@ const totalSize = ref(0);
 const totalSizePercent = ref(0);
 const files = ref([]);
 const $primevue = usePrimeVue();
+const fullAddress = ref(null);
+
 
 
 
 onMounted(async () => {
   await getDataProfile();
-  ProductService.getProductsSmall().then((data) => (products.value = data));
+  // ProductService.getProductsSmall().then((data) => (products.value = data));
 
 });
 
@@ -201,7 +203,8 @@ watch(user, (newUser) => {
     fetchProducts(`getSales`, newUser.id, 'sales');
     fetchProducts(`getValorations`, newUser.id, 'reviews');
     fetchProducts(`getAllToSell`, newUser.id, 'activeProducts');
-    getMediaRating(reviews);
+    getGeoLocation();
+    // getMediaRating(reviews);
   }
 });
 
@@ -247,7 +250,21 @@ const formatSize = (bytes) => {
   return `${formattedSize} ${sizes[i]}`;
 };
 
+const getGeoLocation = async () => {
+        try{
+            const latitude = user.value.latitude;
+            const longitude = user.value.longitude;
 
+            const respuesta = await axios.get('/api/geoLocation', {
+                params: {latitude, longitude}
+            });
+            fullAddress.value = respuesta.data || {};
+            console.log('FULLADDRESS -->', fullAddress);
+
+        }catch(err){
+            console.log('Falla en API: ', err);
+        }
+    };
 
 
 
