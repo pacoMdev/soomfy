@@ -69,7 +69,7 @@
                             <img src="../../../../public/images/Github.svg" alt="">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
-                                <h4>{{ product.user[0].name }} {{ product.user[0].surname1 }}</h4>
+                                <h4>{{ product.user.name }} {{ product.user.surname1 }}</h4>
                                 <div>
                                     <p>Molins de Rei, 08750, Barcelona</p>
                                 </div>

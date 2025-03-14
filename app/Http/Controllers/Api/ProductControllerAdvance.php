@@ -251,7 +251,7 @@ class ProductControllerAdvance extends Controller
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
             })
-            ->get();
+            ->paginate(8);
             // excluye los productos ya vendidos de transactions
             $soldProductIds = Transactions::pluck('product_id');
             $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {

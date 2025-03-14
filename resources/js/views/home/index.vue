@@ -32,7 +32,13 @@
         </div>
 
         <div class="d-flex justify-content-center">
-          <button class="secondary-button-2">¡Ver mas!</button>
+          <button
+              class="secondary-button-2"
+              @click="cargarMasProductos"
+              :disabled="cargando"
+          >
+            {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
+          </button>
         </div>
 
         <div class="apartado-mensaje">
@@ -55,11 +61,17 @@
       <div class="">
         <!-- falta ajustar el responsive -->
         <div class="productos">
-           <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
+          <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
         </div>
       </div>
       <div class="d-flex justify-content-center">
-        <button class="secondary-button-2">¡Ver mas!</button>
+        <button
+            class="secondary-button-2"
+            @click="cargarMasProductos"
+            :disabled="cargando"
+        >
+          {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
+        </button>
       </div>
     </div>
   </div>
@@ -79,20 +91,41 @@ import SearchBar from "@/components/SearchBar.vue";
 
 const productos = ref([]);
 const categories = ref([]);
-const selectedCategory = ref(null); // Nuevo
+const selectedCategory = ref(null);
+const paginaActual = ref(1);
+const cargando = ref(false);
 
 onMounted(() => {
-  obtenerProductos();
+  obtenerProductos(1); // Carga la primera pagina
   loadCategories();
 });
 
-const obtenerProductos = async () => {
+const obtenerProductos = async (page = 1) => {
+  cargando.value = true;
   try {
-    const respuesta = await axios.get('/api/products');
-    productos.value = respuesta.data.data;
+    const respuesta = await axios.get(`/api/products?page=${page}`);
+
+    // Si es la primera pagina lo almacenamos en la varaible
+    if (page === 1) {
+      productos.value = respuesta.data.data;
+    } else { // Si pasamos de pagina, agregamos los siguientes 8 productos
+      productos.value = [...productos.value, ...respuesta.data.data];
+    }
+
+    return respuesta.data;
   } catch (error) {
     console.error("Error al obtener products:", error);
+    return null;
+  } finally {
+    cargando.value = false;
   }
+};
+
+const cargarMasProductos = async () => {
+  if (cargando.value) return;
+
+  paginaActual.value++; // Incrementa la página actual
+  await obtenerProductos(paginaActual.value); // Carga la siguiente página
 };
 
 const loadCategories = async () => {
@@ -123,31 +156,24 @@ const redirectAll = () => {
   });
 };
 
-
-// Ejecutar la función cuando el componente se monte
-onMounted(() => {
-    obtenerProductos();
-});
-
 const responsiveOptions = ref([
-    {
-        breakpoint: '991px',
-        numVisible: 4
-    },
-    {
-        breakpoint: '767px',
-        numVisible: 3
-    },
-    {
-        breakpoint: '575px',
-        numVisible: 1
-    }
+  {
+    breakpoint: '991px',
+    numVisible: 4
+  },
+  {
+    breakpoint: '767px',
+    numVisible: 3
+  },
+  {
+    breakpoint: '575px',
+    numVisible: 1
+  }
 ]);
 
 </script>
 
 <style scoped>
-/* Falta la etiqueta de apertura <style> */
 .buscadorProductos {
   height: 40px;
   border-radius: 25px;
