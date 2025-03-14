@@ -65,11 +65,11 @@
                             <img src="../../../../public/images/trust-icon.png" alt="trust icon">
                             <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
-                        <router-link v-if="product.user && product.user.length > 0" :to="'/profile/detalle/'+product.user[0].id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
+                        <router-link v-if="product.user" :to="'/profile/detalle/'+product.user.id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
                             <img src="../../../../public/images/Github.svg" alt="">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
-                                <h4>{{ product.user.name }} {{ product.user.surname1 }}</h4>
+                                <h4>{{ product.user?.name }} {{ product.user?.surname1 }}</h4>
                                 <div>
                                     <p>Molins de Rei, 08750, Barcelona</p>
                                 </div>
