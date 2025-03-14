@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\Message;
 use App\Models\Product_image;
 use App\Models\Transactions;
+use App\Models\UserOpinion;
 use App\Models\User;
 
 use App\Mail\ConstructEmail;

@@ -36,7 +36,7 @@ class Product extends Model implements HasMedia
     // Relacion: Obtener el usuario del producto
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->with('media');
     }
 
     public function userProd()

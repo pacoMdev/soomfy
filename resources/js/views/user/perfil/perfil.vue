@@ -251,20 +251,20 @@ const formatSize = (bytes) => {
 };
 
 const getGeoLocation = async () => {
-        try{
-            const latitude = user.value.latitude;
-            const longitude = user.value.longitude;
+    try{
+        const latitude = user.value.latitude;
+        const longitude = user.value.longitude;
 
-            const respuesta = await axios.get('/api/geoLocation', {
-                params: {latitude, longitude}
-            });
-            fullAddress.value = respuesta.data || {};
-            console.log('FULLADDRESS -->', fullAddress);
+        const respuesta = await axios.get('/api/geoLocation', {
+            params: {latitude, longitude}
+        });
+        fullAddress.value = respuesta.data || {};
+        console.log('FULLADDRESS -->', fullAddress);
 
-        }catch(err){
-            console.log('Falla en API: ', err);
-        }
-    };
+    }catch(err){
+        console.log('Falla en API: ', err);
+    }
+};
 
 
 
