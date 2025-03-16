@@ -23,18 +23,9 @@
                                 <img src="/images/logoUser.svg" class="icons-size">
                             </router-link>
                         </template>
-                        <li v-if="authStore().user?.name" class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <img src="/images/logoUser.svg" class="icons-size">
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><p class="h4-p text-center">Bienvenid@ {{ authStore().user?.name }}</p></li>
-                                <li><router-link class="dropdown-item" v-if="authStore().isAdmin" to="/admin">Admin</router-link></li>
-                                <li><router-link to="/app/profile" class="dropdown-item">Cuenta</router-link></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a></li>
-                            </ul>
-                        </li>
+                        <router-link v-if="authStore().user?.name" :to="'/app/profile'" class="nav-item dropdown">
+                            <img :src="authStore().user.media[0].original_url" class="icons-size" style="height: 30px; width: 30px; border-radius: 100px; background-color: antiquewhite;">
+                        </router-link>
                         <router-link to="/subir-producto" class="nav-link d-flex align-items-center">
                             <button class="d-flex primary-button-2 gap-2">
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">

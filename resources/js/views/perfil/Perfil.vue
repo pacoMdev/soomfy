@@ -1,7 +1,7 @@
 <template>
     <main>
       <div class="">      
-        <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
+        <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5 p-5">
           <div v-if="user.email" class="container-info d-flex gap-5">
             <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
             <img v-else :src="user.avatar"  alt="default-image">
@@ -36,35 +36,47 @@
   
              <!-- COMPRAS -------------------------------------------------------------------------------------------- -->
             <div v-if="selectedTab === 'purchases'" class="w-100">
-              <h4>Historial de Compras</h4>
               <div v-if="purchases.length > 0">
+                <h4>Historial de Compras</h4>
                 <HistoricInfo :historic="purchases" />
               </div>
-              <h1 v-else>No hay Compras</h1>
+              <div v-else class="container-else">
+                <h1>Parece que no hay compras</h1>
+                <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
+            </div>
             </div>
             <!-- VENTAS -------------------------------------------------------------------------------------------- -->
             <div v-if="selectedTab === 'sales'" class="w-100">
-              <h4>Historial de Ventas</h4>
               <div v-if="sales.length > 0">
+                <h4>Historial de Ventas</h4>
                 <HistoricInfo :historic="sales" />
               </div>
-              <h1 v-else>No hay Ventas</h1>
+              <div v-else class="container-else">
+                <h1>Parece que no hay ventas</h1>
+                <img src="/images/undraw_file-search_cbur.svg" alt="Imagen ventas" class="image-else">
+            </div>
             </div>
             <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
             <div v-if="selectedTab === 'activeProducts'">
-              <h4>Mis Productos</h4>
               <div v-if="activeProducts.length > 0">
+                <h4>Mis Productos</h4>
                 <ProductoNew :productos="activeProducts" :actualizarProductos="fetchProducts" />
               </div>
-              <h1 v-else>No hay Productos</h1>
+              <div v-else class="container-else">
+                <h1>Parece que aun no hay productos</h1>
+                <img src="/images/undraw_file-search_cbur.svg" alt="Imagen productos" class="image-else">
+            </div>
             </div>
             <!-- OPINIONES -------------------------------------------------------------------------------------------- -->
             <div v-if="selectedTab === 'reviews'" class="w-100">
-              <h4>Valoraciones</h4>
               <div v-if="reviews.length > 0">
+                <h4>Valoraciones</h4>
                 <ValorationInfo :reviews="reviews" />
               </div>
-              <h1 v-else>No hay Valoraciones</h1>
+              <div v-else class="container-else">
+                <h1>Parece que no hay valoraciones</h1>
+                <img src="/images/undraw_public-discussion_693m.svg" alt="Imagen valoracion" class="image-else">
+              </div>
             </div>
           </div>
         </div>
@@ -187,5 +199,13 @@
     width: 100px;
     border-radius: 100px;
     background-color: var(--primary-color);
+  }
+  .container-else {
+    width: 100%;
+    text-align: center;
+  }
+  .image-else {
+    width: auto;
+    max-height: 200px;
   }
   </style>
