@@ -18,16 +18,18 @@
 
         <!-- Botones de acciones -->
         <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info">
-          <div class="d-flex gap-3 mx-auto">
-            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
-            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+          <div class="d-flex flex-column gap-3 mx-auto">
+            <div class="d-flex gap-3">
+              <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+              <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            </div>
             <Button :label="fullAddress?.results[0].formatted_address" icon="pi pi-map-marker" rounded />
           </div>
-          <div class="d-flex gap-3 mx-auto">
+        </div>
+        <div class="d-flex gap-3">
             <Button label="Editar perfil" @click.stop="openEditProfile(user)" rounded />
             <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" rounded />
           </div>
-        </div>
       </div>
       <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 350px; height: 500px;">
         <Tabs value="0">

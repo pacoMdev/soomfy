@@ -166,6 +166,11 @@ export default [
                 component: () => import('../views/user/valoration/Create.vue'),
             },
             {
+                path: '/app/checkout',
+                name: 'checkout',
+                component: () => import('../views/checkout/Create.vue'),
+            },
+            {
                 name: 'products',
                 path: 'products',
                 meta: { breadCrumb: 'Products'},

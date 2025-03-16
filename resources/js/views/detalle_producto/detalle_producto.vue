@@ -43,8 +43,12 @@
                               <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
                             </div>
                             <div class="button d-flex gap-3 ">
-                                <Button v-if="product.toSend==1" label="Comprar" variant="outlined" class="w-50" />
-                                <Button label="Chat" raised class="w-50" />
+                                <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
+                                    <Button label="Comprar" variant="outlined" class="w-100" />
+                                </router-link>
+                                <router-link :to="'/chat'" class="w-50">
+                                    <Button label="Chat" raised class="w-100" />
+                                </router-link>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">

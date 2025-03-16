@@ -7,8 +7,11 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Models\Transactions;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,8 +55,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     // DELETE /users/{user}` - Destroy (Eliminar un usuario)
 
     // Buy || Sell
+    Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);
     Route::post('sellProduct', [ProductControllerAdvance::class, 'sellProduct']);
-    Route::post('buyProduct', [ProductControllerAdvance::class, 'buyProduct']);
 
 
     // Perfil
@@ -92,6 +95,19 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('role-permissions/{id}', [PermissionController::class, 'getRolePermissions']);
     Route::put('/role-permissions', [PermissionController::class, 'updateRolePermissions']);
     Route::apiResource('permissions', PermissionController::class);
+
+    // direccion api google problemas con CORS desde front
+    Route::get('/geocode', function (Request $request) {
+        $apiKey = env('GOOGLE_API_KEY');
+        $address = $request->query('address');
+    
+        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+            'address' => $address.', Spain',
+            'key' => $apiKey
+        ]);
+    
+        return $response->json();
+    });
 
     // Habilidades
     Route::get('abilities', function(Request $request) {

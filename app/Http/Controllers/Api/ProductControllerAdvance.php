@@ -342,7 +342,7 @@ class ProductControllerAdvance extends Controller
 
         $transaction -> save();
 
-        // EMAIL VENTA ---------------------------------------------------------------------------------------
+        // EMAIL SELL ---------------------------------------------------------------------------------------
         $data = [
             'from_email'    => 'soomfy@gmail.com',
             'from_name'     => 'Soomfy Seller',
@@ -366,10 +366,10 @@ class ProductControllerAdvance extends Controller
 
         $data = [
             'from_email'    => 'soomfy@gmail.com',
-            'from_name'     => 'Soomfy Seller',
+            'from_name'     => 'Soomfy Valoration',
             'to_email'      => $userBuyer -> email,
             'to_name'       => $userBuyer -> name,
-            'subject'       => 'Hey acabas de vender un producto',
+            'subject'       => '¡Comparte tu opinión sobre tu última compra!',
             'view'          => 'emails.valoration',
             'finalPrice'    => $finalPrice,
             'userSeller'    => $userSeller,

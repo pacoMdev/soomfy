@@ -31,4 +31,8 @@ class Transactions extends Model
         return $this->belongsTo(User::class, 'userBuyer_id');
     }
 
+    public function shippingAddress() {
+        return $this->hasOne(ShippingAddress::class, 'transaction_id');
+    }
+
 }
