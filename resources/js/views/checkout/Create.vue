@@ -97,12 +97,10 @@
     const newCp = ref('');
     const newCountry = ref('');
     const error = ref(false);
-    const googleApiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 
     onMounted (() => {
         getUserProduct();
-        console.log('API KEY -->', googleApiKey);
     });
 
 
