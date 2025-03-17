@@ -1,4 +1,7 @@
 <template>
+  <div class="show">
+
+  </div>
   <main>
     <div class="">      
       <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
@@ -37,8 +40,8 @@
       <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 350px; height: 500px;">
         <Tabs value="0">
           <TabList>
-              <Tab value="0">Foto de Perfil 📸</Tab>
-              <Tab value="1">Detalles del Perfil 📝</Tab>
+              <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
+              <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
           </TabList>
           <TabPanels>
               <TabPanel value="0">
@@ -82,30 +85,66 @@
               <TabPanel value="1">
                 <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
                   <div class="d-flex flex-column gap-5">
-                    <FloatLabel>
-                        <InputText v-model="nameUser" inputId="name-user" fluid id="name-user"/>
-                        <label for="name-user">Nombre</label>
-                    </FloatLabel>
-                    <div class="d-flex gap-3 w-100">
+                    <div class="">
                       <FloatLabel>
-                          <InputText v-model="surname1" inputId="surname1-user" fluid id="surname1-user"/>
-                          <label for="surname1-user">Apellido 1</label>
+                          <InputText appendTo=".show" v-model="userData.name" inputId="name-user" fluid id="name-user"/>
+                          <label for="name-user">Nombre</label>
                       </FloatLabel>
-                      <FloatLabel>
-                          <InputText v-model="surname2" inputId="surname2-user" fluid id="surname2-user"/>
-                          <label for="surname2-user">Apellido 2</label>
-                      </FloatLabel>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.role_id">
+                              {{ message }}
+                          </div>
+                      </div>
                     </div>
-                    <FloatLabel>
-                        <InputText v-model="email" inputId="email-user" fluid id="email-user"/>
-                        <label for="email-user">Email</label>
-                    </FloatLabel>
-                    <FloatLabel>
-                        <Password v-model="password" inputId="password-user" toggleMask fluid id="password-user"/>
-                        <label for="password-user">Contraseña</label>
-                    </FloatLabel>
+                    
+                    <div class="d-flex gap-3 w-100">
+                      <div class="">
+                        <FloatLabel>
+                            <InputText appendTo=".show" v-model="userData.surname1" inputId="surname1-user" fluid id="surname1-user"/>
+                            <label for="surname1-user">Apellido 1</label>
+                        </FloatLabel>
+                        <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.role_id">
+                              {{ message }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="">
+                        <FloatLabel>
+                            <InputText appendTo=".show" v-model="userData.surname2" inputId="surname2-user" fluid id="surname2-user"/>
+                            <label for="surname2-user">Apellido 2</label>
+                        </FloatLabel>
+                        <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.role_id">
+                              {{ message }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="">
+                      <FloatLabel>
+                          <InputText appendTo=".show" v-model="userData.email" inputId="email-user" fluid id="email-user"/>
+                          <label for="email-user">Email</label>
+                      </FloatLabel>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.role_id">
+                              {{ message }}
+                          </div>
+                      </div>
+                    </div>
+                    <div class="">
+                      <FloatLabel>
+                          <Password appendTo=".show" v-model="userData.password" inputId="password-user" toggleMask fluid id="password-user"/>
+                          <label for="password-user">Contraseña</label>
+                      </FloatLabel>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.role_id">
+                              {{ message }}
+                          </div>
+                      </div>
+                    </div>
                   </div>
-                  <Button type="submit" label="Actualizar" class="w-100" outlined severity="secondary" @click="visibleEditUser = false" autofocus />
+                  <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
                 </form>
               </TabPanel>
           </TabPanels>
@@ -126,7 +165,7 @@
           <div v-if="selectedTab === 'purchases'" class="w-100">
             <div v-if="purchases.length > 0">
               <h4>Historial de Compras</h4>
-              <HistoricInfo :historic="purchases" />
+              <HistoricInfo :historic="purchases" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay compras</h1>
@@ -148,7 +187,7 @@
           <div v-if="selectedTab === 'activeProducts'">
             <div v-if="activeProducts.length > 0">
               <h4>Mis Productos</h4>
-              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
+              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" appendTo=".show" />
             </div>
             <div v-else class="container-else">
               <h1>Parece que aun no hay productos</h1>
@@ -159,7 +198,7 @@
           <div v-if="selectedTab === 'reviews'" class="w-100">
             <div v-if="reviews.length > 0">
               <h4>Valoraciones</h4>
-              <ValorationInfo :reviews="reviews" />
+              <ValorationInfo :reviews="reviews" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay valoraciones</h1>
@@ -174,7 +213,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, reactive } from 'vue';
 import axios from 'axios';
 import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
@@ -183,6 +222,14 @@ import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
 import { usePrimeVue } from 'primevue/config';
+
+import useUsers from "@/composables/users";
+const { updateUser, validationErrors } = useUsers();
+import { useForm, useField, defineRule } from "vee-validate";
+import { required, min } from "@/validation/rules";
+defineRule('required', required);
+defineRule('min', min);
+
 
 
 
@@ -204,6 +251,29 @@ const totalSizePercent = ref(0);
 const files = ref([]);
 const $primevue = usePrimeVue();
 const fullAddress = ref(null);
+// variables
+const { value: name } = useField('name', null, { initialValue: selectedUser.name });
+const { value: surname1 } = useField('surname1', null, { initialValue: selectedUser.surname1 });
+const { value: surname2 } = useField('surname2', null, { initialValue: selectedUser.surname2 });
+const { value: email } = useField('email', null, { initialValue: selectedUser.email });
+const { value: password } = useField('password', null, { initialValue: '' });
+const schema = {
+  name: 'required|min:3',
+  surname1: 'required|min:3',
+  surname2: 'required|min:3',
+  email: 'required',
+  password: 'required|min:8',
+}
+const { validate, errors } = useForm({ validationSchema: schema })
+
+
+const userData = reactive({
+  name,
+  surname1,
+  surname2,
+  email,
+  password,
+})
 
 
 
@@ -289,6 +359,10 @@ const getGeoLocation = async () => {
 
 const openEditProfile = async (user) => {
   selectedUser.value = user; 
+  userData.name = user.name;
+  userData.surname1 = user.surname1;
+  userData.surname2 = user.surname2;
+  userData.email = user.email;
   visibleEditUser.value = true; // abre el Dialog
   console.log('🔎 SELECTED USER -->', selectedUser);
 };
@@ -337,6 +411,12 @@ const calcularMediaRating = () => {
   const total = reviews.value.reduce((sum, review) => sum + review.calification, 0);
   mediaRating.value = total / reviews.value.length;
 };
+
+function editUser() {
+  console.log('FORMULARIO USER -->', userData);
+        validate().then(form => { if (form.valid) updateUser(userData.value) })
+    }
+
 </script>
 
 
