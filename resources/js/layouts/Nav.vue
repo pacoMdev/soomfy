@@ -24,7 +24,7 @@
                             </router-link>
                         </template>
                         <router-link v-if="authStore().user?.name" :to="'/app/profile'" class="nav-item dropdown">
-                            <img :src="authStore().user.media[0].original_url" class="icons-size" style="height: 30px; width: 30px; border-radius: 100px; background-color: antiquewhite;">
+                            <img :src="authStore().user?.avatar" class="icons-size" style="height: 30px; width: 30px; border-radius: 100px; background-color: antiquewhite;">
                         </router-link>
                         <router-link to="/subir-producto" class="nav-link d-flex align-items-center">
                             <button class="d-flex primary-button-2 gap-2">
