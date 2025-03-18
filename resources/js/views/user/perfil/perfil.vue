@@ -232,7 +232,6 @@ defineRule('min', min);
 
 
 
-
 const mediaRating = ref(0);
 const activeProducts = ref([]);
 const visibleEditUser = ref(false);

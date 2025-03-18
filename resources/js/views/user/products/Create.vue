@@ -194,7 +194,7 @@ const product = ref({
 function submitForm() {
   console.log('Iniciando validación del formulario...');
   // Solo tomar las imágenes que realmente tienen un archivo
-  const imagenes = product.thumbnails.filter(imagen => imagen.file !== null);
+  const imagenes = product.value.thumbnails.filter(imagen => imagen.file !== null);
   console.log('Imágenes filtradas:', imagenes);
 
   // Verificar si hay al menos una imagen
@@ -215,7 +215,7 @@ function submitForm() {
       formData.append('estado_id', product.value.estado);
       formData.append('category_id', product.value.category);
 
-      imagenes.value.forEach(imagen => {
+      imagenes.forEach((imagen, index) => {
         if (imagen.file) {
           // Usar simplemente thumbnails[] en lugar de thumbnails[index]
           formData.append(`thumbnails[${index}]`, imagen.file);
