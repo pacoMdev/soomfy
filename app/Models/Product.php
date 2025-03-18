@@ -24,7 +24,12 @@ class Product extends Model implements HasMedia
     // Relacion NM ( usuarios / products )
     public function users()
     {   
-        return $this->belongsToMany(User::class, 'user_product', 'product_id', 'user_id');
+        return $this->belongsToMany(User::class, 'product_id', 'user_id');
+    }
+    
+    public function user2()
+    {
+        return $this->belongsTo(User::class);
     }
 
     // Relacion 1N tabla estados
@@ -39,10 +44,6 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class, 'user_id')->with('media');
     }
 
-    public function userProd()
-    {
-        return $this->belongsToMany(User::class, 'user_product', 'product_id', 'user_id') ;
-    }
     public function transactions()
     {
         return $this->hasMany(Transactions::class, 'product_id');

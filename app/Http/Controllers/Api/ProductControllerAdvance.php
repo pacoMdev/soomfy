@@ -416,9 +416,5 @@ class ProductControllerAdvance extends Controller
         $userOpinion -> token = $request -> token;
 
         $userOpinion -> save();
-
-        dd($$userOpinion);
-
-
     }
 }

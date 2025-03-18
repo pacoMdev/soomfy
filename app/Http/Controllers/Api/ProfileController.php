@@ -84,7 +84,9 @@ class ProfileController extends Controller
 
     public function getAllToSell(Request $request){
         $userId = $request->userId;
-        $products = User::find($userId)->products;
+        // $products = User::findOrFail($userId)->products2;
+        $products = Product::where('user_id', $userId)->with([ 'media' ])->get();
+        // dd($products);
 
         $soldProductIds = Transactions::pluck('product_id'); // IDs de productos vendidos/comprados
         $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
