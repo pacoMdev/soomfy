@@ -3,7 +3,7 @@
 
   </div>
   <main>
-    <div class="">      
+    <div class="">
       <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
         <div v-if="user.email" class="container-info d-flex gap-5">
           <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
@@ -26,7 +26,10 @@
               <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
               <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
             </div>
-            <Button :label="fullAddress?.results[0].formatted_address" icon="pi pi-map-marker" rounded />
+            <Button :label="fullAddress?.results && fullAddress.results.length > 0
+    ? fullAddress.results[0].formatted_address
+    : 'Adreça no disponible 🚫'"
+                    icon="pi pi-map-marker" rounded />
           </div>
         </div>
         <div class="d-flex gap-3">
@@ -37,7 +40,7 @@
             <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" rounded />
           </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 350px; height: 500px;">
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 850px; height: 500px;">
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -83,6 +86,7 @@
                 </FileUpload>
               </TabPanel>
               <TabPanel value="1">
+
                 <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
                   <div class="d-flex flex-column gap-5">
                     <div class="">
@@ -96,7 +100,7 @@
                           </div>
                       </div>
                     </div>
-                    
+
                     <div class="d-flex gap-3 w-100">
                       <div class="">
                         <FloatLabel>
@@ -143,6 +147,23 @@
                           </div>
                       </div>
                     </div>
+                    <div class="">
+                      <FloatLabel>
+                        <button placeholder="Buscar" class="btn btn-primary" @click="prueba"/>
+
+
+                        <div class="my-3">
+                          <FloatLabel>
+                            <InputText v-model="address" id="address-input" @keyup.enter="buscarUbicacio"/>
+                            <label for="address-input">Introdueix una localidad</label>
+                          </FloatLabel>
+                          <Button @click="buscarUbicacio" label="Buscar" class="mt-2" />
+                        </div>
+
+                        <div id="map" class="google-map"></div>
+                      </FloatLabel>
+                    </div>
+
                   </div>
                   <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
                 </form>
@@ -227,10 +248,13 @@ import useUsers from "@/composables/users";
 const { updateUser, validationErrors } = useUsers();
 import { useForm, useField, defineRule } from "vee-validate";
 import { required, min } from "@/validation/rules";
+import {map} from "lodash";
 defineRule('required', required);
 defineRule('min', min);
+const address = ref('');
 
 
+watch
 
 const mediaRating = ref(0);
 const activeProducts = ref([]);
@@ -265,6 +289,51 @@ const schema = {
 }
 const { validate, errors } = useForm({ validationSchema: schema })
 
+const getGeocodeData = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/geocode', {
+      params: {
+        address: 'Barcelona'
+      }
+    });
+
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error durant la crida:', error);
+  }
+};
+
+const prueba = async () => {
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: latitude.value, lng: longitude.value },
+    zoom: 13,
+  });
+
+  // Crear un marcador en el mapa
+  const marker = new google.maps.Marker({
+    // Coordenadas iniciales donde se colocara el marcador
+    position: { lat: latitude.value, lng: longitude.value },
+    map, // Indica que mapa
+    draggable: true, // Permitimos que se pueda arrastrar por e l mapa
+  });
+
+  // Evento: al arrastrar el marcador
+  marker.addListener("dragend", (event) => {
+    const { lat, lng } = event.latLng.toJSON();
+    latitude.value = lat;
+    longitude.value = lng;
+    console.log("Nueva posición:", latitude.value, longitude.value);
+  });
+
+  // Evento: clic en el mapa
+  map.addListener("click", (event) => {
+    const { lat, lng } = event.latLng.toJSON();
+    latitude.value = lat;
+    longitude.value = lng;
+    marker.setPosition({ lat, lng });
+    console.log("Mapa clickeado en:", latitude.value, longitude.value);
+  });
+}
 
 const userData = reactive({
   name,
@@ -275,13 +344,51 @@ const userData = reactive({
 })
 
 
+const buscarUbicacio = async () => {
+  try {
+    const response = await axios.get('/geocode', { params: { address: address.value } })
+    const resultats = response.data.results
+
+    if(resultats.length > 0) {
+      const {lat, lng} = resultats[0].geometry.location
+      actualitzarMapa(lat, lng)
+    } else {
+      alert("No s'han trobat resultats.")
+    }
+
+  } catch (error) {
+    console.error(error)
+    alert("Error en obtenir ubicació.")
+  }
+}
+
+const latitude = ref(41.38740000);
+const longitude = ref(2.16860000);
 
 
 onMounted(async () => {
+  await getGeocodeData();
   await getDataProfile();
+  map.value = new google.maps.Map(document.getElementById("mapa"), {
+    center: { lat: latitude, lng: longitude },
+    zoom: 12,
+  })
+
+  marker.value = new google.maps.Marker({
+    position: { lat: latitude, lng: longitude },
+    map: map.value,
+  })
+
   // ProductService.getProductsSmall().then((data) => (products.value = data));
 
 });
+
+const actualitzarMapa = (lat, lng) => {
+  const position = {lat, lng}
+  map.value.setCenter(position)
+  marker.value.setPosition(position)
+}
+
 
 // ejecuta fetchProducts cuando userData este disponible
 watch(user, (newUser) => {
@@ -357,13 +464,15 @@ const getGeoLocation = async () => {
 
 
 const openEditProfile = async (user) => {
-  selectedUser.value = user; 
+
+  selectedUser.value = user;
   userData.name = user.name;
   userData.surname1 = user.surname1;
   userData.surname2 = user.surname2;
   userData.email = user.email;
   visibleEditUser.value = true; // abre el Dialog
   console.log('🔎 SELECTED USER -->', selectedUser);
+
 };
 
 const fetchProducts = async (endpoint, id, type) => {
@@ -376,7 +485,7 @@ const fetchProducts = async (endpoint, id, type) => {
     const response = await axios.post(`/api/${endpoint}`, {
       userId: id,
     });
-    
+
     // guarda info segun seccion
     if (type === 'purchases') purchases.value = response.data.data || [];
     else if (type === 'sales') sales.value = response.data.data || [];
@@ -434,4 +543,11 @@ function editUser() {
     width: auto;
     max-height: 200px;
   }
+
+.google-map {
+  height: 300px; /* Define la altura del mapa */
+  width: 100%; /* Define el ancho del mapa */
+  border: 1px solid #ccc; /* Opcional: bordes del mapa */
+  border-radius: 8px; /* Opcional: bordes redondeados */
+}
 </style>

@@ -100,14 +100,30 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/geocode', function (Request $request) {
         $apiKey = env('GOOGLE_API_KEY');
         $address = $request->query('address');
-    
+
         $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
             'address' => $address.', Spain',
             'key' => $apiKey
         ]);
-    
+
         return $response->json();
     });
+
+
+    Route::get('/reverse-geocode', function (Request $request) {
+        $apiKey = env('GOOGLE_API_KEY');
+        $lat = $request->query('lat');
+        $lng = $request->query('lng');
+
+        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+            'latlng' => $lat . ',' . $lng,
+            'key' => $apiKey
+        ]);
+
+        // Pots aquí mateix retornar només la formatted_address si vols simplificar-ho
+        return $response->json();
+    });
+
 
     // Habilidades
     Route::get('abilities', function(Request $request) {
