@@ -28,7 +28,7 @@
             </div>
             <Button :label="fullAddress?.results && fullAddress.results.length > 0
     ? fullAddress.results[0].formatted_address
-    : 'Adreça no disponible 🚫'"
+    : 'Direccion no disponible 🚫'"
                     icon="pi pi-map-marker" rounded />
           </div>
         </div>
@@ -40,13 +40,13 @@
             <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" rounded />
           </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 850px; height: 500px;">
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;">
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
               <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
           </TabList>
-          <TabPanels>
+          <TabPanels class="w-100">
               <TabPanel value="0">
                 <FileUpload
                     name="picture"
@@ -62,26 +62,25 @@
                     class="fu"
                 >
                   <template #header="{ chooseCallback, uploadCallback, clearCallback, files, uploadedFiles }">
-                    <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                    <div class="flex flex-wrap justify-content-center align-items-center flex-1 gap-2 w-50 mx-auto">
                       <div class="flex gap-2">
                         <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
                         <Button @click="uploadEvent(uploadCallback, uploadedFiles)" icon="pi pi-cloud-upload" rounded outlined severity="success" :disabled="!files || files.length === 0"></Button>
                         <Button @click="clearCallback()" icon="pi pi-times" rounded outlined severity="danger" :disabled="!files || files.length === 0"></Button>
                       </div>
-                      <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
                     </div>
                   </template>
 
                   <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                    <img v-if=" files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="file.name" :src="file.objectURL" class="object-fit-cover w-100 h-100 img-profile" />
+                    <img v-if=" files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="file.name" :src="file.objectURL" class="object-fit-cover w-50 h-50 img-profile" />
                     <div v-else>
-                      <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="object-fit-cover w-100 h-100 img-profile" />
+                      <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="object-fit-cover w-50 h-50 img-profile" />
                     </div>
                   </template>
 
                   <template #empty>
-                    <img v-if="user.avatar" :src=user.avatar alt="Avatar" class="object-fit-cover w-100 h-100 img-profile">
-                    <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-100 h-100 img-profile">
+                    <img v-if="user.avatar" :src=user.avatar alt="Avatar" class="object-fit-cover w-50 h-50 img-profile">
+                    <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-50 h-50 img-profile">
                   </template>
                 </FileUpload>
               </TabPanel>
@@ -91,11 +90,12 @@
                   <div class="d-flex flex-column gap-5">
                     <div class="">
                       <FloatLabel>
-                          <InputText appendTo=".show" v-model="userData.name" inputId="name-user" fluid id="name-user"/>
+                          <InputText appendTo=".show" v-model="userData.name" inputId="name-user" fluid id="name"/>
                           <label for="name-user">Nombre</label>
                       </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.name }}</div>
                       <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.role_id">
+                          <div v-for="message in validationErrors?.name">
                               {{ message }}
                           </div>
                       </div>
@@ -104,22 +104,24 @@
                     <div class="d-flex gap-3 w-100">
                       <div class="">
                         <FloatLabel>
-                            <InputText appendTo=".show" v-model="userData.surname1" inputId="surname1-user" fluid id="surname1-user"/>
+                            <InputText appendTo=".show" v-model="userData.surname1" inputId="surname1-user" fluid id="surname1"/>
                             <label for="surname1-user">Apellido 1</label>
                         </FloatLabel>
+                        <div class="text-danger mt-1">{{ errors.surname1 }}</div>
                         <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.role_id">
+                          <div v-for="message in validationErrors?.surname1">
                               {{ message }}
                           </div>
                         </div>
                       </div>
                       <div class="">
                         <FloatLabel>
-                            <InputText appendTo=".show" v-model="userData.surname2" inputId="surname2-user" fluid id="surname2-user"/>
+                            <InputText appendTo=".show" v-model="userData.surname2" inputId="surname2-user" fluid id="surname2"/>
                             <label for="surname2-user">Apellido 2</label>
                         </FloatLabel>
+                        <div class="text-danger mt-1">{{ errors.surname2 }}</div>
                         <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.role_id">
+                          <div v-for="message in validationErrors?.surname2">
                               {{ message }}
                           </div>
                         </div>
@@ -127,39 +129,38 @@
                     </div>
                     <div class="">
                       <FloatLabel>
-                          <InputText appendTo=".show" v-model="userData.email" inputId="email-user" fluid id="email-user"/>
+                          <InputText appendTo=".show" v-model="userData.email" inputId="email-user" fluid id="email" disabled=""/>
                           <label for="email-user">Email</label>
                       </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.email }}</div>
                       <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.role_id">
+                          <div v-for="message in validationErrors?.email">
                               {{ message }}
                           </div>
                       </div>
                     </div>
                     <div class="">
                       <FloatLabel>
-                          <Password appendTo=".show" v-model="userData.password" inputId="password-user" toggleMask fluid id="password-user"/>
+                          <Password appendTo=".show" v-model="userData.password" inputId="password-user" toggleMask fluid id="password"/>
                           <label for="password-user">Contraseña</label>
                       </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.password }}</div>
                       <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.role_id">
+                          <div v-for="message in validationErrors?.password">
                               {{ message }}
                           </div>
                       </div>
                     </div>
                     <div class="">
                       <FloatLabel>
-                        <button placeholder="Buscar" class="btn btn-primary" @click="prueba"/>
-
-
+                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="prueba"/>
                         <div class="my-3">
                           <FloatLabel>
                             <InputText v-model="address" id="address-input" @keyup.enter="buscarUbicacio"/>
-                            <label for="address-input">Introdueix una localidad</label>
+                            <label for="address-input">Intoduce una direccion</label>
                           </FloatLabel>
                           <Button @click="buscarUbicacio" label="Buscar" class="mt-2" />
                         </div>
-
                         <div id="map" class="google-map"></div>
                       </FloatLabel>
                     </div>
@@ -275,19 +276,31 @@ const files = ref([]);
 const $primevue = usePrimeVue();
 const fullAddress = ref(null);
 // variables
+// no asigna el valor de la variable lo hace al abrir el dialog
+const { value: id } = useField('id', null, { initialValue: selectedUser.id });
 const { value: name } = useField('name', null, { initialValue: selectedUser.name });
 const { value: surname1 } = useField('surname1', null, { initialValue: selectedUser.surname1 });
 const { value: surname2 } = useField('surname2', null, { initialValue: selectedUser.surname2 });
 const { value: email } = useField('email', null, { initialValue: selectedUser.email });
 const { value: password } = useField('password', null, { initialValue: '' });
+// const { value: latitude } = useField('latitude', null, { initialValue: '41.38740000' });
+// const { value: longitude } = useField('longitude', null, { initialValue: '2.16860000' });
+const latitude = ref(40.4165);
+const longitude = ref(-3.70256);
 const schema = {
-  name: 'required|min:3',
-  surname1: 'required|min:3',
-  surname2: 'required|min:3',
-  email: 'required',
-  password: 'required|min:8',
 }
 const { validate, errors } = useForm({ validationSchema: schema })
+
+const userData = ref({
+  id,
+  name,
+  surname1,
+  surname2,
+  email,
+  password,
+  latitude,
+  longitude
+})
 
 const getGeocodeData = async () => {
   try {
@@ -322,7 +335,9 @@ const prueba = async () => {
     const { lat, lng } = event.latLng.toJSON();
     latitude.value = lat;
     longitude.value = lng;
-    console.log("Nueva posición:", latitude.value, longitude.value);
+    console.log('🆕 POSITION');
+    console.log('📟 latitude -->', latitude.value);
+    console.log('📟 longitude -->', longitude.value);
   });
 
   // Evento: clic en el mapa
@@ -334,14 +349,6 @@ const prueba = async () => {
     console.log("Mapa clickeado en:", latitude.value, longitude.value);
   });
 }
-
-const userData = reactive({
-  name,
-  surname1,
-  surname2,
-  email,
-  password,
-})
 
 
 const buscarUbicacio = async () => {
@@ -362,8 +369,7 @@ const buscarUbicacio = async () => {
   }
 }
 
-const latitude = ref(41.38740000);
-const longitude = ref(2.16860000);
+
 
 
 onMounted(async () => {
@@ -405,13 +411,18 @@ watch(user, (newUser) => {
 // Funciones de subida imagen
 const onBeforeUpload = (event) => {
   // console.log('onBeforeUpload')
-  event.formData.append('id', user.id)
+  event.formData.append('id', user.value.id)
 };
 
 const uploadEvent = async (callback, uploadedFiles) => {
   console.log('uploadEvent');
   totalSizePercent.value = totalSize.value / 10;
+  console.log(totalSizePercent.value);
   await callback();
+  visibleEditUser.value = false;
+  window.location.reload();
+
+
   // if (uploadedFiles.length > 1) {
   //     uploadedFiles = uploadedFiles.splice(0, uploadedFiles.length - 1);
   // }
@@ -464,15 +475,20 @@ const getGeoLocation = async () => {
 
 
 const openEditProfile = async (user) => {
-
   selectedUser.value = user;
-  userData.name = user.name;
-  userData.surname1 = user.surname1;
-  userData.surname2 = user.surname2;
-  userData.email = user.email;
-  visibleEditUser.value = true; // abre el Dialog
+  userData.value.id = user.id;
+  userData.value.name = user.name;
+  userData.value.surname1 = user.surname1;
+  userData.value.surname2 = user.surname2;
+  userData.value.email = user.email;
+  visibleEditUser.value = true; // abre el Dialog 
+  console.log('🔎 USER ID SELECTED', userData.id)
   console.log('🔎 SELECTED USER -->', selectedUser);
-
+  console.log('------------------------------');
+  latitude.value = Number(user.latitude);
+  longitude.value = Number(user.longitude);
+  console.log('📟 latitude -->', latitude.value);
+  console.log('📟 longitude -->', longitude.value);
 };
 
 const fetchProducts = async (endpoint, id, type) => {
@@ -522,8 +538,11 @@ const calcularMediaRating = () => {
 
 function editUser() {
   console.log('FORMULARIO USER -->', userData);
-        validate().then(form => { if (form.valid) updateUser(userData.value) })
-    }
+  validate().then(form => { if (form.valid) updateUser(userData.value) });
+  visibleEditUser.value = false; // close el Dialog
+  // window.location.reload();
+
+}
 
 </script>
 
