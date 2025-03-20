@@ -1,5 +1,4 @@
 <template>
-    {{ product }}
   <form @submit.prevent="submitForm">
     <div class="row my-5">
       <!-- Información principal del producto -->

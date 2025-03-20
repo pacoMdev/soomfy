@@ -1,5 +1,20 @@
 <template>
-    <div class="container py-5">
+    <div class=" flex justify-center w-100 justify-content-center py-5">
+        <Breadcrumb :home="home" :model="breadcrumbs" class="bg-transparent">
+            <template #item="{ item, props }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="[item.icon, 'text-color']" />
+                        <span class="text-primary font-semibold">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                    <span class="text-surface-700 dark:text-surface-0">{{ item.label }}</span>
+                </a>
+            </template>
+        </Breadcrumb>
+    </div>
+    <div class="container">
         <div class="w-100">
             <div class="col-md-6 col-lg-8 col-xl-8 w-100 container-product">
                 <!-- INFORMACION DEL PRODUCTO   --------------------------------------------- -->
@@ -155,7 +170,7 @@
 <script setup>
 
     import { ref, onMounted, watch } from 'vue';
-    import { Skeleton, Rating, Carousel } from 'primevue';
+    import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
 
     const path = window.location.pathname; // obtiene url
@@ -174,6 +189,14 @@
         }
     });
     
+
+    const home = ref({
+    icon: 'pi pi-home', route: '/'
+});
+const breadcrumbs = ref([
+    { label: 'Products', route: '/' }, 
+    { label: 'product.title' }, 
+]);
 
 
     // Peticiones de API

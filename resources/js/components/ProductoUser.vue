@@ -22,7 +22,7 @@
         <p class="h1-p">{{ producto.price }}€</p>
         <p class="h4-p">{{ producto.title }}</p>
         <p class="">{{ producto.content }}</p>
-        <p class="tamaño-estadoProducto">{{ producto.estado.name }}</p>
+        <Tag icon="" severity="secondary" :value="producto.estado.name" rounded class="my-3"></Tag>
         
       </router-link>
       <div class="d-flex gap-5">
@@ -81,8 +81,128 @@
             </Stepper>
           </form>
       </Dialog>
-      <Dialog v-model:visible="visibleEdit" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+      <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+        <Tabs value="0">
+          <TabList>
+              <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
+              <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
+          </TabList>
+          <TabPanels class="w-100">
+              <TabPanel value="0">
+                <div class="mb-3">
+              <h3>Fotos</h3>
+              <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+              <div class="text-danger mt-1">
+                {{ errors.thumbnails }}
+              </div>
+              <div class="text-danger mt-1">
+                <div v-for="message in validationErrors?.thumbnails">
+                  {{ message }}
+                </div>
+              </div>
+            </div>
+              </TabPanel>
+              <TabPanel value="1">
 
+                <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+                  <div class="d-flex flex-column gap-5">
+                    <!-- TITULO ---------------------------------------------------- -->
+                    <div class="">
+                      <FloatLabel>
+                          <InputText appendTo=".show" v-model="product.title" inputId="title-product" fluid id="title"/>
+                          <label for="title-product">Nombre del producto</label>
+                      </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.title }}</div>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.title">
+                              {{ message }}
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex gap-3 w-100">
+                      <!-- CONTENIDO ---------------------------------------------------- -->
+                      <div class="">
+                        <FloatLabel>
+                            <InputText appendTo=".show" v-model="product.content" inputId="content-product" fluid id="content" rows="5" cols="50" />
+                            <label for="content-product">Contenido</label>
+                        </FloatLabel>
+                        <div class="text-danger mt-1">{{ errors.content }}</div>
+                        <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.content">
+                              {{ message }}
+                          </div>
+                        </div>
+                      </div>
+                      <!-- PRECIO ---------------------------------------------------- -->
+                      <div class="">
+                        <FloatLabel>
+                            <InputNumber v-model="product.price" inputId="price-product" :minFractionDigits="2" fluid id="price-product"/>
+                            <!-- <InputText appendTo=".show" v-model="product.price" inputId="price-product" fluid id="price"/> -->
+                            <label for="price-product">Precio</label>
+                        </FloatLabel>
+                        <div class="text-danger mt-1">{{ errors.price }}</div>
+                        <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.price">
+                              {{ message }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- ESTADO ---------------------------------------------------- -->
+                    <div class="">
+                      <FloatLabel>
+                        <select
+                            v-model="product.estado"
+                            id="product-estado"
+                            class="form-select"
+                        >
+                          <option value="" disabled>Select a state</option>
+                          <option
+                              v-for="estado in estadoList"
+                              :key="estado.id"
+                              :value="estado.id"
+                          >
+                            {{ estado.name }}
+                          </option>
+                        </select>
+                          <label for="email-user">Estado</label>
+                      </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.estado_id }}</div>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.estado_id">
+                              {{ message }}
+                          </div>
+                      </div>
+                    </div>
+                    <!-- CATEGORIA ---------------------------------------------------- -->
+                    <div class="">
+                      <FloatLabel>
+                        <Select
+                          v-model="product.category"
+                          :options="categoryList"
+                          optionLabel="name"
+                          optionValue="id"
+                          :loading="isLoading"
+                          :disabled="isLoading"
+                          class="w-full md:w-80"
+                          appendTo=".show"
+                          />                          
+                          <label for="password-user">Selecciona categoria</label>
+                      </FloatLabel>
+                      <div class="text-danger mt-1">{{ errors.categories }}</div>
+                      <div class="text-danger mt-1">
+                          <div v-for="message in validationErrors?.categories">
+                              {{ message }}
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
+                </form>
+              </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Dialog>
       <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
         <div class="card flex justify-center">
@@ -99,20 +219,57 @@
 import {defineProps, ref} from 'vue';
 import axios from 'axios';
 import { Dialog } from 'primevue';
-import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp } from 'primevue';
-
-
+import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue';
+import {useForm, useField, defineRule} from "vee-validate";
+import DropZoneV from "@/components/DropZone-varios.vue";
+import useCategories from "@/composables/categories";
+import useProducts from "@/composables/products.js";
+import {required, min} from "@/validation/rules"
+defineRule('required', required)
+defineRule('min', min);
 
 
 // Variables del Dialog
 const visible = ref(false);
-const visibleEdit = ref(false);
+const visibleEditProduct = ref(false);
 const visibleDelete = ref(false);
 const selectedProduct = ref(null);
 const usersInterested = ref([]);
 const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
+const selectedUser = ref(null);
+const user = ref(null);
 const finalPrice = ref(0);
 const confirmationDelete = ref(null);
+
+    // Define a validation schema
+    const schema = {
+        title: 'required|min:8',
+        content: 'required|min:25',
+        category: null,
+        price: 'required|min:1',
+        estado: null,
+        thumbnails: null
+    }
+    // Create a form context with the validation schema
+    const { validate, errors, resetForm } = useForm({ validationSchema: schema })
+    // Define actual fields for validation
+    const { value: title } = useField('title', null, { initialValue: '' });
+    const { value: content } = useField('content', null, { initialValue: '' });
+    const { value: price } = useField('price', null, { initialValue: '' });
+    const { value: estado } = useField('estado', null, { initialValue: '' });
+    const { value: category } = useField('category', null, { initialValue: '', label: 'category' });
+    const { value: thumbnails } = useField('thumbnails', null, { initialValue: [] });
+    const { categoryList, getCategoryList } = useCategories()
+    const { product: productData,getEstadoList,estadoList, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
+
+    const product = ref({
+        title,
+        content,
+        price,
+        estado,
+        category,
+        thumbnails
+    })
 
 
 const openSellProduct = async (producto) => {
@@ -123,7 +280,13 @@ const openSellProduct = async (producto) => {
 };
 const openEditProduct = async (producto) => {
   selectedProduct.value = producto; 
-  visibleEdit.value = true; 
+  selectedUser.value = user;
+  product.value.title = selectedProduct.value.title;
+  product.value.content = selectedProduct.value.content;
+  product.value.price = selectedProduct.value.price;
+  product.value.estado = selectedProduct.value.estado;
+  product.value.category = selectedProduct.value.category;
+  visibleEditProduct.value = true; 
   console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
 };
 const openDeleteProduct = async (producto) => {
