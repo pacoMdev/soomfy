@@ -40,14 +40,15 @@
                             <p class="m-0 h2-p">{{ product.content }}</p>
                             <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
                           <div class="container-categories d-flex gap-2 flex-wrap">
-                              <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
+                            <Tag v-if="product.category" severity="secondary" :value="product.category.name" rounded></Tag>
+                            <!-- <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p> -->
                             </div>
                             <div class="button d-flex gap-3 ">
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
-                                    <Button label="Comprar" variant="outlined" class="w-100" />
+                                    <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
                                 <router-link :to="'/chat'" class="w-50">
-                                    <Button label="Chat" raised class="w-100" />
+                                    <Button label="Chat" raised class="w-100" rounded />
                                 </router-link>
                             </div>
                         </div>
@@ -61,7 +62,7 @@
                             </div>
                             <div class="button d-flex gap-3">
                                 <Button label="Comprar" variant="outlined" class="w-50" />
-                                <Button label="Chat" raised class="w-50" />
+                                <Button label="Chat" raised class="w-50"  />
                             </div>
                         </div>
                         <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
@@ -70,7 +71,7 @@
                             <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
                         <router-link v-if="product.user" :to="'/profile/detalle/'+product.user.id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
-                            <img :src="product.user.avatar" alt="" width="50px" height="50px">
+                            <img :src="product.user.media[0]?.original_url" alt="" width="50px" height="50px">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
                                 <h4>{{ product.user?.name }} {{ product.user.surname1 }}</h4>
@@ -96,7 +97,7 @@
                 <div class="container-user-products">
                     <h2>Articulos del usuario</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="6" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -124,7 +125,7 @@
                 <div class="container-related-products">
                     <h2>Articulos relacionados</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -238,7 +239,7 @@
         },
         {
             breakpoint: '575px',
-            numVisible: 1,
+            numVisible: 2,
             numScroll: 1
         }
     ]);

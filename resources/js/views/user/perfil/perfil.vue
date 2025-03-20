@@ -15,30 +15,22 @@
               <Rating v-model="mediaRating" readonly />
               <p>({{ reviews.length }})</p>
             </div>
-            <p>Vendedor novel</p>
+            <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
+    : 'Direccion no disponible 🚫'" rounded></Tag>
+
           </div>
         </div>
 
         <!-- Botones de acciones -->
         <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info">
           <div class="d-flex flex-column gap-3 mx-auto">
-            <div class="d-flex gap-3">
-              <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
-              <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            </div>
-            <Button :label="fullAddress?.results && fullAddress.results.length > 0
-    ? fullAddress.results[0].formatted_address
-    : 'Direccion no disponible 🚫'"
-                    icon="pi pi-map-marker" rounded />
+            <router-link class="" v-if="authStore().isAdmin" to="/admin">
+              <Button label="Admin panel" class="w-100" rounded />
+            </router-link>
+            <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="w-100" rounded />
+            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="w-100" rounded />
           </div>
         </div>
-        <div class="d-flex gap-3">
-            <router-link class="" v-if="authStore().isAdmin" to="/admin">
-              <Button label="Admin panel" rounded />
-            </router-link>
-            <Button label="Editar perfil" @click.stop="openEditProfile(user)" rounded />
-            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" rounded />
-          </div>
       </div>
       <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;">
         <Tabs value="0">
@@ -153,13 +145,13 @@
                     </div>
                     <div class="">
                       <FloatLabel>
-                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="prueba"/>
+                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="startMap"/>
                         <div class="my-3">
                           <FloatLabel>
-                            <InputText v-model="address" id="address-input" @keyup.enter="buscarUbicacio"/>
+                            <InputText v-model="partialAddress" id="address-input" @keyup.enter="buscarUbicacio"/>
                             <label for="address-input">Intoduce una direccion</label>
                           </FloatLabel>
-                          <Button @click="buscarUbicacio" label="Buscar" class="mt-2" />
+                          <Button @click="getGeoPartialAddress" label="Buscar" class="mt-2" />
                         </div>
                         <div id="map" class="google-map"></div>
                       </FloatLabel>
@@ -174,9 +166,15 @@
       </Dialog>
 
       <div>
-        <div class="d-flex gap-3 w-100 justify-content-center">
-          <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
-          <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+        <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
+          <div class="d-flex gap-3">
+            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+          </div>
+          <div class="d-flex gap-3">
+            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+          </div>
         </div>
 
         <div class="container w-100 d-flex gap-5">
@@ -235,11 +233,11 @@
 
 
 <script setup>
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
-import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue';
+import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag } from 'primevue';
 import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
@@ -275,6 +273,7 @@ const totalSizePercent = ref(0);
 const files = ref([]);
 const $primevue = usePrimeVue();
 const fullAddress = ref(null);
+const partialAddress = ref('');
 // variables
 // no asigna el valor de la variable lo hace al abrir el dialog
 const { value: id } = useField('id', null, { initialValue: selectedUser.id });
@@ -302,6 +301,32 @@ const userData = ref({
   longitude
 })
 
+const getGeoPartialAddress = async ()=>{
+  // realizar consulta a api GOOGLE
+  // Recojer las coordenadas y modificar las default (latitude, longitude)
+  console.log('✅ CHEKING ADDRESS');
+  console.log('🏠 ADDRESS -->', partialAddress.value);
+  console.log('📟 LATITUDE && longitude', latitude, longitude);
+
+  try {
+      const response = await axios.get('/api/geocode', {
+          params: { address: partialAddress.value,}
+      });
+      const components = response.data;
+      console.log('API -->', components.results[0]);
+
+      if (components) {
+        latitude.value = components.results[0].geometry.location.lat;
+      longitude.value = components.results[0].geometry.location.lng;
+
+      console.log('🏞️ API Response', components.results);
+      console.log('📟 LATITUDE && longitude', latitude, longitude);
+      }
+  } catch (error) {
+      console.error("Eror en api de GOOGLE -->", error);
+  }
+}
+
 const getGeocodeData = async () => {
   try {
     const response = await axios.get('http://127.0.0.1:8000/api/geocode', {
@@ -316,7 +341,7 @@ const getGeocodeData = async () => {
   }
 };
 
-const prueba = async () => {
+const startMap = async () => {
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: latitude.value, lng: longitude.value },
     zoom: 13,

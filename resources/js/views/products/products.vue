@@ -71,7 +71,6 @@
           </div>
 
           <!-- Botón de filtrar -->
-          <button type="submit">Aplicar Filtros</button>
           <button @click="limpiarFiltros" type="submit">Limpiar Filtros</button>
         </form>
       </div>
@@ -136,22 +135,18 @@ const fetchProducts = async () => {
 };
 
 
-const latitude = ref(41.38740000);
-const longitude = ref(2.16860000);
-
-const categoriaSeleccionada = ref('');
+const categoriaSeleccionada = ref(route.query.search_category);
 const buscarTitulo = ref('');
 const buscarEstado = ref('');
 const buscarPrecioMin = ref();
 const buscarPrecioMax = ref();
-
 // Ubicacion
 const buscarRadio = ref(0);
-
 // Ordenar
 const ordenarPrecio = ref('');
 const ordenarFecha = ref('');
-
+const latitude = ref(41.38740000);
+const longitude = ref(2.16860000);
 
 
 const aplicarFiltro = async () => {
@@ -216,6 +211,22 @@ const aplicarFiltro = async () => {
     console.error('Error al aplicar filtro:', error);
   }
 };
+
+watch(
+  [
+    categoriaSeleccionada,
+    buscarTitulo,
+    buscarEstado,
+    ordenarFecha,
+    ordenarPrecio,
+    buscarPrecioMin,
+    buscarPrecioMax,
+    buscarRadio,
+    latitude,
+    longitude
+  ],
+  aplicarFiltro
+);
 
 
 const limpiarFiltros = async () => {
