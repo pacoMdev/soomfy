@@ -44,10 +44,11 @@ const model = ref([
         ]
     },
     {
-        label: 'Posts',
+        label: 'Products',
         items: [
-            { label: 'Posts', icon: 'pi pi-fw pi-id-card', to: '/admin/posts', permision: 'post-list' },
-            { label: 'Categorias', icon: 'pi pi-fw pi-id-card', to: '/admin/categories', permision: 'category-list' }
+            { label: 'Products', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/products', permision: 'product-list' },
+            { label: 'Categorias', icon: 'pi pi-fw pi-tags', to: '/admin/categories', permision: 'all' },
+            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/estados', permision: 'all' },
 
         ]
     }

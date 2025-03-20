@@ -1,5 +1,5 @@
 :root {
-    font-family: "Inter var", sans-serif;
+    font-family: n;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variation-settings: normal;
     --font-family: "Inter var", sans-serif;
@@ -11,6 +11,328 @@
     --surface-card: #ffffff;
     --surface-overlay: #ffffff;
     --surface-border: #e2e8f0;
+
+
+    --primary-color: #042A2D;
+    --secondary-color: #C1F9F4; 
+    --neutral-color: #4A4A4A;
+}
+
+/*  */
+* {
+    font-family: 'Nunito';
+}
+/* BACKGROUND COLOR */
+.bg-bs-color-primary {
+    background-color: var(--primary-color);
+}
+.bg-bs-color-secondary {
+    background-color: var(--secondary-color);
+}
+
+/* TEXT COLOR */
+.tx-color-primari {
+    color: var(--primary-color);
+}
+.tx-color-secondari {
+    color: var(--secondary-color);
+}
+.tx-color-neutral {
+    color: var(--neutral-color);
+}
+
+.fondoNav {
+    background-color: var(--primary-color);
+}
+.fondoNav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-color);
+}
+
+
+.fondoNav a, .nav-item .dropdown{
+    color: var(--secondary-color);
+}
+
+.dropdown-menu li a {
+    color: var(--neutral-color);
+}
+
+.fondoNav .logo-size {
+    width: 60px;
+}
+
+.fondoNav .icons-size {
+    width: 30px;
+    /* padding: 5px; */
+}
+
+.textSize-chat {
+    font-size: 17px;
+}
+
+.icon-plus {
+    width: 16px !important;
+    padding: 0px !important;
+}
+
+/* COLOR VUE COMPONENTS */
+.p-button {
+background-color: var(--primary-color) !important;
+border-color: var(--primary-color) !important;
+color: white !important;
+}
+
+.p-button:hover {
+background-color: var(--primary-color) !important;
+border-color: var(--secondary-color) !important;
+}
+
+  
+
+/* Boton principal */
+
+.primary-button {
+    background-color: var(--secondary-color);
+    border-style: solid;
+    border-color: var(--secondary-color);
+    border-radius: 100px;
+    white-space: nowrap;
+    height: 40px;
+    transition: all 0.4s ease-in-out;
+    padding: 0px 30px !important;
+    color: var(--primary-color) !important;
+    font-size: 16px;
+}
+.primary-button:hover {
+    background-color: var(--primary-color);
+    border-radius: 100px;
+    white-space: nowrap;
+    height: 40px;
+    padding: 0px 30px !important;
+    transition: all 0.4s ease-in-out;
+    color: var(--secondary-color) !important;
+}
+
+
+.primary-button-2 {
+    display: block;
+    background-color: var(--secondary-color);
+    border-radius: 100px;
+    font-size: 16px;
+    border-style: none;
+    height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    transition: all 0.4s ease-in-out;
+    /* Padding */
+    padding: 0px 30px !important;
+    color: var(--primary-color);
+}
+
+.primary-button-2:hover {
+    background-color: var(--primary-color);
+    border-radius: 100px;
+    height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    transition: all 0.4s ease-in-out;
+    /* Padding */
+    padding: 0px 30px !important;
+    color: var(--secondary-color);
+}
+
+.primary-button-2:hover svg{
+    stroke: var(--secondary-color);
+}
+
+.primary-button-2:active {
+    background-color: var(--secondary-color);
+    transition: all 0.4s ease-in-out;
+    color: var(--primary-color);
+}
+
+.secondary-button {
+    border-style: solid;
+    border-color: var(--secondary-color);
+    border-radius: 100px;
+    white-space: nowrap;
+    height: 40px;
+    padding: 0px 30px !important;
+    color: var(--secondary-color);
+}
+
+.secondary-button-2 {
+    background-color: var(--primary-color);
+    border-radius: 100px;
+    border: none;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    /* Padding */
+    padding: 0 30px;
+    color: var(--secondary-color);
+    /* Tamaño y grosor texto */
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative; /* Necesario para posicionar el ícono correctamente */
+    overflow: hidden;
+}
+
+/* Estilo base del ícono: oculto y fuera de la vista */
+.secondary-button-2 i {
+    position: absolute;
+    left: 20px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover: cambia color y muestra el ícono */
+.secondary-button-2:hover {
+    background-color: var(--secondary-color);
+    border: solid 2px var(--primary-color);
+    color: var(--primary-color);
+    display: flex;
+    column-gap: 15px;
+    padding-left: 40px; /* Ajustar el padding para dar espacio al icono */
+}
+
+/* Mostrar el ícono en hover */
+.secondary-button-2:hover i {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+/* Active (Pressed): Color más oscuro y efecto de presión */
+.secondary-button-2:active {
+    background-color: var(--primary-color); /* Aún más oscuro */
+    color: var(--secondary-color);
+    transform: scale(0.98); /* Se reduce un poco al presionar */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tamaños y colores textos*/
+h1, h2, h3, h4 {
+    color: var(--primary-color);
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 500;
+}
+
+.h1-p {
+    font-size: 18px;
+    color: var(--neutral-color);
+}
+
+h2 {
+    font-size: 40px;
+}
+
+.h2-p {
+    font-size: 17px;
+    color: var(--neutral-color);
+}
+
+h3 {
+    font-size: 30px;
+}
+
+.h3-p {
+    font-size: 16px;
+    color: var(--neutral-color);
+}
+
+h4 {
+    font-size: 20px;
+}
+
+.h4-p {
+    font-size: 15px;
+    color: var(--neutral-color);
+}
+
+
+/* Footer */
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
+.footer-columns {
+    display: flex;
+    gap: 50px;
+}
+
+.footer-column h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 5px;
+}
+
+.footer-column ul li a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+}
+
+.language-selector {
+    display: flex;
+    align-items: center;
+}
+
+.language-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+}
+
+.language-button img {
+    width: 16px;
+    height: auto;
+}
+
+.dropdown-icon {
+    font-size: 12px;
+}
+
+
+footer {
+    width: 100% !important;
+    text-align: center;
+    height: 111px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Emerald */
@@ -24,7 +346,7 @@
 .emerald-700 { background-color: #047857 !important; }
 .emerald-800 { background-color: #065f46 !important; }
 .emerald-900 { background-color: #064e3b !important; }
-.emerald-950 { background-color: #022c22 !important; !important }
+.emerald-950 { background-color: #022c22 !important; }
 
 /* Green !important */
 .green-50 { background-color: #f0fdf4 !important; }
@@ -37,7 +359,7 @@
 .green-700 { background-color: #15803d !important; }
 .green-800 { background-color: #166534 !important; }
 .green-900 { background-color: #14532d !important; }
-.green-950 { background-color: #052e16 !important; !important }
+.green-950 { background-color: #052e16 !important;}
 
 /* Lime !important */
 .lime-50 { background-color: #f7fee7 !important; }
@@ -50,7 +372,7 @@
 .lime-700 { background-color: #4d7c0f !important; }
 .lime-800 { background-color: #3f6212 !important; }
 .lime-900 { background-color: #365314 !important; }
-.lime-950 { background-color: #1a2e05 !important; !important }
+.lime-950 { background-color: #1a2e05 !important;}
 
 /* Red !important */
 .red-50 { background-color: #fef2f2 !important; }
@@ -63,7 +385,7 @@
 .red-700 { background-color: #b91c1c !important; }
 .red-800 { background-color: #991b1b !important; }
 .red-900 { background-color: #7f1d1d !important; }
-.red-950 { background-color: #450a0a !important; !important }
+.red-950 { background-color: #450a0a !important;}
 
 /* Orange !important */
 .orange-50 { background-color: #fff7ed !important; }
@@ -76,7 +398,7 @@
 .orange-700 { background-color: #c2410c !important; }
 .orange-800 { background-color: #9a3412 !important; }
 .orange-900 { background-color: #7c2d12 !important; }
-.orange-950 { background-color: #431407 !important; !important }
+.orange-950 { background-color: #431407 !important; }
 
 /* Amber !important */
 .amber-50 { background-color: #fffbeb !important; }
@@ -89,7 +411,7 @@
 .amber-700 { background-color: #b45309 !important; }
 .amber-800 { background-color: #92400e !important; }
 .amber-900 { background-color: #78350f !important; }
-.amber-950 { background-color: #451a03 !important; !important }
+.amber-950 { background-color: #451a03 !important; }
 
 /* Yellow !important */
 .yellow-50 { background-color: #fefce8 !important; }
@@ -102,7 +424,7 @@
 .yellow-700 { background-color: #a16207 !important; }
 .yellow-800 { background-color: #854d0e !important; }
 .yellow-900 { background-color: #713f12 !important; }
-.yellow-950 { background-color: #422006 !important; !important }
+.yellow-950 { background-color: #422006 !important; }
 
 /* Teal !important */
 .teal-50 { background-color: #f0fdfa !important; }
@@ -115,7 +437,7 @@
 .teal-700 { background-color: #0f766e !important; }
 .teal-800 { background-color: #115e59 !important; }
 .teal-900 { background-color: #134e4a !important; }
-.teal-950 { background-color: #042f2e !important; !important }
+.teal-950 { background-color: #042f2e !important; }
 
 /* Cyan !important */
 .cyan-50 { background-color: #ecfeff !important; }
@@ -128,7 +450,7 @@
 .cyan-700 { background-color: #0e7490 !important; }
 .cyan-800 { background-color: #155e75 !important; }
 .cyan-900 { background-color: #164e63 !important; }
-.cyan-950 { background-color: #083344 !important; !important }
+.cyan-950 { background-color: #083344 !important; }
 
 /* Sky !important */
 .sky-50 { background-color: #f0f9ff !important; }
@@ -141,7 +463,7 @@
 .sky-700 { background-color: #0369a1 !important; }
 .sky-800 { background-color: #075985 !important; }
 .sky-900 { background-color: #0c4a6e !important; }
-.sky-950 { background-color: #082f49 !important; !important }
+.sky-950 { background-color: #082f49 !important; }
 
 /* Blue !important */
 .blue-50 { background-color: #eff6ff !important; }
@@ -154,7 +476,7 @@
 .blue-700 { background-color: #1d4ed8 !important; }
 .blue-800 { background-color: #1e40af !important; }
 .blue-900 { background-color: #1e3a8a !important; }
-.blue-950 { background-color: #172554 !important; !important }
+.blue-950 { background-color: #172554 !important; }
 
 /* Indigo !important */
 .indigo-50 { background-color: #eef2ff !important; }
@@ -167,7 +489,7 @@
 .indigo-700 { background-color: #4338ca !important; }
 .indigo-800 { background-color: #3730a3 !important; }
 .indigo-900 { background-color: #312e81 !important; }
-.indigo-950 { background-color: #1e1b4b !important; !important }
+.indigo-950 { background-color: #1e1b4b !important; }
 
 /* Violet !important */
 .violet-50 { background-color: #f5f3ff !important; }
@@ -180,7 +502,7 @@
 .violet-700 { background-color: #6d28d9 !important; }
 .violet-800 { background-color: #5b21b6 !important; }
 .violet-900 { background-color: #4c1d95 !important; }
-.violet-950 { background-color: #2e1065 !important; !important }
+.violet-950 { background-color: #2e1065 !important; }
 
 /* Purple !important */
 .purple-50 { background-color: #faf5ff !important; }
@@ -193,7 +515,7 @@
 .purple-700 { background-color: #7e22ce !important; }
 .purple-800 { background-color: #6b21a8 !important; }
 .purple-900 { background-color: #581c87 !important; }
-.purple-950 { background-color: #3b0764 !important; !important }
+.purple-950 { background-color: #3b0764 !important; }
 
 /* Fuchsia !important */
 .fuchsia-50 { background-color: #fdf4ff !important; }
@@ -206,7 +528,7 @@
 .fuchsia-700 { background-color: #a21caf !important; }
 .fuchsia-800 { background-color: #86198f !important; }
 .fuchsia-900 { background-color: #701a75 !important; }
-.fuchsia-950 { background-color: #4a044e !important; !important }
+.fuchsia-950 { background-color: #4a044e !important; }
 
 /* Pink !important */
 .pink-50 { background-color: #fdf2f8 !important; }
@@ -219,7 +541,7 @@
 .pink-700 { background-color: #be185d !important; }
 .pink-800 { background-color: #9d174d !important; }
 .pink-900 { background-color: #831843 !important; }
-.pink-950 { background-color: #500724 !important; !important }
+.pink-950 { background-color: #500724 !important; }
 
 /* Rose !important */
 .rose-50 { background-color: #fff1f2 !important; }
@@ -232,7 +554,7 @@
 .rose-700 { background-color: #be123c !important; }
 .rose-800 { background-color: #9f1239 !important; }
 .rose-900 { background-color: #881337 !important; }
-.rose-950 { background-color: #4c0519 !important; !important }
+.rose-950 { background-color: #4c0519 !important; }
 
 /* Slate !important */
 .slate-50 { background-color: #f8fafc !important; }
@@ -245,7 +567,7 @@
 .slate-700 { background-color: #334155 !important; }
 .slate-800 { background-color: #1e293b !important; }
 .slate-900 { background-color: #0f172a !important; }
-.slate-950 { background-color: #020617 !important; !important }
+.slate-950 { background-color: #020617 !important; }
 
 /* Gray !important */
 .gray-50 { background-color: #f9fafb !important; }
@@ -258,7 +580,7 @@
 .gray-700 { background-color: #374151 !important; }
 .gray-800 { background-color: #1f2937 !important; }
 .gray-900 { background-color: #111827 !important; }
-.gray-950 { background-color: #030712 !important; !important }
+.gray-950 { background-color: #030712 !important; }
 
 /* Zinc !important */
 .zinc-50 { background-color: #fafafa !important; }
@@ -271,7 +593,7 @@
 .zinc-700 { background-color: #3f3f46 !important; }
 .zinc-800 { background-color: #27272a !important; }
 .zinc-900 { background-color: #18181b !important; }
-.zinc-950 { background-color: #09090b !important; !important }
+.zinc-950 { background-color: #09090b !important; }
 
 /* Neutral !important */
 .neutral-50 { background-color: #fafafa !important; }
@@ -284,7 +606,7 @@
 .neutral-700 { background-color: #404040 !important; }
 .neutral-800 { background-color: #262626 !important; }
 .neutral-900 { background-color: #171717 !important; }
-.neutral-950 { background-color: #0a0a0a !important; !important }
+.neutral-950 { background-color: #0a0a0a !important; }
 
 /* Stone !important */
 .stone-50 { background-color: #fafaf9 !important; }

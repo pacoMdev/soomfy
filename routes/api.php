@@ -1,40 +1,131 @@
 <?php
 
-use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\PermissionController;
-use App\Http\Controllers\Api\PostControllerAdvance;
+use App\Http\Controllers\Api\ProductControllerAdvance;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\NoteController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Models\Transactions;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('forget-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forget.password.post');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
+// Categoria
+Route::apiResource('categories', CategoryController::class);
+Route::get('/categories', [CategoryController::class, 'getCategories']); // Obtener todas las categorias
+Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene las categorias (Uso: selects)
+
+
+// Estado
+Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); // Obtiene las categorias (Uso: selects)
+
+    // Obtener publicaciones por categoría
+    Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
+
+// Productos
+Route::apiResource('products', ProductControllerAdvance::class);
+Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Provisional
+Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
+Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
+Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
+Route::get('/getUsersConversations/{id}', [ProductControllerAdvance::class, 'getUsersConversations']); // Productos del id de usuario recibido
+Route::get('/checkReview', [ProductControllerAdvance::class, 'checkReview']);
+Route::post('/valorate', [ProductControllerAdvance::class, 'valorate']);
+// Productos favoritos
+Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
+
+// Productos por ubicacion del usuario (EN PROCESO)
+Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
+
+// protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
+    // ApiResource hace lo siguiente
+    // GET /users` - Index (Listar todos los usuarios)
+    // POST /users` - Store (Crear un nuevo usuario)
+    // GET /users/{user}` - Show (Mostrar un usuario específico)
+    // PUT/PATCH /users/{user}` - Update (Actualizar un usuario)
+    // DELETE /users/{user}` - Destroy (Eliminar un usuario)
 
+    // Buy || Sell
+    Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);
+    Route::post('sellProduct', [ProductControllerAdvance::class, 'sellProduct']);
+
+
+    // Perfil
+    Route::get('profile', [ProfileController::class, 'index']);
+    Route::post('profile/updateimg', [ProfileController::class,'updateimg']); // Actualizar imagen (usuario)
+    Route::get('user', [ProfileController::class, 'user']); // Responsable de determinar si estas iniciado sesion o no
+    Route::put('profile', [ProfileController::class, 'update']);
+    Route::get('profile/{id}', [ProfileController::class, 'getUserInfo']);
+    Route::post('getAllToSell', [ProfileController::class, 'getAllToSell']);
+    Route::post('getPurchase', [ProfileController::class, 'getPurchase']);
+    Route::post('getSales', [ProfileController::class, 'getSales']);
+    Route::post('getValorations', [ProfileController::class, 'getValorations']);
+    Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
+
+    // Usuario
     Route::apiResource('users', UserController::class);
+    Route::post('users/updateimg', [UserController::class,'updateimg']); // Actualizar imagen de perfil (udmin)
 
-    Route::post('users/updateimg', [UserController::class,'updateimg']); //Listar
+    // Productos favoritos
+    Route::get('get-favorite-products', [ProductControllerAdvance::class, 'getFavoriteProducts']); // Obtener products favoritos
 
-    Route::apiResource('posts', PostControllerAdvance::class);
-    Route::apiResource('categories', CategoryController::class);
+    // Mensajes
+    Route::get('message', [MessageController::class, 'index']);
+    Route::post('message', [MessageController::class, 'store']);
+    Route::get('message/{id}', [MessageController::class, 'show']);
+    Route::put('message/{id}', [MessageController::class, 'update']);
+    Route::delete('message/{id}', [MessageController::class, 'delete']);
+
+    // Conversaciones
+    Route::post('getConversation', [MessageController::class, 'getConversation']);
+    Route::post('sendMessage', [MessageController::class, 'sendMessage']);
+
+    // Roles
     Route::apiResource('roles', RoleController::class);
-
     Route::get('role-list', [RoleController::class, 'getList']);
     Route::get('role-permissions/{id}', [PermissionController::class, 'getRolePermissions']);
     Route::put('/role-permissions', [PermissionController::class, 'updateRolePermissions']);
     Route::apiResource('permissions', PermissionController::class);
 
-    Route::get('category-list', [CategoryController::class, 'getList']);
-    Route::get('/user', [ProfileController::class, 'user']);
-    Route::put('/user', [ProfileController::class, 'update']);
+    // direccion api google problemas con CORS desde front
+    Route::get('/geocode', function (Request $request) {
+        $apiKey = env('GOOGLE_API_KEY');
+        $address = $request->query('address');
 
+        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+            'address' => $address.', Spain',
+            'key' => $apiKey
+        ]);
+
+        return $response->json();
+    });
+
+
+    Route::get('/reverse-geocode', function (Request $request) {
+        $apiKey = env('GOOGLE_API_KEY');
+        $lat = $request->query('lat');
+        $lng = $request->query('lng');
+
+        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+            'latlng' => $lat . ',' . $lng,
+            'key' => $apiKey
+        ]);
+
+        // Pots aquí mateix retornar només la formatted_address si vols simplificar-ho
+        return $response->json();
+    });
+
+
+    // Habilidades
     Route::get('abilities', function(Request $request) {
         return $request->user()->roles()->with('permissions')
             ->get()
@@ -46,17 +137,3 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
             ->toArray();
     });
 });
-
-Route::get('category-list', [CategoryController::class, 'getList']);
-
-Route::get('get-posts', [PostControllerAdvance::class, 'getPosts']);
-Route::get('get-category-posts/{id}', [PostControllerAdvance::class, 'getCategoryByPosts']);
-Route::get('get-post/{id}', [PostControllerAdvance::class, 'getPost']);
-
-// añade la ruta de la api para redirigir a la clase 
-//crud de apis
-Route::get('note', [NoteController::class, 'index']) -> name('note.index');
-Route::post('note', [NoteController::class, 'store']) -> name('note.store');
-Route::get('note/{id}', action: [NoteController::class, 'show']) -> name('note.show');
-Route::put('note/{id}', action: [NoteController::class, 'update']) -> name('note.update');
-Route::delete('note/{id}', action: [NoteController::class, 'delete']) -> name('note.delete');

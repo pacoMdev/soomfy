@@ -1,62 +1,13 @@
 <template>
     <div class="layout-wrapper" :class="containerClass">
-        <app-topbar></app-topbar>
+        <Navbar />
 
-        <div class="layout-sidebar">
-            <Menu :model="items" class="w-full md:w-13rem menu border-0" appendTo="self">
-                <template #start>
-                    <button class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-0 text-color hover:surface-200 border-noround">
-                        <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
-                        <span class="inline-flex flex-column">
-                            <span class="font-bold">{{ user.name }}</span>
-                            <span>
-                                <span v-for="rol in user.roles" class="text-sm mr-2">{{ rol.name }}</span>
-                            </span>
-                        </span>
-                    </button>
-                </template>
-                <template #submenuheader="{ item }">
-                    <span class="text-primary font-bold">{{ item.label }}</span>
-                </template>
-
-                <template #item="{ item, props }">
-                    <a class="flex align-items-center" v-bind="props.action">
-                        <span :class="item.icon" />
-                        <span class="ml-2">{{ item.label }}</span>
-                        <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
-                        <span v-if="item.shortcut" class="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">
-                            {{item.shortcut}}
-                        </span>
-                    </a>
-                </template>
-
-            </Menu>
-            <!--            <app-sidebar></app-sidebar>-->
-        </div>
-
-        <div class="layout-main-container ">
-            <div class="card mb-2 bread">
-                <Breadcrumb :home="home" :model="crumbs" >
-                    <template #item="{ item, props }">
-                        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                            <a :href="href" v-bind="props.action" class="btn btn-link"   @click="navigate">
-                                <span :class="[item.icon, 'text-color']" />
-                                <span class="text-primary font-semibold">{{ item.label }}</span>
-                            </a>
-                        </router-link>
-                        <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                            <span class="text-color">{{ item.label }}</span>
-                        </a>
-                    </template>
-                </Breadcrumb>
-            </div>
-            <div class="layout-main">
-<!--                <Suspense>-->
+        <div class="">
+            <Suspense>
                     <router-view></router-view>
-<!--                </Suspense>-->
-            </div>
-            <app-footer></app-footer>
+                </Suspense>
         </div>
+        <Footer />
 
         <div class="layout-mask"></div>
     </div>
@@ -69,8 +20,8 @@ import { authStore } from "../store/auth";
 import { useRoute, useRouter } from "vue-router";
 import Breadcrumb from 'primevue/breadcrumb';
 
-import AppTopbar from './AppTopbar.vue';
-import AppFooter from './AppFooter.vue';
+import Navbar from './Nav.vue';
+import Footer from './Footer.vue';
 import { useLayout } from '../composables/layout';
 
 const auth = authStore();

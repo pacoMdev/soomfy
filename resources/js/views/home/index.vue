@@ -1,212 +1,184 @@
 <template>
-</template>
-<!--
-<template>
-    <div class="demo" id="edit-demo">
-        <div class="viewport" @click="select(null)" @mousedown.capture="blockEvents" @wheel.capture="blockEvents">
-            <screen ref="screen">
-                <g v-for="edge in graph.edges" @click.stop="select(edge)" :key="edge.id">
-                    <edge :class="selection && selection.id === edge.id && 'selected'"
-                          :data="edge"
-                          :nodes="graph.nodes">
-                    </edge>
-                </g>
-                <g v-for="node in graph.nodes" :key="node.id">
-                    <node :data="node" ref="node" :class="isSelected(node) && 'selected'" :textSelect="node.textSelect" :useDrag="node.useDrag">
-                        <div v-html="node.html" @click.stop="select(node)">
-                        </div>
-                    </node>
-                </g>
-            </screen>
+  <div class="separacion-general">
+    <div class="d-none d-md-block">
+      <div class="separacion-general-web">
+        <div class="fondoBienvenida d-flex justify-content-center">
+          <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
+            <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
+            <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
+            <SearchBar />
+          </div>
         </div>
-        <div class="sidebar">
-            <codemirror v-model="editText" :options="{
-          mode: 'text/javascript',
-          theme: 'default',
-          lineWrapping: true,
-          scrollbarStyle: null,
-          styleActiveLine: true,
-          line: true,
-        }"
-                        style="font-size: 13.3333px; font-family: monospace; -webkit-text-size-adjust: 100%; height: 100%"
-            ></codemirror>
+        <div class="centrar-categories">
+          <div class="categories">
+            <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
+              <img src="" alt="Todas">
+              <p>Todas</p>
+            </div>
+            <div v-for="category in categories" :key="category.id">
+              <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
+                <img :src="category.original_image" :alt="category.original_image">
+                <p>{{ category.name }}</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+
+        <div class="centrar-productos">
+          <div class="productos">
+            <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+          <button
+              class="secondary-button-2"
+              @click="cargarMasProductos"
+              :disabled="cargando"
+          >
+            {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
+          </button>
+        </div>
+
+        <div class="apartado-mensaje">
+          <h1>Dale una nueva vida a lo que ya no usas!</h1>
+          <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
+
+          <img src="images/cascos-decoracion.webp" alt="Cascos"class="cascos">
+          <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota">
+          <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj">
+          <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato">
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="d-block d-md-none">
+    <div>
+      <div class="contenedor-informativo">
+
+      </div>
+      <div class="">
+        <!-- falta ajustar el responsive -->
+        <div class="productos">
+          <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button
+            class="secondary-button-2"
+            @click="cargarMasProductos"
+            :disabled="cargando"
+        >
+          {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
-import Screen from '../components/Screen.vue'
-import Node from '../components/Node.vue'
-import Edge from '../components/Edge.vue'
-import graph from '../graph'
-import pretty from 'pretty'
-import stringify from 'javascript-stringify'
-import { Codemirror } from 'vue-codemirror'
-// import 'codemirror/mode/javascript/javascript.js'
-// import 'codemirror/lib/codemirror.css'
 
-export default {
-    components: {
-        Screen,
-        Node,
-        Edge,
-        Codemirror
-    },
-    data() {
-        return {
-            graph: new graph(),
-            selection: null,
-            editText: '/* click on a node or edge to start editing */',
-        }
-    },
-    methods: {
-        select (obj) {
-            this.selection = obj
-            if (!this.selection) {
-                this.editText = '/* click on a node or edge to start editing */'
-                return
-            }
-            const editText = { ...obj }
-            delete editText.pathd
-            if (editText.html) {
-                editText.html = "\n" + pretty(editText.html) + "\n"
-            }
-            this.editText = stringify(editText, null, 2)
-                .replace(/\\n/g, "\n")
-                .replace(/html: '([^]*)\s'/g, 'html: `$1\n`')
-        },
-        applyChanges () {
-            if (!this.selection) {
-                return
-            }
-            try {
-                const edit = eval('('+this.editText+')')
-                Object.assign(this.selection, edit)
-                this.$nextTick(() => {
-                    this.$refs.node.forEach(node => {
-                        node.fitContent()
-                    })
-                })
-            } catch (_) {
-                console.log('TODO invalid code')
-            }
-        },
-        isSelected (node) {
-            return this.selection
-                && this.selection.id === node.id
-        },
-        /**
-         * HACKS
-         * support shortcut .no-drag and .no-wheel classes
-         * to disable dragging and mouse-wheel behavior from editable html
-         */
-        blockEvents (e) {
-            const path = e.path || e.composedPath?.();
-            if (path?.find(el => el.classList?.contains('no-drag'))) { // @mousedown
-                const pz = this.$refs.screen.panzoom
-                pz.options.preventMouseEventsDefault = false // enable default events (text select, input click)
-                document.addEventListener('mouseup', () => {
-                    pz.options.preventMouseEventsDefault = true
-                }, { once: true })
-                e.stopPropagation() // disable node drag
-            }
-            if (path?.find(el => el.classList?.contains('no-wheel'))) { // @wheel
-                e.stopPropagation() // disable wheel zoom
-            }
-        },
-    },
-    mounted () {
-        this.graph.createNode({
-            id: 'a',
-            html: '<h5>A</h5>'
-        })
-        this.graph.createNode({
-            id: 'b',
-            x: 200,
-            y: 200,
-            textSelect: false,
-            useDrag: true,
-            html:
-                `<div><h4>B</h4><p>Subtitle</p><button>Yo</button></div>`
-        })
-        this.graph.createNode({
-            id: 'c',
-            x: -100,
-            y: 150,
-            textSelect: false,
-            useDrag: true,
-            html: `<div> <h4>okay</h4> <textarea type="text" class="no-drag">Some text here</textarea><br/><select class="no-drag" name="cars" id="cars"><option value="volvo">Volvo</option><option value="saab">Saab</option><option value="mercedes">Mercedes</option><option value="audi">Audi</option></select></div>`
-        })
-        this.graph.createNode({
-            id: 'd',
-            x: 340,
-            textSelect: false,
-            useDrag: true,
-            html: `<div>Okay</div>`
-        })
-        this.graph.createEdge({
-            id: 'a:b',
-            from: 'a',
-            to: 'b',
-            toAnchor: { x: '50%', y: '50%', snap: 'rect' },
-            type: 'smooth'
-        })
-        this.graph.createEdge({ id: 'c:d', from: 'c', to: 'd', type: 'smooth' })
-        this.$nextTick(() => {
-            this.$refs.screen.zoomNodes(this.graph.nodes, {scale: 1})
-        })
-    },
-    watch: {
-        editText: 'applyChanges',
-    },
+
+<script setup>
+import '../../../css/home/home.css';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
+import ProductoNew from '@/components/ProductoNew.vue';
+import { useRouter } from 'vue-router';
+import router from "@/routes/index.js";
+import SearchBar from "@/components/SearchBar.vue";
+
+
+const productos = ref([]);
+const categories = ref([]);
+const selectedCategory = ref(null);
+const paginaActual = ref(1);
+const cargando = ref(false);
+
+onMounted(() => {
+  obtenerProductos(1); // Carga la primera pagina
+  loadCategories();
+});
+
+const obtenerProductos = async (page = 1) => {
+  cargando.value = true;
+  try {
+    const respuesta = await axios.get(`/api/products?page=${page}`);
+
+    // Si es la primera pagina lo almacenamos en la varaible
+    if (page === 1) {
+      productos.value = respuesta.data.data;
+    } else { // Si pasamos de pagina, agregamos los siguientes 8 productos
+      productos.value = [...productos.value, ...respuesta.data.data];
+    }
+
+    return respuesta.data;
+  } catch (error) {
+    console.error("Error al obtener products:", error);
+    return null;
+  } finally {
+    cargando.value = false;
+  }
+};
+
+const cargarMasProductos = async () => {
+  if (cargando.value) return;
+
+  paginaActual.value++; // Incrementa la página actual
+  await obtenerProductos(paginaActual.value); // Carga la siguiente página
+};
+
+const loadCategories = async () => {
+  try {
+    const response = await axios.get('/api/categories')
+    categories.value = response.data.data
+  } catch (err) {
+    console.error('Error cargando categorías:', err)
+  }
 }
+
+// Cada vez que hagas clic a una categoria, lo que hara es llamar a esta funcion pasandole la categoria
+const redirectCategory = (category) => {
+  // Y te redirigira al apartado de categorias, filtrado por categoria
+  router.push({
+    name: 'public.products',
+    // Y agregara searc_category en la url
+    query: {
+      search_category: category.name
+    }
+  });
+};
+
+const redirectAll = () => {
+  // Y te redirigira al apartado de categorias, filtrado por categoria
+  router.push({
+    name: 'public.products',
+  });
+};
+
+const responsiveOptions = ref([
+  {
+    breakpoint: '991px',
+    numVisible: 4
+  },
+  {
+    breakpoint: '767px',
+    numVisible: 3
+  },
+  {
+    breakpoint: '575px',
+    numVisible: 1
+  }
+]);
+
 </script>
 
-<style>
-#edit-demo .CodeMirror {
-    width: 100%;
-    height: 500px;
-    margin: 0;
-    overflow: hidden;
-    position: relative;
-    background-color: #f1f1f1;
-    border: 1px solid #f1f1f1;
-}
-#edit-demo .node .background {
-    /* background-color: #ccc; */
-}
-
-#edit-demo .node .content > div {
-    padding: 25px;
-}
-
-#edit-demo .node .content h4,h5,p {
-    margin: 0
-}
-
-#edit-demo .node:hover .background {
-    background-color: rgb(90 200 90);
-}
-
-#edit-demo .node.selected .content {
-    background-color: rgba(100, 200, 100, 1);
-    box-shadow: 0px 0px 0px 2px #333;
-}
-
-#edit-demo .node .content {
-    cursor: pointer;
-}
-
-#edit-demo .edge {
-    cursor: pointer;
-}
-#edit-demo .edge:hover {
-    /* stroke-width: 4 */
-    stroke: rgb(90 200 90)
-}
-#edit-demo .edge.selected {
-    /* stroke-width: 4 */
-    stroke: #333
+<style scoped>
+.buscadorProductos {
+  height: 40px;
+  border-radius: 25px;
+  border: 1px solid var(--primary-color);
+  padding-left: 25px;
+  width: 75%;
 }
 </style>
--->

@@ -61,7 +61,7 @@ const props = defineProps({
     modelValue: String
 });
 
-const thumbnail = ref('')
+const thumbnail = ref(null)
 const isDragging = ref(false)
 const refFiles = ref(null)
 let img = ref('')

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use App\Models\Product;
+use App\Models\Transactions;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\UserResetPasswordNotification;
@@ -10,7 +12,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
@@ -21,6 +22,8 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'longitude',
+        'latitude',
         'surname1',
         'surname2'
     ];
@@ -44,31 +47,48 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function userMessages()
+    {
+        return $this->belongsTo(User::class, 'message', 'product_id', 'user_id');
+    }
+    public function products()
+    {
+        return $this->belongsTo(Product::class, 'user_id');
+    }
+    public function products2()
+    {
+        return $this->hasMany(User::class, 'id');
+    }
+
+    public function purchase()
+    {   
+        return $this->hasMany(Transactions::class , 'userBuyer_id');
+    }
+    public function sales()
+    {   
+        return $this->hasMany(Transactions::class , 'userSeller_id');
+    }
+
+    // Relacion NM (usuarios / favoritos / products)
+    public function favoritos()
+    {
+        return $this->belongsToMany(Product::class, 'productos_favoritos')
+            ->withTimestamps();
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPasswordNotification($token));
     }
 
-    public function assignaments()
-    {
-        return $this->hasMany(UserAssignment::class,'user_id');
-    }
-
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images/users')
+        $this->addMediaCollection('avatar')
+            ->singleFile()
             ->useFallbackUrl('/images/placeholder.jpg')
             ->useFallbackPath(public_path('/images/placeholder.jpg'));
     }
 
-    public function registerMediaConversions(Media $media = null): void
-    {
-        if (env('RESIZE_IMAGE') === true) {
 
-            $this->addMediaConversion('resized-image')
-                ->width(env('IMAGE_WIDTH', 300))
-                ->height(env('IMAGE_HEIGHT', 300));
-        }
-    }
 }

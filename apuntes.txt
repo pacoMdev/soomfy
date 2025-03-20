@@ -1,0 +1,30 @@
+Relaciones entre tablas:
+
+Tabla 1-N:
+return $this ->hasMany(Exercise::class, 'exercise_id');
+return $this ->belongTo(Exercise::class, 'exercise_id');
+
+Devuelve todos los ejercicios con todos sus comentarios  return Exercise:with('comments')->get();
+
+Diferencia entre belongTo y hasMeny
+
+hasMany: cuando la clave primaria esta en nuestra tabla 1N
+
+belongTo: cuando la clave foranea esta en la tabla actual(Clave primaria de la otra tabla)
+
+
+
+Tabla NM
+
+belongsToMany:
+
+return $this ->belongsToMany(Exercise::class, 'tabla','exercise_id');
+->withPivot('datos de la tabla intermedia que quieres coger')
+
+attach: agrega datos en una tabla NM y automaticamente te crea datos en la tabla intermedia
+sync: array de ID's, te crea la tabla intermedia con los ids
+
+Diferencia attach: sin importar lo que haya en la tabla intermedia, lo añade. El sync lo sobre escribe
+
+Si quiero hacer un create y no existe: attach
+Si ya existe: sync

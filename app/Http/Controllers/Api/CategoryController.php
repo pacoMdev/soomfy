@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * Lista categorías con filtros y ordenamiento opcional.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index()
     {
         $orderColumn = request('order_column', 'created_at');
@@ -21,16 +26,16 @@ class CategoryController extends Controller
             $orderDirection = 'desc';
         }
         $categories = Category::
-            when(request('search_id'), function ($query) {
-                $query->where('id', request('search_id'));
-            })
+        when(request('search_id'), function ($query) {
+            $query->where('id', request('search_id'));
+        })
             ->when(request('search_title'), function ($query) {
-                $query->where('name', 'like', '%'.request('search_title').'%');
+                $query->where('name', 'like', '%' . request('search_title') . '%');
             })
             ->when(request('search_global'), function ($query) {
-                $query->where(function($q) {
+                $query->where(function ($q) {
                     $q->where('id', request('search_global'))
-                        ->orWhere('name', 'like', '%'.request('search_global').'%');
+                        ->orWhere('name', 'like', '%' . request('search_global') . '%');
 
                 });
             })
@@ -39,37 +44,95 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function store(StoreCategoryRequest $request)
+    /**
+     * Obtiene todas las categorías con los medios asociados.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getCategories()
     {
-        $this->authorize('category-create');
-        $category = Category::create($request->validated());
+        $categories = Category::with('media')->get();
+        return CategoryResource::collection($categories);
 
-        return new CategoryResource($category);
+
     }
 
+    /**
+     * Crea una nueva categoría.
+     *
+     * @param StoreCategoryRequest $request
+     * @return CategoryResource
+     */
+    public function store(StoreCategoryRequest $request)
+    {
+        $category = Category::create($request->validated());
+
+        if ($request->hasFile('image')) {
+            $category->addMediaFromRequest('image')
+                ->toMediaCollection('original_image');
+        }
+
+        return new CategoryResource($category);
+
+    }
+
+    /**
+     * Muestra una categoría específica.
+     *
+     * @param Category $category
+     * @return CategoryResource
+     */
     public function show(Category $category)
     {
         $this->authorize('category-edit');
         return new CategoryResource($category);
     }
 
+    /**
+     * Actualiza una categoría específica.
+     *
+     * @param Category $category
+     * @param StoreCategoryRequest $request
+     * @return CategoryResource
+     */
     public function update(Category $category, StoreCategoryRequest $request)
     {
         $this->authorize('category-edit');
         $category->update($request->validated());
 
+        if ($request->hasFile('image')) {
+            // clearMediaCollection, borra lo que esté asociado a original_image
+            $category->clearMediaCollection('original_image');
+            // Luego agregar la nueva imagen
+            $category->addMediaFromRequest('image')
+                ->toMediaCollection('original_image');
+        }
+
         return new CategoryResource($category);
     }
 
-    public function destroy(Category $category) {
+    /**
+     * Elimina una categoría específica.
+     *
+     * @param Category $category
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Category $category)
+    {
         $this->authorize('category-delete');
         $category->delete();
 
         return response()->noContent();
     }
 
+    /**
+     * Devuelve una lista de todas las categorías.
+     * Se utiliza para los selects
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function getList()
     {
         return CategoryResource::collection(Category::all());
     }
+
 }

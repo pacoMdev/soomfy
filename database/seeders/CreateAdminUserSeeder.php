@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -13,11 +11,10 @@ class CreateAdminUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
+        // Crear usuario Admin David (Molins de Rei)
         $user = User::create([
             'id' => 1,
             'name' => 'David',
@@ -25,34 +22,52 @@ class CreateAdminUserSeeder extends Seeder
             'alias' => 'dherrera',
             'email' => 'admin@demo.com',
             'password' => bcrypt('12345678'),
+            'latitude' => 41.4147,
+            'longitude' => 2.0156, // Molins de Rei
         ]);
 
-        $role = Role::create(['name' => 'admin']);
-        $role2 = Role::create(['name' => 'user']);
-        $permissions = [
-            'post-list',
-            'post-create',
-            'post-edit',
-            'post-delete',
-            'post-list'
+        // Crear roles
+        $roleAdmin = Role::create(['name' => 'admin']);
+        $roleUser = Role::create(['name' => 'user']);
+
+        // Asignar permisos al rol user
+        $permissionsUser = [
+            'product-list',
+            'product-create',
+            'product-edit',
+            'product-delete'
         ];
-        $role2->syncPermissions($permissions);
+        $roleUser->syncPermissions($permissionsUser);
 
-        $permissions = Permission::pluck('id','id')->all();
+        // Asignar todos los permisos al rol admin
+        $permissionsAdmin = Permission::pluck('id', 'id')->all();
+        $roleAdmin->syncPermissions($permissionsAdmin);
+        $user->assignRole([$roleAdmin->id]);
 
-        $role->syncPermissions($permissions);
-
-        $user->assignRole([$role->id]);
-
+        // Crear usuario Admin Supremo (Barcelona)
         $user = User::create([
             'id' => 2,
+            'name' => 'Admin',
+            'surname1' => 'Thor',
+            'alias' => 'AdminSupremo',
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.3874,
+            'longitude' => 2.1686, // Barcelona
+        ]);
+        $user->assignRole([$roleAdmin->id]);
+
+        // Crear usuario normal (Pallejà)
+        $user = User::create([
+            'id' => 3,
             'name' => 'User',
             'surname1' => 'User',
             'alias' => 'user',
             'email' => 'user@demo.com',
-            'password' => bcrypt('12345678')
+            'password' => bcrypt('12345678'),
+            'latitude' => 41.4250,
+            'longitude' => 1.9873, // Pallejà
         ]);
-        $user->assignRole([$role2->id]);
-
+        $user->assignRole([$roleUser->id]);
     }
 }

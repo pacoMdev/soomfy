@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryTableSeeder extends Seeder
 {
@@ -12,19 +13,27 @@ class CategoryTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+        public function run()
     {
         $categories = [
-            'Ciencia',
-            'Educación',
-            'Alimentación',
-            'Programación',
-            'Varios'
+            ['name' => 'Vehículos'],
+            ['name' => 'Tecnología'],
+            ['name' => 'Inmuebles'],
+            ['name' => 'Hogar'],
+            ['name' => 'Servicios'],
+            ['name' => 'Empleo'],
+            ['name' => 'Deporte'],
         ];
 
+        foreach ($categories as $categoryData) {
+            $categories = Category::create([
+                'name' => $categoryData['name']
+            ]);
 
-        foreach ($categories as $category) {
-            Category::create(['name' => $category]);
+
         }
     }
+
+
+    
 }

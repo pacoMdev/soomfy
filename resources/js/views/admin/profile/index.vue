@@ -1,5 +1,4 @@
 <template>
-
     <div class="card border-0">
         <div class="card-header bg-transparent">
             <h5 class="float-start">Profile</h5>

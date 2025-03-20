@@ -1,26 +1,24 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center my-5">
-            <div class="col-md-6">
+    <div class="container vh-100 align-items-center d-grid">
+        <div class="row justify-content-center my-5 align-items-center">
+            <div class="col-md-6 align-items-center">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <form @submit.prevent="submitForgotPassword">
-                            <div class="">
+                            <div class="text-center d-flex flex-column row-gap-2 py-5">
                                 <!-- Email -->
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">{{ $t('email') }}</label>
-                                    <input v-model="forgotForm.email" id="email" type="email" class="form-control" required autofocus autocomplete="username">
-                                    <!-- Validation Errors -->
-                                    <div class="text-danger mt-1">
-                                        <div v-for="message in validationErrors?.email">
-                                            {{ message }}
-                                        </div>
+                                <h3>Recuperación de contraseña:</h3>
+                                <input v-model="forgotForm.email" placeholder="Email" id="email" type="email" class="form-control" required autofocus autocomplete="username">
+                                <!-- Validation Errors -->
+                                <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.email">
+                                        {{ message }}
                                     </div>
                                 </div>
                                 <!-- Buttons -->
-                                <div class="flex items-center justify-end mt-4">
-                                    <button class="btn btn-primary" :class="{ 'opacity-25': processing }" :disabled="processing">
-                                        {{ $t('send_password_reset_link') }}
+                                <div class="flex items-center justify-content-center mt-4">
+                                    <button class="secondary-button-2" :class="{ 'opacity-25': processing }" :disabled="processing">
+                                        {{ $t('Enviar link de recuperación de contraseña') }}
                                     </button>
                                 </div>
                             </div>

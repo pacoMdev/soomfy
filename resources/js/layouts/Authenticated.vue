@@ -1,6 +1,6 @@
 <template>
     <div class="layout-wrapper" :class="containerClass">
-        <app-topbar></app-topbar>
+        <Navbar />
         <div class="layout-sidebar">
             <app-sidebar></app-sidebar>
         </div>
@@ -34,9 +34,9 @@
                     <router-view></router-view>
                 </Suspense>
             </div>
-            <app-footer></app-footer>
-        </div>
 
+        </div>
+        <Footer />
         <div class="layout-mask"></div>
     </div>
 </template>
@@ -46,8 +46,9 @@ import { computed, watch, ref } from 'vue';
 import { useRoute } from "vue-router";
 import Breadcrumb from 'primevue/breadcrumb';
 
-import AppTopbar from './AppTopbar.vue';
-import AppFooter from './AppFooter.vue';
+import Navbar from './Nav.vue';
+import Footer from './Footer.vue';
+
 import AppSidebar from './AppSidebar.vue';
 import { useLayout } from '../composables/layout';
 

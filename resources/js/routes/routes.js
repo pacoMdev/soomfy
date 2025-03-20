@@ -3,13 +3,17 @@ import { authStore } from "../store/auth";
 const AuthenticatedLayout = () => import('../layouts/Authenticated.vue')
 const AuthenticatedUserLayout = () => import('../layouts/AuthenticatedUser.vue')
 const GuestLayout = ()  => import('../layouts/Guest.vue');
-const PostsIndex  = ()  => import('../views/admin/posts/Index.vue');
-const PostsCreate  = ()  => import('../views/admin/posts/Create.vue');
-const PostsEdit  = ()  => import('../views/admin/posts/Edit.vue');
+const ProductsIndex  = ()  => import('../views/admin/products/Index.vue');
+const ProductsCreate  = ()  => import('../views/admin/products/Create.vue');
+const ProductsEdit  = ()  => import('../views/admin/products/Edit.vue');
+
+const ProductsUserCreate  = ()  => import('../views/user/products/Create.vue');
+const ProductsUserEdit  = ()  => import('../views/admin/products/Edit.vue');
 
 async function requireLogin(to, from, next) {
     const auth = authStore();
     let isLogin = !!auth.authenticated;
+    console.log("¿Guard ejecutado? Autenticado:", isLogin); // Agrega este log para depurar
 
     if (isLogin) {
         next()
@@ -48,7 +52,7 @@ async function requireAdmin(to, from, next) {
         if( hasAdmin(user.roles)){
             next()
         }else{
-            next('/app')
+            next('/app/profile')
         }
     } else {
         next('/login')
@@ -61,26 +65,37 @@ export default [
         // redirect: { name: 'login' },
         component: GuestLayout,
         children: [
-
+            { 
+                // Si intentan entrar sin la sesion iniciada, de momento lo redirigiremos al login (TEMPORAL)
+                path: 'cuenta',
+                name: 'cuenta',
+                component: () => import('../views/login/Login.vue'),
+            },
             {
                 path: '/',
                 name: 'home',
                 component: () => import('../views/home/index.vue'),
             },
             {
-                path: 'posts',
-                name: 'public-posts.index',
-                component: () => import('../views/posts/index.vue'),
+                path: 'products',
+                name: 'public.products',
+                component: () => import('../views/products/products.vue'),
             },
             {
-                path: 'posts/:id',
-                name: 'public-posts.details',
-                component: () => import('../views/posts/details.vue'),
+                // Pagina de detalle del producto vendido
+                path: 'products/detalle/:id',
+                name: 'detalle-producto',
+                component: () => import('../views/detalle_producto/detalle_producto.vue'),
+            },
+            {
+                path: 'profile/detalle/:id',
+                name: 'detalle-profile',
+                component: () => import('../views/perfil/Perfil.vue'),
             },
             {
                 path: 'category/:id',
-                name: 'category-posts.index',
-                component: () => import('../views/category/posts.vue'),
+                name: 'category-products.index',
+                component: () => import('../views/category/products.vue'),
             },
             {
                 path: 'login',
@@ -117,7 +132,70 @@ export default [
         // },
         name: 'app',
         beforeEnter: requireLogin,
-        meta: { breadCrumb: 'Dashboard' }
+        meta: { breadCrumb: 'Dashboard' },
+        children: [
+            // Subir producto
+            {
+                path: 'profile',
+                name: 'cuenta',
+                component: () => import('../views/user/perfil/perfil.vue'),
+            },
+            {
+                path: '/subir-producto',
+                name: 'subir producto',
+                component: () => import('../views/user/products/Create.vue')
+            },
+            {
+                path: '/actualizar-producto',
+                name: 'actualizar producto',
+                component: () => import('../views/user/products/Create.vue'),
+            },
+            {
+                path: '/chat',
+                name: 'chat',
+                component: () => import('../views/user/chat/chat.vue'),
+            },
+            {
+                path: '/favoritos',
+                name: 'favoritos',
+                component: () => import('../views/user/favoritos/favoritos.vue'),
+            },
+            {
+                path: '/opinion',
+                name: 'opinion',
+                component: () => import('../views/user/valoration/Create.vue'),
+            },
+            {
+                path: '/app/checkout',
+                name: 'checkout',
+                component: () => import('../views/checkout/Create.vue'),
+            },
+            {
+                name: 'products',
+                path: 'products',
+                meta: { breadCrumb: 'Products'},
+                children: [
+                    {
+                        name: 'auth.products',
+                        path: 'products',
+                        component: ProductsIndex,
+                        meta: { breadCrumb: 'Products' }
+                    },
+                    {
+                        name: 'auth.products.create',
+                        path: 'products/create',
+                        component: ProductsUserCreate,
+                        meta: { breadCrumb: 'Add new product' }
+                    },
+                    {
+                        name: 'auth.products.edit',
+                        path: 'products/edit/:id',
+                        component: ProductsUserEdit,
+                        meta: { breadCrumb: 'Edit product' }
+                    },
+                ]
+            }
+        ]
     },
 
 
@@ -137,28 +215,42 @@ export default [
                 meta: { breadCrumb: 'Admin' }
             },
             {
+                name: 'products',
+                path: 'products',
+                meta: { breadCrumb: 'Products'},
+                children: [
+                    {
+                        name: 'products.index',
+                        path: '',
+                        component: () => import('../views/admin/products/Index.vue'),
+                        meta: { breadCrumb: 'View category' }
+                    },
+                    {
+                        name: 'products.create',
+                        path: 'create',
+                        component: () => import('../views/admin/products/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Add new category' ,
+                            linked: false,
+                        }
+                    },
+                    {
+                        name: 'products.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/products/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit category',
+                            linked: false,
+                        }
+                    }
+
+                ]
+            },
+            {
                 name: 'profile.index',
                 path: 'profile',
                 component: () => import('../views/admin/profile/index.vue'),
                 meta: { breadCrumb: 'Profile' }
-            },
-            {
-                name: 'posts.index',
-                path: 'posts',
-                component: PostsIndex,
-                meta: { breadCrumb: 'Posts' }
-            },
-            {
-                name: 'posts.create',
-                path: 'posts/create',
-                component: PostsCreate,
-                meta: { breadCrumb: 'Add new post' }
-            },
-            {
-                name: 'posts.edit',
-                path: 'posts/edit/:id',
-                component: PostsEdit,
-                meta: { breadCrumb: 'Edit post' }
             },
             {
                 name: 'categories',
@@ -194,7 +286,7 @@ export default [
             {
                 name: 'permissions',
                 path: 'permissions',
-                meta: { breadCrumb: 'Permisos'},
+                meta: { breadCrumb: 'Permission'},
                 children: [
                     {
                         name: 'permissions.index',
@@ -225,20 +317,20 @@ export default [
             {
                 name: 'users',
                 path: 'users',
-                meta: { breadCrumb: 'Usuarios'},
+                meta: { breadCrumb: 'Users'},
                 children: [
                     {
                         name: 'users.index',
                         path: '',
                         component: () => import('../views/admin/users/Index.vue'),
-                        meta: { breadCrumb: 'Usuarios' }
+                        meta: { breadCrumb: 'Users' }
                     },
                     {
                         name: 'users.create',
                         path: 'create',
                         component: () => import('../views/admin/users/Create.vue'),
                         meta: {
-                            breadCrumb: 'Crear Usuario',
+                            breadCrumb: 'Create Users',
                             linked: false
                         }
                     },
@@ -247,12 +339,14 @@ export default [
                         path: 'edit/:id',
                         component: () => import('../views/admin/users/Edit.vue'),
                         meta: {
-                            breadCrumb: 'Editar Usuario',
+                            breadCrumb: 'Edit Users',
                             linked: false
                         }
                     }
                 ]
             },
+
+
 
             //TODO Organizar rutas
             {

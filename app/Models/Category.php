@@ -4,24 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Category extends Model
+class Category extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 
     protected $fillable = ['name'];
 
-    /**
-     * Get the posts for the category.
-     */
-    public function posts()
+
+    public function products()
     {
-        return $this->belongsToMany(Post::class,'category_post');
+        return $this->hasMany(Product::class);
     }
 
-    public function exercises()
+    public function registerMediaCollections(): void
     {
-        return $this->belongsToMany(Exercises::class,'category_exercise');
+        $this->addMediaCollection('original_image')
+            ->singleFile()
+            ->useDisk('public');
     }
+
+
+
+
+
 
 }

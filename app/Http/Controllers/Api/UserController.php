@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Product;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -89,6 +90,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->surname1 = $request->surname1;
         $user->surname2 = $request->surname2;
+        $user->latitude = $request->latitude ?? $user->latitude;
+        $user->longitude = $request->longitude ?? $user->longitude;
 
         if(!empty($request->password)) {
             $user->password = Hash::make($request->password) ?? $user->password;
@@ -101,7 +104,6 @@ class UserController extends Controller
             return new UserResource($user);
         }
     }
-
 
     public function updateimg(Request $request)
     {
@@ -123,6 +125,26 @@ class UserController extends Controller
         $user->delete();
 
         return response()->noContent();
+    }
+
+    function getAuthProducts(){
+        $user = auth()->user();
+        // dd($user);
+        $products = Product::with('user_product')
+            ->where('user_id', $user->id)
+            ->latest()->paginate();
+
+        return $products;
+    }
+
+    function getUserProducts($id){
+        // dd($user);
+        $products = Product::with('user_product')
+            ->where('user_id', $id)
+            ->latest()
+            ->paginate();
+
+        return $products;
     }
 
 
