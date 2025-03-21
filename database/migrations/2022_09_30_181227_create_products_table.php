@@ -48,11 +48,11 @@ return new class extends Migration
         
         Schema::create('usersOpinion', function(Blueprint $table){
             $table -> id();
+            $table -> unsignedBigInteger('product_id');
+            $table -> unsignedBigInteger('user_id');
             $table -> string('title');
             $table -> string('destription');
             $table -> integer('calification'); // dese 1 - 5
-            $table -> unsignedBigInteger('product_id');
-            $table -> unsignedBigInteger('user_id');
             $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> foreign('user_id') -> references('id') -> on('users');
             $table -> timestamps();
