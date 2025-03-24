@@ -49,11 +49,11 @@ const vendedorId = route.query.vendedorId;
 const compradorId = route.query.compradorId;
 
 const newMessage = ref('');
-const messagesContainer = ref(null);
-const messages = ref([]);
-let unsubscribeMessages = null;
+const messagesContainer = ref(null);// DOCUMENTAR MAÑANA
+const messages = ref([]); // DOCUMENTAR MAÑANA
+let unsubscribeMessages = null; // DOCUMENTAR MAÑANA
 
-const formatMessageTime = (timestamp) => {
+const formatMessageTime = (timestamp) => { // DOCUMENTAR MAÑANA
   if (!timestamp) return '';
 
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
@@ -64,7 +64,7 @@ const formatMessageTime = (timestamp) => {
 };
 
 
-const scrollToBottom = () => {
+const scrollToBottom = () => { // DOCUMENTAR MAÑANA
   if (messagesContainer.value) {
     nextTick(() => {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
@@ -72,11 +72,11 @@ const scrollToBottom = () => {
   }
 };
 
-watch(messages, () => {
+watch(messages, () => { // DOCUMENTAR MAÑANA
   scrollToBottom();
 }, { deep: true });
 
-const loadMessages = (chatId) => {
+const loadMessages = (chatId) => { // DOCUMENTAR MAÑANA
   // Cancel·lem qualsevol subscripció anterior
   if (unsubscribeMessages) {
     unsubscribeMessages();
@@ -108,7 +108,7 @@ onMounted(
         console.log("🔹 Dades del chat:", currentChat.value);
         console.log("🆔 ID del chat:", currentChat.value.id);
         // Carreguem els missatges quan tenim l'ID del xat
-        if (currentChat.value && currentChat.value.id) {
+        if (currentChat.value && currentChat.value.id) { // DOCUMENTAR MAÑANA
           loadMessages(currentChat.value.id);
         }
 
@@ -119,7 +119,7 @@ onMounted(
     }
 );
 
-onUnmounted(() => {
+onUnmounted(() => { // DOCUMENTAR MAÑANA
   // Netegem la subscripció quan es desmunta el component
   if (unsubscribeMessages) {
     unsubscribeMessages();

@@ -56,32 +56,40 @@ export default function useFirebase() {
             throw error;
         }
     };
-    const getMessages = (chatId, callback) => {
+    const getMessages = (chatId, callback) => { // DOCUMENTAR MAÑANA
+        // Validació del paràmetre d'entrada
         if (!chatId) {
             console.error("❌ ID de xat no vàlid");
             return null;
         }
 
+        // Referència al document del xat
         const chatRef = doc(db, "chats", chatId);
 
         // Configurem un listener per actualitzacions en temps real
         const unsubscribe = onSnapshot(chatRef, (snapshot) => {
             if (snapshot.exists()) {
+                // Obtenim les dades del xat
                 const chatData = snapshot.data();
+
+                // Obtenim l'objecte de missatges o un objecte buit si no existeix
                 const messagesObj = chatData.messages || {};
 
                 // Convertim l'objecte de missatges en un array ordenat per data
                 const messagesList = Object.keys(messagesObj).map(key => ({
-                    id: key,
-                    ...messagesObj[key],
-                    timestamp: messagesObj[key].createdAt ? new Date(messagesObj[key].createdAt.seconds * 1000) : new Date()
-                })).sort((a, b) => a.timestamp - b.timestamp);
+                    id: key,  // Guardem l'ID com a propietat
+                    ...messagesObj[key],  // Expandim totes les propietats del missatge
+                    // Convertim el timestamp de Firestore a objecte Date de JavaScript
+                    timestamp: messagesObj[key].createdAt
+                        ? new Date(messagesObj[key].createdAt.seconds * 1000)
+                        : new Date()
+                })).sort((a, b) => a.timestamp - b.timestamp);  // Ordenem cronològicament
 
-                // Cridem al callback amb els missatges processats
+                // Enviem els missatges processats a través del callback
                 callback(messagesList);
             } else {
                 console.log("❓ No s'han trobat missatges o el xat no existeix");
-                callback([]);
+                callback([]);  // Retornem un array buit si no hi ha dades
             }
         }, (error) => {
             console.error("❌ Error obtenint missatges:", error);
@@ -90,6 +98,7 @@ export default function useFirebase() {
         // Retornem la funció per cancel·lar la subscripció
         return unsubscribe;
     };
+
 
 // Funció per enviar missatge a Firestore
     const sendMessage = async (chatId, userId, text) => {
