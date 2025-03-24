@@ -46,7 +46,17 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" />
                                 </router-link>
-                                <router-link :to="'/chat'" class="w-50">
+                                <router-link
+                                    :to="{
+                                      path: '/chat',
+                                      query: {
+                                        productId: product.id,
+                                        compradorId: compradorId,
+                                        vendedorId: product.user?.id,
+
+                                      }
+                                    }"
+                                    class="w-50">
                                     <Button label="Chat" raised class="w-100" />
                                 </router-link>
                             </div>
@@ -156,6 +166,9 @@
     import { ref, onMounted, watch } from 'vue';
     import { Skeleton, Rating, Carousel } from 'primevue';
     import '../../../../resources/css/theme.css'
+    import { authStore } from "@/store/auth.js";
+    const auth = authStore();
+
 
     const path = window.location.pathname; // obtiene url
     const segments = path.split('/');
@@ -166,6 +179,8 @@
     const address = ref('null');
     const fullAddress = ref(null);
     const position = ref('left');
+
+    const compradorId = ref(null);
 
     watch(product, (standProduct) => {
         if (standProduct?.id) {
@@ -245,7 +260,12 @@
 
     onMounted(async () => {
       await getProduct();
-      getRelatedProducts();
+      if (auth.user) {
+        console.log(auth.user);
+        compradorId.value = auth.user.id;
+      }
+      console.log("ID DEL USUARIO AUTENTICADO", compradorId.value);
+      await getRelatedProducts();
     })
 </script>
 <style scoped>
