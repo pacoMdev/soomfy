@@ -1,4 +1,5 @@
 <template>
+  <div class="show"></div>
   <div class="row gap-5 justify-items-left justify-content-center">
     <div v-for="producto in productos" class="producto col-6 col-md-4 col-lg-3">
       <router-link :to="'/products/detalle/' + producto.id" :key="producto.id" class="contenido-producto">
@@ -30,7 +31,7 @@
         <Button label="Editar" @click.stop="openEditProduct(producto)" />
         <Button label="Eliminar" @click.stop="openDeleteProduct(producto)" style="background-color: #B51200!important; border: #b51500!important;" />
       </div>
-        <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+        <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px;" appendTo=".show">
           <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
@@ -44,7 +45,7 @@
                         <!-- Usuario al que se vende ------------------------------------------------ -->
                           <div class="w-100">
                             <FloatLabel>
-                              <Select v-model="selectedUserId" name="name" :options="usersInterested" optionLabel="name" optionValue="id" fluid class="w-100" required>
+                              <Select v-model="selectedUserId" name="name" :options="usersInterested" optionLabel="name" optionValue="id" fluid class="w-100" appendTo=".show" required>
                                 <template #option="{option: user}">
                                   <div class="flex items-center">
                                       <img alt="imagen" :src="user.media?.[0].original_url || ''" :class="`mr-2`" style="width: 50px; height: 50px; border-radius: 50%;" />
@@ -81,7 +82,7 @@
             </Stepper>
           </form>
       </Dialog>
-      <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+      <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -204,7 +205,7 @@
           </TabPanels>
         </Tabs>
       </Dialog>
-      <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; ">
+      <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
         <div class="card flex justify-center">
           <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
           <InputOtp v-model="confirmationDelete" integerOnly />

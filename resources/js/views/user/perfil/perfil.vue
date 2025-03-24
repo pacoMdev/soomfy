@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;">
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;" appendTo=".show">
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -207,7 +207,7 @@
           <div v-if="selectedTab === 'activeProducts'">
             <div v-if="activeProducts.length > 0">
               <h4>Mis Productos</h4>
-              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" appendTo=".show" />
+              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
             <div v-else class="container-else">
               <h1>Parece que aun no hay productos</h1>
