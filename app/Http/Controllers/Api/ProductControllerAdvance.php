@@ -11,10 +11,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Resources\ProductResource;
 
-use App\Models\Category;
 use App\Models\Product;
 use App\Models\Message;
-use App\Models\Product_image;
 use App\Models\Transactions;
 use App\Models\UserOpinion;
 use App\Models\User;
@@ -132,6 +130,10 @@ class ProductControllerAdvance extends Controller
         }
     }
 
+    /**
+     * obtiene todos los productos filtrados o no(por defecto)
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function getProducts()
     {
 
@@ -314,107 +316,5 @@ class ProductControllerAdvance extends Controller
             $favoritos = $user->favoritos;
 
             return ProductResource::collection($favoritos);
-    }
-
-    public function sellProduct(Request $request){
-        $userSeller = auth()->user();
-        $userBuyer = User::findOrFail($request -> userBuyer_id);
-        $product = Product::findOrFail($request -> product_id);
-        
-        if ($request -> finalPrice == 0){
-            $initialPrice = $product-> price;
-            $finalPrice = $product -> price;
-            $isRegated = false;
-        }else{
-            $initialPrice = $product -> price;
-            $finalPrice = $request -> finalPrice;
-            $isRegated = true;
-        }
-
-        $transaction = new Transactions();
-        $transaction -> userSeller_id = $userSeller -> id;
-        $transaction -> userBuyer_id = $userBuyer -> id;
-        $transaction -> product_id = $product -> id;
-        $transaction -> initialPrice = $initialPrice;
-        $transaction -> finalPrice = $finalPrice;
-        $transaction -> isToSend = $request -> isToSend;
-        $transaction -> isRegated = $isRegated;
-
-        $transaction -> save();
-
-        // EMAIL SELL ---------------------------------------------------------------------------------------
-        $data = [
-            'from_email'    => 'soomfy@gmail.com',
-            'from_name'     => 'Soomfy Seller',
-            'to_email'      => $userSeller -> email,
-            'to_name'       => $userSeller -> name,
-            'subject'       => 'Hey acabas de vender un producto',
-            'view'          => 'emails.sellProduct',
-            'finalPrice'    => $finalPrice,
-            'userSeller'    => $userSeller,
-            'userBuyer'     => $userBuyer,
-            'product'       => $product,
-            'saleDate'      => $transaction -> created_at,
-            'url'           => getenv('APP_URL') . '/products/detalle/' . $product -> id,
-        ];
-        // Manda el email
-        $email = new ConstructEmail($data);
-        $data_email = sendEmail($email);
-
-        // EMAIL OPINION ---------------------------------------------------------------------------------------
-        $token=bin2hex(random_bytes(32));
-
-        $data = [
-            'from_email'    => 'soomfy@gmail.com',
-            'from_name'     => 'Soomfy Valoration',
-            'to_email'      => $userBuyer -> email,
-            'to_name'       => $userBuyer -> name,
-            'subject'       => '¡Comparte tu opinión sobre tu última compra!',
-            'view'          => 'emails.valoration',
-            'finalPrice'    => $finalPrice,
-            'userSeller'    => $userSeller,
-            'userBuyer'     => $userBuyer,
-            'product'       => $product,
-            'saleDate'      => $transaction -> created_at,
-            'url'           => getenv('APP_URL') . '/opinion?userIdS=' . $userSeller->id . '&userIdB=' . $userBuyer->id . '&productId=' . $product->id . '&token=' . $token,
-        ];
-        // Manda el email
-        $email = new ConstructEmail($data);
-        $data_email = sendEmail($email);
-
-
-        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
-    }
-
-    public function getUsersConversations($productId){
-    $productOwnerId = Product::find( $productId)->load([ 'users' ]);
-    // dd($productOwnerId['users'][0]['id']);
-    
-    $userIds = Message::where('product_id', $productId)
-        ->pluck('userRemitent_id')
-        ->unique()
-        ->reject(fn($id) => $id == $productOwnerId['users'][0]['id']);
-    $allUsers = User::whereIn('id', $userIds)->with('media')->get();
-    // dd($allUsers);
-    return $allUsers;
-    }
-
-    public function checkReview(Request $request){
-        $valoration = UserOpinion::where('token', $request->token)->first();
-        if($valoration!=null){
-            return response()->json(['check'=>true]);
-        }
-        return response()->json(['check'=>false]);
-    }
-    public function valorate(Request $request){
-        $userOpinion = new UserOpinion();
-        $userOpinion -> title = $request -> title;
-        $userOpinion -> destription = $request -> description;
-        $userOpinion -> calification = $request -> rating;
-        $userOpinion -> product_id = $request -> productId;
-        $userOpinion -> user_id = $request -> userBuyer;
-        $userOpinion -> token = $request -> token;
-
-        $userOpinion -> save();
     }
 }

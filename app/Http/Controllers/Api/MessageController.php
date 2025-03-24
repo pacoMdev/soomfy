@@ -58,6 +58,11 @@ class MessageController extends Controller
     }
 
 
+    /**
+     * elimina los el mensaje creado --> proximamente desde firebase y desde local
+     * @param mixed $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $message = Message::findOrFail($id);
@@ -117,5 +122,19 @@ class MessageController extends Controller
         ];
 
         return response() -> json(['status' => 200, 'status'=>true, 'message'=>'Mensaje enviado', 'data'=>$data] );
-}
+    }
+    /**
+     * obtiene al los usuarios que han mandado mensajes al producto (producto del usuario)
+     * @param mixed $productId
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getUsersConversations($productId){
+        $productOwnerId = Product::find( $productId)->load([ 'users' ]);
+        
+        $userIds = Message::where('product_id', $productId)
+            ->pluck('userRemitent_id')
+            ->unique();
+        $allUsers = User::whereIn('id', $userIds)->with('media')->get();
+        return $allUsers;
+    }
 }
