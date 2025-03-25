@@ -56,6 +56,8 @@ export default function useFirebase() {
             throw error;
         }
     };
+    
+    }
     const getMessages = (chatId, callback) => { // DOCUMENTAR MAÑANA
         // Validació del paràmetre d'entrada
         if (!chatId) {

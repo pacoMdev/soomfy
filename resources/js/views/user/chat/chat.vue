@@ -11,12 +11,12 @@
       </div>
     </div>
 
-
     <!-- Àrea missatges -->
     <div class="chat-content">
       <div class="messages" ref="messagesContainer">
         <div v-for="msg in messages" :key="msg.id"
-             :class="['msg', msg.userId === compradorId ? 'outgoing' : 'incoming']">
+             :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
+          <small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>
           {{ msg.text }}
           <small>{{ formatMessageTime(msg.timestamp) }}</small>
         </div>
@@ -32,21 +32,28 @@
 </template>
 <script setup>
 
-import {onMounted, ref, onUnmounted, watch, nextTick} from "vue";
+import {onMounted, ref, onUnmounted, watch, nextTick, inject} from "vue";
 import useFirebase from "../../../composables/firebase";
-const { chatExists, sendMessage, getMessages } = useFirebase();
-import { useRoute } from "vue-router";
+const { sendMessage, getMessages, chats } = useFirebase();
+import { useRoute,useRouter} from "vue-router";
+import { authStore } from "@/store/auth.js";
+const auth = authStore();
+
 
 const route = useRoute();
+const router = useRouter();
+
 
 const currentChat = ref(null);
 const searchTerm = ref('');
 const currentContact = ref(null);
 
 
-const productId = route.query.productId;
-const vendedorId = route.query.vendedorId;
-const compradorId = route.query.compradorId;
+const productId = ref(null);
+const vendedorId = ref(null);
+const compradorId = ref(null);
+
+const usuarioAutenticado = auth.user.id;
 
 const newMessage = ref('');
 const messagesContainer = ref(null);// DOCUMENTAR MAÑANA
@@ -91,25 +98,42 @@ const loadMessages = (chatId) => { // DOCUMENTAR MAÑANA
 
 
 const sendNewMessage = async () => {
+  console.log("Intentant enviar missatge:", newMessage.value);
+  console.log("Estat del currentChat:", currentChat.value);
+
   if (!newMessage.value.trim() || !currentChat.value) return;
 
   try {
-    await sendMessage(currentChat.value.id, compradorId, newMessage.value);
+    await sendMessage(currentChat.value.id, usuarioAutenticado, newMessage.value);
+    console.log("✅ Missatge enviat amb èxit");
     newMessage.value = "";
   } catch (error) {
     console.error("❌ Error enviant missatge:", error);
   }
 };
 
+const swal = inject('$swal')
+
 onMounted(
     async () => {
       try {
-        currentChat.value = await chatExists(productId,compradorId, vendedorId);
-        console.log("🔹 Dades del chat:", currentChat.value);
-        console.log("🆔 ID del chat:", currentChat.value.id);
-        // Carreguem els missatges quan tenim l'ID del xat
-        if (currentChat.value && currentChat.value.id) { // DOCUMENTAR MAÑANA
-          loadMessages(currentChat.value.id);
+        if(route.query.chatData){
+          currentChat.value = JSON.parse(route.query.chatData);
+          console.log("🔹 Dades del chat (de ruta):", currentChat.value);
+          console.log("🆔 ID del chat:", currentChat.value.id);
+          productId.value = currentChat.value.productId;
+          vendedorId.value = currentChat.value.users.vendedorId;
+          compradorId.value = currentChat.value.users.compradorId;
+
+          // if(compradorId.value !== auth.user.id || vendedorId.value !== auth.user.id){
+          //   router.push({name: 'home'});
+          //
+          // }
+
+          // Carreguem els missatges quan tenim l'ID del xat
+          if (currentChat.value && currentChat.value.id) { // DOCUMENTAR MAÑANA
+            loadMessages(currentChat.value.id);
+          }
         }
 
       } catch (error) {
@@ -173,10 +197,11 @@ onUnmounted(() => { // DOCUMENTAR MAÑANA
 
 .messages {
   flex: 1;
-  padding: 15px;
+  padding: 25px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  row-gap: 30px;
 }
 
 .msg {
@@ -205,6 +230,12 @@ onUnmounted(() => { // DOCUMENTAR MAÑANA
   right: 5px;
   font-size: 10px;
   color: #666;
+}
+
+.msg small.propietario {
+  position: absolute;
+  top: -13px;
+  right: 5px;
 }
 
 .chat-input {

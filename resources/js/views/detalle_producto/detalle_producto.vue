@@ -46,19 +46,12 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" />
                                 </router-link>
-                                <router-link
-                                    :to="{
-                                      path: '/chat',
-                                      query: {
-                                        productId: product.id,
-                                        compradorId: compradorId,
-                                        vendedorId: product.user?.id,
-
-                                      }
-                                    }"
+                                <Button
+                                    v-if="product.user"
+                                    @click.prevent="handleChatCreation"
                                     class="w-50">
                                     <Button label="Chat" raised class="w-100" />
-                                </router-link>
+                                </Button>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -169,7 +162,39 @@
     import { authStore } from "@/store/auth.js";
     const auth = authStore();
 
+    import useFirebase from "@/composables/firebase.js";
+    import {useRouter} from "vue-router";
+    const router = useRouter();
+    const { chatExists } = useFirebase();
 
+
+    const handleChatCreation = async () => {
+      try {
+        if (!auth.user) {
+          // Redirigeix a login o mostra un missatge d'error si l'usuari no està autenticat
+          console.error("L'usuari ha d'estar autenticat per utilitzar el xat");
+          return;
+        }
+
+        const chatData = await chatExists(
+            product.value.id,
+            auth.user.id,
+            product.value.user.id
+        )
+        console.log("✅ Xat verificat o creat:", chatData);
+
+        await router.push({
+          path: '/chat',
+          query: {
+            chatData: JSON.stringify(chatData)
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ Error al verificar o crear el xat:", error);
+      }
+
+    }
     const path = window.location.pathname; // obtiene url
     const segments = path.split('/');
     const id = segments.pop();  // obtiene ultimo elemento (id)
