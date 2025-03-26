@@ -46,12 +46,8 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" />
                                 </router-link>
-                                <Button
-                                    v-if="product.user"
-                                    @click.prevent="handleChatCreation"
-                                    class="w-50">
-                                    <Button label="Chat" raised class="w-100" />
-                                </Button>
+                                  <Button v-if="isYourOwnProduct(product.user?.id)" label="Editar" raised class="w-100" />
+                                  <Button v-else @click.prevent="handleChatCreation" label="Chat" raised class="w-100" />
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -167,6 +163,9 @@
     const router = useRouter();
     const { chatExists } = useFirebase();
 
+    const isYourOwnProduct = (productId) => {
+      return productId === auth.user.id;
+    }
 
     const handleChatCreation = async () => {
       try {

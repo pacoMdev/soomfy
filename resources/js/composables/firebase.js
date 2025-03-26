@@ -1,8 +1,12 @@
 import {onMounted, ref} from 'vue';
 import { initializeApp } from "firebase/app";
 import {
-    getFirestore, doc, getDoc, updateDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot
+    getFirestore, doc, getDoc, getDocs, updateDoc, setDoc, collection, addDoc, where, serverTimestamp, query, orderBy, onSnapshot
 } from "firebase/firestore";
+
+import useProducts from "@/composables/products.js";
+
+const { product , getProduct } = useProducts()
 
 
 
@@ -25,6 +29,9 @@ export default function useFirebase() {
 
     // Funció que comprova si un chat existeix, si no existeix el crea
     const chatExists = async (productId, compradorId, vendedorId) => {
+        if(compradorId === vendedorId){
+            return;
+        }
         console.log("Comprador ID", compradorId);
         // Fem un ID únic per al chat combinant IDs (productId_comprador_vendedor)
         const chat_id = `${productId}_${compradorId}_${vendedorId}`;
@@ -35,30 +42,30 @@ export default function useFirebase() {
 
             const chatData = {
                 productId,
-                users: {
+                users: [
                     compradorId,
                     vendedorId
-                },
+                ],
                 createdAt: serverTimestamp()
             };
             if (chatSnapshot.exists()) {
                 console.log("✔️ El chat ja existeix:", chatSnapshot.data());
-                return { ...chatData, id: chat_id };
+                return {...chatData, id: chat_id};
             } else {
                 console.log("ℹ️ El chat no existeix, creant-lo ara...");
                 await setDoc(chatRef, chatData);
                 console.log("✔️ Chat creat amb èxit!");
 
-                return { ...chatData, id: chat_id };
+                return {...chatData, id: chat_id};
             }
         } catch (error) {
             console.error("❌ Error comprovant o creant el chat:", error);
             throw error;
         }
     };
-    
-    }
-    const getMessages = (chatId, callback) => { // DOCUMENTAR MAÑANA
+
+    const getMessages = (chatId, callback) => {
+        // DOCUMENTAR MAÑANA
         // Validació del paràmetre d'entrada
         if (!chatId) {
             console.error("❌ ID de xat no vàlid");
@@ -145,12 +152,36 @@ export default function useFirebase() {
         } catch (error) {
             console.error("❌ Error al enviar missatge:", error);
         }
-    };
-return {
-    chats,
-    chatExists,
-    sendMessage,
-    getMessages
+    }
 
-}
+    const getUserChats = async (userId) => {
+        const chatRef = collection(db, "chats"); // Referència a la col·lecció
+        const q = query(chatRef, where("users", "array-contains", userId)); // ✅ Query correcta
+        const querySnapshot = await getDocs(q); // ✅ Executem la consulta
+
+        const chats = await Promise.all(querySnapshot.docs.map(async (doc) => {
+            const chatData = doc.data();
+
+            // Obtener el producto relacionado con el chat
+            const product = await getProduct(chatData.productId);
+
+            return {
+                id: doc.id,
+                product: product,  // Guardamos el producto completo
+                ...chatData
+            };
+        }));
+
+        return chats;
+
+    }
+    return {
+        chats,
+        chatExists,
+        sendMessage,
+        getMessages,
+        getUserChats
+
+    }
+
 }
