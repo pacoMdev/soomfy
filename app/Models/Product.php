@@ -52,7 +52,7 @@ class Product extends Model implements HasMedia
     // Relacion N:M entre productos
     public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function registerMediaCollections(): void

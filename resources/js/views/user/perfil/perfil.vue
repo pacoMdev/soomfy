@@ -28,11 +28,11 @@
               <Button label="Admin panel" class="w-100" rounded />
             </router-link>
             <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="w-100" rounded />
-            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="w-100" rounded />
+            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="w-100 p-button closeSession" rounded />
           </div>
         </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;" appendTo=".show">
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" " appendTo=".show" >
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -78,7 +78,7 @@
               </TabPanel>
               <TabPanel value="1">
 
-                <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+                <form @submit.prevent="editUser" class="d-flex flex-column gap-5 py-4">
                   <div class="d-flex flex-column gap-5">
                     <div class="">
                       <FloatLabel>
@@ -162,7 +162,7 @@
                 </form>
               </TabPanel>
           </TabPanels>
-      </Tabs>
+        </Tabs>
       </Dialog>
 
       <div>
@@ -252,12 +252,8 @@ defineRule('required', required);
 defineRule('min', min);
 const address = ref('');
 
-
-watch
-
 const mediaRating = ref(0);
 const activeProducts = ref([]);
-const visibleEditUser = ref(false);
 const selectedUser = ref(null);
 const purchases = ref([]);
 const sales = ref([]);
@@ -274,8 +270,9 @@ const files = ref([]);
 const $primevue = usePrimeVue();
 const fullAddress = ref(null);
 const partialAddress = ref('');
-// variables
-// no asigna el valor de la variable lo hace al abrir el dialog
+// DIALOGS
+const visibleEditUser = ref(false);
+// variables para el edit user
 const { value: id } = useField('id', null, { initialValue: selectedUser.id });
 const { value: name } = useField('name', null, { initialValue: selectedUser.name });
 const { value: surname1 } = useField('surname1', null, { initialValue: selectedUser.surname1 });

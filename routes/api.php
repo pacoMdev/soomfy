@@ -97,6 +97,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::put('/role-permissions', [PermissionController::class, 'updateRolePermissions']);
     Route::apiResource('permissions', PermissionController::class);
 
+    // Transactions
+    Route::apiResource('transactions', TransactionsController::class);
 
 
 

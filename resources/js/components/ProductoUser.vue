@@ -1,7 +1,7 @@
 <template>
   <div class="show"></div>
   <div class="row gap-5 justify-items-left justify-content-center">
-    <div v-for="producto in productos" class="producto col-6 col-md-4 col-lg-3">
+    <div v-for="producto in productos" class="producto col-12 col-sm-6 col-md-4 col-lg-3">
       <router-link :to="'/products/detalle/' + producto.id" :key="producto.id" class="contenido-producto">
         <Galleria
             :value="getImages(producto.resized_image)"
@@ -31,7 +31,9 @@
         <Button label="Editar" @click.stop="openEditProduct(producto)" />
         <Button label="Eliminar" @click.stop="openDeleteProduct(producto)" style="background-color: #B51200!important; border: #b51500!important;" />
       </div>
-        <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px;" appendTo=".show">
+    </div>
+    <!-- SELL PRODUCT --------------------------------------------- -->
+    <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px;" appendTo=".show">
           <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
@@ -81,146 +83,146 @@
               </StepPanels>
             </Stepper>
           </form>
-      </Dialog>
-      <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
-        <Tabs value="0">
-          <TabList>
-              <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
-              <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
-          </TabList>
-          <TabPanels class="w-100">
-              <TabPanel value="0">
-                <div class="mb-3">
-              <h3>Fotos</h3>
-              <DropZoneV v-model="product.thumbnails" class="imagenes"/>
-              <div class="text-danger mt-1">
-                {{ errors.thumbnails }}
-              </div>
-              <div class="text-danger mt-1">
-                <div v-for="message in validationErrors?.thumbnails">
-                  {{ message }}
+    </Dialog>
+    <!-- EDIT PRODUCT --------------------------------------------- -->
+    <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
+      <Tabs value="0">
+        <TabList>
+            <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
+            <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
+        </TabList>
+        <TabPanels class="w-100">
+            <TabPanel value="0">
+              <div class="mb-3">
+                <h3>Fotos</h3>
+                <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+                <div class="text-danger mt-1">
+                  {{ errors.thumbnails }}
+                </div>
+                <div class="text-danger mt-1">
+                  <div v-for="message in validationErrors?.thumbnails">
+                    {{ message }}
+                  </div>
                 </div>
               </div>
-            </div>
-              </TabPanel>
-              <TabPanel value="1">
+            </TabPanel>
+            <TabPanel value="1">
 
-                <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
-                  <div class="d-flex flex-column gap-5">
-                    <!-- TITULO ---------------------------------------------------- -->
-                    <div class="">
-                      <FloatLabel>
-                          <InputText appendTo=".show" v-model="product.title" inputId="title-product" fluid id="title"/>
-                          <label for="title-product">Nombre del producto</label>
-                      </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.title }}</div>
-                      <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.title">
-                              {{ message }}
-                          </div>
-                      </div>
+              <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+                <div class="d-flex flex-column gap-5">
+                  <!-- TITULO ---------------------------------------------------- -->
+                  <div class="">
+                    <FloatLabel>
+                        <InputText appendTo=".show" v-model="product.title" inputId="title-product" fluid id="title"/>
+                        <label for="title-product">Nombre del producto</label>
+                    </FloatLabel>
+                    <div class="text-danger mt-1">{{ errors.title }}</div>
+                    <div class="text-danger mt-1">
+                        <div v-for="message in validationErrors?.title">
+                            {{ message }}
+                        </div>
                     </div>
+                  </div>
 
-                    <div class="d-flex gap-3 w-100">
-                      <!-- CONTENIDO ---------------------------------------------------- -->
-                      <div class="">
-                        <FloatLabel>
-                            <InputText appendTo=".show" v-model="product.content" inputId="content-product" fluid id="content" rows="5" cols="50" />
-                            <label for="content-product">Contenido</label>
-                        </FloatLabel>
-                        <div class="text-danger mt-1">{{ errors.content }}</div>
-                        <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.content">
-                              {{ message }}
-                          </div>
-                        </div>
-                      </div>
-                      <!-- PRECIO ---------------------------------------------------- -->
-                      <div class="">
-                        <FloatLabel>
-                            <InputNumber v-model="product.price" inputId="price-product" :minFractionDigits="2" fluid id="price-product"/>
-                            <!-- <InputText appendTo=".show" v-model="product.price" inputId="price-product" fluid id="price"/> -->
-                            <label for="price-product">Precio</label>
-                        </FloatLabel>
-                        <div class="text-danger mt-1">{{ errors.price }}</div>
-                        <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.price">
-                              {{ message }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- ESTADO ---------------------------------------------------- -->
-                    <div class="">
-                      <FloatLabel>
-                        <select
-                            v-model="product.estado"
-                            id="product-estado"
-                            class="form-select"
-                        >
-                          <option value="" disabled>Select a state</option>
-                          <option
-                              v-for="estado in estadoList"
-                              :key="estado.id"
-                              :value="estado.id"
-                          >
-                            {{ estado.name }}
-                          </option>
-                        </select>
-                          <label for="email-user">Estado</label>
-                      </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.estado_id }}</div>
-                      <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.estado_id">
-                              {{ message }}
-                          </div>
-                      </div>
-                    </div>
-                    <!-- CATEGORIA ---------------------------------------------------- -->
-                    <div class="">
-                      <FloatLabel>
-                        <Select
-                          v-model="product.category"
-                          :options="categoryList"
-                          optionLabel="name"
-                          optionValue="id"
-                          :loading="isLoading"
-                          :disabled="isLoading"
-                          class="w-full md:w-80"
-                          appendTo=".show"
-                          />                          
-                          <label for="password-user">Selecciona categoria</label>
-                      </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.categories }}</div>
-                      <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.categories">
-                              {{ message }}
-                          </div>
+                  <!-- CONTENIDO ---------------------------------------------------- -->
+                  <div class="">
+                    <FloatLabel>
+                        <Textarea appendTo=".show" v-model="product.content" inputId="content-product" fluid id="content" rows="5" cols="50" />
+                        <label for="content-product">Contenido</label>
+                    </FloatLabel>
+                    <div class="text-danger mt-1">{{ errors.content }}</div>
+                    <div class="text-danger mt-1">
+                      <div v-for="message in validationErrors?.content">
+                          {{ message }}
                       </div>
                     </div>
                   </div>
-                  <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
-                </form>
-              </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Dialog>
-      <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
-        <div class="card flex justify-center">
-          <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
-          <InputOtp v-model="confirmationDelete" integerOnly />
-        </div>
-      </Dialog>
-    </div>
+                  <!-- PRECIO ---------------------------------------------------- -->
+                  <div class="">
+                    <FloatLabel>
+                        <InputNumber v-model="product.price" inputId="price-product" :minFractionDigits="2" fluid id="price-product"/>
+                        <label for="price-product">Precio</label>
+                    </FloatLabel>
+                    <div class="text-danger mt-1">{{ errors.price }}</div>
+                    <div class="text-danger mt-1">
+                      <div v-for="message in validationErrors?.price">
+                          {{ message }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex w-100 gap-3">
+                    <!-- ESTADO ---------------------------------------------------- -->
+                    <div class="w-50">
+                    <FloatLabel>
+                      <Select
+                        v-model="product.estado"
+                        :options="estadoList"
+                        optionLabel="name"
+                        optionValue="id"
+                        :loading="isLoading"
+                        :disabled="isLoading"
+                        class="w-full md:w-80"
+                        appendTo=".show"
+                        />                          
+                        <label for="password-user">Selecciona estado</label>
+                    </FloatLabel>
+                    <div class="text-danger mt-1">{{ errors.estado_id }}</div>
+                    <div class="text-danger mt-1">
+                        <div v-for="message in validationErrors?.estado_id">
+                            {{ message }}
+                        </div>
+                    </div>
+                  </div>
+                  <!-- CATEGORIA ---------------------------------------------------- -->
+                  <div class="w-50">
+                    <FloatLabel>
+                      <Select
+                        v-model="product.category"
+                        :options="categoryList"
+                        optionLabel="name"
+                        optionValue="id"
+                        :loading="isLoading"
+                        :disabled="isLoading"
+                        class="w-full md:w-80"
+                        appendTo=".show"
+                        />                          
+                        <label for="password-user">Selecciona categoria</label>
+                    </FloatLabel>
+                    <div class="text-danger mt-1">{{ errors.categories }}</div>
+                    <div class="text-danger mt-1">
+                        <div v-for="message in validationErrors?.categories">
+                            {{ message }}
+                        </div>
+                    </div>
+                  </div>
+                  </div>
 
+                  <div class=" card d-flex flex-row m-0 p-2 justify-content-between">
+                    <p class="m-0">Para enviar 📦</p>
+                    <ToggleSwitch v-model="checked" />
+                  </div>
+                </div>
+                <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
+              </form>
+            </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Dialog>
+    <!-- DELETE PRODUCT --------------------------------------------- -->
+    <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
+      <div class="card flex justify-center">
+        <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
+        <InputOtp v-model="confirmationDelete" integerOnly />
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script setup>
-import {defineProps, ref} from 'vue';
+import { defineProps, ref, watchEffect, onMounted } from 'vue';
 import axios from 'axios';
-import { Dialog } from 'primevue';
-import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue';
+import { Dialog, Textarea } from 'primevue';
+import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp, Tabs, TabList, Tab, TabPanels, TabPanel, ToggleSwitch } from 'primevue';
 import {useForm, useField, defineRule} from "vee-validate";
 import DropZoneV from "@/components/DropZone-varios.vue";
 import useCategories from "@/composables/categories";
@@ -270,92 +272,154 @@ const confirmationDelete = ref(null);
         estado,
         category,
         thumbnails
-    })
-
-
-const openSellProduct = async (producto) => {
-  selectedProduct.value = producto; 
-  visible.value = true;
-  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
-  getInterested(producto.id);
-};
-const openEditProduct = async (producto) => {
-  selectedProduct.value = producto; 
-  selectedUser.value = user;
-  product.value.title = selectedProduct.value.title;
-  product.value.content = selectedProduct.value.content;
-  product.value.price = selectedProduct.value.price;
-  product.value.estado = selectedProduct.value.estado;
-  product.value.category = selectedProduct.value.category;
-  visibleEditProduct.value = true; 
-  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
-};
-const openDeleteProduct = async (producto) => {
-  selectedProduct.value = producto; 
-  visibleDelete.value = true; 
-  console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
-};
-
-const getInterested = async (productId) => {
-  try {
-    const response = await axios.get(`/api/getUsersConversations/${productId}`);
-    usersInterested.value = response.data || [];
-    console.log('🔎 USERS INTERESTED  --->', usersInterested);
-  } catch (err) {
-    console.log("Error al obtener los datos.");
-  }
-};
-
-const props = defineProps({
-  productos: Array, // Recibe la lista de products
-});
-
-
-const responsiveOptions = ref([
-  { breakpoint: '991px', numVisible: 4 },
-  { breakpoint: '767px', numVisible: 3 },
-  { breakpoint: '575px', numVisible: 1 }
-]);
-
-const sellProduct = async () => {
-  try{
-    const response = await axios.post('/api/sellProduct', {
-      userBuyer_id: selectedUserId.value,
-      product_id: selectedProduct.value.id,
-      finalPrice: finalPrice.value,
-      isToSend: false,
     });
-    console.log("Producto vendido -->", response.data);
+    onMounted(() =>{
+        getCategoryList()
+        getEstadoList()
+    });
+    watchEffect(() => {
+      console.log(' CHANGES ON DATA PRODUCT -->', productData);
+      if (productData.value) {
+        // Asignar valores del producto
+        product.value.title = productData.value.title;
+        product.value.content = productData.value.content;
+        product.value.price = productData.value.price;
+        product.value.estado = productData.value.estado?.id || '';
+        product.value.category = productData.value.category?.id || '';
 
-  }catch(error){
-    console.error('Error al vender el producto:', error);
+
+        // Validar imágenes en resized_image o thumbnails
+        if (productData.value.media && productData.value.media.length > 0) {
+          product.value.thumbnails = productData.value.media.map((img) => ({
+            img: img.original_url,
+            file: null,
+          }));
+        } else if (productData.value.resized_image && Object.keys(productData.value.resized_image).length > 0) {
+          // Convertir el objeto de imágenes a un array
+          product.value.thumbnails = Object.values(productData.value.resized_image).map(img => ({
+            img: img.original_url,
+            file: null,
+            id: img.uuid
+          }));
+        }
+        else {
+            product.value.thumbnails = [];
+        }
+        // Asegúrate de que haya suficientes slots para el máximo de imágenes
+        while (product.value.thumbnails.length < 3) {
+          product.value.thumbnails.push({ img: "", file: null });
+        }
+
+
+      }
+    });
+
+
+  const openSellProduct = async (producto) => {
+    selectedProduct.value = producto; 
+    visible.value = true;
+    console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
+    getInterested(producto.id);
+  };
+  const openEditProduct = async (producto) => {
+    selectedProduct.value = producto; 
+    selectedUser.value = user;
+    product.value.title = selectedProduct.value.title;
+    product.value.content = selectedProduct.value.content;
+    product.value.price = selectedProduct.value.price;
+    product.value.estado = selectedProduct.value.estado.id;
+    product.value.category = selectedProduct.value.category.id;
+    visibleEditProduct.value = true; 
+    console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
+  };
+  const openDeleteProduct = async (producto) => {
+    selectedProduct.value = producto; 
+    visibleDelete.value = true; 
+    console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
+  };
+
+  const getInterested = async (productId) => {
+    try {
+      const response = await axios.get(`/api/getUsersConversations/${productId}`);
+      usersInterested.value = response.data || [];
+      console.log('🔎 USERS INTERESTED  --->', usersInterested);
+    } catch (err) {
+      console.log("Error al obtener los datos.");
+    }
+  };
+
+  const props = defineProps({
+    productos: Array, // Recibe la lista de products
+  });
+
+
+  const responsiveOptions = ref([
+    { breakpoint: '991px', numVisible: 4 },
+    { breakpoint: '767px', numVisible: 3 },
+    { breakpoint: '575px', numVisible: 1 }
+  ]);
+
+  const sellProduct = async () => {
+    try{
+      const response = await axios.post('/api/sellProduct', {
+        userBuyer_id: selectedUserId.value,
+        product_id: selectedProduct.value.id,
+        finalPrice: finalPrice.value,
+        isToSend: false,
+      });
+      console.log("Producto vendido -->", response.data);
+
+    }catch(error){
+      console.error('Error al vender el producto:', error);
+    }
   }
-}
 
-// Función para obtener products desde la API
-function getImages(resized_image) {
-    return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
-}
+  // Función para obtener products desde la API
+  function getImages(resized_image) {
+      return Object.values(resized_image || {}); // retorna el objeto de la imagen sin UUID
+  }
+
+
+onMounted(async () => {
+  try {
+    // Suposem que ja tens carregat el producte en 'product.value'
+
+    // Convertir les imatges del format del servidor al format del Dropzone
+    if (product.value.resized_image) {
+      // Converteix l'objecte d'imatges a un array
+      const mediaArray = Object.values(product.value.resized_image);
+
+      // Mapeja cada imatge al format que espera el Dropzone
+      thumbnails.value = mediaArray.map(media => ({
+        img: media.original_url, // URL de la imatge
+        file: null, // No tenim l'arxiu original, només la URL
+        id: media.uuid // Guardar el UUID per si necessitem eliminar-la després
+      }));
+    }
+  } catch (error) {
+    console.error('Error al carregar les imatges:', error);
+  }
+});
 </script>
 
 <style scoped>
-.producto {
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 250px;
-  height: auto;
-  border-radius: 15px;
-  border: 1px solid rgba(195, 195, 195, 0.5);
-  background-color: #fff;
-  padding: 15px;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  overflow-wrap: break-word;
-}
+  .producto {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: auto;
+    border-radius: 15px;
+    border: 1px solid rgba(195, 195, 195, 0.5);
+    background-color: #fff;
+    padding: 15px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    overflow-wrap: break-word;
+  }
 
-.producto:hover {
-  transform: scale(1.02);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-}
+  .producto:hover {
+    transform: scale(1.02);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  }
 </style>

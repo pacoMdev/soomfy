@@ -345,6 +345,68 @@ export default [
                     }
                 ]
             },
+            {
+                name: 'transactions',
+                path: 'transactions',
+                meta: { breadCrumb: 'Transactions'},
+                children: [
+                    {
+                        name: 'transactions.index',
+                        path: '',
+                        component: () => import('../views/admin/transactions/Index.vue'),
+                        meta: { breadCrumb: 'Transactions' }
+                    },
+                    {
+                        name: 'transactions.create',
+                        path: 'create',
+                        component: () => import('../views/admin/transactions/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Create Transactions',
+                            linked: false
+                        }
+                    },
+                    {
+                        name: 'transactions.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/transactions/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit Transactions',
+                            linked: false
+                        }
+                    }
+                ]
+            },
+            {
+                name: 'opinions',
+                path: 'opinions',
+                meta: { breadCrumb: 'Opinions'},
+                children: [
+                    {
+                        name: 'opinions.index',
+                        path: '',
+                        component: () => import('../views/admin/opinions/Index.vue'),
+                        meta: { breadCrumb: 'Opinions' }
+                    },
+                    {
+                        name: 'opinions.create',
+                        path: 'create',
+                        component: () => import('../views/admin/opinions/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Create Opinions',
+                            linked: false
+                        }
+                    },
+                    {
+                        name: 'opinions.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/opinions/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit Opinions',
+                            linked: false
+                        }
+                    }
+                ]
+            },
 
 
 

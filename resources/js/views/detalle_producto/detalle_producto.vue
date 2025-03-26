@@ -63,7 +63,7 @@
                                     <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
                                 <router-link :to="'/chat'" class="w-50">
-                                    <Button label="Chat" raised class="w-100" rounded />
+                                    <Button label="Chat" class="w-100 p-button secondary" rounded />
                                 </router-link>
                             </div>
                         </div>
