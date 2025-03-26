@@ -7,8 +7,8 @@
                     <h5 class="float-start mb-0">Ejercicios</h5>
                 </div>
 
-                    <DataTable v-model:filters="filters" :value="users.data" paginator :rows="5"
-                               :globalFilterFields="['id','userBuyer_id', 'userSeller_id','surname1','surname2','email','created_at','type.name']" stripedRows dataKey="id" size="small">
+                    <DataTable v-model:filters="filters" :value="transactions.data" paginator :rows="5"
+                               :globalFilterFields="['id','userBuyer_id', 'userSeller_id','product_id','initialPrice','finalPrice','created_at','isToSend', 'isRegated']" stripedRows dataKey="id" size="small">
 
                         <template #header>
                             <Toolbar pt:root:class="toolbar-table">
@@ -22,7 +22,7 @@
                                     <Button type="button" icon="pi pi-refresh" class="h-100 ml-1" outlined @click="getTransactions()" />
                                 </template>
                                 <template #end>
-                                    <Button v-if="can('users-create')" icon="pi pi-external-link" label="Crear Usuario" @click="$router.push('users/create')" class="float-end" />
+                                    <Button v-if="can('users-create')" icon="pi pi-external-link" label="Crear Usuario" @click="$router.push('transactions/create')" class="float-end" />
                                 </template>
                             </Toolbar>
                             <!--
@@ -69,11 +69,11 @@
 <!--                                    <Button icon="pi pi-eye"  severity="help" size="small" class="mr-1"/>-->
 <!--                                </router-link>-->
 
-                                <router-link v-if="can('user-edit')" :to="{ name: 'users.edit', params: { id: slotProps.data.id } }">
+                                <!-- <router-link v-if="can('user-edit')" :to="{ name: 'transactions.edit', params: { id: slotProps.data.id } }">
                                     <Button icon="pi pi-pencil" severity="info" size="small" class="mr-1"/>
-                                </router-link>
+                                </router-link> -->
 
-                                <Button icon="pi pi-trash" severity="danger" v-if="can('user-delete')" @click.prevent="deleteUser(slotProps.data.id, slotProps.index)" size="small"/>
+                                <Button icon="pi pi-trash" severity="danger" v-if="can('user-delete')" @click.prevent="deleteTransaction(slotProps.data.id, slotProps.index)" size="small"/>
 
                             </template>
                         </Column>
@@ -92,7 +92,6 @@ import useTransactions from "../../../composables/transactions";
 import {useAbility} from '@casl/vue'
 import {FilterMatchMode, FilterService} from "@primevue/core/api";
 
-const {users, getUsers, deleteUser, resetUserDB} = useUsers()
 const {transactions, getTransactions, deleteTransaction, resetTransactionDB} = useTransactions()
 const {can} = useAbility()
 

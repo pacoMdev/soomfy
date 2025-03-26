@@ -234,7 +234,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'ivan_cotado_tu_vision_ii_optica_ponferrada_21.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJidWNrZXQiOiJwcmQtbGlmdWxsY29ubmVjdC1iYWNrZW5kLWIyYi1pbWFnZXMiLCJrZXkiOiJpbmdlc3Rlci8wMTk1MTkyNS1iYmYxLTdlOGYtOGQwZi01ODJkZGJhNDg2YTkvZDVlMTdkYjc1MDlhMzk5ZDBhZTRmYTY5N2JlYTdhYjA0NDVmNGZiMWFlZGJjZmIxYWI5OGZmOWVlYmJlYWEwYi5qcGVnIiwiYnJhbmQ.webp',
+                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJidWNrZXQiOiJwcm.webp',
                 ]
             ],
             [
@@ -367,7 +367,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'show.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJrZXkiOiJhdGljb19kZV9sdWpvX2RlXzEwN19tMl9lbl92ZW50YV9iYXJyaW9fc2FsYW1hbmNhX21hZHJpZF9jb211bmlkYWRfZGVfbWFkcmlkXzU4NDAwMDA3NDA3NDY0MTgyNjAuanBnIiwiYnJhbmQiOiJ0cm92aXQiLCJjb3VudHJ5IjoiRVMiLCJ3aWR0aCI6NjQwLCJoZWlnaHQiOjQ4MH0=.jpeg',
+                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJrZXkiOiJhdGljb19kZV.jpeg',
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'1256080428.jpg',
                 ]
             ],
