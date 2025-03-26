@@ -57,7 +57,7 @@ export default function useFirebase() {
         }
     };
     
-    }
+    
     const getMessages = (chatId, callback) => { // DOCUMENTAR MAÑANA
         // Validació del paràmetre d'entrada
         if (!chatId) {
@@ -99,7 +99,7 @@ export default function useFirebase() {
 
         // Retornem la funció per cancel·lar la subscripció
         return unsubscribe;
-    };
+    }
 
 
 // Funció per enviar missatge a Firestore
