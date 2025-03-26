@@ -161,13 +161,18 @@ export default function useFirebase() {
 
         const chats = await Promise.all(querySnapshot.docs.map(async (doc) => {
             const chatData = doc.data();
+            console.log("chat data", chatData);
+            console.log("chat data productId", chatData.productId);
 
-            // Obtener el producto relacionado con el chat
-            const product = await getProduct(chatData.productId);
+            const productoId = chatData.productId;
+            // Esperamos que getProduct obtenga el producto y lo asignamos
+            const productData = await getProduct(productoId);
+            console.log("RESPUESTA GETPRODUCT", productData);
 
+            // Retornamos el chat con la información del producto
             return {
                 id: doc.id,
-                product: product,  // Guardamos el producto completo
+                product: productData,  // Usamos el producto obtenido
                 ...chatData
             };
         }));

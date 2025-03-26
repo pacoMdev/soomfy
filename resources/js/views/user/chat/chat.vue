@@ -6,7 +6,7 @@
       <input v-model="searchTerm" placeholder="Cerca" class="search-input">
       <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes">
         <p>Producte ID: {{ chat.productId }}</p>
-        <p>Producte Name: {{  }}</p>
+        <p>Producte Name: {{ chat.product.title }}</p>
         <p>Chat ID: {{ chat.id }}</p>
         <p>{{chat.users}}</p>
         <p>Participants: {{ chat.users.join(', ') }}</p>
