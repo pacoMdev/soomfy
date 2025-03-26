@@ -215,7 +215,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'Negro',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'mancuerna-hexagonal-10kgs.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Hex_Dumbbells_pair_60_lb_1024x1024_1ff2e44d-f95f-4589-967b-eb76c70b7ddd.webp',
+                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Hex_Dumbbells_pair_60_lb_dd.webp',
                 ]
             ],
             [
