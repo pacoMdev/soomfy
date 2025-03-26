@@ -62,9 +62,12 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
-                                <router-link :to="'/chat'" class="w-50">
-                                    <Button label="Chat" class="w-100 p-button secondary" rounded />
-                                </router-link>
+                                <Button
+                                    v-if="product.user"
+                                    @click.prevent="handleChatCreation"
+                                    class="w-50">
+                                    <Button label="Chat" raised class="w-100" />
+                                </Button>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -172,7 +175,42 @@
     import { ref, onMounted, watch } from 'vue';
     import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
+    import { authStore } from "@/store/auth.js";
+    const auth = authStore();
 
+    import useFirebase from "@/composables/firebase.js";
+    import {useRouter} from "vue-router";
+    const router = useRouter();
+    const { chatExists } = useFirebase();
+
+
+    const handleChatCreation = async () => {
+      try {
+        if (!auth.user) {
+          // Redirigeix a login o mostra un missatge d'error si l'usuari no està autenticat
+          console.error("L'usuari ha d'estar autenticat per utilitzar el xat");
+          return;
+        }
+
+        const chatData = await chatExists(
+            product.value.id,
+            auth.user.id,
+            product.value.user.id
+        )
+        console.log("✅ Xat verificat o creat:", chatData);
+
+        await router.push({
+          path: '/chat',
+          query: {
+            chatData: JSON.stringify(chatData)
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ Error al verificar o crear el xat:", error);
+      }
+
+    }
     const path = window.location.pathname; // obtiene url
     const segments = path.split('/');
     const id = segments.pop();  // obtiene ultimo elemento (id)
@@ -182,6 +220,8 @@
     const address = ref('null');
     const fullAddress = ref(null);
     const position = ref('left');
+
+    const compradorId = ref(null);
 
     watch(product, (standProduct) => {
         if (standProduct?.id) {
@@ -269,7 +309,12 @@ const breadcrumbs = ref([
 
     onMounted(async () => {
       await getProduct();
-      getRelatedProducts();
+      if (auth.user) {
+        console.log(auth.user);
+        compradorId.value = auth.user.id;
+      }
+      console.log("ID DEL USUARIO AUTENTICADO", compradorId.value);
+      await getRelatedProducts();
     })
 </script>
 <style scoped>
