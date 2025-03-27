@@ -39,11 +39,14 @@ export default function useUsers() {
     }
 
     const getUser = async (id) => {
-        axios.get('/api/users/' + id)
-            .then(response => {
-                user.value = response.data.data;
-                console.log(user.value)
-            })
+        try {
+            const response = await axios.get('/api/users/' + id);
+            user.value = response.data.data;
+            return user.value;
+        } catch (error) {
+            console.error("Error al obtener el producto", error);
+            return null;  // En caso de error, retornamos `null` o un valor predeterminado
+        }
     }
 
     const createUserDB = async (id) => {

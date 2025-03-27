@@ -63,14 +63,17 @@ export default function useProducts() {
 
     const getProduct = async (id) => {
         console.log("ID DESDE GET PRODUCT:", id);
-        try {
-            const response = await axios.get('/api/products/' + id);  // Usamos `await` para esperar la respuesta
-            product.value = response.data.data;  // Asignamos los datos al `product.value`
-            return product.value;  // Retornamos el producto obtenido
-        } catch (error) {
-            console.error("Error al obtener el producto", error);
-            return null;  // En caso de error, retornamos `null` o un valor predeterminado
+        if(id){
+            try {
+                const response = await axios.get('/api/products/' + id);  // Usamos `await` para esperar la respuesta
+                product.value = response.data.data;  // Asignamos los datos al `product.value`
+                return product.value;  // Retornamos el producto obtenido
+            } catch (error) {
+                console.error("Error al obtener el producto", error);
+                return null;  // En caso de error, retornamos `null` o un valor predeterminado
+            }
         }
+
     };
 
 

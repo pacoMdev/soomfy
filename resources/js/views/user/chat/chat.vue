@@ -7,6 +7,9 @@
       <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes">
         <p>Producte ID: {{ chat.productId }}</p>
         <p>Producte Name: {{ chat.product.title }}</p>
+        <p v-if="chat.lastMessage">
+          {{chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
+        </p>
         <p>Chat ID: {{ chat.id }}</p>
         <p>{{chat.users}}</p>
         <p>Participants: {{ chat.users.join(', ') }}</p>
@@ -37,7 +40,7 @@
 import {onMounted, ref, onUnmounted, watch, nextTick, inject} from "vue";
 import useFirebase from "../../../composables/firebase";
 import useProducts from "../../../composables/products";
-const { sendMessage, getMessages, getUserChats, chatExists, chats } = useFirebase();
+const { sendMessage, getMessages, getUserChats, chatExists, activeChats, chats } = useFirebase();
 const { product, getProduct } = useProducts();
 import { useRoute,useRouter} from "vue-router";
 import { authStore } from "@/store/auth.js";
@@ -50,8 +53,7 @@ const router = useRouter();
 
 const currentChat = ref(null);
 const searchTerm = ref('');
-// Chat activos
-const activeChats = ref([]);
+
 
 
 const productId = ref(null);
@@ -106,6 +108,8 @@ const selectChat = async (chatId, users, idProducto) => { // DOCUMENTAR MAÑANA
     });
   }
     loadMessages(chatId);
+
+
 };
 
 
@@ -123,16 +127,16 @@ const loadMessages = (chatId) => { // DOCUMENTAR MAÑANA
   unsubscribeMessages = getMessages(chatId, (newMessages) => {
     messages.value = newMessages;
   });
-};
+}
 
 const obtainUserChats = async () => {
-  try {
-    const variableTemporalProducto = await getProduct();
     activeChats.value = await getUserChats(usuarioAutenticado);
     console.log(activeChats.value);
-  } catch (error) {
-    console.error("❌ Error enviant missatge:", error);
-  }
+
+  unsubscribeMessages = getUserChats(chatId, activeChats => {
+    messages.value = newMessages;
+  });
+
 }
 
 const sendNewMessage = async () => {
