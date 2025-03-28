@@ -51,12 +51,15 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(User::class, 'message', 'product_id', 'user_id');
     }
-
-    // Relacion NM ( usuarios / products )
     public function products()
-    {   
-        return $this->belongsToMany(Product::class , 'user_product');
+    {
+        return $this->belongsTo(Product::class, 'user_id');
     }
+    public function products2()
+    {
+        return $this->hasMany(User::class, 'id');
+    }
+
     public function purchase()
     {   
         return $this->hasMany(Transactions::class , 'userBuyer_id');

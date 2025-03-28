@@ -150,7 +150,7 @@ export default function useFirebase() {
 
         // Retornem la funció per cancel·lar la subscripció
         return unsubscribe;
-    };
+    }
 
 
 // Funció per enviar missatge a Firestore

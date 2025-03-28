@@ -90,6 +90,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->surname1 = $request->surname1;
         $user->surname2 = $request->surname2;
+        $user->latitude = $request->latitude ?? $user->latitude;
+        $user->longitude = $request->longitude ?? $user->longitude;
 
         if(!empty($request->password)) {
             $user->password = Hash::make($request->password) ?? $user->password;

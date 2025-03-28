@@ -1,5 +1,20 @@
 <template>
-    <div class="container py-5">
+    <div class=" flex justify-center w-100 justify-content-center py-5">
+        <Breadcrumb :home="home" :model="breadcrumbs" class="bg-transparent">
+            <template #item="{ item, props }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="[item.icon, 'text-color']" />
+                        <span class="text-primary font-semibold">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                    <span class="text-surface-700 dark:text-surface-0">{{ item.label }}</span>
+                </a>
+            </template>
+        </Breadcrumb>
+    </div>
+    <div class="container">
         <div class="w-100">
             <div class="col-md-6 col-lg-8 col-xl-8 w-100 container-product">
                 <!-- INFORMACION DEL PRODUCTO   --------------------------------------------- -->
@@ -40,11 +55,12 @@
                             <p class="m-0 h2-p">{{ product.content }}</p>
                             <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
                           <div class="container-categories d-flex gap-2 flex-wrap">
-                              <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
+                            <Tag v-if="product.category" severity="secondary" :value="product.category.name" rounded></Tag>
+                            <!-- <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p> -->
                             </div>
                             <div class="button d-flex gap-3 ">
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
-                                    <Button label="Comprar" variant="outlined" class="w-100" />
+                                    <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
                                   <Button v-if="isYourOwnProduct(product.user?.id)" label="Editar" raised class="w-100" />
                                   <Button v-else @click.prevent="handleChatCreation" label="Chat" raised class="w-100" />
@@ -60,7 +76,7 @@
                             </div>
                             <div class="button d-flex gap-3">
                                 <Button label="Comprar" variant="outlined" class="w-50" />
-                                <Button label="Chat" raised class="w-50" />
+                                <Button label="Chat" raised class="w-50"  />
                             </div>
                         </div>
                         <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
@@ -69,7 +85,7 @@
                             <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
                         <router-link v-if="product.user" :to="'/profile/detalle/'+product.user.id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
-                            <img :src="product.user.avatar" alt="" width="50px" height="50px">
+                            <img :src="product.user.media[0]?.original_url" alt="" width="50px" height="50px">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
                                 <h4>{{ product.user?.name }} {{ product.user.surname1 }}</h4>
@@ -95,7 +111,7 @@
                 <div class="container-user-products">
                     <h2>Articulos del usuario</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="6" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -123,7 +139,7 @@
                 <div class="container-related-products">
                     <h2>Articulos relacionados</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -153,7 +169,7 @@
 <script setup>
 
     import { ref, onMounted, watch } from 'vue';
-    import { Skeleton, Rating, Carousel } from 'primevue';
+    import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
     import { authStore } from "@/store/auth.js";
     const auth = authStore();
@@ -212,6 +228,14 @@
         }
     });
     
+
+    const home = ref({
+    icon: 'pi pi-home', route: '/'
+});
+const breadcrumbs = ref([
+    { label: 'Products', route: '/' }, 
+    { label: 'product.title' }, 
+]);
 
 
     // Peticiones de API
@@ -277,7 +301,7 @@
         },
         {
             breakpoint: '575px',
-            numVisible: 1,
+            numVisible: 2,
             numScroll: 1
         }
     ]);

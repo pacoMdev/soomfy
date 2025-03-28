@@ -46,33 +46,6 @@ return new class extends Migration
         });
     
         
-        Schema::create('usersOpinion', function(Blueprint $table){
-            $table -> id();
-            $table -> unsignedBigInteger('product_id');
-            $table -> unsignedBigInteger('user_id');
-            $table -> string('title');
-            $table -> string('destription');
-            $table -> integer('calification'); // dese 1 - 5
-            $table -> foreign('product_id') -> references('id') -> on('products');
-            $table -> foreign('user_id') -> references('id') -> on('users');
-            $table -> timestamps();
-    
-            
-        });
-        Schema::create('transactions', function(Blueprint $table){
-            $table -> id();
-            $table -> unsignedBigInteger('userSeller_id');
-            $table -> unsignedBigInteger('userBuyer_id');
-            $table -> unsignedBigInteger('product_id');
-            $table -> foreign('userSeller_id') -> references('id') -> on('users');
-            $table -> foreign('userBuyer_id') -> references('id') -> on('users');
-            $table -> foreign('product_id') -> references('id') -> on('products');
-            $table -> double('initialPrice');
-            $table -> double('finalPrice');
-            $table -> boolean('isToSend') -> default(0);
-            $table -> boolean('isRegated') -> default(0);
-            $table -> timestamps();
-        });
 
     }
 
@@ -85,7 +58,5 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('products');
-        Schema::dropIfExists('usersOpinion');
-        Schema::dropIfExists('transactions');
     }
 };

@@ -1,5 +1,4 @@
 <template>
-    {{ product }}
   <form @submit.prevent="submitForm">
     <div class="row my-5">
       <!-- Información principal del producto -->
@@ -148,7 +147,6 @@ import {onMounted, ref, watchEffect} from "vue";
     import useProducts from "@/composables/products.js";
     import { useForm, useField, defineRule } from "vee-validate";
     import { required, min } from "@/validation/rules"
-    import DropZone from "@/components/DropZone.vue";
     import DropZoneV from "@/components/DropZone-varios.vue";
     defineRule('required', required)
     defineRule('min', min);
@@ -190,7 +188,6 @@ import {onMounted, ref, watchEffect} from "vue";
         getEstadoList()
     })
 
-    const originalProduct = ref({});
     // Sincronizar
     // https://vuejs.org/api/reactivity-core.html#watcheffect
     watchEffect(() => {
@@ -277,26 +274,26 @@ import {onMounted, ref, watchEffect} from "vue";
       });
     }
 
-onMounted(async () => {
-  try {
-    // Suposem que ja tens carregat el producte en 'product.value'
+  onMounted(async () => {
+    try {
+      // Suposem que ja tens carregat el producte en 'product.value'
 
-    // Convertir les imatges del format del servidor al format del Dropzone
-    if (product.value.resized_image) {
-      // Converteix l'objecte d'imatges a un array
-      const mediaArray = Object.values(product.value.resized_image);
+      // Convertir les imatges del format del servidor al format del Dropzone
+      if (product.value.resized_image) {
+        // Converteix l'objecte d'imatges a un array
+        const mediaArray = Object.values(product.value.resized_image);
 
-      // Mapeja cada imatge al format que espera el Dropzone
-      thumbnails.value = mediaArray.map(media => ({
-        img: media.original_url, // URL de la imatge
-        file: null, // No tenim l'arxiu original, només la URL
-        id: media.uuid // Guardar el UUID per si necessitem eliminar-la després
-      }));
+        // Mapeja cada imatge al format que espera el Dropzone
+        thumbnails.value = mediaArray.map(media => ({
+          img: media.original_url, // URL de la imatge
+          file: null, // No tenim l'arxiu original, només la URL
+          id: media.uuid // Guardar el UUID per si necessitem eliminar-la després
+        }));
+      }
+    } catch (error) {
+      console.error('Error al carregar les imatges:', error);
     }
-  } catch (error) {
-    console.error('Error al carregar les imatges:', error);
-  }
-});
+  });
 
 
 

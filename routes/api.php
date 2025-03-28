@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\TransactionsController;
+use App\Http\Controllers\Api\UsersOpinionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
@@ -36,9 +37,9 @@ Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Pro
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
-Route::get('/getUsersConversations/{id}', [ProductControllerAdvance::class, 'getUsersConversations']); // Productos del id de usuario recibido
-Route::get('/checkReview', [ProductControllerAdvance::class, 'checkReview']);
-Route::post('/valorate', [ProductControllerAdvance::class, 'valorate']);
+Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
+Route::get('/checkReview', [UsersOpinionController::class, 'checkReview']);
+Route::post('/valorate', [UsersOpinionController::class, 'valorate']);
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
@@ -56,7 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Buy || Sell
     Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);
-    Route::post('sellProduct', [ProductControllerAdvance::class, 'sellProduct']);
+    Route::post('sellProduct', [Transactionscontroller::class, 'sellProduct']);
 
 
     // Perfil
@@ -66,10 +67,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::put('profile', [ProfileController::class, 'update']);
     Route::get('profile/{id}', [ProfileController::class, 'getUserInfo']);
     Route::post('getAllToSell', [ProfileController::class, 'getAllToSell']);
-    Route::post('getPurchase', [ProfileController::class, 'getPurchase']);
-    Route::post('getSales', [ProfileController::class, 'getSales']);
-    Route::post('getValorations', [ProfileController::class, 'getValorations']);
-    Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
+    Route::post('getPurchase', [TransactionsController::class, 'getPurchase']);
+    Route::post('getSales', [Transactionscontroller::class, 'getSales']);
+    Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
+    // Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
 
     // Usuario
     Route::apiResource('users', UserController::class);
@@ -96,7 +97,12 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::put('/role-permissions', [PermissionController::class, 'updateRolePermissions']);
     Route::apiResource('permissions', PermissionController::class);
 
-    // direccion api google problemas con CORS desde front
+    // Transactions
+    Route::apiResource('transactions', TransactionsController::class);
+
+
+
+    // GEOLOCATION GOOGLE MAPS (API_KEY on .env)
     Route::get('/geocode', function (Request $request) {
         $apiKey = env('GOOGLE_API_KEY');
         $address = $request->query('address');
@@ -108,8 +114,23 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
         return $response->json();
     });
+    Route::get('geoLocation', function (Request $request){
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $apiKey = env('GOOGLE_API_KEY');
 
+        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
+            'latlng' => "$latitude,$longitude",
+            'key' => $apiKey
+        ]);
 
+        if ($response->failed()) {
+            return response()->json(['error' => 'Error al obtener la dirección'], 500);
+        }
+
+        return response()->json($response->json());
+    });
+    
     Route::get('/reverse-geocode', function (Request $request) {
         $apiKey = env('GOOGLE_API_KEY');
         $lat = $request->query('lat');

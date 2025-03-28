@@ -12,22 +12,25 @@
                 <Rating v-model="mediaRating" readonly />
                 <p>({{ reviews.length }})</p>
               </div>
-              <p>Vendedor novel</p>
+              <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
+    : 'Direccion no disponible 🚫'" rounded></Tag>
             </div>
           </div>
   
           <!-- Botones de acciones -->
-          <div class="d-flex flex-wrap gap-3 w-auto h-100 container-extra-info">
-            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
-            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            <Button :label="fullAddress?.results[0].formatted_address" icon="pi pi-map-marker" rounded />
-          </div>
+          
         </div>
   
         <div>
-          <div class="d-flex gap-3 w-100 justify-content-center">
-            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
-            <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+          <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
+            <div class="d-flex gap-3">
+              <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+              <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+            </div>
+            <div class="d-flex gap-3">
+              <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+              <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            </div>
           </div>
   
           <div class="container w-100 d-flex gap-5">
