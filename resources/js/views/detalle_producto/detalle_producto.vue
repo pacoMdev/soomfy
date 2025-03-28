@@ -62,12 +62,9 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
-                                <Button
-                                    v-if="product.user"
-                                    @click.prevent="handleChatCreation"
-                                    class="w-50">
-                                    <Button label="Chat" raised class="w-100" />
-                                </Button>
+                                <div v-if="product.user" @click.prevent="handleChatCreation" class="w-50">
+                                    <Button label="Chat" variant="outlined"  class="w-100 p-button secondary" rounded />
+                                </div>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -176,10 +173,9 @@
     import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
     import { authStore } from "@/store/auth.js";
-    const auth = authStore();
-
     import useFirebase from "@/composables/firebase.js";
     import {useRouter} from "vue-router";
+    const auth = authStore();
     const router = useRouter();
     const { chatExists } = useFirebase();
 

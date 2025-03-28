@@ -13,6 +13,53 @@ const email = (value, args, { field }) => {
 
     return true
 }
+// TRANSACTIONS
+
+const userBuyer_id = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+
+const userSeller_id = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+
+const product_id = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+
+const initialPrice = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+const finalPrice = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+const isRegated = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
+const isToSend = (value, args, { field }) => {
+    if (!value){
+        return `El ${field} es necesario`;
+    }
+    return true;
+} 
 
 const min = (value, [limit], { field }) => {
     if (!value || !value.length) {
@@ -26,4 +73,15 @@ const min = (value, [limit], { field }) => {
     return true
 }
 
-export { required, min, email }
+export { 
+    required, 
+    min,
+    email,
+    userBuyer_id,
+    userSeller_id,
+    product_id,
+    initialPrice,
+    finalPrice,
+    isRegated,
+    isToSend,
+ }

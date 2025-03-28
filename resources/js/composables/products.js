@@ -11,6 +11,9 @@ export default function useProducts() {
         price: '',
         estado_id: '',
         thumbnails: '',
+        weight: '',
+        width: '',
+        heigth: '',
     })
     const router = useRouter()
     const validationErrors = ref({})

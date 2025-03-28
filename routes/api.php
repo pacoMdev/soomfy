@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersOpinionController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
@@ -45,6 +46,10 @@ Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'g
 
 // Productos por ubicacion del usuario (EN PROCESO)
 Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
+
+ // GOOGLE AUTH
+ Route::get('auth/google', [GoogleController::class, 'googleLogin'])->name('auth.google');
+ Route::get('auth/google-callback', [GoogleController::class, 'googleAuth'])->name('auth.google-callback');
 
 // protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
@@ -99,6 +104,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Transactions
     Route::apiResource('transactions', TransactionsController::class);
+    
 
 
 
@@ -144,6 +150,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
         // Pots aquí mateix retornar només la formatted_address si vols simplificar-ho
         return $response->json();
     });
+
+   
 
 
     // Habilidades

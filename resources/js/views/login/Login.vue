@@ -9,7 +9,7 @@
                                 <div class="text-center d-flex flex-column row-gap-2 py-5">
                                     <h3 class="m-0">Iniciar sesión</h3>
                                     <div class="d-flex gap-2 mx-auto">
-                                        <Button icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
+                                        <Button @click="googleLogin()" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
                                         <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" />
                                     </div>
                                     <p>o usa tu centa</p>
@@ -78,11 +78,21 @@
 import useAuth from '@/composables/auth'
 import { ref } from 'vue'
 import { Password } from 'primevue';
-
+import axios from 'axios';
 const email = ref('');
 const password = ref('');
+const googleAuth = ref(); 
 
 const { loginForm, validationErrors, processing, submitLogin } = useAuth();
+const googleLogin = async () => {
+    try{
+        const response = await axios.get('/api/auth/google');
+        googleAuth.value = response.data.data || {};
+        console.log('🔎 GoogleAuth -->', googleLogin);
+    }catch(err){
+        console.log('Falla peticion googleAuth -->', err);
+    }
+};
 
 </script>
 
