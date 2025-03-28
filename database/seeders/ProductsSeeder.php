@@ -215,7 +215,8 @@ class ProductsSeeder extends Seeder
                 'color' => 'Negro',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'mancuerna-hexagonal-10kgs.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Hex_Dumbbells_pair_60_lb_dd.webp',
+//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Hex_Dumbbells_pair_60_lb_dd.webp',
+
                 ]
             ],
             [
@@ -234,7 +235,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'ivan_cotado_tu_vision_ii_optica_ponferrada_21.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJidWNrZXQiOiJwcm.webp',
+//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJidWNrZXQiOiJwcm.webp',
                 ]
             ],
             [
@@ -367,7 +368,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'show.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJrZXkiOiJhdGljb19kZV.jpeg',
+//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJrZXkiOiJhdGljb19kZV.jpeg',
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'1256080428.jpg',
                 ]
             ],

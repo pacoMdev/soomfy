@@ -110,7 +110,7 @@ const selectChat = async (chatId, users, idProducto) => { // DOCUMENTAR MAÑANA
     });
   }
   loadMessages(chatId);
-
+  
   // Tendria que comprobar
   if(usuarioAutenticado === compradorId){
     // Cojemos los mensajes de vendedorId y ponemos cada mensaje en read: true

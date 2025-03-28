@@ -67,47 +67,49 @@ export default function useFirebase() {
             throw error;
         }
     };
-    const getOppositeMessages = async (chatId, userId) => {
-        if(!chatId){
-            console.log("Id del xat no valido");
+    const getOppositeMessages = (chatId, userId) => {
+        if (!chatId) {
+            console.log("❌ ID del chat no válido");
             return null;
         }
 
         const chatRef = doc(db, "chats", chatId);
 
-        const chatSnapshot = await getDoc(chatRef);
+        // Suscribirse a los cambios en tiempo real
+        const unsubscribe = onSnapshot(chatRef, async (snapshot) => {
+            if (!snapshot.exists()) {
+                console.error("❌ El chat no existe");
+                return;
+            }
 
-        if (!chatSnapshot.exists()) {
-            console.error("❌ El xat no existeix");
-            return;
-        }
-        const chatData = chatSnapshot.data();
-        // Almacenamos los mensajes
-        const messagesObj = chatData.messages || {};
+            const chatData = snapshot.data();
+            const messagesObj = chatData.messages || {};
 
-        // Convertim l'objecte de missatges en un array ordenat per data
-        const messagesList = await Promise.all(
-            Object.keys(messagesObj).map(async (key) => {
-                const msg = {
-                    id: key,
-                    ...messagesObj[key]
-                };
+            // Procesar los mensajes para marcar como leídos los del usuario contrario
+            const updates = {};
+            Object.keys(messagesObj).forEach((key) => {
+                const msg = messagesObj[key];
 
+                // Si el mensaje es del usuario contrario y no está leído, lo marcamos como leído
                 if (msg.userId !== userId && !msg.read) {
-                    await updateDoc(chatRef, {
-                        [`messages.${key}.read`]: true
-                    });
+                    updates[`messages.${key}.read`] = true;
                 }
+            });
 
-                return msg;
-            })
-        );
+            // Solo actualizar si hay mensajes no leídos
+            if (Object.keys(updates).length > 0) {
+                try {
+                    await updateDoc(chatRef, updates);
+                    console.log("✔️ Mensajes del usuario contrario marcados como leídos en tiempo real");
+                } catch (error) {
+                    console.error("❌ Error actualizando mensajes como leídos:", error);
+                }
+            }
+        });
 
-        // Filtrar después de que todas las promesas se resuelvan
-        const filteredMessages = messagesList
-            .filter(msg => msg.userId !== userId && !msg.read)
-
-    }
+        // Retornar la función para cancelar la suscripción cuando sea necesario
+        return unsubscribe;
+    };
     const getMessages = (chatId, callback) => {
         // DOCUMENTAR MAÑANA
         // Validació del paràmetre d'entrada
