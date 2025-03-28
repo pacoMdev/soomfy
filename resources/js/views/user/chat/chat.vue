@@ -24,6 +24,8 @@
           <small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>
           {{ msg.text }}
           <small>{{ formatMessageTime(msg.timestamp) }}</small>
+          <small>{{ msg.userId !== auth.user.id ? (msg.read ? "✔️✔️" : "No leido") : "" }}</small>
+
         </div>
       </div>
 
@@ -40,7 +42,7 @@
 import {onMounted, ref, onUnmounted, watch, nextTick, inject} from "vue";
 import useFirebase from "../../../composables/firebase";
 import useProducts from "../../../composables/products";
-const { sendMessage, getMessages, getUserChats, chatExists, activeChats, chats } = useFirebase();
+const { sendMessage, getMessages, getUserChats, chatExists, activeChats, getOppositeMessages, chats } = useFirebase();
 const { product, getProduct } = useProducts();
 import { useRoute,useRouter} from "vue-router";
 import { authStore } from "@/store/auth.js";
@@ -107,9 +109,16 @@ const selectChat = async (chatId, users, idProducto) => { // DOCUMENTAR MAÑANA
       productId: productId.value
     });
   }
-    loadMessages(chatId);
+  loadMessages(chatId);
 
-
+  // Tendria que comprobar
+  if(usuarioAutenticado === compradorId){
+    // Cojemos los mensajes de vendedorId y ponemos cada mensaje en read: true
+    getOppositeMessages(chatId, vendedorId);
+  } else {
+    // Cojemos los mensajes de compradorId y ponemos cada mensaje en read: true
+    getOppositeMessages(chatId, compradorId);
+  }
 };
 
 
@@ -132,10 +141,6 @@ const loadMessages = (chatId) => { // DOCUMENTAR MAÑANA
 const obtainUserChats = async () => {
     activeChats.value = await getUserChats(usuarioAutenticado);
     console.log(activeChats.value);
-
-  unsubscribeMessages = getUserChats(chatId, activeChats => {
-    messages.value = newMessages;
-  });
 
 }
 

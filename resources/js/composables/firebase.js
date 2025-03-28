@@ -67,7 +67,47 @@ export default function useFirebase() {
             throw error;
         }
     };
+    const getOppositeMessages = async (chatId, userId) => {
+        if(!chatId){
+            console.log("Id del xat no valido");
+            return null;
+        }
 
+        const chatRef = doc(db, "chats", chatId);
+
+        const chatSnapshot = await getDoc(chatRef);
+
+        if (!chatSnapshot.exists()) {
+            console.error("❌ El xat no existeix");
+            return;
+        }
+        const chatData = chatSnapshot.data();
+        // Almacenamos los mensajes
+        const messagesObj = chatData.messages || {};
+
+        // Convertim l'objecte de missatges en un array ordenat per data
+        const messagesList = await Promise.all(
+            Object.keys(messagesObj).map(async (key) => {
+                const msg = {
+                    id: key,
+                    ...messagesObj[key]
+                };
+
+                if (msg.userId !== userId && !msg.read) {
+                    await updateDoc(chatRef, {
+                        [`messages.${key}.read`]: true
+                    });
+                }
+
+                return msg;
+            })
+        );
+
+        // Filtrar después de que todas las promesas se resuelvan
+        const filteredMessages = messagesList
+            .filter(msg => msg.userId !== userId && !msg.read)
+
+    }
     const getMessages = (chatId, callback) => {
         // DOCUMENTAR MAÑANA
         // Validació del paràmetre d'entrada
@@ -187,6 +227,7 @@ export default function useFirebase() {
 
     return {
         activeChats,
+        getOppositeMessages,
         chats,
         chatExists,
         sendMessage,
