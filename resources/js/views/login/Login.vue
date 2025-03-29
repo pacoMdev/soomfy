@@ -84,14 +84,9 @@ const password = ref('');
 const googleAuth = ref(); 
 
 const { loginForm, validationErrors, processing, submitLogin } = useAuth();
-const googleLogin = async () => {
-    try{
-        const response = await axios.get('/api/auth/google');
-        googleAuth.value = response.data.data || {};
-        console.log('🔎 GoogleAuth -->', googleLogin);
-    }catch(err){
-        console.log('Falla peticion googleAuth -->', err);
-    }
+// redireccina al usuario hacia google select user
+const googleLogin = () => {
+    window.location.href = '/api/auth/google';
 };
 
 </script>
