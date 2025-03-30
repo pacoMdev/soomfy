@@ -12,51 +12,64 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use ParagonIE\ConstantTime\Hex;
+use Spatie\Permission\Models\Role;
+
 
 class GoogleController extends Controller
 {
     // GOOGLE_AUTH_API ------------------------------------------------------------
     public function googleLogin(){
-        return Socialite::driver('google')->redirect();
+        $google = Socialite::driver('google')->redirect();
+        return $google;
     }
 
     public function googleAuth(Request $request){
-        $googleUser = Socialite::driver('google')
-        ->user();
-        dd($googleUser);
-        // try{
-        //     // obtiene la informacion del usuario y la guardamos en base de datos
+        $googleUser = Socialite::driver('google')->stateless()->user();
+        // $token = $request->user()->createToken($request->userAgent())->plainTextToken;
 
-        //     $user = User::where('google_id', $googleUser->id)->first();
+        // dd($googleUser);
+        try{
+            // obtiene la informacion del usuario y la guardamos en base de datos
 
-        //     if ($user){
-        //         // autentica y reidirije a dashboard
-        //         Auth::login($user);
-        //         return redirect()->route('/');
+            $user = User::where('google_id', $googleUser->id)->first();
 
-        //     }else{
-        //         // crea al usuario con el google_id
-        //         $newUser = new User();
-        //         $newUser -> name = $googleUser -> name;
-        //         $newUser -> surname1 = $googleUser -> surname;
-        //         $newUser -> email = $googleUser -> email;
-        //         $newUser -> password = Hash::make('password@12345');
-        //         $newUser -> google_id = $googleUser -> id;
+            if ($user){
+                // dd('existe inicia session');
+                // autentica y reidirije a home
+                Auth::login($user);
+                return redirect('/');
+                // return response()->json(['user' => $user, 'token' => $token]);
+
+            }else{
+                // dd('no existe, lo crea');
+                // crea al usuario con el google_id
+                $role = Role::find(2);  // user role
+                $newUser = new User();
+                $newUser -> name = $googleUser -> name;
+                $newUser -> surname1 = null;
+                $newUser -> email = $googleUser -> email;
+                $newUser -> password = Hash::make('password@12345');
+                $newUser -> google_id = $googleUser -> id;
                 
-        //         $newUser -> save();
-        //         Auth::login($newUser);
-        //         return redirect()->route('/');
-        //     }
+                $newUser -> save();
+                if ($role) {
+                    $newUser->assignRole($role);
+                }
+                // return response()->json(['user' => $newUser, 'token' => $token]);
+
+                Auth::login($newUser);
+                return redirect('/');
+            }
 
 
-        // }catch(\Exception $error){
-        //     return $error;
-        // }
+        }catch(\Exception $error){
+            return $error;
+        }
     }
 
 
     // GOOGLE_MAPS_API ------------------------------------------------------------
-    public function getAddress(Request $request){
+    public function geoCode(Request $request){
         $apiKey = env('GOOGLE_API_KEY');
         $address = $request->query('address');
 

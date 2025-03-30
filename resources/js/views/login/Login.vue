@@ -10,7 +10,7 @@
                                     <h3 class="m-0">Iniciar sesión</h3>
                                     <div class="d-flex gap-2 mx-auto">
                                         <Button @click="googleLogin()" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
-                                        <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" />
+                                        <!-- <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" /> -->
                                     </div>
                                     <p>o usa tu centa</p>
                                     
@@ -33,7 +33,6 @@
                                             <Password id="password" type="password" v-model="loginForm.password" class="w-100" autocomplete="current-password" :feedback="false" toggleMask />
                                             <label for="password">Contraseña</label>
                                         </FloatLabel>
-                                        <!-- <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password"> -->
                                         <!-- Validation Errors -->
                                         <div class="text-danger-600 mt-1">
                                             <div v-for="message in validationErrors?.password">
@@ -86,7 +85,7 @@ const googleAuth = ref();
 const { loginForm, validationErrors, processing, submitLogin } = useAuth();
 // redireccina al usuario hacia google select user
 const googleLogin = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = '/google-auth/redirect';
 };
 
 </script>

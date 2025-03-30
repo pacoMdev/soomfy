@@ -48,11 +48,11 @@ Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'g
 // Productos por ubicacion del usuario (EN PROCESO)
 Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
 
- // GOOGLE AUTH
- Route::middleware(['web'])->group(function() {
-     Route::get('auth/google', [GoogleController::class, 'googleLogin'])->name('auth.google');
-     Route::get('auth/google-callback', [GoogleController::class, 'googleAuth'])->name('auth.google.callback');
- });
+// GEOCODE GOOGLE_MAPS
+Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
+Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
+Route::get('/geocode', [GoogleController::class, 'geoCode']);
+
 
  // protect the routes
 Route::group(['middleware' => 'auth:sanctum'], function() {
@@ -99,11 +99,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Transactions
     Route::apiResource('transactions', TransactionsController::class);
-    
-    // GEOCODE GOOGLE_MAPS
-    Route::get('/geocode', [GoogleController::class, 'geoCode']);
-    Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
-    Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
 
     // Habilidades
     Route::get('abilities', function(Request $request) {

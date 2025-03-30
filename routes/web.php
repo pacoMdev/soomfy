@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\GoogleController;
+
 
 // classe2 pas4
 
@@ -23,8 +25,12 @@ Route::post('logout', [AuthenticatedSessionController::class, 'logout']);
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('google-auth/redirect', [GoogleController::class, 'googleLogin'])->name('auth.google');
+Route::get('google-auth/callback', [GoogleController::class, 'googleAuth'])->name('auth.google.callback');
+
 Route::view('/{any?}', 'main-view')
     ->name('dashboard')
     ->where('any', '.*');
+
 
 

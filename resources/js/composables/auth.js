@@ -40,7 +40,8 @@ export default function useAuth() {
         name: '',
         email: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
+        role_id: 2
     })
 
     const submitLogin = async () => {
@@ -159,6 +160,7 @@ export default function useAuth() {
 
     const getUser = async () => {
         const auth = authStore();
+        console.log(auth);
         console.log('getUser')
 
         if (auth.authenticated) {
@@ -166,6 +168,8 @@ export default function useAuth() {
             console.log(auth.user.value)
             console.log(auth.authenticated)
             await loginUser()
+        }else{
+            console.warn('no autenticado')
         }
     }
 
