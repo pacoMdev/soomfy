@@ -121,6 +121,12 @@ export default [
                 component: () => import('../views/auth/passwords/Reset.vue'),
                 beforeEnter: guest,
             },
+            {
+                path: 'auth/callback',
+                name: 'auth.callback',
+                component: () => import('../views/auth/callback.vue'),
+                beforeEnter: guest,
+            },
         ]
     },
 

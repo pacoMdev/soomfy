@@ -72,6 +72,7 @@ class ProfileController extends Controller
 
     public function user(Request $request)
     {
+        // dd($request);
         $user = $request->user()->load('roles');
         $avatar = '';
         if (count($user->media) > 0) {

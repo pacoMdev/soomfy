@@ -9,7 +9,7 @@
                                 <div class="text-center d-flex flex-column row-gap-2 py-5">
                                     <h3 class="m-0">Iniciar sesión</h3>
                                     <div class="d-flex gap-2 mx-auto">
-                                        <Button @click="googleLogin()" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
+                                        <Button @click="googleAuth" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
                                         <!-- <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" /> -->
                                     </div>
                                     <p>o usa tu centa</p>
@@ -80,9 +80,8 @@ import { Password } from 'primevue';
 import axios from 'axios';
 const email = ref('');
 const password = ref('');
-const googleAuth = ref(); 
 
-const { loginForm, validationErrors, processing, submitLogin } = useAuth();
+const { loginForm, validationErrors, processing, submitLogin, googleAuth } = useAuth();
 // redireccina al usuario hacia google select user
 const googleLogin = () => {
     window.location.href = '/google-auth/redirect';

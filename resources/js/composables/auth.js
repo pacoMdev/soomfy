@@ -160,7 +160,6 @@ export default function useAuth() {
 
     const getUser = async () => {
         const auth = authStore();
-        console.log(auth);
         console.log('getUser')
 
         if (auth.authenticated) {
@@ -168,8 +167,6 @@ export default function useAuth() {
             console.log(auth.user.value)
             console.log(auth.authenticated)
             await loginUser()
-        }else{
-            console.warn('no autenticado')
         }
     }
 
@@ -211,6 +208,10 @@ export default function useAuth() {
             })
     }
 
+    const googleAuth = async () => {
+        window.location.href = "/google-auth/redirect";
+    }
+
     return {
         loginForm,
         registerForm,
@@ -225,6 +226,7 @@ export default function useAuth() {
         user,
         getUser,
         logout,
-        getAbilities
+        getAbilities,
+        googleAuth
     }
 }
