@@ -54,6 +54,7 @@ class UserController extends Controller
         $user->surname2 = $request->surname2;
 
         $user->password = Hash::make($request->password);
+        $user->addMedia(file: storage_path(DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'defaultImage.png'))->preservingOriginal()->toMediaCollection('images');
 
         if ($user->save()) {
             if ($role) {

@@ -72,7 +72,6 @@ class ProfileController extends Controller
 
     public function user(Request $request)
     {
-        // dd($request);
         $user = $request->user()->load('roles');
         $avatar = '';
         if (count($user->media) > 0) {
@@ -85,16 +84,13 @@ class ProfileController extends Controller
 
     public function getAllToSell(Request $request){
         $userId = $request->userId;
-        // $products = User::findOrFail($userId)->products2;
         $products = Product::where('user_id', $userId)->with([ 'media' ])->get();
-        // dd($products);
 
         $soldProductIds = Transactions::pluck('product_id'); // IDs de productos vendidos/comprados
         $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
             return $soldProductIds->contains($product->id);
             
         });
-        // dd($filteredProducts);
 
         return ProductResource::collection($filteredProducts);
     }
