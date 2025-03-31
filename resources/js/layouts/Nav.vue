@@ -44,7 +44,7 @@
                     <img src="/images/logo.svg" class="logo-size" alt="Soomfy">
                     <p>Soomfy</p>
                 </router-link>
-                <SearchBar v-if="!isRestrictedRoute" />
+                <SearchBar/>
             </div>
         </div>
     </nav>

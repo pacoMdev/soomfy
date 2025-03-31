@@ -1,87 +1,102 @@
 <template>
   <div class="chat-container">
-    <!-- Llista contactes -->
+    <!-- Lista de contactos -->
     <div class="chat-sidebar">
-      <h3>Contactes</h3>
-      <input v-model="searchTerm" placeholder="Cerca" class="search-input">
+      <h3>Contactos</h3>
+      <input v-model="searchTerm" placeholder="Buscar" class="search-input">
       <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes">
-        <p>Producte ID: {{ chat.productId }}</p>
-        <p>Producte Name: {{ chat.product.title }}</p>
+        <p>Producto ID: {{ chat.productId }}</p>
+        <p>Producto Nombre: {{ chat.product?.title }}</p>
         <p v-if="chat.lastMessage">
-          {{chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
+          {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
         </p>
         <p>Chat ID: {{ chat.id }}</p>
-        <p>{{chat.users}}</p>
-        <p>Participants: {{ chat.users.join(', ') }}</p>
+        <p>Participantes: {{ chat.users.join(', ') }}</p>
       </div>
     </div>
 
-    <!-- Àrea missatges -->
+    <!-- Área de mensajes -->
     <div class="chat-content">
       <div class="messages" ref="messagesContainer">
         <div v-for="msg in messages" :key="msg.id"
              :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
           <small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>
           {{ msg.text }}
-          <small>{{ formatMessageTime(msg.timestamp) }}</small>
-          <small>{{ msg.userId !== auth.user.id ? (msg.read ? "✔️✔️" : "No leido") : "" }}</small>
-
+          <div class="d-flex gap-2">
+            <small>{{ formatMessageTime(msg.timestamp) }}</small>
+            <small v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
+          </div>
         </div>
       </div>
 
       <div class="chat-input">
-        <input type="text" v-model="newMessage" @keyup.enter="sendNewMessage" placeholder="Escriu el teu missatge">
+        <input type="text" v-model="newMessage" @keyup.enter="sendNewMessage" placeholder="Escribe tu mensaje">
         <button class="secondary-button-2" @click="sendNewMessage">Enviar</button>
       </div>
     </div>
-
   </div>
 </template>
-<script setup>
 
-import {onMounted, ref, onUnmounted, watch, nextTick, inject} from "vue";
+<script setup>
+// Importaciones necesarias
+import { onMounted, ref, onUnmounted, watch, nextTick, inject } from "vue";
 import useFirebase from "../../../composables/firebase";
 import useProducts from "../../../composables/products";
-const { sendMessage, getMessages, getUserChats, chatExists, activeChats, getOppositeMessages, chats } = useFirebase();
-const { product, getProduct } = useProducts();
-import { useRoute,useRouter} from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { authStore } from "@/store/auth.js";
+
+// Composables y constantes
+const { sendMessage, getMessages, getUserChats, chatExists, activeChats, getOppositeMessages } = useFirebase();
+const { product, getProduct } = useProducts();
 const auth = authStore();
-
-
 const route = useRoute();
 const router = useRouter();
 
+// Variables reactivas
+const compradorData = ref({}); // Datos del comprador
+const vendedorData = ref({}); // Datos del vendedor
 
-const currentChat = ref(null);
-const searchTerm = ref('');
+const currentChat = ref(null); // Chat actual seleccionado
+const searchTerm = ref(''); // Término de búsqueda en la lista de contactos
+const productId = ref(null); // ID del producto asociado al chat
+const compradorId = ref(null); // ID del comprador
+const vendedorId = ref(null); // ID del vendedor
+const usuarioAutenticado = auth.user.id; // ID del usuario autenticado
+const newMessage = ref(''); // Nuevo mensaje a enviar
+const messagesContainer = ref(null); // Contenedor de mensajes
+const messages = ref([]); // Lista de mensajes del chat actual
+let unsubscribeMessages = null; // Función para cancelar la suscripción a mensajes
 
+// Iconos SVG
+const checkIconSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--secondary-color)">
+  <path d="M268-240 42-466l57-56 170 170 56 56-57 56Zm226 0L268-466l56-57 170 170 368-368 56 57-424 424Zm0-226-57-56 198-198 57 56-198 198Z"/>
+</svg>
+`;
 
+const notCheckIconSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--neutral-color)">
+  <path d="M268-240 42-466l57-56 170 170 56 56-57 56Zm226 0L268-466l56-57 170 170 368-368 56 57-424 424Zm0-226-57-56 198-198 57 56-198 198Z"/>
+</svg>
+`;
 
-const productId = ref(null);
-const compradorId = ref(null);
-const vendedorId = ref(null);
+// Funciones
 
-
-const usuarioAutenticado = auth.user.id;
-
-const newMessage = ref('');
-const messagesContainer = ref(null);// DOCUMENTAR MAÑANA
-const messages = ref([]); // DOCUMENTAR MAÑANA
-let unsubscribeMessages = null; // DOCUMENTAR MAÑANA
-
-const formatMessageTime = (timestamp) => { // DOCUMENTAR MAÑANA
+/**
+ * Formatea la hora de un mensaje.
+ * @param {Date|number} timestamp - Marca de tiempo del mensaje.
+ * @returns {string} - Hora formateada.
+ */
+const formatMessageTime = (timestamp) => {
   if (!timestamp) return '';
-
   const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-  return date.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 };
 
-
-const scrollToBottom = () => { // DOCUMENTAR MAÑANA
+/**
+ * Desplaza automáticamente el contenedor de mensajes hacia abajo.
+ */
+const scrollToBottom = () => {
   if (messagesContainer.value) {
     nextTick(() => {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
@@ -89,117 +104,116 @@ const scrollToBottom = () => { // DOCUMENTAR MAÑANA
   }
 };
 
-const selectChat = async (chatId, users, idProducto) => { // DOCUMENTAR MAÑANA
+/**
+ * Selecciona un chat y carga sus mensajes.
+ * @param {string} chatId - ID del chat.
+ * @param {Array} users - Usuarios participantes del chat.
+ * @param {string} idProducto - ID del producto asociado al chat.
+ */
+const selectChat = async (chatId, users, idProducto) => {
   productId.value = idProducto;
   compradorId.value = users[0];
   vendedorId.value = users[1];
 
-  // Si el chat existe me devueve la informacion del chat
-  const chatData = await chatExists(
-      productId.value,
-      compradorId.value,
-      vendedorId.value,
-  )
+  const chatData = await chatExists(productId.value, compradorId.value, vendedorId.value);
   currentChat.value = chatData;
 
   if (!compradorId.value || !vendedorId.value || !productId.value) {
-    console.error("❌ Faltan IDs para crear el chat:", {
-      compradorId: compradorId.value,
-      vendedorId: vendedorId.value,
-      productId: productId.value
-    });
+    console.error("❌ Faltan IDs para crear el chat:", { compradorId: compradorId.value, vendedorId: vendedorId.value, productId: productId.value });
   }
+
   loadMessages(chatId);
-  
-  // Tendria que comprobar
-  if(usuarioAutenticado === compradorId){
-    // Cojemos los mensajes de vendedorId y ponemos cada mensaje en read: true
-    getOppositeMessages(chatId, vendedorId);
+
+  if (usuarioAutenticado === compradorId.value) {
+    getOppositeMessages(chatId, vendedorId.value);
   } else {
-    // Cojemos los mensajes de compradorId y ponemos cada mensaje en read: true
-    getOppositeMessages(chatId, compradorId);
+    getOppositeMessages(chatId, compradorId.value);
   }
 };
 
-
-watch(messages, () => { // DOCUMENTAR MAÑANA
-  scrollToBottom();
-}, { deep: true });
-
-const loadMessages = (chatId) => { // DOCUMENTAR MAÑANA
-  // Cancel·lem qualsevol subscripció anterior
+/**
+ * Carga los mensajes de un chat.
+ * @param {string} chatId - ID del chat.
+ */
+const loadMessages = (chatId) => {
   if (unsubscribeMessages) {
     unsubscribeMessages();
   }
 
-  // Iniciem una nova subscripció
   unsubscribeMessages = getMessages(chatId, (newMessages) => {
     messages.value = newMessages;
   });
-}
+};
 
+/**
+ * Obtiene los chats del usuario autenticado.
+ */
 const obtainUserChats = async () => {
-    activeChats.value = await getUserChats(usuarioAutenticado);
-    console.log(activeChats.value);
+  await getUserChats(usuarioAutenticado);
+};
 
-}
-
+/**
+ * Envía un nuevo mensaje en el chat actual.
+ */
 const sendNewMessage = async () => {
-  console.log("Intentant enviar missatge:", newMessage.value);
-  console.log("Estat del currentChat:", currentChat.value);
-
   if (!newMessage.value.trim() || !currentChat.value) return;
 
   try {
     await sendMessage(currentChat.value.id, usuarioAutenticado, newMessage.value);
-    console.log("✅ Missatge enviat amb èxit");
     newMessage.value = "";
   } catch (error) {
-    console.error("❌ Error enviant missatge:", error);
+    console.error("❌ Error enviando mensaje:", error);
   }
 };
 
-const swal = inject('$swal')
+// Hooks
 
-onMounted(
-    async () => {
-      try {
-        await obtainUserChats();
-        // Si creamos o accedemos al chat desde detalle_producto
-        if(route.query.chatData){
-            currentChat.value = JSON.parse(route.query.chatData);
-            console.log("🔹 Dades del chat (de ruta):", currentChat.value);
-            console.log("🆔 ID del chat:", currentChat.value.id);
-            productId.value = currentChat.value.productId;
-            vendedorId.value = currentChat.value.users.vendedorId;
-            compradorId.value = currentChat.value.users.compradorId;
+/**
+ * Hook que se ejecuta al montar el componente.
+ */
+onMounted(async () => {
+  try {
+    await obtainUserChats();
 
-            console.log(compradorId.value);
-            console.log(auth.user.id)
-            // if(compradorId.value !== auth.user.id || vendedorId.value !== auth.user.id){
-            //   await router.push({name: 'home'});
-            // }
+    if (route.query.chatData) {
+      currentChat.value = JSON.parse(route.query.chatData);
+      productId.value = currentChat.value.productId;
+      vendedorId.value = currentChat.value.users.vendedorId;
+      compradorId.value = currentChat.value.users.compradorId;
 
-            // Carreguem els missatges quan tenim l'ID del xat
-            if (currentChat.value && currentChat.value.id) { // DOCUMENTAR MAÑANA
-              loadMessages(currentChat.value.id);
-            }
-
-        }
-
-      } catch (error) {
-        console.error("❌ Error:", error);
+      if (currentChat.value && currentChat.value.id) {
+        loadMessages(currentChat.value.id);
       }
-
     }
-);
+  } catch (error) {
+    console.error("❌ Error:", error);
+  }
+});
 
-onUnmounted(() => { // DOCUMENTAR MAÑANA
-  // Netegem la subscripció quan es desmunta el component
+/**
+ * Hook que se ejecuta al desmontar el componente.
+ */
+onUnmounted(() => {
   if (unsubscribeMessages) {
     unsubscribeMessages();
   }
 });
+
+// Watchers
+
+/**
+ * Observa los cambios en los mensajes y desplaza el contenedor hacia abajo.
+ */
+watch(messages, () => {
+  scrollToBottom();
+}, { deep: true });
+
+/**
+ * Observa los cambios en los chats activos.
+ */
+watch(activeChats, (newChats) => {
+  console.log("Active chats updated:", newChats);
+}, { deep: true });
 
 </script>
 <style scoped>
@@ -275,13 +289,14 @@ onUnmounted(() => { // DOCUMENTAR MAÑANA
 
 .incoming {
   align-self: flex-start;
-  background: #ececec;
+  background: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .outgoing {
   align-self: flex-end;
-  background: #01bfa5;
-  color: white;
+  background: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .msg small {

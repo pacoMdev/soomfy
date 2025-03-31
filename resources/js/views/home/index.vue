@@ -24,13 +24,11 @@
           </div>
         </div>
 
-
         <div class="centrar-productos">
           <div class="productos">
             <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
           </div>
         </div>
-
         <div class="d-flex justify-content-center">
           <button
               class="secondary-button-2"
@@ -53,12 +51,11 @@
       </div>
     </div>
   </div>
-  <div class="d-block d-md-none">
-    <div>
+  <div class="d-flex d-md-none">
+    <div class="my-5">
       <div class="contenedor-informativo">
-
       </div>
-      <div class="">
+      <div class="d-flex justify-content-center my-6">
         <!-- falta ajustar el responsive -->
         <div class="productos">
           <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
