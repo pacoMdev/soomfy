@@ -97,7 +97,6 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import { useRoute } from "vue-router";
 import ProductoNew from "@/components/ProductoNew.vue";
 import useProducts from '@/composables/products.js';

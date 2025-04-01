@@ -132,7 +132,7 @@ class ProductControllerAdvance extends Controller
      */
     public function getProducts()
     {
-
+        $paginate = request('paginate', 8);
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'title', 'created_at', 'price'])) {
             $orderColumn = 'created_at';
@@ -254,7 +254,7 @@ class ProductControllerAdvance extends Controller
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
             })
-            ->paginate(8);
+            ->paginate($paginate);
             // excluye los productos ya vendidos de transactions
             $soldProductIds = Transactions::pluck('product_id');
             $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {

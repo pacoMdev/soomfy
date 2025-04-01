@@ -12,7 +12,7 @@
     <button type="submit"
             :class="[
                 isHome ? 'secondary-button-2' : 'primary-button',
-                'no-borders-left'
+                'no-borders-left',
               ]"
             >
       <i class="fas fa-search"></i> {{ buttonText }}
