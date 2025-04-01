@@ -22,7 +22,7 @@
                                     <Button type="button" icon="pi pi-refresh" class="h-100 ml-1" outlined @click="getTransactions()" />
                                 </template>
                                 <template #end>
-                                    <Button v-if="can('transactions-create')" icon="pi pi-external-link" label="Crear Transaccion" @click="$router.push('transactions/create')" class="float-end" />
+                                    <Button v-if="can('users-create')" icon="pi pi-external-link" label="Crear Usuario" @click="$router.push('transactions/create')" class="float-end" />
                                 </template>
                             </Toolbar>
                             <!--
@@ -49,16 +49,34 @@
                         <Column field="isToSend" header="IsToSend" sortable></Column>
                         <Column field="isRegated" header="IsRegated" sortable></Column>
                         <Column field="created_at" header="Created_at" sortable></Column>
-                        <!-- <Column class="pe-0 me-0 icon-column-2">
+
+<!--                        <Column header="products" sortable-->
+<!--                                sortField="products.name"-->
+<!--                                filterField="products"-->
+<!--                                :showFilterMatchModes="false">-->
+<!--                            <template #body="slotProps">-->
+<!--                            <span v-for="cat in slotProps.data.products" class="ms-2 badge  bg-secondary bg-gradient">-->
+<!--                                {{ cat.name }}-->
+<!--                            </span>-->
+<!--                            </template>-->
+
+<!--                        </Column>-->
+
+                        <Column class="pe-0 me-0 icon-column-2">
                             <template #body="slotProps">
-                                <router-link v-if="can('user-edit')" :to="{ name: 'transactions.edit', params: { id: slotProps.data.id } }">
+
+<!--                                <router-link :to="{ name: 'users.tasks', params: { id: slotProps.data.id } }">-->
+<!--                                    <Button icon="pi pi-eye"  severity="help" size="small" class="mr-1"/>-->
+<!--                                </router-link>-->
+
+                                <!-- <router-link v-if="can('user-edit')" :to="{ name: 'transactions.edit', params: { id: slotProps.data.id } }">
                                     <Button icon="pi pi-pencil" severity="info" size="small" class="mr-1"/>
-                                </router-link>
+                                </router-link> -->
 
                                 <Button icon="pi pi-trash" severity="danger" v-if="can('user-delete')" @click.prevent="deleteTransaction(slotProps.data.id, slotProps.index)" size="small"/>
 
                             </template>
-                        </Column> -->
+                        </Column>
 
                     </DataTable>
 
@@ -69,6 +87,7 @@
 
 <script setup>
 import {ref, onMounted} from "vue";
+import useUsers from "../../../composables/users";
 import useTransactions from "../../../composables/transactions";
 import {useAbility} from '@casl/vue'
 import {FilterMatchMode, FilterService} from "@primevue/core/api";

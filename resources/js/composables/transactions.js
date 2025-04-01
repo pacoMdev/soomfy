@@ -6,6 +6,7 @@ export default function useTransactions() {
 
     const transactions = ref([])
     const transaction = ref({
+        id: '',
         userBuyer_id: '',
         userSeller_id: '',
         product_id: '',
@@ -39,36 +40,6 @@ export default function useTransactions() {
         ).then(response => {
                 transactions.value = response.data;
             })
-    }
-    const storeTransaction = async (transaction) => {
-        console.log('inside the storeTransaction')
-        if (isLoading.value) return;
-
-        isLoading.value = true
-        validationErrors.value = {}
-
-        let serializedTransaction = new FormData()
-        for (let item in user) {
-            console.log('dataTransaction -->', item);
-            if (user.hasOwnProperty(item)) {
-                serializedTransaction.append(item, transaction[item])
-            }
-        }
-
-        axios.post('/api/transaction', serializedTransaction)
-            .then(response => {
-                router.push({name: 'transactions.index'})
-                swal({
-                    icon: 'success',
-                    title: 'Transaction saved successfully'
-                })
-            })
-            .catch(error => {
-                if (error.response?.data) {
-                    validationErrors.value = error.response.data.errors
-                }
-            })
-            .finally(() => isLoading.value = false)
     }
 
     const deleteTransactions = async (id, index) => {
@@ -110,8 +81,6 @@ export default function useTransactions() {
         transactions,
         transaction,
         getTransactions,
-        storeTransaction,
         deleteTransactions,
-        validationErrors
     }
 }

@@ -15,15 +15,13 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'userSeller_id' => $this->userSeller_id,
             'userBuyer_id' => $this->userBuyer_id,
             'product_id' => $this->product_id,
             'initialPrice' => $this->initialPrice,
-            'finalPrice' => $this->finalPrice,
+            'finalPrice' => $this->finalPirce,
             'isToSend' => $this->isToSend,
             'isRegated' => $this->isRegated,
-            'created_at' => Date($this->created_at),
         ];
     }
 }

@@ -111,69 +111,6 @@
                                 <label for="price-product">Precio</label>
                             </FloatLabel>
                         </div>
-                        <div class="mb-3 input-toSend">
-                            <FloatLabel>
-                                <ToggleSwitch v-model="toSend" />
-                                <label for="toSend-product">Enviar 📦</label>
-                            </FloatLabel>
-                        </div>
-                        
-                        <div v-if="product.toSend == true" class="d-flex flex-column gap-3 py-3 ">
-                            <div class="mb-3 input-estado">
-                                <FloatLabel>
-                                    <Select
-                                        v-model="product.weight"
-                                        :options="pseoProducto"
-                                        optionLabel="name"
-                                        optionValue="total"
-                                        :loading="isLoadingEstados"
-                                        class="w-full md:w-80"
-                                        appendTo=".show"
-                                    />
-                                    <label for="estado">Selecciona el peso</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
-                                    </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.weight">
-                                        {{ message }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3 input-ancho">
-                                <FloatLabel>
-                                    <InputNumber v-model="product.width" />
-                                    <label for="estado">Introduce el ancho</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
-                                    </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.width">
-                                        {{ message }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3 input-alto">
-                                <FloatLabel>
-                                    <InputNumber v-model="product.heigth" />
-
-                                    <label for="estado">Introduce la altura</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
-                                    </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.heigth">
-                                        {{ message }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
                         <div class="flex pt-6 justify-between">
                             <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
@@ -236,10 +173,6 @@ const {value: categories} = useField('category', null, {initialValue: '', label:
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estados} = useField('estado', null, {initialValue: ''});
 const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
-const {value: toSend} = useField('toSend', null, {initialValue: false});
-const {value: weight} = useField('weight', null, {initialValue: 0});
-const {value: width} = useField('width', null, {initialValue: 0});
-const {value: heigth} = useField('heigth', null, {initialValue: 0});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
@@ -254,10 +187,6 @@ const product = ref({
     ],
     price,
     estado: estados,
-    toSend,
-    weight,
-    width,
-    heigth,
 })
 
 

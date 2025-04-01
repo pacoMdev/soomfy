@@ -18,11 +18,11 @@ class TransactionsController extends Controller
     {
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'userSeller_id', 'userBuyer_id', 'product_id', 'initialPrice', 'finalPrice', 'isToSend', 'isRegated', 'created_at'])) {
-            $orderColumn = 'id';
+            $orderColumn = 'created_at';
         }
         $orderDirection = request('order_direction', 'desc');
         if (!in_array($orderDirection, ['asc', 'desc'])) {
-            $orderDirection = 'asc';
+            $orderDirection = 'desc';
         }
         $transactions = Transactions::
             when(request('search_id'), function ($query) {
@@ -43,25 +43,6 @@ class TransactionsController extends Controller
 
             // retornar el el transactions construido
         return TransactionResource::collection($transactions);
-    }
-    public function store(Transactions $transactions)
-    {
-        dd($transactions);
-        $transaction = new Transactions();
-        $transaction->name = $transactions->name;
-        $transaction->email = $transactions->email;
-        $transaction->surname1 = $transactions->surname1;
-        $transaction->surname2 = $transactions->surname2;
-        $transaction->save();
-
-        return new TransactionResource($transaction);
-    }
-    public function destroy(Transactions $transaction)
-    {
-        $this->authorize('transaction-delete');
-        $transaction->delete();
-
-        return response()->noContent();
     }
 
     public function getAllTransictions()

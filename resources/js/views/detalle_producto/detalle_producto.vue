@@ -172,9 +172,10 @@
     import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
     import { authStore } from "@/store/auth.js";
+    const auth = authStore();
+
     import useFirebase from "@/composables/firebase.js";
     import {useRouter} from "vue-router";
-    const auth = authStore();
     const router = useRouter();
     const { chatExists } = useFirebase();
 

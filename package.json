@@ -27,7 +27,6 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/vue-fontawesome": "^3.0.8",
-    "@lottiefiles/dotlottie-vue": "^0.6.1",
     "@primevue/themes": "^4.3.2",
     "firebase": "^11.5.0",
     "html2pdf.js": "^0.9.0",
@@ -56,8 +55,7 @@
     "vuex": "^4.1.0",
     "vuex-persistedstate": "^4.1.0",
     "yup": "^1.5.0",
-    "yup-locales": "^1.2.28",
-    "ziggy-js": "^2.5.2"
+    "yup-locales": "^1.2.28"
   },
   "name": "templatelaravelvue",
   "description": "Ejemplo proyecto Laravel 10 + vue3 PAra DAW",

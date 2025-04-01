@@ -20,40 +20,30 @@
                         <!-- Dialog para añadir dirección -->
                         <Dialog v-model:visible="showDialog" modal header="Añadir dirección" :style="{ width: '26rem' }">
                             <div class="d-flex flex-column gap-4 py-4">
-                                <!-- SECTION DATA ADDRESS ------------------------------------ -->
-                                <div class="d-flex flex-column gap-4 py-4">
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="address" v-model="newAddress" fluid />
-                                            <label for="address">Dirección</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="city" v-model="newCity" fluid/>
-                                            <label for="city">Ciudad</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="cp" v-model="newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
-                                            <label for="cp">Codigo postal</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="country" v-model="newCountry" fluid />
-                                            <label for="country">Pais</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <FloatLabel>
-                                            <label for="">Tipo de envio</label>
-                                            <Select v-model="typeShippment" :options="typeShippemt" optionLabel="name" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-                                        </FloatLabel>
-                                    </div>
+                                <div class="p-fluid">
+                                    <FloatLabel>
+                                        <InputText id="address" v-model="newAddress" fluid />
+                                        <label for="address">Dirección</label>
+                                    </FloatLabel>
                                 </div>
-                                
+                                <div class="p-fluid">
+                                    <FloatLabel>
+                                        <InputText id="city" v-model="newCity" fluid/>
+                                        <label for="city">Ciudad</label>
+                                    </FloatLabel>
+                                </div>
+                                <div class="p-fluid">
+                                    <FloatLabel>
+                                        <InputText id="cp" v-model="newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
+                                        <label for="cp">Codigo postal</label>
+                                    </FloatLabel>
+                                </div>
+                                <div class="p-fluid">
+                                    <FloatLabel>
+                                        <InputText id="country" v-model="newCountry" fluid />
+                                        <label for="country">Pais</label>
+                                    </FloatLabel>
+                                </div>
                             </div>
                             <template #footer class="">
                                 <Button label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" @click="saveAddress" />
@@ -107,7 +97,6 @@
     const newCp = ref('');
     const newCountry = ref('');
     const error = ref(false);
-    const typeShippment = ref([ 'EXPRESS', 'STANDARD' ]);
 
 
     onMounted (() => {

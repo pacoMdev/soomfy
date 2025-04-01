@@ -41,12 +41,13 @@
                         <template #empty> No transactions found. </template>
 
                         <Column field="id" header="ID" sortable></Column>
-                        <Column field="title" header="Title" sortable></Column>
-                        <Column field="description" header="Desctiption" sortable></Column>
-                        <Column field="calification" header="Calification" sortable></Column>
-                        <Column field="token" header="Token" sortable></Column>
+                        <Column field="userSeller_id" header="UserSeller_id" sortable></Column>
+                        <Column field="userBuyer_id" header="UserBuyer_id" sortable></Column>
                         <Column field="product_id" header="Product_id" sortable></Column>
-                        <Column field="user_id" header="User_id" sortable></Column>
+                        <Column field="initialPrice" header="InitialPrice" sortable></Column>
+                        <Column field="finalPrice" header="FinalPrice" sortable></Column>
+                        <Column field="isToSend" header="IsToSend" sortable></Column>
+                        <Column field="isRegated" header="IsRegated" sortable></Column>
                         <Column field="created_at" header="Created_at" sortable></Column>
 
 <!--                        <Column header="products" sortable-->
@@ -86,11 +87,13 @@
 
 <script setup>
 import {ref, onMounted} from "vue";
-import useOpinions from "../../../composables/opinion";
+import useUsers from "../../../composables/users";
+import useTransactions from "../../../composables/transactions";
 import {useAbility} from '@casl/vue'
 import {FilterMatchMode, FilterService} from "@primevue/core/api";
 
-const {opinions, getOpinions, deleteOpinions, resetOpinionDB} = useOpinions()
+const {users, getUsers, deleteUser, resetUserDB} = useUsers()
+const {transactions, getTransactions, deleteTransaction, resetTransactionDB} = useTransactions()
 const {can} = useAbility()
 
 const filters = ref({
@@ -104,7 +107,7 @@ const initFilters = () => {
 };
 
 onMounted(() => {
-    getOpinions()
+    getTransactions()
 })
 
 </script>

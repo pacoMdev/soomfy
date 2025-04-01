@@ -46,10 +46,8 @@ export const authStore = defineStore("authStore", () => {
 
 
     async function getUser() {
-        console.log('😅 GOOGLE_USER');
         try {
             const response = await axios.get('/api/user'); // Llamada a la API
-            console.log('response', response);
             if (response.data?.data) {
                 console.log('USUARIO: ', response.data.data); // Asegúrate de que estos datos existen
                 user.value = response.data.data; // Asigna el usuario al estado
