@@ -31,35 +31,39 @@ export default function useProducts() {
         order_column = 'created_at',
         order_direction = 'desc',
         order_price = '',
-        // Ubicacion
         search_latitude = '',
         search_longitude = '',
-        search_radius = ''
-
+        search_radius = '',
+        paginate = ''
     ) => {
-        axios.get('/api/products?page=' + page +
-            '&search_category=' + search_category +
-            '&search_id=' + search_id +
-            '&search_title=' + search_title +
-            '&min_price=' + min_price +
-            '&max_price=' + max_price +
-            '&search_estado=' + search_estado +
-            '&search_location=' + search_location +
-            '&search_content=' + search_content +
-            '&search_global=' + search_global +
-            '&order_column=' + order_column +
-            '&order_direction=' + order_direction +
-            '&order_price=' + order_price +
-            '&search_latitude=' + search_latitude +
-            '&search_longitude=' + search_longitude +
-            '&search_radius=' + search_radius
-        )
-        .then(response => {
+        try {
+            const response = await axios.get('/api/products?page=' + page +
+                '&search_category=' + search_category +
+                '&search_id=' + search_id +
+                '&search_title=' + search_title +
+                '&min_price=' + min_price +
+                '&max_price=' + max_price +
+                '&search_estado=' + search_estado +
+                '&search_location=' + search_location +
+                '&search_content=' + search_content +
+                '&search_global=' + search_global +
+                '&order_column=' + order_column +
+                '&order_direction=' + order_direction +
+                '&order_price=' + order_price +
+                '&search_latitude=' + search_latitude +
+                '&search_longitude=' + search_longitude +
+                '&search_radius=' + search_radius +
+                '&paginate=' + paginate
+            );
+    
             console.log("Respuesta completa:", response.data);
             products.value = response.data;
-            })
-
-    }
+            return response.data; // Devuelve los datos
+        } catch (error) {
+            console.error("Error en getProducts:", error);
+            throw error; // Propaga el error
+        }
+    };
 
     const getProduct = async (id) => {
         console.log("ID DESDE GET PRODUCT:", id);
