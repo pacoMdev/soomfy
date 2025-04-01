@@ -9,14 +9,14 @@
           <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
           <img v-else src="/images/GitHub.svg"  alt="default-image">
 
-          <div class="container-info-profile d-flex flex-column gap-1">
+          <div class="container-info-profile d-flex flex-column gap-1 w-auto">
             <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
             <div class="d-flex gap-2 container-rating">
               <Rating v-model="mediaRating" readonly />
               <p>({{ reviews.length }})</p>
             </div>
             <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
-    : 'Direccion no disponible 🚫'" rounded></Tag>
+    : 'Direccion no disponible 🚫'" rounded class="w-75" />
 
           </div>
         </div>
@@ -178,7 +178,25 @@
         </div>
 
         <div class="container w-100 d-flex gap-5">
-          <div v-if="loading">Cargando...</div>
+          <div v-if="loading">
+            <div class="card">
+              <div class="rounded border border-surface-200 dark:border-surface-700 p-6 bg-surface-0 dark:bg-surface-900">
+                  <div class="flex mb-4">
+                      <Skeleton shape="circle" size="4rem" class="mr-2"></Skeleton>
+                      <div>
+                          <Skeleton width="10rem" class="mb-2"></Skeleton>
+                          <Skeleton width="5rem" class="mb-2"></Skeleton>
+                          <Skeleton height=".5rem"></Skeleton>
+                      </div>
+                  </div>
+                  <Skeleton width="100%" height="150px"></Skeleton>
+                  <div class="flex justify-between mt-4">
+                      <Skeleton width="4rem" height="2rem"></Skeleton>
+                      <Skeleton width="4rem" height="2rem"></Skeleton>
+                  </div>
+              </div>
+          </div>
+          </div>
           <div v-if="error" style="color: red;">{{ error }}</div>
 
            <!-- COMPRAS -------------------------------------------------------------------------------------------- -->
@@ -188,7 +206,7 @@
               <HistoricInfo :historic="purchases" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
-              <h1>Parece que no hay compras</h1>
+              <!-- <h1>Parece que no hay compras</h1> -->
               <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
             </div>
           </div>
@@ -199,18 +217,18 @@
               <HistoricInfo :historic="sales" />
             </div>
             <div v-else class="container-else">
-              <h1>Parece que no hay ventas</h1>
+              <!-- <h1>Parece que no hay ventas</h1> -->
               <img src="/images/undraw_file-search_cbur.svg" alt="Imagen ventas" class="image-else">
             </div>
           </div>
           <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'activeProducts'">
+          <div v-if="selectedTab === 'activeProducts'" class="w-100">
             <div v-if="activeProducts.length > 0">
               <h4>Mis Productos</h4>
               <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
             <div v-else class="container-else">
-              <h1>Parece que aun no hay productos</h1>
+              <!-- <h1>Parece que aun no hay productos</h1> -->
               <img src="/images/undraw_file-search_cbur.svg" alt="Imagen productos" class="image-else">
             </div>
           </div>
@@ -221,7 +239,7 @@
               <ValorationInfo :reviews="reviews" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
-              <h1>Parece que no hay valoraciones</h1>
+              <!-- <h1>Parece que no hay valoraciones</h1> -->
               <img src="/images/undraw_public-discussion_693m.svg" alt="Imagen valoracion" class="image-else">
             </div>
           </div>
@@ -237,7 +255,7 @@ import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
-import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag } from 'primevue';
+import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag, Skeleton } from 'primevue';
 import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
@@ -579,6 +597,8 @@ function editUser() {
 .container-else {
     width: 100%;
     text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
   }
   .image-else {
     width: auto;

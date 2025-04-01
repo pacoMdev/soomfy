@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('imgProfile')->nullable();
             $table->string('imgBanner')->nullable()->default('default.webp');
             $table->string('location')->nullable();
+            $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

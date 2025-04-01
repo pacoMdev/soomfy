@@ -9,8 +9,8 @@
                                 <div class="text-center d-flex flex-column row-gap-2 py-5">
                                     <h3 class="m-0">Iniciar sesión</h3>
                                     <div class="d-flex gap-2 mx-auto">
-                                        <Button icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
-                                        <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" />
+                                        <Button @click="googleAuth" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
+                                        <!-- <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" /> -->
                                     </div>
                                     <p>o usa tu centa</p>
                                     
@@ -33,7 +33,6 @@
                                             <Password id="password" type="password" v-model="loginForm.password" class="w-100" autocomplete="current-password" :feedback="false" toggleMask />
                                             <label for="password">Contraseña</label>
                                         </FloatLabel>
-                                        <!-- <input v-model="loginForm.password" id="password" type="password" placeholder="Password"  class="form-control" required autocomplete="current-password"> -->
                                         <!-- Validation Errors -->
                                         <div class="text-danger-600 mt-1">
                                             <div v-for="message in validationErrors?.password">
@@ -78,11 +77,15 @@
 import useAuth from '@/composables/auth'
 import { ref } from 'vue'
 import { Password } from 'primevue';
-
+import axios from 'axios';
 const email = ref('');
 const password = ref('');
 
-const { loginForm, validationErrors, processing, submitLogin } = useAuth();
+const { loginForm, validationErrors, processing, submitLogin, googleAuth } = useAuth();
+// redireccina al usuario hacia google select user
+const googleLogin = () => {
+    window.location.href = '/google-auth/redirect';
+};
 
 </script>
 

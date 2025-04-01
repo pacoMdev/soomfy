@@ -2,18 +2,11 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 
-export default function useTransactions() {
+export default function useOpinion() {
 
-    const transactions = ref([])
-    const transaction = ref({
-        userBuyer_id: '',
-        userSeller_id: '',
-        product_id: '',
-        initialPrice: '',
-        finalPrice: '',
-        isToSend: '',
-        isRegated: '',
-        isRegated: '',
+    const opinions = ref([])
+    const opinion = ref({
+        title: '',
     })
 
     const router = useRouter()
@@ -21,7 +14,7 @@ export default function useTransactions() {
     const isLoading = ref(false)
     const swal = inject('$swal')
 
-    const getTransactions = async (
+    const getOpinion = async (
         page = 1,
         search_id = '',
         search_title = '',
@@ -40,8 +33,7 @@ export default function useTransactions() {
                 transactions.value = response.data;
             })
     }
-    const storeTransaction = async (transaction) => {
-        console.log('inside the storeTransaction')
+    const storeOpinion = async (transaction) => {
         if (isLoading.value) return;
 
         isLoading.value = true
@@ -49,13 +41,13 @@ export default function useTransactions() {
 
         let serializedTransaction = new FormData()
         for (let item in user) {
-            console.log('dataTransaction -->', item);
+            console.log('dataOpitinon -->', item);
             if (user.hasOwnProperty(item)) {
                 serializedTransaction.append(item, transaction[item])
             }
         }
 
-        axios.post('/api/transaction', serializedTransaction)
+        axios.post('/api/opinions', serializedTransaction)
             .then(response => {
                 router.push({name: 'transactions.index'})
                 swal({
@@ -71,7 +63,7 @@ export default function useTransactions() {
             .finally(() => isLoading.value = false)
     }
 
-    const deleteTransactions = async (id, index) => {
+    const deleteOpinion = async (id, index) => {
         swal({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this action!',
@@ -85,7 +77,7 @@ export default function useTransactions() {
         })
             .then(result => {
                 if (result.isConfirmed) {
-                    axios.delete('/api/transactions/' + id)
+                    axios.delete('/api/opinions/' + id)
                         .then(response => {
                             users.value.data.splice(index, 1);
 
@@ -109,9 +101,9 @@ export default function useTransactions() {
     return {
         transactions,
         transaction,
-        getTransactions,
-        storeTransaction,
-        deleteTransactions,
+        getOpinions,
+        storeOpinion,
+        deleteOpinion,
         validationErrors
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersOpinionController;
+use App\Http\Controllers\Api\GoogleController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Reset password || forgot password
 Route::post('forget-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forget.password.post');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
@@ -24,12 +26,11 @@ Route::apiResource('categories', CategoryController::class);
 Route::get('/categories', [CategoryController::class, 'getCategories']); // Obtener todas las categorias
 Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene las categorias (Uso: selects)
 
-
 // Estado
 Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); // Obtiene las categorias (Uso: selects)
 
-    // Obtener publicaciones por categoría
-    Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
+// Obtener publicaciones por categoría
+Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 
 // Productos
 Route::apiResource('products', ProductControllerAdvance::class);
@@ -40,25 +41,25 @@ Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); 
 Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
 Route::get('/checkReview', [UsersOpinionController::class, 'checkReview']);
 Route::post('/valorate', [UsersOpinionController::class, 'valorate']);
+
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
 // Productos por ubicacion del usuario (EN PROCESO)
 Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController::class, 'getNearbyProducts']);
 
-// protege las rutas
+// GEOCODE GOOGLE_MAPS
+Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
+Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
+Route::get('/geocode', [GoogleController::class, 'geoCode']);
+
+
+ // protect the routes
 Route::group(['middleware' => 'auth:sanctum'], function() {
-    // ApiResource hace lo siguiente
-    // GET /users` - Index (Listar todos los usuarios)
-    // POST /users` - Store (Crear un nuevo usuario)
-    // GET /users/{user}` - Show (Mostrar un usuario específico)
-    // PUT/PATCH /users/{user}` - Update (Actualizar un usuario)
-    // DELETE /users/{user}` - Destroy (Eliminar un usuario)
 
     // Buy || Sell
     Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);
     Route::post('sellProduct', [Transactionscontroller::class, 'sellProduct']);
-
 
     // Perfil
     Route::get('profile', [ProfileController::class, 'index']);
@@ -70,7 +71,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('getPurchase', [TransactionsController::class, 'getPurchase']);
     Route::post('getSales', [Transactionscontroller::class, 'getSales']);
     Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
-    // Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
 
     // Usuario
     Route::apiResource('users', UserController::class);
@@ -99,52 +99,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Transactions
     Route::apiResource('transactions', TransactionsController::class);
-
-
-
-    // GEOLOCATION GOOGLE MAPS (API_KEY on .env)
-    Route::get('/geocode', function (Request $request) {
-        $apiKey = env('GOOGLE_API_KEY');
-        $address = $request->query('address');
-
-        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
-            'address' => $address.', Spain',
-            'key' => $apiKey
-        ]);
-
-        return $response->json();
-    });
-    Route::get('geoLocation', function (Request $request){
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $apiKey = env('GOOGLE_API_KEY');
-
-        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-            'latlng' => "$latitude,$longitude",
-            'key' => $apiKey
-        ]);
-
-        if ($response->failed()) {
-            return response()->json(['error' => 'Error al obtener la dirección'], 500);
-        }
-
-        return response()->json($response->json());
-    });
-    
-    Route::get('/reverse-geocode', function (Request $request) {
-        $apiKey = env('GOOGLE_API_KEY');
-        $lat = $request->query('lat');
-        $lng = $request->query('lng');
-
-        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
-            'latlng' => $lat . ',' . $lng,
-            'key' => $apiKey
-        ]);
-
-        // Pots aquí mateix retornar només la formatted_address si vols simplificar-ho
-        return $response->json();
-    });
-
 
     // Habilidades
     Route::get('abilities', function(Request $request) {
