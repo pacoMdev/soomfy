@@ -6,8 +6,13 @@
     <div class="">
       <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
         <div v-if="user.email" class="container-info d-flex gap-5">
-          <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
-          <img v-else src="/images/GitHub.svg"  alt="default-image">
+          <div v-if="isLoading">
+            <Skeleton shape="circle" size="5rem"></Skeleton>
+          </div>
+          <div v-else>
+            <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
+            <Skeleton v-else shape="circle" size="5rem"></Skeleton>
+          </div>
 
           <div class="container-info-profile d-flex flex-column gap-1">
             <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
@@ -168,7 +173,7 @@
       <div>
         <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
           <div class="d-flex gap-3">
-            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" class="" icon="pi pi-shop" :badge="activeProducts.length" rounded />
             <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
           </div>
           <div class="d-flex gap-3">
@@ -242,9 +247,10 @@ import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
 import { usePrimeVue } from 'primevue/config';
+import Skeleton from 'primevue/skeleton';
 
 import useUsers from "@/composables/users";
-const { updateUser, validationErrors } = useUsers();
+const { updateUser, validationErrorsm, isLoading } = useUsers();
 import { useForm, useField, defineRule } from "vee-validate";
 import { required, min } from "@/validation/rules";
 import {map} from "lodash";

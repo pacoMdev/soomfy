@@ -1,34 +1,48 @@
 <template>
   <div class="chat-container">
     <!-- Lista de contactos -->
-    <div class="chat-sidebar">
-      <h3>Contactos</h3>
-      <input v-model="searchTerm" placeholder="Buscar" class="search-input">
-      <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes">
-        <p>Producto ID: {{ chat.productId }}</p>
-        <p>Producto Nombre: {{ chat.product?.title }}</p>
-        <p v-if="chat.lastMessage">
-          {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
-        </p>
-        <p>Chat ID: {{ chat.id }}</p>
-        <p>Participantes: {{ chat.users.join(', ') }}</p>
+    <div class="d-flex flex-column">
+      <div class="d-flex flex-column">
+        <h3>Chats</h3>
+        <input v-model="searchTerm" placeholder="Buscar" class="search-input">
       </div>
-    </div>
+      <div class="chat-sidebar">
+        <div v-if="activeChats" class="bordes d-flex flex-column gap-3 align-items-center">
+          <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes d-flex flex-row align-items-center" :class="{ selected: currentChat?.id === chat.id }">
+            <img :src="chat.product?.original_image" alt="" width="80" height="80" class="rounded-1">
+            <div class="d-flex centradoChat flex-column text-start ms-2">
+              <p class="m-0">{{ chat.product?.title }}</p>
+              <p v-if="chat.lastMessage">
+                {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
+        </div>
+      </div>
+     </div>
+
 
     <!-- Área de mensajes -->
     <div class="chat-content">
       <div class="messages" ref="messagesContainer">
-        <div v-for="msg in messages" :key="msg.id"
-             :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
-          <small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>
-          {{ msg.text }}
-          <div class="d-flex gap-2">
+        <div v-for="msg in messages" :key="msg.id" :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
+          <!-- Nombre del propietario -->
+          <!--<small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>-->
+          <!-- Texto del mensaje -->
+          <p class="message-text">{{ msg.text }}</p>
+          <!-- Hora y estado de lectura -->
+          <div class="centradoInfoMessage">
             <small>{{ formatMessageTime(msg.timestamp) }}</small>
-            <small v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
+            <small v-if="msg.userId === auth.user.id" v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
           </div>
         </div>
+        
       </div>
 
+      <!-- Entrada de texto -->
       <div class="chat-input">
         <input type="text" v-model="newMessage" @keyup.enter="sendNewMessage" placeholder="Escribe tu mensaje">
         <button class="secondary-button-2" @click="sendNewMessage">Enviar</button>
@@ -44,18 +58,17 @@ import useFirebase from "../../../composables/firebase";
 import useProducts from "../../../composables/products";
 import { useRoute, useRouter } from "vue-router";
 import { authStore } from "@/store/auth.js";
+import Skeleton from 'primevue/skeleton';
+
 
 // Composables y constantes
-const { sendMessage, getMessages, getUserChats, chatExists, activeChats, getOppositeMessages } = useFirebase();
+const { sendMessage, getMessages, getUserChats, chatExists, activeChats, loading, getOppositeMessages } = useFirebase();
 const { product, getProduct } = useProducts();
 const auth = authStore();
 const route = useRoute();
 const router = useRouter();
 
 // Variables reactivas
-const compradorData = ref({}); // Datos del comprador
-const vendedorData = ref({}); // Datos del vendedor
-
 const currentChat = ref(null); // Chat actual seleccionado
 const searchTerm = ref(''); // Término de búsqueda en la lista de contactos
 const productId = ref(null); // ID del producto asociado al chat
@@ -208,15 +221,10 @@ watch(messages, () => {
   scrollToBottom();
 }, { deep: true });
 
-/**
- * Observa los cambios en los chats activos.
- */
-watch(activeChats, (newChats) => {
-  console.log("Active chats updated:", newChats);
-}, { deep: true });
 
 </script>
 <style scoped>
+/* Contenedor principal del chat */
 .chat-container {
   display: flex;
   height: 75vh;
@@ -226,14 +234,18 @@ watch(activeChats, (newChats) => {
   border-radius: 8px;
   overflow: hidden;
   font-family: Arial, sans-serif;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 
+/* Barra lateral de contactos */
 .chat-sidebar {
-  width: 30%;
+  width: 300px; /* Ancho fijo del sidebar */
   background: #f7f9fc;
   border-right: 1px solid #ddd;
   padding: 10px;
-  overflow-y: auto;
+  overflow-y: auto; /* Permite el scroll si el contenido excede la altura */
+  row-gap: 15px;
 }
 
 .search-input {
@@ -244,47 +256,47 @@ watch(activeChats, (newChats) => {
   border: 1px solid #ddd;
 }
 
-.chat-contact {
+.chat-item {
+  height: 20%;
   padding: 8px;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.chat-contact.selected, .chat-contact:hover {
+.chat-item.selected, .chat-item:hover {
   background: #ddd;
 }
 
+/* Contenido del chat */
 .chat-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
+/* Contenedor de mensajes */
 .messages {
   flex: 1;
   padding: 25px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  row-gap: 30px;
+  row-gap: 16px; /* Espaciado entre mensajes */
 }
 
-.bordes {
-  border: 0.15px solid grey;
-  cursor: pointer;
-  border-radius: 25px;
-  background-color: white;
-  text-align: center;
-}
-
-
+/* Estilo de cada mensaje */
 .msg {
   padding: 8px;
   margin-bottom: 8px;
-  max-width: 60%;
+  max-width: 40%;
+  width: fit-content;
   border-radius: 5px;
   font-size: 14px;
   position: relative;
+  word-wrap: break-word; /* Ajusta palabras largas */
+  overflow-wrap: break-word; /* Evita desbordamientos */
+  white-space: pre-wrap;
 }
 
 .incoming {
@@ -299,20 +311,43 @@ watch(activeChats, (newChats) => {
   color: var(--secondary-color);
 }
 
+/* Texto del mensaje */
+.message-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Contenedor de hora y estado de lectura */
+.centradoChat {
+  display: flex;
+  gap: 8px; /* Espaciado entre elementos */
+  margin-top: 4px;
+}
+
+
+.centradoInfoMessage {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 8px; /* Espaciado entre elementos */
+  margin-top: 4px;
+}
+
+/* Estilo para los elementos pequeños */
 .msg small {
-  position: absolute;
-  bottom: -15px;
-  right: 5px;
-  font-size: 10px;
+  font-size: 12px;
   color: #666;
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
 }
 
 .msg small.propietario {
   position: absolute;
-  top: -13px;
+  top: -19px;
   right: 5px;
 }
 
+/* Entrada de texto */
 .chat-input {
   padding: 10px;
   border-top: 1px solid #ddd;
@@ -327,4 +362,17 @@ watch(activeChats, (newChats) => {
   outline: none;
 }
 
+.secondary-button-2 {
+  margin-left: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.secondary-button-2:hover {
+  background-color: var(--primary-hover-color);
+}
 </style>

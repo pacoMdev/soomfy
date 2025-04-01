@@ -27,6 +27,7 @@ const db = getFirestore(app);
 export default function useFirebase() {
     const chats = ref({ id: null }); // Referencia para almacenar un chat específico
     const activeChats = ref([]); // Referencia para almacenar los chats activos
+    const loading = ref(false); // Estado de carga
 
     /**
      * Verifica si un chat existe en Firestore. Si no existe, lo crea.
@@ -193,6 +194,25 @@ export default function useFirebase() {
             console.error("❌ Error al enviar mensaje:", error);
         }
     };
+    const productCache = new Map(); // Caché para productos
+    const userCache = new Map();
+    const getCachedProduct = async (productId) => {
+        if (productCache.has(productId)) {
+            return productCache.get(productId);
+        }
+        const productData = await getProduct(productId);
+        productCache.set(productId, productData);
+        return productData;
+    };
+
+    const getCachedUser = async (userId) => {
+        if (userCache.has(userId)) {
+            return userCache.get(userId);
+        }
+        const userData = await getUser(userId);
+        userCache.set(userId, userData);
+        return userData;
+    };
 
     /**
      * Obtiene los chats de un usuario en tiempo real y los actualiza.
@@ -204,18 +224,20 @@ export default function useFirebase() {
         const q = query(chatRef, where("users", "array-contains", userId));
 
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            loading.value = true;
             const chats = await Promise.all(querySnapshot.docs.map(async (doc) => {
                 const chatData = doc.data();
                 const productId = chatData.productId;
 
-                const productData = await getProduct(productId);
+                
+                const productData = await getCachedProduct(productId);
 
                 let lastMessage = null;
                 let userData = null;
 
                 if (Array.isArray(chatData.lastMessage) && chatData.lastMessage.length >= 2) {
                     lastMessage = chatData.lastMessage;
-                    userData = await getUser(lastMessage[0]);
+                    userData = await getCachedUser(lastMessage[0]);
                 }
 
                 return {
@@ -235,6 +257,7 @@ export default function useFirebase() {
             });
 
             activeChats.value = chats;
+            loading.value = false;
         });
 
         return unsubscribe;
@@ -242,6 +265,7 @@ export default function useFirebase() {
 
     return {
         activeChats,
+        loading,
         getOppositeMessages,
         chats,
         chatExists,

@@ -31,14 +31,8 @@ export default function useUsers() {
             })
     }
 
-    const getUsersWithTasks = async () => {
-        axios.get('/api/userswithtasks')
-            .then(response => {
-                users.value = response.data;
-            })
-    }
-
     const getUser = async (id) => {
+        isLoading.value = true;
         try {
             const response = await axios.get('/api/users/' + id);
             user.value = response.data.data;
@@ -46,6 +40,8 @@ export default function useUsers() {
         } catch (error) {
             console.error("Error al obtener el producto", error);
             return null;  // En caso de error, retornamos `null` o un valor predeterminado
+        }finally {
+            isLoading.value = false;
         }
     }
 
@@ -156,7 +152,6 @@ export default function useUsers() {
         users,
         user,
         getUsers,
-        getUsersWithTasks,
         getUser,
         createUserDB,
         deleteUserDB,
