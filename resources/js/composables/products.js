@@ -1,5 +1,6 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 export default function useProducts() {
     const products = ref({data:[]})
@@ -16,9 +17,23 @@ export default function useProducts() {
         heigth: '',
     })
     const router = useRouter()
+    const route = useRoute();
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+
+    const categoriaSeleccionada = ref(route.query.search_category);
+    const buscarTitulo = ref('');
+    const buscarEstado = ref('');
+    const buscarPrecioMin = ref();
+    const buscarPrecioMax = ref();
+    // Ubicacion
+    const buscarRadio = ref(0);
+    // Ordenar
+    const ordenarPrecio = ref('');
+    const ordenarFecha = ref('');
+    const latitude = ref(41.38740000);
+    const longitude = ref(2.16860000);
 
     const getProducts = async (
         page = 1,
@@ -240,6 +255,106 @@ export default function useProducts() {
 
     }
 
+const fetchProducts = async () => {
+    try {
+      console.log('Parámetros de consulta actuales:', route.query);
+  
+      await getProducts(
+          1, // Página inicial
+          route.query.search_category || '', // Categoría
+          route.query.search_id || '', // ID (vacío por defecto)
+          route.query.search_title || '', // Título de búsqueda
+          route.query.min_price || '', // Precio mínimo
+          route.query.max_price || '', // Precio máximo
+          route.query.search_estado || '', // Estado (vacío por defecto)
+          route.query.search_location || '', // Ubicación de búsqueda (vacío por defecto)
+          route.query.search_content || '', // Contenido (vacío por defecto)
+          route.query.search_global || '', // Global (vacío por defecto)
+          route.query.order_column || 'created_at', // Columna de orden, por defecto "created_at"
+          route.query.order_direction || 'desc', // Dirección de orden, por defecto "desc"
+          route.query.order_price || '' // Precio para ordenar
+      );
+  
+    } catch (error) {
+      console.error('Error al obtener productos:', error);
+    }
+  };
+  const aplicarFiltro = async () => {
+    try {
+      // Crear objeto con los filtros usando el prefijo search_
+      const filtros = {
+        search_category: categoriaSeleccionada.value || '',
+        search_title: buscarTitulo.value || '',
+        search_estado: buscarEstado.value || '',
+        order_column: 'created_at',
+        order_direction: ordenarFecha.value || 'desc',
+        order_price: ordenarPrecio.value || '',
+        min_price: buscarPrecioMin.value || '',
+        max_price: buscarPrecioMax.value || '',
+      };
+  
+      // Solo agregamos los parámetros de ubicación si hay un radio seleccionado
+      if (buscarRadio.value) {
+        filtros.search_latitude = latitude.value;
+        filtros.search_longitude = longitude.value;
+        filtros.search_radius = buscarRadio.value;
+      }
+  
+      console.log("Filtros a enviar:", filtros);
+  
+      // Eliminar los filtros vacíos (solo claves con valores no vacíos)
+      const filtrosLimpios = Object.fromEntries(
+          Object.entries(filtros).filter(([_, value]) =>
+              value !== '' && value !== null && value !== undefined
+          )
+      );
+  
+      console.log("Filtros limpios:", filtrosLimpios);
+  
+      // Actualizar la URL con los filtros limpios
+      await router.push({
+        query: filtrosLimpios,
+      });
+  
+      // Llamar a getProducts con los parámetros ordenados manualmente
+      await getProducts(
+          1, // Page
+          filtrosLimpios.search_category || '', // Categoría
+          '', // search_id vacío (no lo estás usando actualmente, pero se requiere por posición)
+          filtrosLimpios.search_title || '', // Título
+          filtrosLimpios.min_price || '', // Precio mínimo
+          filtrosLimpios.max_price || '', // Precio máximo
+          filtrosLimpios.search_estado || '', // Estado
+          filtrosLimpios.search_location || '', // Ubicación
+          '', // search_content vacío (no lo estás usando actualmente)
+          '', // search_global vacío (no lo estás usando actualmente)
+          'created_at', // Columna para ordenar
+          filtrosLimpios.order_direction || '',
+          filtrosLimpios.order_price || '' ,// Precio ordenado
+          filtrosLimpios.search_latitude || '', // Pasar la latitud
+          filtrosLimpios.search_longitude || '', // Pasar la longitud
+          filtrosLimpios.search_radius || ''
+  
+    );
+  
+    } catch (error) {
+      console.error('Error al aplicar filtro:', error);
+    }
+  };
+  const limpiarFiltros = async () => {
+    categoriaSeleccionada.value = '';
+    buscarTitulo.value = '';
+    buscarEstado.value = '';
+    buscarTitulo.value = '';
+    ordenarFecha.value = '';
+    ordenarPrecio.value = '';
+    latitude.value = 41.38740000;
+    longitude.value = 2.16860000;
+    buscarPrecioMin.value = '';
+    buscarPrecioMax.value = '';
+    buscarRadio.value = 0;
+  };
+
     return {
         getEstadoList,
         estadoList,
@@ -252,6 +367,17 @@ export default function useProducts() {
         updateProduct,
         deleteProduct,
         validationErrors,
-        isLoading
+        isLoading,
+        fetchProducts,
+        aplicarFiltro,
+        limpiarFiltros,
+        categoriaSeleccionada,
+        buscarTitulo,
+        buscarPrecioMin,
+        buscarPrecioMax,
+        buscarRadio,
+        latitude,
+        longitude,
+        ordenarFecha,
     }
 }

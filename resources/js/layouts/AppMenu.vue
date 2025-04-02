@@ -48,7 +48,7 @@ const model = ref([
         items: [
             { label: 'Products', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/products', permision: 'product-list' },
             { label: 'Categorias', icon: 'pi pi-fw pi-tags', to: '/admin/categories', permision: 'all' },
-            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/estados', permision: 'all' },
+            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/states', permision: 'all' },
             { label: 'Transactions', icon: 'pi pi-truck', to: '/admin/transactions', permision: 'all' },
             { label: 'Opinions', icon: 'pi pi-comment', to: '/admin/opinions', permision: 'all' },
 

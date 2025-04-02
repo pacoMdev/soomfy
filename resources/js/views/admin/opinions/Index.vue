@@ -7,8 +7,8 @@
                     <h5 class="float-start mb-0">Ejercicios</h5>
                 </div>
 
-                    <DataTable v-model:filters="filters" :value="users.data" paginator :rows="5"
-                               :globalFilterFields="['id','userBuyer_id', 'userSeller_id','surname1','surname2','email','created_at','type.name']" stripedRows dataKey="id" size="small">
+                    <DataTable v-model:filters="filters" :value="opinions.data" paginator :rows="5"
+                               :globalFilterFields="['id','title', 'description','calification','product_id','user_id','created_at']" stripedRows dataKey="id" size="small">
 
                         <template #header>
                             <Toolbar pt:root:class="toolbar-table">
@@ -19,7 +19,7 @@
                                     </IconField>
 
                                     <Button type="button" icon="pi pi-filter-slash" label="Clear" class="ml-1" outlined @click="initFilters()" />
-                                    <Button type="button" icon="pi pi-refresh" class="h-100 ml-1" outlined @click="getTransactions()" />
+                                    <Button type="button" icon="pi pi-refresh" class="h-100 ml-1" outlined @click="getOpinions()" />
                                 </template>
                                 <template #end>
                                     <Button v-if="can('users-create')" icon="pi pi-external-link" label="Crear Usuario" @click="$router.push('users/create')" class="float-end" />
@@ -38,13 +38,12 @@
                             -->
                         </template>
 
-                        <template #empty> No transactions found. </template>
+                        <template #empty> No opinions found. </template>
 
                         <Column field="id" header="ID" sortable></Column>
                         <Column field="title" header="Title" sortable></Column>
                         <Column field="description" header="Desctiption" sortable></Column>
                         <Column field="calification" header="Calification" sortable></Column>
-                        <Column field="token" header="Token" sortable></Column>
                         <Column field="product_id" header="Product_id" sortable></Column>
                         <Column field="user_id" header="User_id" sortable></Column>
                         <Column field="created_at" header="Created_at" sortable></Column>

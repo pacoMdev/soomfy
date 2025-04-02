@@ -383,6 +383,37 @@ export default [
                 ]
             },
             {
+                name: 'states',
+                path: 'states',
+                meta: { breadCrumb: 'States'},
+                children: [
+                    {
+                        name: 'states.index',
+                        path: '',
+                        component: () => import('../views/admin/states/Index.vue'),
+                        meta: { breadCrumb: 'States' }
+                    },
+                    {
+                        name: 'states.create',
+                        path: 'create',
+                        component: () => import('../views/admin/states/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Create States',
+                            linked: false
+                        }
+                    },
+                    {
+                        name: 'states.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/states/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit States',
+                            linked: false
+                        }
+                    }
+                ]
+            },
+            {
                 name: 'opinions',
                 path: 'opinions',
                 meta: { breadCrumb: 'Opinions'},

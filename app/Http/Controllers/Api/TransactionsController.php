@@ -46,7 +46,6 @@ class TransactionsController extends Controller
     }
     public function store(Transactions $transactions)
     {
-        dd($transactions);
         $transaction = new Transactions();
         $transaction->name = $transactions->name;
         $transaction->email = $transactions->email;
@@ -78,7 +77,6 @@ class TransactionsController extends Controller
      */
     public function fakePurchase(Request $request)
     {
-        // dd($request -> shippingAddress['newAddress']);
 
         $userBuyer = auth()->user();
         $userSeller = User::findOrFail($request -> userSeller_id);
@@ -162,6 +160,9 @@ class TransactionsController extends Controller
         // Manda el email
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
+
+        // Despues de mandar los 2 emails uno al vendedor y otro al comprador
+        // Vendedor --> 
 
         return response()->json(data: ['status' => 200, 'success' => true, 'mensaje' => 'fackePurchser OK and sended email purchase', 'message' => $transaction]);
     }
