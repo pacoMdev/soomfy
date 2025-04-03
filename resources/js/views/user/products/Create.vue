@@ -80,42 +80,43 @@
                         </div>
 
                         <!-- ESTADO ---------------------------------------------------- -->
-                      <div class="mb-3 input-estado">
-                        <FloatLabel>
-                          <Select
-                              v-model="product.estado"
-                              :options="estadoList"
-                              optionLabel="name"
-                              optionValue="id"
-                              :loading="isLoadingEstados"
-                              class="w-full md:w-80"
-                              appendTo=".show"
-                          />
-                          <label for="estado">Selecciona estado</label>
-                        </FloatLabel>
+                        <div class="mb-3 input-estado">
+                            <FloatLabel>
+                            <Select
+                                v-model="product.estado"
+                                :options="estadoList"
+                                optionLabel="name"
+                                optionValue="id"
+                                :loading="isLoadingEstados"
+                                class="w-full md:w-80"
+                                appendTo=".show"
+                            />
+                            <label for="estado">Selecciona estado</label>
+                            </FloatLabel>
 
-                        <div class="text-danger mt-1">
-                          {{ errors.estado_id }}
+                            <div class="text-danger mt-1">
+                            {{ errors.estado_id }}
+                            </div>
+                            <div class="text-danger mt-1">
+                            <div v-for="message in validationErrors?.estado_id">
+                                {{ message }}
+                            </div>
+                            </div>
                         </div>
-                        <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.estado_id">
-                            {{ message }}
-                          </div>
-                        </div>
-                      </div>
 
-                      <!-- PRICE ---------------------------------------------------- -->
+                        <!-- PRICE ---------------------------------------------------- -->
                         <div class="mb-3 input-price">
                             <FloatLabel>
                                 <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
                                 <label for="price-product">Precio</label>
                             </FloatLabel>
                         </div>
-                        <div class="mb-3 input-toSend">
-                            <FloatLabel>
-                                <ToggleSwitch v-model="toSend" />
-                                <label for="toSend-product">Enviar 📦</label>
-                            </FloatLabel>
+
+                        <!-- PRICE ---------------------------------------------------- -->
+                        
+                        <div class="mb-3 input-toSend card d-flex flex-row gap-3 p-3 p-0 m-0 w-25 justify-content-between">
+                            <p class="m-0">Para enviar 📦</p>
+                            <ToggleSwitch v-model="toSend" />
                         </div>
                         
                         <div v-if="product.toSend == true" class="d-flex flex-column gap-3 py-3 ">

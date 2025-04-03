@@ -11,6 +11,7 @@ export default function useProducts() {
         price: '',
         estado_id: '',
         thumbnails: '',
+        toSend: '',
         weight: '',
         width: '',
         heigth: '',
