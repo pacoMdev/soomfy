@@ -2,13 +2,13 @@
 <template>
     <button class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-0 text-color hover:surface-200 border-noround">
 
-    <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
-    <span class="inline-flex flex-column">
-            <span class="font-bold">{{ authStore().user?.name }}</span>
-            <span>
-                <span v-for="rol in authStore().user?.roles" class="text-sm mr-2">{{rol.name}}</span>
-            </span>
-    </span>
+        <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
+        <span class="inline-flex flex-column">
+                <span class="font-bold">{{ authStore().user?.name }}</span>
+                <span>
+                    <span v-for="rol in authStore().user?.roles" class="text-sm mr-2">{{rol.name}}</span>
+                </span>
+        </span>
     </button>
 
     <ul class="layout-menu">

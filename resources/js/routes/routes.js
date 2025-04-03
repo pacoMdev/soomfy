@@ -221,6 +221,12 @@ export default [
                 meta: { breadCrumb: 'Admin' }
             },
             {
+                name: 'profile',
+                path: '',
+                component: () => import('../views/user/perfil/perfil.vue'),
+                meta: { breadCrumb: 'Perfil' }
+            },
+            {
                 name: 'products',
                 path: 'products',
                 meta: { breadCrumb: 'Products'},

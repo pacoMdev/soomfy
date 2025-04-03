@@ -33,7 +33,7 @@
       </div>
     </div>
     <!-- SELL PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px;" appendTo=".show">
+    <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 400px); " appendTo=".show">
           <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
@@ -85,7 +85,7 @@
           </form>
     </Dialog>
     <!-- EDIT PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
+    <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 600px); " appendTo=".show">
       <Tabs value="0">
         <TabList>
             <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -108,7 +108,7 @@
             </TabPanel>
             <TabPanel value="1">
 
-              <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+              <form @submit.prevent="editUser" class="d-flex flex-column gap-5 py-4">
                 <div class="d-flex flex-column gap-5">
                   <!-- TITULO ---------------------------------------------------- -->
                   <div class="">
@@ -209,18 +209,19 @@
       </Tabs>
     </Dialog>
     <!-- DELETE PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
-      <div class="card flex justify-center">
-        <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
-        <InputOtp v-model="confirmationDelete" integerOnly />
+    <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 400px); " appendTo=".show">
+      <div class="card flex justify-center gap-3">
+        <p>Introduce el siguiente codico para eliminar <b>{{ randomNum }}</b></p>
+        <InputOtp v-model="confirmationDelete" integerOnly  class="mx-auto"/>
+        <Button @click="delProduct(selectedProduct.id)" label="Eliminar" :disabled="isBtnDelete" />
+
       </div>
     </Dialog>
   </div>
 </template>
 
 <script setup>
-import { defineProps, ref, watchEffect, onMounted } from 'vue';
-import axios from 'axios';
+import { defineProps, ref, watch, watchEffect, onMounted } from 'vue';
 import { Dialog, Textarea } from 'primevue';
 import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp, Tabs, TabList, Tab, TabPanels, TabPanel, ToggleSwitch } from 'primevue';
 import {useForm, useField, defineRule} from "vee-validate";
@@ -229,20 +230,18 @@ import useCategories from "@/composables/categories";
 import useProducts from "@/composables/products.js";
 import {required, min} from "@/validation/rules"
 defineRule('required', required)
-defineRule('min', min);
+defineRule('min', min)
 
 
 // Variables del Dialog
 const visible = ref(false);
 const visibleEditProduct = ref(false);
 const visibleDelete = ref(false);
-const selectedProduct = ref(null);
-const usersInterested = ref([]);
-const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
-const selectedUser = ref(null);
 const user = ref(null);
 const finalPrice = ref(0);
 const confirmationDelete = ref(null);
+const randomNum = ref(null);
+const isBtnDelete = ref(true);
 
     // Define a validation schema
     const schema = {
@@ -251,7 +250,6 @@ const confirmationDelete = ref(null);
         category: null,
         price: 'required|min:1',
         estado: null,
-        thumbnails: null
     }
     // Create a form context with the validation schema
     const { validate, errors, resetForm } = useForm({ validationSchema: schema })
@@ -263,7 +261,10 @@ const confirmationDelete = ref(null);
     const { value: category } = useField('category', null, { initialValue: '', label: 'category' });
     const { value: thumbnails } = useField('thumbnails', null, { initialValue: [] });
     const { categoryList, getCategoryList } = useCategories()
-    const { product: productData,getEstadoList,estadoList, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
+    const { product: productData,getEstadoList,estadoList, 
+      getProduct, updateProduct, validationErrors, isLoading, 
+      delProduct, getInterested, sellProduct, selectedProduct,
+      usersInterested, selectedUserId, selectedUser, } = useProducts()
 
     const product = ref({
         title,
@@ -277,6 +278,16 @@ const confirmationDelete = ref(null);
         getCategoryList()
         getEstadoList()
     });
+    watch( confirmationDelete, () => {
+      if(confirmationDelete.value == randomNum.value){
+        isBtnDelete.value = false;
+        console.log('Esta permitido eliminar el Producto');
+      }else{
+        isBtnDelete.value = true;
+      }
+    });
+
+
     watchEffect(() => {
       console.log(' CHANGES ON DATA PRODUCT -->', productData);
       if (productData.value) {
@@ -322,31 +333,55 @@ const confirmationDelete = ref(null);
     getInterested(producto.id);
   };
   const openEditProduct = async (producto) => {
-    selectedProduct.value = producto; 
+    selectedProduct.value = producto;
     selectedUser.value = user;
+
+    // Asignar valores básicos del producto
     product.value.title = selectedProduct.value.title;
     product.value.content = selectedProduct.value.content;
     product.value.price = selectedProduct.value.price;
-    product.value.estado = selectedProduct.value.estado.id;
-    product.value.category = selectedProduct.value.category.id;
-    visibleEditProduct.value = true; 
+    product.value.estado = selectedProduct.value.estado?.id || '';
+    product.value.category = selectedProduct.value.category?.id || '';
+
+    // Validar imágenes en resized_image o media
+    if (selectedProduct.value.media && selectedProduct.value.media.length > 0) {
+      // Si las imágenes están en `media`
+      product.value.thumbnails = selectedProduct.value.media.map((img) => ({
+        img: img.original_url, // URL de la imagen
+        file: null, // No tenemos el archivo original, solo la URL
+        id: img.uuid, // UUID de la imagen
+      }));
+    } else if (selectedProduct.value.resized_image && Object.keys(selectedProduct.value.resized_image).length > 0) {
+      // Si las imágenes están en `resized_image`
+      product.value.thumbnails = Object.values(selectedProduct.value.resized_image).map((img) => ({
+        img: img.original_url, // URL de la imagen
+        file: null, // No tenemos el archivo original, solo la URL
+        id: img.uuid, // UUID de la imagen
+      }));
+    } else {
+      // Si no hay imágenes, inicializa un array vacío
+      product.value.thumbnails = [];
+    }
+
+    // Asegúrate de que haya suficientes slots para el máximo de imágenes
+    while (product.value.thumbnails.length < 3) {
+      product.value.thumbnails.push({ img: '', file: null });
+    }
+
+    visibleEditProduct.value = true;
+
+    console.log('🔎 Imágenes del producto -->', product.value.thumbnails);
     console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
   };
   const openDeleteProduct = async (producto) => {
     selectedProduct.value = producto; 
     visibleDelete.value = true; 
+    randomNum.value = Math.floor(1000 + Math.random() * 9000);
+    confirmationDelete.value='';
     console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
   };
 
-  const getInterested = async (productId) => {
-    try {
-      const response = await axios.get(`/api/getUsersConversations/${productId}`);
-      usersInterested.value = response.data || [];
-      console.log('🔎 USERS INTERESTED  --->', usersInterested);
-    } catch (err) {
-      console.log("Error al obtener los datos.");
-    }
-  };
+  
 
   const props = defineProps({
     productos: Array, // Recibe la lista de products
@@ -358,21 +393,6 @@ const confirmationDelete = ref(null);
     { breakpoint: '767px', numVisible: 3 },
     { breakpoint: '575px', numVisible: 1 }
   ]);
-
-  const sellProduct = async () => {
-    try{
-      const response = await axios.post('/api/sellProduct', {
-        userBuyer_id: selectedUserId.value,
-        product_id: selectedProduct.value.id,
-        finalPrice: finalPrice.value,
-        isToSend: false,
-      });
-      console.log("Producto vendido -->", response.data);
-
-    }catch(error){
-      console.error('Error al vender el producto:', error);
-    }
-  }
 
   // Función para obtener products desde la API
   function getImages(resized_image) {

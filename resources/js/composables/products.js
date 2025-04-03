@@ -19,6 +19,12 @@ export default function useProducts() {
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+    const selectedProduct = ref(null);
+    const usersInterested = ref([]);
+    const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
+    const selectedUser = ref(null);
+
+
 
 
     const getProducts = async (
@@ -136,7 +142,7 @@ export default function useProducts() {
             });
 
             // Redirigir al índice de productos
-            await router.push({ name: 'products.index' });
+            await router.push({ name: 'profile' });
 
         } catch (error) {
             // Manejo de errores
@@ -207,6 +213,23 @@ export default function useProducts() {
                 estadoList.value = response.data.data;
             })
     }
+    const delProduct = async (id) => {
+        axios.delete('/api/products/' + id)
+        .then(response => {
+            getProducts()
+            router.push({name: 'profile'})
+            swal({
+                icon: 'success',
+                title: 'Product deleted successfully'
+            })
+        })
+        .catch(error => {
+            swal({
+                icon: 'error',
+                title: 'Something went wrong'
+            })
+        })
+    }
     const deleteProduct = async (id) => {
         swal({
             title: 'Are you sure?',
@@ -219,27 +242,52 @@ export default function useProducts() {
             timerProgressBar: true,
             reverseButtons: true
         })
-            .then(result => {
-                if (result.isConfirmed) {
-                    axios.delete('/api/products/' + id)
-                        .then(response => {
-                            getProducts()
-                            router.push({name: 'products.index'})
-                            swal({
-                                icon: 'success',
-                                title: 'Product deleted successfully'
-                            })
+        .then(result => {
+            if (result.isConfirmed) {
+                axios.delete('/api/products/' + id)
+                    .then(response => {
+                        getProducts()
+                        router.push({name: 'products.index'})
+                        swal({
+                            icon: 'success',
+                            title: 'Product deleted successfully'
                         })
-                        .catch(error => {
-                            swal({
-                                icon: 'error',
-                                title: 'Something went wrong'
-                            })
+                    })
+                    .catch(error => {
+                        swal({
+                            icon: 'error',
+                            title: 'Something went wrong'
                         })
-                }
-            })
-
+                    })
+            }
+        })
     }
+
+    const getInterested = async (productId) => {
+        try {
+          const response = await axios.get(`/api/getUsersConversations/${productId}`);
+          usersInterested.value = response.data || [];
+          console.log('🔎 USERS INTERESTED  --->', usersInterested);
+        } catch (err) {
+          console.log("Error al obtener los datos.");
+        }
+      };
+      
+      const sellProduct = async () => {
+        try{
+          const response = await axios.post('/api/sellProduct', {
+            userBuyer_id: selectedUserId.value,
+            product_id: selectedProduct.value.id,
+            finalPrice: finalPrice.value,
+            isToSend: false,
+          });
+          console.log("Producto vendido -->", response.data);
+    
+        }catch(error){
+          console.error('Error al vender el producto:', error);
+        }
+      }
+
 
 
     return {
@@ -253,7 +301,14 @@ export default function useProducts() {
         storeUserProduct,
         updateProduct,
         deleteProduct,
+        delProduct,
         validationErrors,
         isLoading,
+        getInterested,
+        sellProduct,
+        selectedProduct,
+        usersInterested,
+        selectedUserId,
+        selectedUser,
     }
 }
