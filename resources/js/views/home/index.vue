@@ -6,7 +6,7 @@
           <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
             <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
             <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
-            <SearchBar />
+            <SearchBar class="search-bar-home" />
           </div>
         </div>
         <div class="centrar-categories">

@@ -34,13 +34,12 @@
           </select>
 
           <!-- Precio -->
-          <!-- Precio MIN -->
-          <label for="precio" class="h1-p">Precio minimo</label>
-          <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€">
-
-          <!-- Precio MAX -->
-          <label for="precio" class="h1-p">Precio máximo</label>
-          <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€">
+          <!-- Precio MIN / MAX-->
+          <label for="precio" class="h1-p">Precio minimo / maximo</label>
+          <div class="d-flex justify-content-between">
+            <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€">
+            <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€">
+          </div>
 
           <!--Ordenar-->
           <label for="ordenarPrecio" class="h1-p">Precio</label>
@@ -125,7 +124,8 @@ const fetchProducts = async () => {
         route.query.search_global || '', // Global (vacío por defecto)
         route.query.order_column || 'created_at', // Columna de orden, por defecto "created_at"
         route.query.order_direction || 'desc', // Dirección de orden, por defecto "desc"
-        route.query.order_price || '' // Precio para ordenar
+        route.query.order_price || '', // Precio para ordenar
+        100
     );
 
   } catch (error) {
@@ -202,7 +202,8 @@ const aplicarFiltro = async () => {
         filtrosLimpios.order_price || '' ,// Precio ordenado
         filtrosLimpios.search_latitude || '', // Pasar la latitud
         filtrosLimpios.search_longitude || '', // Pasar la longitud
-        filtrosLimpios.search_radius || ''
+        filtrosLimpios.search_radius || '',
+        ''
 
   );
 

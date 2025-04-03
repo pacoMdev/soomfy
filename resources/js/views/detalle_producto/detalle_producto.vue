@@ -54,9 +54,8 @@
                             <h2 class="m-0">{{ product.title }}</h2>
                             <p class="m-0 h2-p">{{ product.content }}</p>
                             <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
-                          <div class="container-categories d-flex gap-2 flex-wrap">
-                            <Tag v-if="product.category" severity="secondary" :value="product.category.name" rounded></Tag>
-                            <!-- <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p> -->
+                            <div class="container-categories d-flex gap-2 flex-wrap">
+                                <Tag v-for="category in product.categories" :key="category.id" severity="secondary" :value="category.name" rounded></Tag>
                             </div>
                             <div class="button d-flex gap-3 ">
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">

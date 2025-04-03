@@ -74,16 +74,18 @@
             </h6>
             <div class="mb-3">
               <FloatLabel>
-                <Select
-                    v-model="product.category_id"
+                <MultiSelect
+                    v-model="product.categories"
                     :options="categoryList"
                     optionLabel="name"
                     optionValue="id"
                     :loading="isLoading"
+                    :disabled="isLoading"
                     class="w-full md:w-80"
                     appendTo=".show"
-                />
-                <label>Selecciona categoría</label>
+                    placeholder="Selecciona categorías"
+                  />
+                <label>Selecciona categorías</label>
               </FloatLabel>
               <div class="text-danger mt-1">
                 {{ errors.categories }}
@@ -162,10 +164,9 @@ defineRule('min', min);
 const schema = {
   title: 'required|min:5',
   content: 'required|min:5',
-  category_id: 'required',
+  categories: 'required',
   price: 'required',
   estado_id: 'required',
-  thumbnails: 'required'
 }
 
 // Create a form context with the validation schema
@@ -174,18 +175,17 @@ const {validate, errors} = useForm({validationSchema: schema})
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
-const {value: category_id} = useField('category_id', null, {initialValue: ''});
+const {value: categories} = useField('categories', null, {initialValue: []});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estado_id} = useField('estado_id', null, {initialValue: ''});
-const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 
 const {categoryList, getCategoryList} = useCategories()
-const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
+const {storeProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
 const product = reactive({
   title,
   content,
-  category_id,
+  categories,
   thumbnails: [
     { img: "", file: null },
     { img: "", file: null },
@@ -199,7 +199,7 @@ watch(() => categoryList.value, (newValue) => {
   console.log('Lista de categorías actualizada:', newValue);
 }, { deep: true });
 
-watch(() => product.category_id, (newValue) => {
+watch(() => product.categories, (newValue) => {
   console.log('Categoría seleccionada:', newValue);
 });
 
@@ -215,20 +215,24 @@ function submitForm() {
   }
 
   validate().then(form => {
+    console.log('Validación del formulario:', form);
     if (form.valid) {
+      console.log('Formulario válido, enviando datos...');
       const formData = new FormData();
 
       formData.append('title', product.title);
       formData.append('content', product.content);
       formData.append('price', product.price);
       formData.append('estado_id', product.estado_id);
-      formData.append('category_id', product.category_id);
+      if (Array.isArray(product.categories)) {
+          product.categories.forEach((category) => {
+            formData.append('categories[]', category);
+          });
+        }
 
-      let imageIndex = 0;
       imagenes.forEach(imagen => {
         if (imagen.file) {
           formData.append('thumbnails[]', imagen.file);
-          imageIndex++;
         }
       });
 
@@ -236,7 +240,7 @@ function submitForm() {
         console.log('Enviando:', pair[0], pair[1]);
       }
 
-      storeUserProduct(formData);
+      storeProduct(formData);
     }
   });
 }

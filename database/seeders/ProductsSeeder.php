@@ -15,7 +15,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Golf GTI en excelente estado, 30.000km, mantenimiento al día.',
                 'price' => 25000,
                 'estado_id' => 2,
-                'category_id' => 1,
+                'categories' => [1, 2], // Vehículos, Coches
                 'user_id' => 1,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -33,7 +33,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Nuevo, precintado, 256GB de almacenamiento.',
                 'price' => 1099,
                 'estado_id' => 1,
-                'category_id' => 2,
+                'categories' => [5], // Tecnología
                 'user_id' => 2,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -52,7 +52,7 @@ class ProductsSeeder extends Seeder
                 'content' => '2 habitaciones, reformado, muy luminoso.',
                 'price' => 180000,
                 'estado_id' => 2,
-                'category_id' => 3,
+                'categories' => [8, 9], // Inmuebles, Apartamentos
                 'user_id' => 3,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -71,7 +71,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Tapizado en tela, muy cómodo y como nuevo.',
                 'price' => 450,
                 'estado_id' => 2,
-                'category_id' => 4,
+                'categories' => [11], // Hogar
                 'user_id' => 1,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -90,7 +90,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Mantenimiento de jardines y poda de árboles.',
                 'price' => 25,
                 'estado_id' => 1,
-                'category_id' => 5,
+                'categories' => [14], // Servicios
                 'user_id' => 2,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -109,7 +109,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Motor Brose, batería 500Wh, poco uso.',
                 'price' => 2800,
                 'estado_id' => 2,
-                'category_id' => 7,
+                'categories' => [18], // Ciclismo
                 'user_id' => 3,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -129,7 +129,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'RTX 3070, 32GB RAM, i7 11th gen.',
                 'price' => 1200,
                 'estado_id' => 3,
-                'category_id' => 2,
+                'categories' => [6, 7], // Tecnología, Laptops
                 'user_id' => 1,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -148,7 +148,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Profesor con 10 años de experiencia.',
                 'price' => 20,
                 'estado_id' => 1,
-                'category_id' => 5,
+                'categories' => [14], // Servicios
                 'user_id' => 2,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -166,7 +166,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Madera maciza, extensible, 6-8 personas.',
                 'price' => 350,
                 'estado_id' => 3,
-                'category_id' => 4,
+                'categories' => [11, 12], // Hogar, Decoración
                 'user_id' => 3,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -185,7 +185,7 @@ class ProductsSeeder extends Seeder
                 'content' => '150cv, gasolina, techo panorámico.',
                 'price' => 19500,
                 'estado_id' => 2,
-                'category_id' => 1,
+                'categories' => [1, 2], // Vehículos, Coches
                 'user_id' => 1,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -204,7 +204,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Juego completo de 50kg ajustables.',
                 'price' => 180,
                 'estado_id' => 2,
-                'category_id' => 7,
+                'categories' => [17], // Fitness
                 'user_id' => 2,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -224,7 +224,7 @@ class ProductsSeeder extends Seeder
                 'content' => '80m2, escaparate amplio, recién reformado.',
                 'price' => 150000,
                 'estado_id' => 2,
-                'category_id' => 3,
+                'categories' => [8], // Inmuebles
                 'user_id' => 3,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -243,7 +243,7 @@ class ProductsSeeder extends Seeder
                 'content' => '9kg, 1400rpm, eficiencia A+++.',
                 'price' => 380,
                 'estado_id' => 3,
-                'category_id' => 4,
+                'categories' => [13], // Electrodomésticos
                 'user_id' => 1,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -262,7 +262,7 @@ class ProductsSeeder extends Seeder
                 'content' => '165Hz, 1ms, QHD, FreeSync Premium.',
                 'price' => 299,
                 'estado_id' => 1,
-                'category_id' => 2,
+                'categories' => [5], // Tecnología
                 'user_id' => 2,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -280,7 +280,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Bodas, eventos, books profesionales.',
                 'price' => 200,
                 'estado_id' => 1,
-                'category_id' => 5,
+                'categories' => [14], // Servicios
                 'user_id' => 3,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -299,7 +299,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Motor 3.5HP, programas automáticos.',
                 'price' => 750,
                 'estado_id' => 2,
-                'category_id' => 7,
+                'categories' => [17], // Fitness
                 'user_id' => 1,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -319,7 +319,7 @@ class ProductsSeeder extends Seeder
                 'content' => '2018, 15.000km, extras incluidos.',
                 'price' => 8500,
                 'estado_id' => 3,
-                'category_id' => 1,
+                'categories' => [1, 3], // Vehículos, Motos
                 'user_id' => 2,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -338,7 +338,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'M2, 256GB, WiFi + Cellular.',
                 'price' => 950,
                 'estado_id' => 2,
-                'category_id' => 2,
+                'categories' => [6], // Tecnología
                 'user_id' => 3,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -357,7 +357,7 @@ class ProductsSeeder extends Seeder
                 'content' => '3 habitaciones, terraza 40m2, parking.',
                 'price' => 295000,
                 'estado_id' => 2,
-                'category_id' => 3,
+                'categories' => [8, 9], // Inmuebles, Apartamentos
                 'user_id' => 1,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -377,7 +377,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Dispensador agua/hielo, panel digital.',
                 'price' => 850,
                 'estado_id' => 3,
-                'category_id' => 4,
+                'categories' => [13], // Electrodomésticos
                 'user_id' => 2,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -396,7 +396,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Clases online o presenciales.',
                 'price' => 25,
                 'estado_id' => 1,
-                'category_id' => 5,
+                'categories' => [14], // Servicios
                 'user_id' => 3,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -414,7 +414,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Modelo RF97, poco uso.',
                 'price' => 180,
                 'estado_id' => 2,
-                'category_id' => 7,
+                'categories' => [18], // Ciclismo
                 'user_id' => 1,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -433,7 +433,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Logos, branding, web design.',
                 'price' => 35,
                 'estado_id' => 1,
-                'category_id' => 6,
+                'categories' => [14], // Servicios
                 'user_id' => 2,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -451,7 +451,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Nueva, sin estrenar, 2 mandos.',
                 'price' => 450,
                 'estado_id' => 1,
-                'category_id' => 2,
+                'categories' => [5], // Tecnología
                 'user_id' => 3,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -470,7 +470,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Desarrollo web y aplicaciones móviles.',
                 'price' => 45,
                 'estado_id' => 1,
-                'category_id' => 6,
+                'categories' => [14], // Servicios
                 'user_id' => 1,
                 'toSend' => false,
                 'isDeleted' => false,
@@ -489,7 +489,7 @@ class ProductsSeeder extends Seeder
                 'content' => 'Plegable, incluye red y raquetas.',
                 'price' => 295,
                 'estado_id' => 2,
-                'category_id' => 7,
+                'categories' => [17], // Fitness
                 'user_id' => 2,
                 'toSend' => true,
                 'isDeleted' => false,
@@ -511,7 +511,6 @@ class ProductsSeeder extends Seeder
             $product->content = $productData['content'];
             $product->price = $productData['price'];
             $product->estado_id = $productData['estado_id'];
-            $product->category_id = $productData['category_id'];
             $product->user_id = $productData['user_id'];
             $product->toSend = $productData['toSend'];
             $product->isDeleted = $productData['isDeleted'];
@@ -520,13 +519,20 @@ class ProductsSeeder extends Seeder
             $product->dimensionY = $productData['dimensionY'];
             $product->marca = $productData['marca'];
             $product->color = $productData['color'];
-            // Imagenes subidas por media (spatieMedia)
+            $product->save();
+
+            // Associate multiple categories to the product
+            if (isset($productData['categories']) && is_array($productData['categories'])) {
+                $product->categories()->sync($productData['categories']);
+            }
+
+            // Upload images using spatieMedia
             if (isset($productData['images'])) {
                 foreach ($productData['images'] as $imagePath) {
                     $product->addMedia(storage_path($imagePath))->preservingOriginal()->toMediaCollection('images');
                 }
             }
-            $product->save();
         }
+    
     }
 }

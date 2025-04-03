@@ -16,6 +16,7 @@ use App\Models\Message;
 use App\Models\Transactions;
 use App\Models\UserOpinion;
 use App\Models\User;
+use App\Models\CategoryProduct;
 
 use App\Mail\ConstructEmail;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -41,10 +42,13 @@ class ProductControllerAdvance extends Controller
         $product->content = $validatedData['content'];
         $product->estado_id = $validatedData['estado_id'];
         $product->price = $validatedData['price'];
-        $product->category_id = $validatedData['category_id'];
         $product->user_id = auth()->id();
-
         $product->save();
+
+        // Guardar las categorías en la tabla intermedia
+        if (isset($validatedData['categories']) && is_array($validatedData['categories'])) {
+            $product->categories()->sync($validatedData['categories']);
+        }
 
         // Manejar imágenes - Corregido el manejo de thumbnails
         if ($request->hasFile('thumbnails')) {
@@ -65,7 +69,7 @@ class ProductControllerAdvance extends Controller
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
             return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            $product->load('user','category','estado', 'media');
+            $product->load('user','categories','estado', 'media');
             return new ProductResource($product);
         }
     }
@@ -112,7 +116,7 @@ class ProductControllerAdvance extends Controller
 
 
 
-            $product->load('user','category','estado', 'media');
+            $product->load('user','categories','estado', 'media');
 
             return new ProductResource($product);
 
@@ -136,7 +140,7 @@ class ProductControllerAdvance extends Controller
      */
     public function getProducts()
     {
-        $paginate = request('paginate', 8);
+        $paginate = request('paginate', null);
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'title', 'created_at', 'price'])) {
             $orderColumn = 'created_at';
@@ -160,7 +164,7 @@ class ProductControllerAdvance extends Controller
         $searchGlobal = request('search_global', null);
 
         // Muestra todos los productos con su categoria y foto
-        $products = Product::with('user','estado','category', 'media')
+        $products = Product::with('user','estado','categories', 'media')
             // Busqueda global
             ->when($searchGlobal = request('search_global'), function($query) use ($searchGlobal) {
                 $query->where(function($q) use ($searchGlobal) {

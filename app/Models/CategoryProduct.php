@@ -9,18 +9,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Category extends Model implements HasMedia
+class CategoryProduct extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
 
-    protected $fillable = ['name'];
 
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'category_product');
-    }
 
     public function registerMediaCollections(): void
     {

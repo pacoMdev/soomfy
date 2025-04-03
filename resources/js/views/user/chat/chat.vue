@@ -15,6 +15,7 @@
               <p v-if="chat.lastMessage">
                 {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
               </p>
+              <p>{{ chat.users }}</p>
             </div>
           </div>
         </div>
@@ -26,18 +27,31 @@
 
 
     <!-- Área de mensajes -->
-    <div class="chat-content">
+    <div v-if="!activeChats || !currentChat" class="chat-content">
+      <img src="images/noChatSelected.png" alt="">
+    </div>
+    <div v-else class="chat-content">
+      <div class="d-flex justify-content-start align-items-start">
+        <img :src="product?.original_image" alt="" width="200px">
+        <div class="p-4">
+          <h4 class="my-1">{{ product?.title }}</h4>
+          <p class="m-0 h3-p ">{{ product?.price }} €</p>
+          <p class="m-0 h4-p ">{{ product?.estado?.name }}</p>
+        </div>
+        <div class="height-100 align-items-center d-flex flex-column justify-content-center">
+          <img :src="user?.avatar" class="rounded-circle" width="60px"  alt="">
+        </div>
+      </div>
       <div class="messages" ref="messagesContainer">
         <div v-for="msg in messages" :key="msg.id" :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
-          <!-- Nombre del propietario -->
-          <!--<small class="propietario">{{ msg.userId === auth.user.id ? auth.user.name : msg.userId }}</small>-->
-          <!-- Texto del mensaje -->
-          <p class="message-text">{{ msg.text }}</p>
-          <!-- Hora y estado de lectura -->
-          <div class="centradoInfoMessage">
-            <small>{{ formatMessageTime(msg.timestamp) }}</small>
-            <small v-if="msg.userId === auth.user.id" v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
-          </div>
+            <!-- Texto del mensaje -->
+            <p class="message-text">{{ msg.text }}</p>
+            <!-- Hora y estado de lectura -->
+            <div class="centradoInfoMessage" :style="{ justifyContent: msg.userId === usuarioAutenticado ? 'flex-end' : 'flex-start' }">
+              <small>{{ formatMessageTime(msg.timestamp) }}</small>
+              <small v-if="msg.userId === auth.user.id" v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
+            </div>
+          
         </div>
         
       </div>
@@ -56,6 +70,7 @@
 import { onMounted, ref, onUnmounted, watch, nextTick, inject } from "vue";
 import useFirebase from "../../../composables/firebase";
 import useProducts from "../../../composables/products";
+import useUsers from "../../../composables/users";
 import { useRoute, useRouter } from "vue-router";
 import { authStore } from "@/store/auth.js";
 import Skeleton from 'primevue/skeleton';
@@ -64,6 +79,7 @@ import Skeleton from 'primevue/skeleton';
 // Composables y constantes
 const { sendMessage, getMessages, getUserChats, chatExists, activeChats, loading, getOppositeMessages } = useFirebase();
 const { product, getProduct } = useProducts();
+const { user, getUser } = useUsers();
 const auth = authStore();
 const route = useRoute();
 const router = useRouter();
@@ -142,6 +158,11 @@ const selectChat = async (chatId, users, idProducto) => {
   } else {
     getOppositeMessages(chatId, compradorId.value);
   }
+  console.log(productId.value);
+  await getProduct(productId.value);
+  const destinatario = usuarioAutenticado === compradorId.value ? vendedorId.value : compradorId.value;
+  await getUser(destinatario);
+  console.log(product.value)
 };
 
 /**
@@ -187,7 +208,6 @@ const sendNewMessage = async () => {
 onMounted(async () => {
   try {
     await obtainUserChats();
-
     if (route.query.chatData) {
       currentChat.value = JSON.parse(route.query.chatData);
       productId.value = currentChat.value.productId;
@@ -257,6 +277,7 @@ watch(messages, () => {
 }
 
 .chat-item {
+  width: 100%;
   height: 20%;
   padding: 8px;
   cursor: pointer;

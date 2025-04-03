@@ -7,8 +7,7 @@
                     <h5 class="float-start mb-0">Gestor categorias:</h5>
                 </div>
 
-                <DataTable  :value="categories.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id" size="small">
-
+                <DataTable  :value="categories" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id" size="small">
                     <template #header>
 
                         <Toolbar pt:root:class="toolbar-table">

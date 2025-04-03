@@ -3,18 +3,12 @@
   <form @submit.prevent="buscarProductos" class="d-flex w-100 justify-content-center align-items-center">
     <input
         type="text"
-        :class="[
-                isHome ? 'buscadorProductos' : 'buscadorProductos2'              ]"
+        :class="handleStyle"
         :id="id"
         v-model="searchTerm"
         :placeholder="placeholder"
     />
-    <button type="submit"
-            :class="[
-                isHome ? 'secondary-button-2' : 'primary-button',
-                'no-borders-left',
-              ]"
-            >
+    <button type="submit" :class="handleButtonStyle">
       <i class="fas fa-search"></i> {{ buttonText }}
     </button>
   </form>
@@ -38,6 +32,10 @@ const props = defineProps({
   buttonText: {
     type: String,
     default: 'Search'
+  },
+  smallScreen: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -46,6 +44,25 @@ const emit = defineEmits(['search']);
 
 const router = useRouter();
 const searchTerm = ref('');
+
+// Si llamamos a SearchBar desde home, cambiaremos algunas cosas
+const isHome = computed(() => route.name === 'home');
+
+const handleStyle = computed(() => {
+  if (isHome.value) {
+    return props.smallScreen ? 'buscadorProductos2' : 'buscadorProductos';
+  } else {
+    return 'buscadorProductos2';
+  }
+});
+
+const handleButtonStyle = computed(() => {
+  if (isHome.value) {
+    return props.smallScreen ? 'primary-button no-borders-left' : 'secondary-button-2';
+  } else {
+    return 'primary-button no-borders-left';
+  }
+});
 
 const buscarProductos = () => {
   if (searchTerm.value.trim()) {
@@ -61,9 +78,6 @@ const buscarProductos = () => {
     });
   }
 };
-
-// Si llamamos a SearchBar desde home, cambiaremos algunas cosas
-const isHome = computed(() => route.name === 'home');
 
 </script>
 

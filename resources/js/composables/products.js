@@ -82,28 +82,45 @@ export default function useProducts() {
 
 
     const storeProduct = async (formData) => {
-        // Verificar contenido
+        console.log('Archivo products.js ')
         for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
+          console.log(pair[0] + ': ' + pair[1]);
         }
-
+      
         if (isLoading.value) return;
         isLoading.value = true;
         validationErrors.value = {};
-
-        const response = await axios.post('/products', formData, {
+      
+        try {
+          const response = await axios.post('/api/products', formData, {
             headers: {
-                "Content-Type": "multipart/form-data"
+              "Content-Type": "multipart/form-data"
             }
-        });
-
-        await  swal({
+          });
+      
+          console.log('Respuesta del servidor:', response.data);
+      
+          // Mostrar mensaje de éxito
+          await swal({
             icon: 'success',
             title: 'Producto guardado exitosamente',
             showConfirmButton: true,
             timer: 2000
-        });
-        await router.push({name: 'products.index'});
+          });
+      
+          // Redirigir al índice de productos
+          await router.push({ name: 'products.index' });
+      
+          return response.data; // Retorna la respuesta para usarla en otro lugar
+        } catch (error) {
+            console.error('Error al guardar el producto:', error);
+            if (error.response && error.response.status === 422) {
+                validationErrors.value = error.response.data.errors || {};
+            }
+            throw error; // Propaga el error para manejarlo en otro lugar
+        } finally {
+            isLoading.value = false;
+        }
     };
     const storeUserProduct = async (formData) => {
         // Verificar contenido de formData en consola (opcional, para debug)
@@ -122,6 +139,7 @@ export default function useProducts() {
                     "Content-Type": "multipart/form-data"
                 }
             });
+            
 
             // Mostrar mensaje de éxito si la solicitud fue exitosa
             await swal({
@@ -133,7 +151,8 @@ export default function useProducts() {
 
             // Redirigir al índice de productos
             await router.push({ name: 'products.index' });
-
+            
+            return response.data;
         } catch (error) {
             // Manejo de errores
             console.error("Error al guardar el producto:", error);

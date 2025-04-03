@@ -57,17 +57,18 @@
                         <!-- CATEGORY ---------------------------------------------------- -->
                         <div class="mb-3 input-categorias">
                             <FloatLabel>
-                              <Select
-                                  v-model="product.category"
-                                  :options="categoryList"
-                                  optionLabel="name"
-                                  optionValue="id"
-                                  :loading="isLoading"
-                                  :disabled="isLoading"
-                                  class="w-full md:w-80"
-                                  appendTo=".show"
-                              />
-                              <label>Selecciona categoría</label>
+                                <MultiSelect
+                                    v-model="product.categories"
+                                    :options="categoryList"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    :loading="isLoading"
+                                    :disabled="isLoading"
+                                    class="w-full md:w-80"
+                                    appendTo=".show"
+                                    placeholder="Selecciona categorías"
+                                />
+                                <label>Selecciona categorías</label>
                             </FloatLabel>
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
@@ -132,7 +133,6 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
-import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
 import useProducts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
@@ -157,11 +157,9 @@ const dropZoneActive = ref(true)
 const schema = {
     title: 'required|min:5',
     content: 'required|min:5',
-    category: 'required',
+    categories: 'required',
     price: 'required',
     estado: 'required',
-    thumbnails: 'required'
-
 }
 // Create a form context with the validation schema
 const {validate, errors} = useForm({validationSchema: schema})
@@ -169,17 +167,16 @@ const {validate, errors} = useForm({validationSchema: schema})
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
-const {value: categories} = useField('category', null, {initialValue: '', label: 'category'});
+const {value: categories} = useField('categories', null, {initialValue: '', label: 'categories'});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estados} = useField('estado', null, {initialValue: ''});
-const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
 const product = ref({
     title,
     content,
-    category: categories,
+    categories: categories,
     thumbnails: [
         { img: "", file: null }, // Contenedor 1
         { img: "", file: null }, // Contenedor 2
@@ -213,7 +210,11 @@ function submitForm() {
       formData.append('content', product.value.content);
       formData.append('price', product.value.price);
       formData.append('estado_id', product.value.estado);
-      formData.append('category_id', product.value.category);
+      if (Array.isArray(product.value.categories)) {
+          product.value.categories.forEach((category) => {
+            formData.append('categories[]', category);
+          });
+        }
 
       imagenes.forEach((imagen, index) => {
         if (imagen.file) {

@@ -26,7 +26,8 @@ class StoreProductRequest extends FormRequest
         return [
             'title' => 'sometimes|string|max:255',
             'content' => 'sometimes|string',
-            'category_id' => 'sometimes|exists:categories,id',
+            'categories' => 'required|array', // Validar que sea un array
+            'categories.*' => 'exists:categories,id',
             'price' => 'sometimes|numeric|min:0',
             'estado_id' => 'sometimes|exists:estados,id',
             'thumbnails.*' => 'nullable|image|mimes:webp,jpeg,png,jpg|max:2048'
