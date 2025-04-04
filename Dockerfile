@@ -1,0 +1,31 @@
+FROM php:8.2-fpm
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    zip unzip curl git libpng-dev libonig-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Crear directorio de la aplicación
+WORKDIR /var/www
+
+# Copiar archivos del proyecto
+COPY . .
+
+# Instalar dependencias de PHP y Node
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install && npm run build
+
+# Generar la clave de Laravel
+RUN php artisan key:generate
+
+# Configurar permisos
+RUN chmod -R 777 storage bootstrap/cache
+
+# Exponer el puerto 8000
+EXPOSE 8000
+
+# Comando para iniciar Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
