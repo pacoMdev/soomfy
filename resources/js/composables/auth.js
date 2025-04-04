@@ -40,7 +40,8 @@ export default function useAuth() {
         name: '',
         email: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
+        role_id: 2
     })
 
     const submitLogin = async () => {
@@ -206,6 +207,10 @@ export default function useAuth() {
                 ability.update(rules)
             })
     }
+    const googleAuth = async () => {
+        window.location.href = "/google-auth/redirect";
+    }
+
 
     return {
         loginForm,
@@ -221,6 +226,7 @@ export default function useAuth() {
         user,
         getUser,
         logout,
-        getAbilities
+        getAbilities,
+        googleAuth,
     }
 }
