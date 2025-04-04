@@ -10,17 +10,21 @@
           </div>
         </div>
         <div class="centrar-categories">
-          <div class="categories">
-            <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
-              <img src="/images/others.webp" alt="Todas">
-              <p>Todas</p>
-            </div>
-            <div v-for="category in categories" :key="category.id">
-              <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
-                <img :src="category.original_image" :alt="category.original_image" />
-                <p>{{ category.name }}</p>
+          <div class="categories-carousel">
+            <button class="carousel-arrow left-arrow" @click="scrollLeft">‹</button>
+            <div class="categories-wrapper" ref="carousel">
+              <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
+                <img src="/images/others.webp" alt="Todas">
+                <p>Todas</p>
+              </div>
+              <div v-for="category in categories" :key="category.id">
+                <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
+                  <img :src="category.original_image" :alt="category.original_image" />
+                  <p>{{ category.name }}</p>
+                </div>
               </div>
             </div>
+            <button class="carousel-arrow right-arrow" @click="scrollRight">›</button>
           </div>
         </div>
 
@@ -88,10 +92,10 @@ const { products, getProducts } = useProducts();
 import useCategories from '@/composables/categories.js';
 const { categories, getCategories } = useCategories();
 
-
 const productos = ref([]);
 const paginaActual = ref(1);
 const cargando = ref(false);
+const carousel = ref(null);
 
 onMounted(async () => {
   await obtenerProductos(1); // Carga la primera pagina
@@ -174,6 +178,18 @@ const redirectAll = () => {
   });
 };
 
+const scrollLeft = () => {
+  if (carousel.value) {
+    carousel.value.scrollBy({ left: -200, behavior: 'smooth' });
+  }
+};
+
+const scrollRight = () => {
+  if (carousel.value) {
+    carousel.value.scrollBy({ left: 200, behavior: 'smooth' });
+  }
+};
+
 // Removed unused responsiveOptions variable
 
 </script>
@@ -185,5 +201,46 @@ const redirectAll = () => {
   border: 1px solid var(--primary-color);
   padding-left: 25px;
   width: 75%;
+}
+
+.categories-carousel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.categories-wrapper {
+  display: flex;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  gap: 15px;
+  flex: 1;
+}
+
+.categories-wrapper img {
+  width: 70px; /* Original size */
+  height: 70px; /* Original size */
+  object-fit: cover;
+  border-radius: 50%; /* Keep circular shape */
+}
+
+.carousel-arrow {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.left-arrow {
+  position: absolute;
+  left: -30px;
+}
+
+.right-arrow {
+  position: absolute;
+  right: -30px;
 }
 </style>

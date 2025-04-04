@@ -1,12 +1,9 @@
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import useFirebase from "@/composables/firebase.js";
 import { authStore } from "@/store/auth.js";
 
 export default function useProductDetail() {
-
-
     const path = window.location.pathname; // obtiene url
     const segments = path.split('/');
     const id = segments.pop();  // obtiene ultimo elemento (id)
@@ -102,8 +99,8 @@ export default function useProductDetail() {
     }
 
     const isYourOwnProduct = (productId) => {
-        return productId === auth.user.id;
-      }
+        return auth.user && auth.user.id === productId;
+    }
   
     const handleChatCreation = async () => {
         try {

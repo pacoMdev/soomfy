@@ -15,92 +15,92 @@ class CategoryTableSeeder extends Seeder
      */
         public function run()
     {
-        $categories = [
+        $categories_svg = [
             [
                 'name' => 'Vehículos',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'car_5615874.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'vehiculos.svg'
             ],
             [
                 'name' => 'Coches',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'coches.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'car.svg'
             ],
             [
                 'name' => 'Motos',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'motos.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'moto.svg'
             ],
             [
                 'name' => 'Camiones',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'camiones.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'camion.svg'
             ],
             [
                 'name' => 'Tecnología',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'tecnologia.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'tecnologia.svg'
             ],
             [
                 'name' => 'Tablets',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'tablets.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'tablet.svg'
             ],
             [
                 'name' => 'Laptops',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'laptops.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'laptop.svg'
             ],
             [
                 'name' => 'Inmuebles',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'inmuebles.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'inmuebles.svg'
             ],
             [
                 'name' => 'Casas',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'casas.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'casa.svg'
             ],
             [
                 'name' => 'Apartamentos',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'apartamentos.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'apartamento.svg'
             ],
             [
                 'name' => 'Hogar',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'muebles.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'muebles.svg'
             ],
             [
                 'name' => 'Decoración',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'decoracion.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'decoracion.svg'
             ],
             [
                 'name' => 'Electrodomésticos',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'electrodomesticos.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'electrodomesticos.svg'
             ],
             [
                 'name' => 'Servicios',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'construccion.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'servicios.svg'
             ],
             [
                 'name' => 'Construcción',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'construccion.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'construccion.svg'
             ],
             [
                 'name' => 'Empleo',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'jobs.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'jobs.svg'
             ],
             [
                 'name' => 'Deporte', 
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'deporte.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'deporte.svg'
             ],
             [
                 'name' => 'Fitness',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'fitness.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'fitness.svg'
             ],
             [
                 'name' => 'Ciclismo',
-                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories'.DIRECTORY_SEPARATOR.'ciclismo.webp'
+                'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'ciclismo.svg'
             ],
         ];
 
-        foreach ($categories as $categoryData) {
-            $categories = Category::create([
+        foreach ($categories_svg as $categoryData) {
+            $categories_svg = Category::create([
                 'name' => $categoryData['name']
             ]);
             // Imagenes subidas por media (spatieMedia)
             if (isset($categoryData['images'])) {
-                $categories->addMedia(storage_path($categoryData['images']))->preservingOriginal()->toMediaCollection('images');
+                $categories_svg->addMedia(storage_path($categoryData['images']))->preservingOriginal()->toMediaCollection('images');
 
             }
         }

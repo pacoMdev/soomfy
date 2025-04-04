@@ -4,7 +4,6 @@
     <div class="d-flex flex-column">
       <div class="d-flex flex-column">
         <h3>Chats</h3>
-        <input v-model="searchTerm" placeholder="Buscar" class="search-input">
       </div>
       <div class="chat-sidebar">
         <div v-if="activeChats" class="bordes d-flex flex-column gap-3 align-items-center">

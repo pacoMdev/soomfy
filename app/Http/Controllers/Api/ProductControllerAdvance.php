@@ -182,12 +182,8 @@ class ProductControllerAdvance extends Controller
 
                 // Se ejecutara si existe el parametro search_category
             ->when(request('search_category'), function($query) {
-                // Busca los prooductos que tengan una relacion con la tabla categorias
-                $query->whereHas('category', function($q) {
-                    // Si el nombre de la categoria pasada por parametro coincide con alguna relacion producto - categoria
-                    // Devolvera solo los productos con esa categoria
-                    $q->whereRaw('LOWER(name) = ?', [strtolower(request('search_category'))]
-                    );
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.name', request('search_category'));
                 });
             })
             // Filtrar por estado
