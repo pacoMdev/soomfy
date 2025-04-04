@@ -49,6 +49,10 @@ Route::get('/checkReview', [UsersOpinionController::class, 'checkReview']);
 Route::post('/valorate', [UsersOpinionController::class, 'valorate']);
 Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
 
+// GEOCODE GOOGLE_MAPS
+Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
+Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
+Route::get('/geocode', [GoogleController::class, 'geoCode']);
 
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
@@ -58,17 +62,10 @@ Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController
 
 // protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
-    // ApiResource hace lo siguiente
-    // GET /users` - Index (Listar todos los usuarios)
-    // POST /users` - Store (Crear un nuevo usuario)
-    // GET /users/{user}` - Show (Mostrar un usuario específico)
-    // PUT/PATCH /users/{user}` - Update (Actualizar un usuario)
-    // DELETE /users/{user}` - Destroy (Eliminar un usuario)
 
     // Buy || Sell
     Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);
     Route::post('sellProduct', [Transactionscontroller::class, 'sellProduct']);
-
 
     // Perfil
     Route::get('profile', [ProfileController::class, 'index']);
@@ -107,52 +104,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Transactions
     Route::apiResource('transactions', TransactionsController::class);
-
-
-
-    // GEOLOCATION GOOGLE MAPS (API_KEY on .env)
-    Route::get('/geocode', function (Request $request) {
-        $apiKey = env('GOOGLE_API_KEY');
-        $address = $request->query('address');
-
-        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
-            'address' => $address.', Spain',
-            'key' => $apiKey
-        ]);
-
-        return $response->json();
-    });
-    Route::get('geoLocation', function (Request $request){
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $apiKey = env('GOOGLE_API_KEY');
-
-        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-            'latlng' => "$latitude,$longitude",
-            'key' => $apiKey
-        ]);
-
-        if ($response->failed()) {
-            return response()->json(['error' => 'Error al obtener la dirección'], 500);
-        }
-
-        return response()->json($response->json());
-    });
-    
-    Route::get('/reverse-geocode', function (Request $request) {
-        $apiKey = env('GOOGLE_API_KEY');
-        $lat = $request->query('lat');
-        $lng = $request->query('lng');
-
-        $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
-            'latlng' => $lat . ',' . $lng,
-            'key' => $apiKey
-        ]);
-
-        // Pots aquí mateix retornar només la formatted_address si vols simplificar-ho
-        return $response->json();
-    });
-
 
     // Habilidades
     Route::get('abilities', function(Request $request) {

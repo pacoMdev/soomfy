@@ -82,12 +82,21 @@ class AuthenticatedSessionController extends Controller
         if ($user) {
             return response(['error' => 1, 'message' => 'user already exists'], 409);
         }
-
+        $role = Role::find($request->role_id);
+        $user = new User();
         $user = User::create([
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
             'name' => $request['name'],
         ]);
+        $user -> name = $request -> name;
+        $user -> email = $request -> email;
+        $user -> password = Hash::make($request['password']);
+
+        $user -> save();
+        if ($role) {
+            $user->assignRole($role);
+        }
 
         return $this->successResponse($user, 'Registration Successfully');
     }
