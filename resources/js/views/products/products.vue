@@ -104,7 +104,26 @@ import useCategories from "@/composables/categories.js";
 
 
 const route = useRoute();
+// const { 
+//   products,
+//   estadoList,
+//   getEstadoList,
+//   fetchProducts,
+//   aplicarFiltro,
+//   limpiarFiltros,
+//   categoriaSeleccionada,
+//   buscarTitulo,
+//   buscarPrecioMin,
+//   buscarPrecioMax,
+//   buscarRadio,
+//   latitude,
+//   longitude,
+//   buscarEstado,
+//   ordenarFecha,
+//   ordenarPrecio,
+//  } = useProducts();
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
+
 const {categoryList, getCategoryList} = useCategories()
 
 const fetchProducts = async () => {

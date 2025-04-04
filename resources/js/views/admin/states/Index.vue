@@ -4,10 +4,10 @@
             <div class="card">
 
                 <div class="card-header bg-transparent ps-0 pe-0">
-                    <h5 class="float-start mb-0">Gestor categorias:</h5>
+                    <h5 class="float-start mb-0">Gestor estados:</h5>
                 </div>
 
-                <DataTable  :value="categories.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id" size="small">
+                <DataTable  :value="estados.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id, name, created_at" size="small">
 
                     <template #header>
 
@@ -23,42 +23,20 @@
                             </template>
 
                             <template #end>
-                                <Button v-if="can('category-create')"  @click="$router.push('categories/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
+                                <Button v-if="can('category-create')"  @click="$router.push('states/create')" icon="pi pi-external-link" label="Crear Categoria" class="float-end" />
                             </template>
                         </Toolbar>
                     </template>
 
-                    <template #empty> No customers found. </template>
+                    <template #empty> No states found. </template>
 
                     <Column field="id" header="ID" sortable>
                         <template #body="{ data }">
                             {{ data.id }}
                         </template>
                     </Column>
-                    <Column header="Imagen" style="width: 100px">
-                      <template #body="{ data }">
-                        <img
-                            v-if="data.original_image"
-                            :src="data.original_image"
-                            :alt="data.name"
-                            style="width: 40px; height: 40px; object-fit: cover;"
-                        />
-                        <i v-else class="pi pi-image text-500"></i>
-                      </template>
-                    </Column>
                     <Column field="name" header="name" sortable></Column>
-                    <Column class="pe-0 me-0 icon-column-2">
-                        <template #body="slotProps">
-
-                            <!--TODO Falta permisos-->
-                            <router-link  :to="{ name: 'categories.edit', params: { id: slotProps.data.id } }">
-                                <Button icon="pi pi-pencil" severity="info" size="small" class="mr-1"/>
-                            </router-link>
-
-                            <Button icon="pi pi-trash" severity="danger" v-if="can('category-delete')" @click.prevent="deleteCategory(slotProps.data.id)" size="small"/>
-                        </template>
-                    </Column>
-
+                    <Column field="created_at" header="Created_at" sortable></Column>
                 </DataTable>
 
             </div>
@@ -70,15 +48,15 @@
 
 <script setup>
     import {ref, onMounted, watch} from "vue";
-    import useCategories from "../../../composables/categories";
+    import useEstados from "../../../composables/estados";
     import {useAbility} from '@casl/vue'
     import {FilterMatchMode} from "@primevue/core/api";
 
-    const {categories, getCategories, deleteCategory} = useCategories()
+    const {estados, getEstados, deleteEstado} = useEstados()
     const {can} = useAbility()
 
     onMounted(() => {
-        getCategories()
+        getEstados()
     })
 
     const filters = ref({

@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" " appendTo=".show" >
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: min(90vw, 500px); height: min(90vh, 550px); " appendTo=".show" >
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>

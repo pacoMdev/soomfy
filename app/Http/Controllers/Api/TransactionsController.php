@@ -44,6 +44,24 @@ class TransactionsController extends Controller
             // retornar el el transactions construido
         return TransactionResource::collection($transactions);
     }
+    public function store(Transactions $transactions)
+    {
+        $transaction = new Transactions();
+        $transaction->name = $transactions->name;
+        $transaction->email = $transactions->email;
+        $transaction->surname1 = $transactions->surname1;
+        $transaction->surname2 = $transactions->surname2;
+        $transaction->save();
+
+        return new TransactionResource($transaction);
+    }
+    public function destroy(Transactions $transaction)
+    {
+        $this->authorize('transaction-delete');
+        $transaction->delete();
+
+        return response()->noContent();
+    }
 
     public function getAllTransictions()
     {
@@ -59,7 +77,6 @@ class TransactionsController extends Controller
      */
     public function fakePurchase(Request $request)
     {
-        // dd($request -> shippingAddress['newAddress']);
 
         $userBuyer = auth()->user();
         $userSeller = User::findOrFail($request -> userSeller_id);
@@ -143,6 +160,9 @@ class TransactionsController extends Controller
         // Manda el email
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
+
+        // Despues de mandar los 2 emails uno al vendedor y otro al comprador
+        // Vendedor --> 
 
         return response()->json(data: ['status' => 200, 'success' => true, 'mensaje' => 'fackePurchser OK and sended email purchase', 'message' => $transaction]);
     }

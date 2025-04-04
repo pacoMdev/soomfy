@@ -11,6 +11,8 @@ export default function useUsers() {
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+    const favoritos = ref([]);
+
 
     const getUsers = async (
         page = 1,
@@ -147,10 +149,21 @@ export default function useUsers() {
                 }
             })
     }
+    const obtenerFavoritos = async () => {
+        try {
+          const respuesta = await axios.get('/api/get-favorite-products');
+          favoritos.value = respuesta.data.data;
+        } catch (error) {
+          console.error("Error al obtener favoritos:", error);
+        }
+      }
 
     return {
         users,
         user,
+        validationErrors,
+        isLoading,
+        favoritos,
         getUsers,
         getUser,
         createUserDB,
@@ -160,8 +173,7 @@ export default function useUsers() {
         storeUser,
         updateUser,
         deleteUser,
-        validationErrors,
-        isLoading
+        obtenerFavoritos,
     }
 }
 

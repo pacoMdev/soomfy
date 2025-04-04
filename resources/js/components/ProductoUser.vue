@@ -33,7 +33,7 @@
       </div>
     </div>
     <!-- SELL PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: 350px; height: 400px;" appendTo=".show">
+    <Dialog v-model:visible="visible" modal :header="'Vendiendo '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 400px); " appendTo=".show">
           <form @submit.prevent="sellProduct">
             <Stepper value="1">
               <StepList>
@@ -76,7 +76,7 @@
                       </div>
                       <div class="flex pt-6 w-100 justify-between gap-5">
                           <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
-                          <Button type="submit" label="Vender" outlined severity="secondary" @click="visible = false" autofocus />
+                          <Button type="submit" label="Vender" outlined severity="secondary" @click="visible = false" :disabled="selectedBuyer" autofocus />
                       </div>
                     </div>
                   </StepPanel>
@@ -85,17 +85,17 @@
           </form>
     </Dialog>
     <!-- EDIT PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
+    <Dialog v-model:visible="visibleEditProduct" modal :header="'Editando '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 600px); " appendTo=".show">
       <Tabs value="0">
         <TabList>
-            <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
-            <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
+            <Tab appendTo=".show" value="0" class="w-50">Foto de Perfil 📸</Tab>
+            <Tab appendTo=".show" value="1" class="w-50">Detalles del Perfil 📝</Tab>
         </TabList>
         <TabPanels class="w-100">
             <TabPanel value="0">
               <div class="mb-3">
                 <h3>Fotos</h3>
-                <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+                <DropZoneV v-model="productData.thumbnails" class="imagenes"/>
                 <div class="text-danger mt-1">
                   {{ errors.thumbnails }}
                 </div>
@@ -108,7 +108,7 @@
             </TabPanel>
             <TabPanel value="1">
 
-              <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+              <form @submit.prevent="submitEditUser" class="d-flex flex-column gap-5 py-4">
                 <div class="d-flex flex-column gap-5">
                   <!-- TITULO ---------------------------------------------------- -->
                   <div class="">
@@ -155,7 +155,7 @@
                     <div class="w-50">
                     <FloatLabel>
                       <Select
-                        v-model="product.estado"
+                        v-model="productData.estado"
                         :options="estadoList"
                         optionLabel="name"
                         optionValue="id"
@@ -177,7 +177,7 @@
                   <div class="w-50">
                     <FloatLabel>
                       <Select
-                        v-model="product.category"
+                        v-model="productData.category"
                         :options="categoryList"
                         optionLabel="name"
                         optionValue="id"
@@ -196,10 +196,10 @@
                     </div>
                   </div>
                   </div>
-
+                  <!-- CATEGORIA ---------------------------------------------------- -->
                   <div class=" card d-flex flex-row m-0 p-2 justify-content-between">
                     <p class="m-0">Para enviar 📦</p>
-                    <ToggleSwitch v-model="checked" />
+                    <ToggleSwitch v-model="productData.toSend" />
                   </div>
                 </div>
                 <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
@@ -209,18 +209,19 @@
       </Tabs>
     </Dialog>
     <!-- DELETE PRODUCT --------------------------------------------- -->
-    <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: 350px; height: 400px; " appendTo=".show">
-      <div class="card flex justify-center">
-        <p>Introduce el siguiente codico para eliminar <b>7405</b></p>
-        <InputOtp v-model="confirmationDelete" integerOnly />
+    <Dialog v-model:visible="visibleDelete" modal :header="'Eliminar '+selectedProduct?.title" style=" width: min(90vw, 500px); height: min(90vh, 400px); " appendTo=".show">
+      <div class="card flex justify-center gap-3">
+        <p>Introduce el siguiente codico para eliminar <b>{{ randomNum }}</b></p>
+        <InputOtp v-model="confirmationDelete" integerOnly  class="mx-auto"/>
+        <Button @click="delProduct(selectedProduct.id)" label="Eliminar" :disabled="isBtnDelete" />
+
       </div>
     </Dialog>
   </div>
 </template>
 
 <script setup>
-import { defineProps, ref, watchEffect, onMounted } from 'vue';
-import axios from 'axios';
+import { defineProps, ref, watch, watchEffect, onMounted } from 'vue';
 import { Dialog, Textarea } from 'primevue';
 import { Stepper, StepList, StepPanels, StepItem, Step, StepPanel, InputOtp, Tabs, TabList, Tab, TabPanels, TabPanel, ToggleSwitch } from 'primevue';
 import {useForm, useField, defineRule} from "vee-validate";
@@ -236,22 +237,20 @@ defineRule('min', min);
 const visible = ref(false);
 const visibleEditProduct = ref(false);
 const visibleDelete = ref(false);
-const selectedProduct = ref(null);
-const usersInterested = ref([]);
-const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
-const selectedUser = ref(null);
 const user = ref(null);
 const finalPrice = ref(0);
 const confirmationDelete = ref(null);
+const randomNum = ref(null);
+const isBtnDelete = ref(true);
+const selectedBuyer = ref(true);
 
     // Define a validation schema
     const schema = {
-        title: 'required|min:8',
-        content: 'required|min:25',
+        title: 'required|min:5',
+        content: 'required|min:5',
         category: null,
         price: 'required|min:1',
         estado: null,
-        thumbnails: null
     }
     // Create a form context with the validation schema
     const { validate, errors, resetForm } = useForm({ validationSchema: schema })
@@ -261,9 +260,13 @@ const confirmationDelete = ref(null);
     const { value: price } = useField('price', null, { initialValue: '' });
     const { value: estado } = useField('estado', null, { initialValue: '' });
     const { value: category } = useField('category', null, { initialValue: '', label: 'category' });
+    const { value: toSend } = useField('toSend', null, { initialValue: '' });
     const { value: thumbnails } = useField('thumbnails', null, { initialValue: [] });
     const { categoryList, getCategoryList } = useCategories()
-    const { product: productData,getEstadoList,estadoList, getProduct, updateProduct, validationErrors, isLoading } = useProducts()
+    const { product: productData,getEstadoList,estadoList, 
+      getProduct, updateProduct, validationErrors, isLoading, 
+      delProduct, getInterested, sellProduct, selectedProduct,
+      usersInterested, selectedUserId, selectedUser, } = useProducts()
 
     const product = ref({
         title,
@@ -271,12 +274,30 @@ const confirmationDelete = ref(null);
         price,
         estado,
         category,
+        toSend,
         thumbnails
     });
     onMounted(() =>{
         getCategoryList()
         getEstadoList()
     });
+    watch ( selectedUserId, () => {
+      if (selectedUserId != []){
+        selectedBuyer = false;
+      }else{ 
+        selectedBuyer = true;
+      }
+    });
+    watch( confirmationDelete, () => {
+      if(confirmationDelete.value == randomNum.value){
+        isBtnDelete.value = false;
+        console.log('Esta permitido eliminar el Producto');
+      }else{
+        isBtnDelete.value = true;
+      }
+    });
+
+
     watchEffect(() => {
       console.log(' CHANGES ON DATA PRODUCT -->', productData);
       if (productData.value) {
@@ -286,6 +307,7 @@ const confirmationDelete = ref(null);
         product.value.price = productData.value.price;
         product.value.estado = productData.value.estado?.id || '';
         product.value.category = productData.value.category?.id || '';
+        product.value.toSend = productData.value.toSend;
 
 
         // Validar imágenes en resized_image o thumbnails
@@ -315,6 +337,8 @@ const confirmationDelete = ref(null);
     });
 
 
+
+
   const openSellProduct = async (producto) => {
     selectedProduct.value = producto; 
     visible.value = true;
@@ -324,29 +348,38 @@ const confirmationDelete = ref(null);
   const openEditProduct = async (producto) => {
     selectedProduct.value = producto; 
     selectedUser.value = user;
-    product.value.title = selectedProduct.value.title;
-    product.value.content = selectedProduct.value.content;
-    product.value.price = selectedProduct.value.price;
-    product.value.estado = selectedProduct.value.estado.id;
-    product.value.category = selectedProduct.value.category.id;
     visibleEditProduct.value = true; 
+
+    if (selectedProduct.value.resized_image && Object.keys(selectedProduct.value.resized_image).length > 0) {
+
+      // Convertir el objeto de imágenes a un array
+      productData.value.thumbnails = Object.values(selectedProduct.value.resized_image).map(img => ({
+        img: img.original_url,
+        file: null,
+        id: img.uuid
+      }));
+    }
+    else {
+      product.value.thumbnails = [];
+    }
+    productData.value.title = selectedProduct.value.title;
+    productData.value.content = selectedProduct.value.content;
+    productData.value.price = selectedProduct.value.price;
+    productData.value.estado = selectedProduct.value.estado.id;
+    productData.value.category = selectedProduct.value.category.id;
+    productData.value.toSend = selectedProduct.value.toSend === 1;
+    console.log('PRODUCT -->', productData);
     console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
   };
   const openDeleteProduct = async (producto) => {
     selectedProduct.value = producto; 
     visibleDelete.value = true; 
+    randomNum.value = Math.floor(1000 + Math.random() * 9000);
+    confirmationDelete.value='';
     console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
   };
 
-  const getInterested = async (productId) => {
-    try {
-      const response = await axios.get(`/api/getUsersConversations/${productId}`);
-      usersInterested.value = response.data || [];
-      console.log('🔎 USERS INTERESTED  --->', usersInterested);
-    } catch (err) {
-      console.log("Error al obtener los datos.");
-    }
-  };
+  
 
   const props = defineProps({
     productos: Array, // Recibe la lista de products
@@ -358,21 +391,6 @@ const confirmationDelete = ref(null);
     { breakpoint: '767px', numVisible: 3 },
     { breakpoint: '575px', numVisible: 1 }
   ]);
-
-  const sellProduct = async () => {
-    try{
-      const response = await axios.post('/api/sellProduct', {
-        userBuyer_id: selectedUserId.value,
-        product_id: selectedProduct.value.id,
-        finalPrice: finalPrice.value,
-        isToSend: false,
-      });
-      console.log("Producto vendido -->", response.data);
-
-    }catch(error){
-      console.error('Error al vender el producto:', error);
-    }
-  }
 
   // Función para obtener products desde la API
   function getImages(resized_image) {
@@ -400,6 +418,50 @@ onMounted(async () => {
     console.error('Error al carregar les imatges:', error);
   }
 });
+function submitEditUser() {
+      const formData = new FormData();
+      const productId = selectedProduct.value.id;
+      formData.append('id', productId);
+      formData.append('title', product.value.title);
+      formData.append('content', product.value.content);
+      formData.append('price', product.value.price);
+      formData.append('estado_id', productData.value.estado);
+      formData.append('category_id', productData.value.category);
+      formData.append('toSend', product.value.toSend ? 1 : 0);
+      if (productData.value.thumbnails && productData.value.thumbnails.length) {
+        productData.value.thumbnails.forEach((item, index) => {
+          console.log(`Thumbnail ${index}: ORDER = ${productData.value.thumbnails[index].order}, ID = ${productData.value.thumbnails[index].id}`);
+
+          if (item instanceof File || (item.file && item.file instanceof File)) {
+            const file = item instanceof File ? item : item.file;
+            // Imagen insertada
+            formData.append(`thumbnails[${index}]`, file);
+            // Comprobamos si el id del thumbnails existe, si existe se agrega
+            if(item.id) {
+              formData.append(`thumbnails_previous_id[${index}]`, item.id);
+            }
+            // Adjuntamos el orden que tiene que tener
+            formData.append(`thumbnails_order[${index}]`, item.order || index);
+          }
+        });
+      }
+
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]));
+      }
+
+      validate().then((form) => {
+        if (form.valid) {
+          updateProduct(formData, productId)
+        } else {
+          // Desplegar los errores de validación si los datos no son válidos
+          console.log("Errores de validación:", errors);
+        }
+      });
+      window.location.reload();
+      visibleEditProduct.value = false; 
+    }
 </script>
 
 <style scoped>

@@ -20,29 +20,40 @@
                         <!-- Dialog para añadir dirección -->
                         <Dialog v-model:visible="showDialog" modal header="Añadir dirección" :style="{ width: '26rem' }">
                             <div class="d-flex flex-column gap-4 py-4">
-                                <div class="p-fluid">
-                                    <FloatLabel>
-                                        <InputText id="address" v-model="newAddress" fluid />
-                                        <label for="address">Dirección</label>
-                                    </FloatLabel>
-                                </div>
-                                <div class="p-fluid">
-                                    <FloatLabel>
-                                        <InputText id="city" v-model="newCity" fluid/>
-                                        <label for="city">Ciudad</label>
-                                    </FloatLabel>
-                                </div>
-                                <div class="p-fluid">
-                                    <FloatLabel>
-                                        <InputText id="cp" v-model="newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
-                                        <label for="cp">Codigo postal</label>
-                                    </FloatLabel>
-                                </div>
-                                <div class="p-fluid">
-                                    <FloatLabel>
-                                        <InputText id="country" v-model="newCountry" fluid />
-                                        <label for="country">Pais</label>
-                                    </FloatLabel>
+                                <!-- SECTION DATA ADDRESS ------------------------------------ -->
+                                <div class="d-flex flex-column gap-4 py-4">
+                                    <div class="p-fluid">
+                                        <FloatLabel>
+                                            <InputText id="address" v-model="address.newAddress" fluid />
+                                            <label for="address">Dirección</label>
+                                        </FloatLabel>
+                                    </div>
+                                    <div class="p-fluid">
+                                        <FloatLabel>
+                                            <InputText id="cp" v-model="address.newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
+                                            <label for="cp">Codigo postal</label>
+                                        </FloatLabel>
+                                    </div>
+                                    <div class="p-fluid">
+                                        <FloatLabel>
+                                            <InputText id="city" v-model="address.newCity" fluid/>
+                                            <label for="city">Ciudad</label>
+                                        </FloatLabel>
+                                    </div>
+                                    <div class="p-fluid">
+                                        <FloatLabel>
+                                            <InputText id="country" v-model="address.newCountry" fluid />
+                                            <label for="country">Pais</label>
+                                        </FloatLabel>
+                                    </div>
+                                    <!-- AÑADIR MAS CAMPOS EN CASO DE ENVIAR A DIRECCION -->
+                                     <!-- Revisar la pagina con stripe(pagina de pagos) -->
+                                    <!-- <div class="d-flex flex-column">
+                                        <FloatLabel>
+                                            <label for="">Tipo de envio</label>
+                                            <Select v-model="typeShippment" :options="typeShippemt" optionLabel="name" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+                                        </FloatLabel>
+                                    </div> -->
                                 </div>
                             </div>
                             <template #footer class="">
@@ -77,26 +88,28 @@
 </template>
   
 <script setup>
-    import { Dialog, RadioButton, Button } from 'primevue';
-    import InputText from 'primevue/inputtext';
-    import { useRoute } from 'vue-router';
-    import { onMounted, ref, watch } from 'vue';
+    import { Dialog, RadioButton, Button, InputText } from 'primevue';
+    import { onMounted, watch } from 'vue';
     import Producto from '../../components/Producto.vue';
+    import useCheckout from '../../composables/checkout';
 
-
-    const route = useRoute();
-    const productId = route.query.productId;
-    console.log('🔎 productId -->', productId);
-
-    const userProduct = ref({});
-
-    const selectedMethod = ref('1');
-    const showDialog = ref(false);
-    const newAddress = ref('');
-    const newCity = ref('');
-    const newCp = ref('');
-    const newCountry = ref('');
-    const error = ref(false);
+    const { 
+        checkout,
+        address,
+        productId,
+        userProduct,
+        selectedMethod,
+        showDialog,
+        newAddress,
+        newCity,
+        newCp,
+        newCountry,
+        error,
+        typeShippment,
+        getUserProduct,
+        submitPurchaseForm,
+        saveAddress,
+    } = useCheckout();
 
 
     onMounted (() => {
@@ -120,48 +133,6 @@
             }
         }
     });
-
-
-    const getUserProduct = async () => {
-        try {
-            const respuesta = await axios.get('/api/products/'+productId);
-            userProduct.value[0] = respuesta.data.data || {};
-            console.log('UserProduct -->', userProduct);
-        } catch (error) {
-            console.error("Error al valorar -->", error);
-        }
-    };
-    const submitPurchaseForm = async () => {
-        // check direccion de envio
-        if (selectedMethod.value === '1'){
-            if (!newAddress.value || !newCity.value || !newCp.value || !newCountry.value){
-                error.value = true;
-            return;
-            }
-        }
-        // check ok
-        error.value = false;
-        try {
-            const respuesta = await axios.post('/api/fakePurchaseProduct', {
-                product_id: parseInt(productId),
-                userSeller_id: userProduct.value[0].user.id,
-                price: userProduct.value[0].price,
-                isToSend: parseInt(selectedMethod.value),
-                shippingAddress: {
-                    'newAddress': newAddress.value,
-                    'newCity': newCity.value,
-                    'newCp': newCp.value,
-                    'newCountry': newCountry.value
-                }
-            });
-            console.log('Producto comprado', respuesta);
-        } catch (error) {
-            console.error("Error al valorar -->", error);
-        }
-    };
-    const saveAddress = () => {
-        showDialog.value = false;
-    };
 </script>
 
 <style scoped>

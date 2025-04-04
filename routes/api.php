@@ -9,9 +9,12 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersOpinionController;
+use App\Http\Controllers\Api\GoogleController;
+use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
+use App\Models\UserOpinion;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,20 +29,27 @@ Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene 
 
 
 // Estado
+Route::apiResource('estados', EstadoController::class);
 Route::get('estado-list', [ProductControllerAdvance::class, 'getEstadoList']); // Obtiene las categorias (Uso: selects)
 
     // Obtener publicaciones por categoría
     Route::get('get-category-products/{id}', [ProductControllerAdvance::class, 'getCategoryByProducts']);
 
 // Productos
-Route::apiResource('products', ProductControllerAdvance::class);
+Route::apiResource('products', controller: ProductControllerAdvance::class);
 Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Provisional
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
 Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
+
+//Opinions
+Route::apiResource('opinions', controller: UsersOpinionController::class);
 Route::get('/checkReview', [UsersOpinionController::class, 'checkReview']);
 Route::post('/valorate', [UsersOpinionController::class, 'valorate']);
+Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
+
+
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
@@ -69,8 +79,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::post('getAllToSell', [ProfileController::class, 'getAllToSell']);
     Route::post('getPurchase', [TransactionsController::class, 'getPurchase']);
     Route::post('getSales', [Transactionscontroller::class, 'getSales']);
-    Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
-    // Route::get('geoLocation', [ProfileController::class, 'getGeoLocation']);
 
     // Usuario
     Route::apiResource('users', UserController::class);
