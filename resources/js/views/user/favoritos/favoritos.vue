@@ -12,24 +12,16 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
 import ProductoNew from '@/components/ProductoNew.vue';
-
-const favoritos = ref([]);
-
-const obtenerFavoritos = async () => {
-  try {
-    const respuesta = await axios.get('/api/get-favorite-products');
-    favoritos.value = respuesta.data.data;
-  } catch (error) {
-    console.error("Error al obtener favoritos:", error);
-  }
-};
+import useUsers from '../../../composables/users';
+const {
+  favoritos,
+  obtenerFavoritos,
+} = useUsers();
 
 onMounted(() => {
   obtenerFavoritos();
 });
-
 </script>
 
 <style scoped>

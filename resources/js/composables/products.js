@@ -11,11 +11,22 @@ export default function useProducts() {
         price: '',
         estado_id: '',
         thumbnails: '',
+        toSend: '',
+        weight: '',
+        width: '',
+        heigth: '',
     })
     const router = useRouter()
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+    const selectedProduct = ref(null);
+    const usersInterested = ref([]);
+    const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
+    const selectedUser = ref(null);
+
+
+
 
     const getProducts = async (
         page = 1,
@@ -31,66 +42,96 @@ export default function useProducts() {
         order_column = 'created_at',
         order_direction = 'desc',
         order_price = '',
-        // Ubicacion
         search_latitude = '',
         search_longitude = '',
-        search_radius = ''
-
+        search_radius = '',
+        paginate = ''
     ) => {
-        axios.get('/api/products?page=' + page +
-            '&search_category=' + search_category +
-            '&search_id=' + search_id +
-            '&search_title=' + search_title +
-            '&min_price=' + min_price +
-            '&max_price=' + max_price +
-            '&search_estado=' + search_estado +
-            '&search_location=' + search_location +
-            '&search_content=' + search_content +
-            '&search_global=' + search_global +
-            '&order_column=' + order_column +
-            '&order_direction=' + order_direction +
-            '&order_price=' + order_price +
-            '&search_latitude=' + search_latitude +
-            '&search_longitude=' + search_longitude +
-            '&search_radius=' + search_radius
-        )
-        .then(response => {
+        try {
+            const response = await axios.get('/api/products?page=' + page +
+                '&search_category=' + search_category +
+                '&search_id=' + search_id +
+                '&search_title=' + search_title +
+                '&min_price=' + min_price +
+                '&max_price=' + max_price +
+                '&search_estado=' + search_estado +
+                '&search_location=' + search_location +
+                '&search_content=' + search_content +
+                '&search_global=' + search_global +
+                '&order_column=' + order_column +
+                '&order_direction=' + order_direction +
+                '&order_price=' + order_price +
+                '&search_latitude=' + search_latitude +
+                '&search_longitude=' + search_longitude +
+                '&search_radius=' + search_radius +
+                '&paginate=' + paginate
+            );
+    
             console.log("Respuesta completa:", response.data);
             products.value = response.data;
-            })
-
-    }
+            return response.data; // Devuelve los datos
+        } catch (error) {
+            console.error("Error en getProducts:", error);
+            throw error; // Propaga el error
+        }
+    };
 
     const getProduct = async (id) => {
-        axios.get('/api/products/' + id)
-            .then(response => {
-                product.value = response.data.data;
-            })
-    }
-
-    const storeProduct = async (formData) => {
-        // Verificar contenido
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
+        console.log("ID DESDE GET PRODUCT:", id);
+        if(id){
+            try {
+                const response = await axios.get('/api/products/' + id);  // Usamos `await` para esperar la respuesta
+                product.value = response.data.data;  // Asignamos los datos al `product.value`
+                return product.value;  // Retornamos el producto obtenido
+            } catch (error) {
+                console.error("Error al obtener el producto", error);
+                return null;  // En caso de error, retornamos `null` o un valor predeterminado
+            }
         }
 
+    };
+
+
+    const storeProduct = async (formData) => {
+        console.log('Archivo products.js ')
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ': ' + pair[1]);
+        }
+      
         if (isLoading.value) return;
         isLoading.value = true;
         validationErrors.value = {};
-
-        const response = await axios.post('/products', formData, {
+      
+        try {
+          const response = await axios.post('/api/products', formData, {
             headers: {
-                "Content-Type": "multipart/form-data"
+              "Content-Type": "multipart/form-data"
             }
-        });
-
-        await  swal({
+          });
+      
+          console.log('Respuesta del servidor:', response.data);
+      
+          // Mostrar mensaje de éxito
+          await swal({
             icon: 'success',
             title: 'Producto guardado exitosamente',
             showConfirmButton: true,
             timer: 2000
-        });
-        await router.push({name: 'products.index'});
+          });
+      
+          // Redirigir al índice de productos
+          await router.push({ name: 'products.index' });
+      
+          return response.data; // Retorna la respuesta para usarla en otro lugar
+        } catch (error) {
+            console.error('Error al guardar el producto:', error);
+            if (error.response && error.response.status === 422) {
+                validationErrors.value = error.response.data.errors || {};
+            }
+            throw error; // Propaga el error para manejarlo en otro lugar
+        } finally {
+            isLoading.value = false;
+        }
     };
     const storeUserProduct = async (formData) => {
         // Verificar contenido de formData en consola (opcional, para debug)
@@ -109,6 +150,7 @@ export default function useProducts() {
                     "Content-Type": "multipart/form-data"
                 }
             });
+            
 
             // Mostrar mensaje de éxito si la solicitud fue exitosa
             await swal({
@@ -119,7 +161,7 @@ export default function useProducts() {
             });
 
             // Redirigir al índice de productos
-            await router.push({ name: 'products.index' });
+            await router.push({ name: 'profile' });
 
         } catch (error) {
             // Manejo de errores
@@ -190,6 +232,23 @@ export default function useProducts() {
                 estadoList.value = response.data.data;
             })
     }
+    const delProduct = async (id) => {
+        axios.delete('/api/products/' + id)
+        .then(response => {
+            getProducts()
+            router.push({name: 'profile'})
+            swal({
+                icon: 'success',
+                title: 'Product deleted successfully'
+            })
+        })
+        .catch(error => {
+            swal({
+                icon: 'error',
+                title: 'Something went wrong'
+            })
+        })
+    }
     const deleteProduct = async (id) => {
         swal({
             title: 'Are you sure?',
@@ -202,27 +261,53 @@ export default function useProducts() {
             timerProgressBar: true,
             reverseButtons: true
         })
-            .then(result => {
-                if (result.isConfirmed) {
-                    axios.delete('/api/products/' + id)
-                        .then(response => {
-                            getProducts()
-                            router.push({name: 'products.index'})
-                            swal({
-                                icon: 'success',
-                                title: 'Product deleted successfully'
-                            })
+        .then(result => {
+            if (result.isConfirmed) {
+                axios.delete('/api/products/' + id)
+                    .then(response => {
+                        getProducts()
+                        router.push({name: 'products.index'})
+                        swal({
+                            icon: 'success',
+                            title: 'Product deleted successfully'
                         })
-                        .catch(error => {
-                            swal({
-                                icon: 'error',
-                                title: 'Something went wrong'
-                            })
+                    })
+                    .catch(error => {
+                        swal({
+                            icon: 'error',
+                            title: 'Something went wrong'
                         })
-                }
-            })
-
+                    })
+            }
+        })
     }
+
+    const getInterested = async (productId) => {
+        try {
+          const response = await axios.get(`/api/getUsersConversations/${productId}`);
+          usersInterested.value = response.data || [];
+          console.log('🔎 USERS INTERESTED  --->', usersInterested);
+        } catch (err) {
+          console.log("Error al obtener los datos.");
+        }
+      };
+      
+      const sellProduct = async () => {
+        try{
+          const response = await axios.post('/api/sellProduct', {
+            userBuyer_id: selectedUserId.value,
+            product_id: selectedProduct.value.id,
+            finalPrice: finalPrice.value,
+            isToSend: false,
+          });
+          console.log("Producto vendido -->", response.data);
+    
+        }catch(error){
+          console.error('Error al vender el producto:', error);
+        }
+      }
+
+
 
     return {
         getEstadoList,
@@ -235,7 +320,14 @@ export default function useProducts() {
         storeUserProduct,
         updateProduct,
         deleteProduct,
+        delProduct,
         validationErrors,
-        isLoading
+        isLoading,
+        getInterested,
+        sellProduct,
+        selectedProduct,
+        usersInterested,
+        selectedUserId,
+        selectedUser,
     }
 }

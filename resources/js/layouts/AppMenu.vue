@@ -1,14 +1,14 @@
 
 <template>
     <button class="relative overflow-hidden w-full p-link flex align-items-center p-2 pl-0 text-color hover:surface-200 border-noround">
-
-    <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
-    <span class="inline-flex flex-column">
+        
+        <Avatar :image="authStore().user?.avatar" class="mr-3" shape="circle" />
+        <span class="inline-flex flex-column">
             <span class="font-bold">{{ authStore().user?.name }}</span>
             <span>
                 <span v-for="rol in authStore().user?.roles" class="text-sm mr-2">{{rol.name}}</span>
             </span>
-    </span>
+        </span>
     </button>
 
     <ul class="layout-menu">
@@ -48,7 +48,9 @@ const model = ref([
         items: [
             { label: 'Products', icon: 'pi pi-fw pi-shopping-cart', to: '/admin/products', permision: 'product-list' },
             { label: 'Categorias', icon: 'pi pi-fw pi-tags', to: '/admin/categories', permision: 'all' },
-            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/estados', permision: 'all' },
+            { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/states', permision: 'all' },
+            { label: 'Transactions', icon: 'pi pi-truck', to: '/admin/transactions', permision: 'all' },
+            { label: 'Opinions', icon: 'pi pi-comment', to: '/admin/opinions', permision: 'all' },
 
         ]
     }

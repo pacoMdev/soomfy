@@ -6,31 +6,33 @@
           <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
             <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
             <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
-            <SearchBar />
+            <SearchBar class="search-bar-home" />
           </div>
         </div>
         <div class="centrar-categories">
-          <div class="categories">
-            <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
-              <img src="" alt="Todas">
-              <p>Todas</p>
-            </div>
-            <div v-for="category in categories" :key="category.id">
-              <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
-                <img :src="category.original_image" :alt="category.original_image">
-                <p>{{ category.name }}</p>
+          <div class="categories-carousel">
+            <button class="carousel-arrow left-arrow" @click="scrollLeft">‹</button>
+            <div class="categories-wrapper" ref="carousel">
+              <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
+                <img src="/images/others.webp" alt="Todas">
+                <p>Todas</p>
+              </div>
+              <div v-for="category in categories" :key="category.id">
+                <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
+                  <img :src="category.original_image" :alt="category.original_image" />
+                  <p>{{ category.name }}</p>
+                </div>
               </div>
             </div>
+            <button class="carousel-arrow right-arrow" @click="scrollRight">›</button>
           </div>
         </div>
-
 
         <div class="centrar-productos">
           <div class="productos">
             <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
           </div>
         </div>
-
         <div class="d-flex justify-content-center">
           <button
               class="secondary-button-2"
@@ -45,20 +47,19 @@
           <h1>Dale una nueva vida a lo que ya no usas!</h1>
           <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
 
-          <img src="images/cascos-decoracion.webp" alt="Cascos"class="cascos">
-          <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota">
-          <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj">
-          <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato">
+          <img src="images/cascos-decoracion.webp" alt="Cascos" class="cascos" />
+          <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota" />
+          <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj" />
+          <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato" />
         </div>
       </div>
     </div>
   </div>
-  <div class="d-block d-md-none">
-    <div>
+  <div class="d-flex d-md-none">
+    <div class="my-5">
       <div class="contenedor-informativo">
-
       </div>
-      <div class="">
+      <div class="d-flex justify-content-center my-6">
         <!-- falta ajustar el responsive -->
         <div class="productos">
           <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
@@ -82,40 +83,70 @@
 <script setup>
 import '../../../css/home/home.css';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
 import ProductoNew from '@/components/ProductoNew.vue';
-import { useRouter } from 'vue-router';
 import router from "@/routes/index.js";
 import SearchBar from "@/components/SearchBar.vue";
 
+import useProducts from '@/composables/products.js';
+const { products, getProducts } = useProducts();
+import useCategories from '@/composables/categories.js';
+const { categories, getCategories } = useCategories();
 
 const productos = ref([]);
-const categories = ref([]);
-const selectedCategory = ref(null);
 const paginaActual = ref(1);
 const cargando = ref(false);
+const carousel = ref(null);
 
-onMounted(() => {
-  obtenerProductos(1); // Carga la primera pagina
-  loadCategories();
+onMounted(async () => {
+  await obtenerProductos(1); // Carga la primera pagina
+  getCategories(); // Carga las categorias
+  console.log("Productos después de cargar la primera página:", productos.value); // Depuración
+
 });
 
 const obtenerProductos = async (page = 1) => {
   cargando.value = true;
   try {
-    const respuesta = await axios.get(`/api/products?page=${page}`);
+    // Llamar a getProducts con los parámetros necesarios
+    await getProducts(
+      page, // Página actual
+      '', // search_category
+      '', // search_id
+      '', // search_title
+      '', // min_price
+      '', // max_price
+      '', // search_estado
+      '', // search_location
+      '', // search_content
+      '', // search_global
+      'created_at', // order_column
+      'desc', // order_direction
+      '', // order_price
+      '', // search_latitude
+      '', // search_longitude
+      '', // search_radius
+      8 // paginate
+    );
 
-    // Si es la primera pagina lo almacenamos en la varaible
-    if (page === 1) {
-      productos.value = respuesta.data.data;
-    } else { // Si pasamos de pagina, agregamos los siguientes 8 productos
-      productos.value = [...productos.value, ...respuesta.data.data];
+    // Verifica si products.value.data existe y es un array
+    const productosCargados = products.value.data;
+
+    if (!Array.isArray(productosCargados)) {
+      throw new TypeError("La respuesta de productos no es un array.");
     }
 
-    return respuesta.data;
+    // Si es la primera página, almacenamos los productos
+    if (page === 1) {
+      productos.value = productosCargados;
+    } else {
+      // Si pasamos de página, agregamos los siguientes productos
+      productos.value = [...productos.value, ...productosCargados];
+    }
+
+    console.log("Productos cargados:", productos.value); // Depuración
+
   } catch (error) {
-    console.error("Error al obtener products:", error);
-    return null;
+    console.error("Error al obtener productos:", error);
   } finally {
     cargando.value = false;
   }
@@ -127,15 +158,6 @@ const cargarMasProductos = async () => {
   paginaActual.value++; // Incrementa la página actual
   await obtenerProductos(paginaActual.value); // Carga la siguiente página
 };
-
-const loadCategories = async () => {
-  try {
-    const response = await axios.get('/api/categories')
-    categories.value = response.data.data
-  } catch (err) {
-    console.error('Error cargando categorías:', err)
-  }
-}
 
 // Cada vez que hagas clic a una categoria, lo que hara es llamar a esta funcion pasandole la categoria
 const redirectCategory = (category) => {
@@ -156,20 +178,19 @@ const redirectAll = () => {
   });
 };
 
-const responsiveOptions = ref([
-  {
-    breakpoint: '991px',
-    numVisible: 4
-  },
-  {
-    breakpoint: '767px',
-    numVisible: 3
-  },
-  {
-    breakpoint: '575px',
-    numVisible: 1
+const scrollLeft = () => {
+  if (carousel.value) {
+    carousel.value.scrollBy({ left: -200, behavior: 'smooth' });
   }
-]);
+};
+
+const scrollRight = () => {
+  if (carousel.value) {
+    carousel.value.scrollBy({ left: 200, behavior: 'smooth' });
+  }
+};
+
+// Removed unused responsiveOptions variable
 
 </script>
 
@@ -180,5 +201,46 @@ const responsiveOptions = ref([
   border: 1px solid var(--primary-color);
   padding-left: 25px;
   width: 75%;
+}
+
+.categories-carousel {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.categories-wrapper {
+  display: flex;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  gap: 15px;
+  flex: 1;
+}
+
+.categories-wrapper img {
+  width: 70px; /* Original size */
+  height: 70px; /* Original size */
+  object-fit: cover;
+  border-radius: 50%; /* Keep circular shape */
+}
+
+.carousel-arrow {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.left-arrow {
+  position: absolute;
+  left: -30px;
+}
+
+.right-arrow {
+  position: absolute;
+  right: -30px;
 }
 </style>

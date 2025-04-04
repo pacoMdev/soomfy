@@ -1,5 +1,20 @@
 <template>
-    <div class="container py-5">
+    <div class=" flex justify-center w-100 justify-content-center py-5">
+        <Breadcrumb :home="home" :model="breadcrumbs" class="bg-transparent">
+            <template #item="{ item, props }">
+                <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                    <a :href="href" v-bind="props.action" @click="navigate">
+                        <span :class="[item.icon, 'text-color']" />
+                        <span class="text-primary font-semibold">{{ item.label }}</span>
+                    </a>
+                </router-link>
+                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                    <span class="text-surface-700 dark:text-surface-0">{{ item.label }}</span>
+                </a>
+            </template>
+        </Breadcrumb>
+    </div>
+    <div class="container">
         <div class="w-100">
             <div class="col-md-6 col-lg-8 col-xl-8 w-100 container-product">
                 <!-- INFORMACION DEL PRODUCTO   --------------------------------------------- -->
@@ -39,16 +54,15 @@
                             <h2 class="m-0">{{ product.title }}</h2>
                             <p class="m-0 h2-p">{{ product.content }}</p>
                             <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
-                          <div class="container-categories d-flex gap-2 flex-wrap">
-                              <p v-if="product.category" class="cont-category h3-p">{{ product.category.name }}</p>
+                            <div class="container-categories d-flex gap-2 flex-wrap">
+                                <Tag v-for="category in product.categories" :key="category.id" severity="secondary" :value="category.name" rounded></Tag>
                             </div>
                             <div class="button d-flex gap-3 ">
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
-                                    <Button label="Comprar" variant="outlined" class="w-100" />
+                                    <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
-                                <router-link :to="'/chat'" class="w-50">
-                                    <Button label="Chat" raised class="w-100" />
-                                </router-link>
+                                  <Button v-if="isYourOwnProduct(product.user?.id)" label="Editar" class="w-50 p-button secondary" rounded />
+                                  <Button v-else @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -61,7 +75,7 @@
                             </div>
                             <div class="button d-flex gap-3">
                                 <Button label="Comprar" variant="outlined" class="w-50" />
-                                <Button label="Chat" raised class="w-50" />
+                                <Button label="Chat" raised class="w-50"  />
                             </div>
                         </div>
                         <div class="d-flex gap-4 justify-content-center align-items-center p-3 container-security-info">
@@ -70,7 +84,7 @@
                             <p class="font-xs">Para vender de segunda mano con éxito: usa fotos claras, describe bien el producto, fija un precio justo, responde rápido y acuerda una entrega segura. ¡Vende fácil y seguro!</p>
                         </div>
                         <router-link v-if="product.user" :to="'/profile/detalle/'+product.user.id" class="d-flex gap-3 align-items-center p-4 info-profile-product">
-                            <img :src="product.user.avatar" alt="" width="50px" height="50px">
+                            <img :src="product.user.media[0]?.original_url" alt="" width="50px" height="50px">
                             <div>
                                 <!-- {{ product.user && product.user.length > 0 ? product.user[0].id : 'No hay usuario' }} -->
                                 <h4>{{ product.user?.name }} {{ product.user.surname1 }}</h4>
@@ -96,7 +110,7 @@
                 <div class="container-user-products">
                     <h2>Articulos del usuario</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="6" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -124,7 +138,7 @@
                 <div class="container-related-products">
                     <h2>Articulos relacionados</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2" circular :autoplayInterval="3000">
+                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -153,99 +167,53 @@
 </template>
 <script setup>
 
-    import { ref, onMounted, watch } from 'vue';
-    import { Skeleton, Rating, Carousel } from 'primevue';
+    import { onMounted, watch } from 'vue';
+    import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
+    import useProductDetail from '../../composables/productDetail';
 
-    const path = window.location.pathname; // obtiene url
-    const segments = path.split('/');
-    const id = segments.pop();  // obtiene ultimo elemento (id)
-    const product = ref([]);
-    const relatedPost = ref([]);
-    const images = ref();
-    const address = ref('null');
-    const fullAddress = ref(null);
-    const position = ref('left');
+    const { 
+        path,
+        segments,
+        id,
+        product,
+        relatedPost,
+        images,
+        address,
+        fullAddress,
+        position,
+        compradorId,
+        auth,
+        router,
+        chatExists,
+        home,
+        breadcrumbs,
+        products,
+        responsiveOptions,
+        responsiveOptions2,
+        getProduct,
+        getRelatedProducts,
+        getGeoLocation,
+        getImage,
+        isYourOwnProduct,
+        handleChatCreation,
+    } = useProductDetail();
+    
 
     watch(product, (standProduct) => {
         if (standProduct?.id) {
             getGeoLocation();
         }
     });
-    
-
-
-    // Peticiones de API
-    const getProduct = async () => {
-        console.log(id);
-        const respuesta = await axios.get('/api/products/'+id); // Asegúrate de que esta URL sea la correcta
-        product.value = respuesta.data.data || {}; // Guardamos los datos en productos
-        console.log('PRODUCT:', respuesta.data.data);
-    };
-    const getRelatedProducts = async () => {
-        const respuesta = await axios.get('/api/products');
-        relatedPost.value = respuesta.data;
-        console.log('RELATED PRODUCTS:', respuesta.data);
-    };
-
-
-    const getGeoLocation = async () => {
-        try{
-            const latitude = product.value.user.latitude;
-            const longitude = product.value.user.longitude;
-
-            const respuesta = await axios.get('/api/geoLocation', {
-                params: {latitude, longitude}
-            });
-            fullAddress.value = respuesta.data || {};
-            console.log('FULLADDRESS -->', fullAddress);
-
-        }catch(err){
-            console.log('Falla en API: ', err);
-        }
-    };
-
-    function getImage(resized_image){
-        return Object.values(resized_image || {});
-    }
-
-    const responsiveOptions = ref([
-        {
-            breakpoint: '1300px',
-            numVisible: 4
-        },
-        {
-            breakpoint: '575px',
-            numVisible: 1
-        }
-    ]);
-    const products = ref();
-    const responsiveOptions2 = ref([
-        {
-            breakpoint: '1400px',
-            numVisible: 2,
-            numScroll: 1
-        },
-        {
-            breakpoint: '1199px',
-            numVisible: 3,
-            numScroll: 1
-        },
-        {
-            breakpoint: '767px',
-            numVisible: 2,
-            numScroll: 1
-        },
-        {
-            breakpoint: '575px',
-            numVisible: 1,
-            numScroll: 1
-        }
-    ]);
 
     onMounted(async () => {
       await getProduct();
-      getRelatedProducts();
+      if (auth.user) {
+        console.log(auth.user);
+        compradorId.value = auth.user.id;
+      }
+      console.log("ID DEL USUARIO AUTENTICADO", compradorId.value);
+      await getRelatedProducts();
     })
 </script>
 <style scoped>

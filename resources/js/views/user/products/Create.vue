@@ -57,17 +57,18 @@
                         <!-- CATEGORY ---------------------------------------------------- -->
                         <div class="mb-3 input-categorias">
                             <FloatLabel>
-                              <Select
-                                  v-model="product.category"
-                                  :options="categoryList"
-                                  optionLabel="name"
-                                  optionValue="id"
-                                  :loading="isLoading"
-                                  :disabled="isLoading"
-                                  class="w-full md:w-80"
-                                  appendTo=".show"
-                              />
-                              <label>Selecciona categoría</label>
+                                <MultiSelect
+                                    v-model="product.categories"
+                                    :options="categoryList"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    :loading="isLoading"
+                                    :disabled="isLoading"
+                                    class="w-full md:w-80"
+                                    appendTo=".show"
+                                    placeholder="Selecciona categorías"
+                                />
+                                <label>Selecciona categorías</label>
                             </FloatLabel>
                             <div class="text-danger mt-1">
                                 {{ errors.categories }}
@@ -80,36 +81,100 @@
                         </div>
 
                         <!-- ESTADO ---------------------------------------------------- -->
-                      <div class="mb-3 input-estado">
-                        <FloatLabel>
-                          <Select
-                              v-model="product.estado"
-                              :options="estadoList"
-                              optionLabel="name"
-                              optionValue="id"
-                              :loading="isLoadingEstados"
-                              class="w-full md:w-80"
-                              appendTo=".show"
-                          />
-                          <label for="estado">Selecciona estado</label>
-                        </FloatLabel>
+                        <div class="mb-3 input-estado">
+                            <FloatLabel>
+                            <Select
+                                v-model="product.estado"
+                                :options="estadoList"
+                                optionLabel="name"
+                                optionValue="id"
+                                :loading="isLoadingEstados"
+                                class="w-full md:w-80"
+                                appendTo=".show"
+                            />
+                            <label for="estado">Selecciona estado</label>
+                            </FloatLabel>
 
-                        <div class="text-danger mt-1">
-                          {{ errors.estado_id }}
+                            <div class="text-danger mt-1">
+                            {{ errors.estado_id }}
+                            </div>
+                            <div class="text-danger mt-1">
+                            <div v-for="message in validationErrors?.estado_id">
+                                {{ message }}
+                            </div>
+                            </div>
                         </div>
-                        <div class="text-danger mt-1">
-                          <div v-for="message in validationErrors?.estado_id">
-                            {{ message }}
-                          </div>
-                        </div>
-                      </div>
 
-                      <!-- PRICE ---------------------------------------------------- -->
+                        <!-- PRICE ---------------------------------------------------- -->
                         <div class="mb-3 input-price">
                             <FloatLabel>
                                 <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
                                 <label for="price-product">Precio</label>
                             </FloatLabel>
+                        </div>
+
+                        <!-- PRICE ---------------------------------------------------- -->
+                        
+                        <div class="mb-3 input-toSend card d-flex flex-row gap-3 p-3 p-0 m-0 w-25 justify-content-between">
+                            <p class="m-0">Para enviar 📦</p>
+                            <ToggleSwitch v-model="toSend" />
+                        </div>
+                        
+                        <div v-if="product.toSend == true" class="d-flex flex-column gap-3 py-3 ">
+                            <div class="mb-3 input-estado">
+                                <FloatLabel>
+                                    <Select
+                                        v-model="product.weight"
+                                        :options="pseoProducto"
+                                        optionLabel="name"
+                                        optionValue="total"
+                                        :loading="isLoadingEstados"
+                                        class="w-full md:w-80"
+                                        appendTo=".show"
+                                    />
+                                    <label for="estado">Selecciona el peso</label>
+                                    </FloatLabel>
+
+                                    <div class="text-danger mt-1">
+                                    {{ errors.estado_id }}
+                                    </div>
+                                    <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.weight">
+                                        {{ message }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 input-ancho">
+                                <FloatLabel>
+                                    <InputNumber v-model="product.width" />
+                                    <label for="estado">Introduce el ancho</label>
+                                    </FloatLabel>
+
+                                    <div class="text-danger mt-1">
+                                    {{ errors.estado_id }}
+                                    </div>
+                                    <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.width">
+                                        {{ message }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 input-alto">
+                                <FloatLabel>
+                                    <InputNumber v-model="product.heigth" />
+
+                                    <label for="estado">Introduce la altura</label>
+                                    </FloatLabel>
+
+                                    <div class="text-danger mt-1">
+                                    {{ errors.estado_id }}
+                                    </div>
+                                    <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.heigth">
+                                        {{ message }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
                         <div class="flex pt-6 justify-between">
@@ -132,7 +197,6 @@
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
 import DropZoneV from "@/components/DropZone-varios.vue";
-import DropZone from "@/components/DropZone.vue";
 import useCategories from "@/composables/categories";
 import useProducts from "@/composables/products.js";
 import {useForm, useField, defineRule} from "vee-validate";
@@ -157,11 +221,9 @@ const dropZoneActive = ref(true)
 const schema = {
     title: 'required|min:5',
     content: 'required|min:5',
-    category: 'required',
+    categories: 'required',
     price: 'required',
     estado: 'required',
-    thumbnails: 'required'
-
 }
 // Create a form context with the validation schema
 const {validate, errors} = useForm({validationSchema: schema})
@@ -169,17 +231,16 @@ const {validate, errors} = useForm({validationSchema: schema})
 // Define actual fields for validation
 const {value: title} = useField('title', null, {initialValue: ''});
 const {value: content} = useField('content', null, {initialValue: ''});
-const {value: categories} = useField('category', null, {initialValue: '', label: 'category'});
+const {value: categories} = useField('categories', null, {initialValue: '', label: 'categories'});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estados} = useField('estado', null, {initialValue: ''});
-const {value: thumbnails} = useField('thumbnails', null, {initialValue: []});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
 const product = ref({
     title,
     content,
-    category: categories,
+    categories: categories,
     thumbnails: [
         { img: "", file: null }, // Contenedor 1
         { img: "", file: null }, // Contenedor 2
@@ -213,7 +274,11 @@ function submitForm() {
       formData.append('content', product.value.content);
       formData.append('price', product.value.price);
       formData.append('estado_id', product.value.estado);
-      formData.append('category_id', product.value.category);
+      if (Array.isArray(product.value.categories)) {
+          product.value.categories.forEach((category) => {
+            formData.append('categories[]', category);
+          });
+        }
 
       imagenes.forEach((imagen, index) => {
         if (imagen.file) {

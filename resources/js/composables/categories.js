@@ -28,7 +28,7 @@ export default function useCategories() {
             '&order_column=' + order_column +
             '&order_direction=' + order_direction)
             .then(response => {
-                categories.value = response.data;
+                categories.value = response.data.data;
             })
     }
 

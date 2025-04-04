@@ -7,8 +7,8 @@
                     <div class="tx-color-secondari">Soomfy</div>
                 </router-link>
 
-              <SearchBar v-if="!isRestrictedRoute" />
-              <div class="align-items-center">
+                <SearchBar v-if="!isRestrictedRoute" class="search-bar" />
+                <div class="align-items-center">
                     <ul class="navbar-nav align-items-center gap-2">
                         <button class="primary-button">Como funciona</button>
                         <router-link to="/chat" class="nav-link d-flex align-items-center gap-2">
@@ -44,7 +44,7 @@
                     <img src="/images/logo.svg" class="logo-size" alt="Soomfy">
                     <p>Soomfy</p>
                 </router-link>
-                <SearchBar v-if="!isRestrictedRoute" />
+                <SearchBar :smallScreen="true" class="search-bar-small" />
             </div>
         </div>
     </nav>
@@ -54,7 +54,6 @@
 <script setup>
 
 import useAuth from "@/composables/auth";
-import LocaleSwitcher from "../components/LocaleSwitcher.vue";
 import { authStore } from "../store/auth";
 import SearchBar from "@/components/SearchBar.vue";
 import {computed} from "vue";
@@ -68,7 +67,5 @@ const isRestrictedRoute = computed(() => {
   const restrictedRoutes = ['home', 'login', 'register'];
   return restrictedRoutes.includes(route.name);
 });
-
-
 
 </script>

@@ -137,7 +137,7 @@
                   </Galleria>
                 </td>
                 <td class="px-6 py-4 text-sm">
-                  {{ product?.category?.name || 'Sin categoría' }}
+                  {{ product?.categories?.map(category => category.name).join(', ') || 'Sin categorías' }}
                 </td>
                 <td class="px-6 py-4 text-sm">
                   {{ product?.estado?.name || 'Sin estado' }}

@@ -97,53 +97,9 @@ class ProfileController extends Controller
 
         return ProductResource::collection($filteredProducts);
     }
-    public function getPurchase(Request $request){
-        $userId = $request->userId;
-        $purchase = User::find($userId)->purchase()
-        ->with(['product', 'seller', 'buyer'])
-        ->get();
-
-        return $this->successResponse($purchase, 'Transaction found');
-    }
-    
-    public function getSales(Request $request){
-        $userId = $request->userId;
-        $purchase = User::find($userId)->sales()
-        ->with(['product', 'seller', 'buyer'])
-        ->get();
-
-        return $this->successResponse($purchase, 'Transaction found');
-    }
-    public function getValorations(Request $request){
-        $userId = $request->userId;
-        $reviews = UserOpinion::whereIn('product_id', function ($query) use ($userId) {
-            $query->select('product_id')
-                  ->from('transactions')
-                  ->where('userSeller_id', $userId);
-        })->with(['user', 'product'])->get();
-        return $this->successResponse($reviews, 'Reviews found');
-    }
-
     public function getUserByProductId($productId){
         $product = Product::find( $productId)->load([ 'user' ]);
         return new ProductResource($product);
-    }
-
-    public function getGeoLocation(Request $request){
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $apiKey = env('GOOGLE_API_KEY');
-
-        $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-            'latlng' => "$latitude,$longitude",
-            'key' => $apiKey
-        ]);
-
-        if ($response->failed()) {
-            return response()->json(['error' => 'Error al obtener la dirección'], 500);
-        }
-
-        return response()->json($response->json());
     }
 
 }

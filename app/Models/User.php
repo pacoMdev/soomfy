@@ -25,7 +25,8 @@ class User extends Authenticatable implements HasMedia
         'longitude',
         'latitude',
         'surname1',
-        'surname2'
+        'surname2',
+        'google_id',
     ];
 
     /**

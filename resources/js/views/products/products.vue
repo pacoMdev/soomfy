@@ -34,13 +34,12 @@
           </select>
 
           <!-- Precio -->
-          <!-- Precio MIN -->
-          <label for="precio" class="h1-p">Precio minimo</label>
-          <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€">
-
-          <!-- Precio MAX -->
-          <label for="precio" class="h1-p">Precio máximo</label>
-          <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€">
+          <!-- Precio MIN / MAX-->
+          <label for="precio" class="h1-p">Precio minimo / maximo</label>
+          <div class="d-flex justify-content-between">
+            <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€">
+            <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€">
+          </div>
 
           <!--Ordenar-->
           <label for="ordenarPrecio" class="h1-p">Precio</label>
@@ -71,7 +70,6 @@
           </div>
 
           <!-- Botón de filtrar -->
-          <button type="submit">Aplicar Filtros</button>
           <button @click="limpiarFiltros" type="submit">Limpiar Filtros</button>
         </form>
       </div>
@@ -98,7 +96,6 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import { useRoute } from "vue-router";
 import ProductoNew from "@/components/ProductoNew.vue";
 import useProducts from '@/composables/products.js';
@@ -107,7 +104,26 @@ import useCategories from "@/composables/categories.js";
 
 
 const route = useRoute();
+// const { 
+//   products,
+//   estadoList,
+//   getEstadoList,
+//   fetchProducts,
+//   aplicarFiltro,
+//   limpiarFiltros,
+//   categoriaSeleccionada,
+//   buscarTitulo,
+//   buscarPrecioMin,
+//   buscarPrecioMax,
+//   buscarRadio,
+//   latitude,
+//   longitude,
+//   buscarEstado,
+//   ordenarFecha,
+//   ordenarPrecio,
+//  } = useProducts();
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
+
 const {categoryList, getCategoryList} = useCategories()
 
 const fetchProducts = async () => {
@@ -127,7 +143,8 @@ const fetchProducts = async () => {
         route.query.search_global || '', // Global (vacío por defecto)
         route.query.order_column || 'created_at', // Columna de orden, por defecto "created_at"
         route.query.order_direction || 'desc', // Dirección de orden, por defecto "desc"
-        route.query.order_price || '' // Precio para ordenar
+        route.query.order_price || '', // Precio para ordenar
+        100
     );
 
   } catch (error) {
@@ -136,22 +153,18 @@ const fetchProducts = async () => {
 };
 
 
-const latitude = ref(41.38740000);
-const longitude = ref(2.16860000);
-
-const categoriaSeleccionada = ref('');
+const categoriaSeleccionada = ref(route.query.search_category);
 const buscarTitulo = ref('');
 const buscarEstado = ref('');
 const buscarPrecioMin = ref();
 const buscarPrecioMax = ref();
-
 // Ubicacion
 const buscarRadio = ref(0);
-
 // Ordenar
 const ordenarPrecio = ref('');
 const ordenarFecha = ref('');
-
+const latitude = ref(41.38740000);
+const longitude = ref(2.16860000);
 
 
 const aplicarFiltro = async () => {
@@ -208,7 +221,8 @@ const aplicarFiltro = async () => {
         filtrosLimpios.order_price || '' ,// Precio ordenado
         filtrosLimpios.search_latitude || '', // Pasar la latitud
         filtrosLimpios.search_longitude || '', // Pasar la longitud
-        filtrosLimpios.search_radius || ''
+        filtrosLimpios.search_radius || '',
+        ''
 
   );
 
@@ -216,6 +230,22 @@ const aplicarFiltro = async () => {
     console.error('Error al aplicar filtro:', error);
   }
 };
+
+watch(
+  [
+    categoriaSeleccionada,
+    buscarTitulo,
+    buscarEstado,
+    ordenarFecha,
+    ordenarPrecio,
+    buscarPrecioMin,
+    buscarPrecioMax,
+    buscarRadio,
+    latitude,
+    longitude
+  ],
+  aplicarFiltro
+);
 
 
 const limpiarFiltros = async () => {

@@ -34,7 +34,12 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'category' => $this->category,
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ];
+            }),
             'user' => $this->user,
             'price' => $this->price,
             'estado' => $this->estado,
@@ -46,7 +51,7 @@ class ProductResource extends JsonResource
             'original_image' => count($this->getMedia('*')) > 0 ? $this->getMedia('*')[0]->getUrl() : null,
             'resized_image' => $resized_image,
             'esFavorito' => $esFavorito,
-            'created_at' => $this->created_at,
+            'created_at' => Date($this->created_at),
             'updated_at' => $this->updated_at
         ];
     }

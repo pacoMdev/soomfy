@@ -223,7 +223,8 @@ input {
 }
 
 .dropzone-container {
-  height: 200px;
+  min-height: 100px;
+  height: 100px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   display: flex;

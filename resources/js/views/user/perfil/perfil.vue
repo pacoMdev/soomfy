@@ -6,8 +6,13 @@
     <div class="">
       <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
         <div v-if="user.email" class="container-info d-flex gap-5">
-          <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
-          <img v-else src="/images/GitHub.svg"  alt="default-image">
+          <div v-if="isLoading">
+            <Skeleton shape="circle" size="5rem"></Skeleton>
+          </div>
+          <div v-else>
+            <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
+            <Skeleton v-else shape="circle" size="5rem"></Skeleton>
+          </div>
 
           <div class="container-info-profile d-flex flex-column gap-1">
             <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
@@ -15,32 +20,24 @@
               <Rating v-model="mediaRating" readonly />
               <p>({{ reviews.length }})</p>
             </div>
-            <p>Vendedor novel</p>
+            <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
+    : 'Direccion no disponible 🚫'" rounded></Tag>
+
           </div>
         </div>
 
         <!-- Botones de acciones -->
         <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info">
           <div class="d-flex flex-column gap-3 mx-auto">
-            <div class="d-flex gap-3">
-              <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
-              <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            </div>
-            <Button :label="fullAddress?.results && fullAddress.results.length > 0
-    ? fullAddress.results[0].formatted_address
-    : 'Direccion no disponible 🚫'"
-                    icon="pi pi-map-marker" rounded />
+            <router-link class="" v-if="authStore().isAdmin" to="/admin">
+              <Button label="Admin panel" class="w-100" rounded />
+            </router-link>
+            <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="w-100" rounded />
+            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="w-100 p-button closeSession" rounded />
           </div>
         </div>
-        <div class="d-flex gap-3">
-            <router-link class="" v-if="authStore().isAdmin" to="/admin">
-              <Button label="Admin panel" rounded />
-            </router-link>
-            <Button label="Editar perfil" @click.stop="openEditProfile(user)" rounded />
-            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" rounded />
-          </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: 450px; height: 500px;">
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: min(90vw, 500px); height: min(90vh, 550px); " appendTo=".show" >
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
@@ -86,7 +83,7 @@
               </TabPanel>
               <TabPanel value="1">
 
-                <form @submit.prevent="editUser" class="d-flex flex-column gap-5">
+                <form @submit.prevent="editUser" class="d-flex flex-column gap-5 py-4">
                   <div class="d-flex flex-column gap-5">
                     <div class="">
                       <FloatLabel>
@@ -153,13 +150,13 @@
                     </div>
                     <div class="">
                       <FloatLabel>
-                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="prueba"/>
+                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="startMap"/>
                         <div class="my-3">
                           <FloatLabel>
-                            <InputText v-model="address" id="address-input" @keyup.enter="buscarUbicacio"/>
+                            <InputText v-model="partialAddress" id="address-input" @keyup.enter="buscarUbicacio"/>
                             <label for="address-input">Intoduce una direccion</label>
                           </FloatLabel>
-                          <Button @click="buscarUbicacio" label="Buscar" class="mt-2" />
+                          <Button @click="getGeoPartialAddress" label="Buscar" class="mt-2" />
                         </div>
                         <div id="map" class="google-map"></div>
                       </FloatLabel>
@@ -170,13 +167,19 @@
                 </form>
               </TabPanel>
           </TabPanels>
-      </Tabs>
+        </Tabs>
       </Dialog>
 
       <div>
-        <div class="d-flex gap-3 w-100 justify-content-center">
-          <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
-          <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+        <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
+          <div class="d-flex gap-3">
+            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" class="" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+          </div>
+          <div class="d-flex gap-3">
+            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+          </div>
         </div>
 
         <div class="container w-100 d-flex gap-5">
@@ -209,7 +212,7 @@
           <div v-if="selectedTab === 'activeProducts'">
             <div v-if="activeProducts.length > 0">
               <h4>Mis Productos</h4>
-              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" appendTo=".show" />
+              <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
             <div v-else class="container-else">
               <h1>Parece que aun no hay productos</h1>
@@ -235,18 +238,19 @@
 
 
 <script setup>
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
-import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel } from 'primevue';
+import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag } from 'primevue';
 import ProductoUser from '../../../components/ProductoUser.vue';
 import HistoricInfo from '../../../components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
 import { usePrimeVue } from 'primevue/config';
+import Skeleton from 'primevue/skeleton';
 
 import useUsers from "@/composables/users";
-const { updateUser, validationErrors } = useUsers();
+const { updateUser, validationErrorsm, isLoading } = useUsers();
 import { useForm, useField, defineRule } from "vee-validate";
 import { required, min } from "@/validation/rules";
 import {map} from "lodash";
@@ -254,12 +258,8 @@ defineRule('required', required);
 defineRule('min', min);
 const address = ref('');
 
-
-watch
-
 const mediaRating = ref(0);
 const activeProducts = ref([]);
-const visibleEditUser = ref(false);
 const selectedUser = ref(null);
 const purchases = ref([]);
 const sales = ref([]);
@@ -275,8 +275,10 @@ const totalSizePercent = ref(0);
 const files = ref([]);
 const $primevue = usePrimeVue();
 const fullAddress = ref(null);
-// variables
-// no asigna el valor de la variable lo hace al abrir el dialog
+const partialAddress = ref('');
+// DIALOGS
+const visibleEditUser = ref(false);
+// variables para el edit user
 const { value: id } = useField('id', null, { initialValue: selectedUser.id });
 const { value: name } = useField('name', null, { initialValue: selectedUser.name });
 const { value: surname1 } = useField('surname1', null, { initialValue: selectedUser.surname1 });
@@ -302,6 +304,32 @@ const userData = ref({
   longitude
 })
 
+const getGeoPartialAddress = async ()=>{
+  // realizar consulta a api GOOGLE
+  // Recojer las coordenadas y modificar las default (latitude, longitude)
+  console.log('✅ CHEKING ADDRESS');
+  console.log('🏠 ADDRESS -->', partialAddress.value);
+  console.log('📟 LATITUDE && longitude', latitude, longitude);
+
+  try {
+      const response = await axios.get('/api/geocode', {
+          params: { address: partialAddress.value,}
+      });
+      const components = response.data;
+      console.log('API -->', components.results[0]);
+
+      if (components) {
+        latitude.value = components.results[0].geometry.location.lat;
+      longitude.value = components.results[0].geometry.location.lng;
+
+      console.log('🏞️ API Response', components.results);
+      console.log('📟 LATITUDE && longitude', latitude, longitude);
+      }
+  } catch (error) {
+      console.error("Eror en api de GOOGLE -->", error);
+  }
+}
+
 const getGeocodeData = async () => {
   try {
     const response = await axios.get('http://127.0.0.1:8000/api/geocode', {
@@ -316,7 +344,7 @@ const getGeocodeData = async () => {
   }
 };
 
-const prueba = async () => {
+const startMap = async () => {
   const map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: latitude.value, lng: longitude.value },
     zoom: 13,

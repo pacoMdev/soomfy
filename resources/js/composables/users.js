@@ -11,6 +11,8 @@ export default function useUsers() {
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+    const favoritos = ref([]);
+
 
     const getUsers = async (
         page = 1,
@@ -31,19 +33,18 @@ export default function useUsers() {
             })
     }
 
-    const getUsersWithTasks = async () => {
-        axios.get('/api/userswithtasks')
-            .then(response => {
-                users.value = response.data;
-            })
-    }
-
     const getUser = async (id) => {
-        axios.get('/api/users/' + id)
-            .then(response => {
-                user.value = response.data.data;
-                console.log(user.value)
-            })
+        isLoading.value = true;
+        try {
+            const response = await axios.get('/api/users/' + id);
+            user.value = response.data.data;
+            return user.value;
+        } catch (error) {
+            console.error("Error al obtener el producto", error);
+            return null;  // En caso de error, retornamos `null` o un valor predeterminado
+        }finally {
+            isLoading.value = false;
+        }
     }
 
     const createUserDB = async (id) => {
@@ -148,12 +149,22 @@ export default function useUsers() {
                 }
             })
     }
+    const obtenerFavoritos = async () => {
+        try {
+          const respuesta = await axios.get('/api/get-favorite-products');
+          favoritos.value = respuesta.data.data;
+        } catch (error) {
+          console.error("Error al obtener favoritos:", error);
+        }
+      }
 
     return {
         users,
         user,
+        validationErrors,
+        isLoading,
+        favoritos,
         getUsers,
-        getUsersWithTasks,
         getUser,
         createUserDB,
         deleteUserDB,
@@ -162,8 +173,7 @@ export default function useUsers() {
         storeUser,
         updateUser,
         deleteUser,
-        validationErrors,
-        isLoading
+        obtenerFavoritos,
     }
 }
 

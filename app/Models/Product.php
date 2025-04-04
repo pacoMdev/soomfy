@@ -19,17 +19,12 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'products';
-    protected $fillable = ['title', 'content', 'price','category_id', 'user_id','estado_id'];
+    protected $fillable = ['title', 'content', 'price','category_id', 'user_id','estado_id', 'toSend'];
     
     // Relacion NM ( usuarios / products )
     public function users()
     {   
-        return $this->belongsToMany(User::class, 'product_id', 'user_id');
-    }
-    
-    public function user2()
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'product_id', 'user_id');
     }
 
     // Relacion 1N tabla estados
@@ -49,17 +44,10 @@ class Product extends Model implements HasMedia
         return $this->hasMany(Transactions::class, 'product_id');
     }
 
-    public function images()
+    // Relacion N:M entre productos
+    public function categories()
     {
-        return $this->hasMany(Product_image::class, 'product_id');
-    }
-
-    /**
-     * Get the category that owns the post.
-     */
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_product');
     }
 
     public function registerMediaCollections(): void

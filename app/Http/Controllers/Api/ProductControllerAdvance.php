@@ -11,13 +11,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Resources\ProductResource;
 
-use App\Models\Category;
 use App\Models\Product;
 use App\Models\Message;
-use App\Models\Product_image;
 use App\Models\Transactions;
 use App\Models\UserOpinion;
 use App\Models\User;
+use App\Models\CategoryProduct;
 
 use App\Mail\ConstructEmail;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -43,10 +42,13 @@ class ProductControllerAdvance extends Controller
         $product->content = $validatedData['content'];
         $product->estado_id = $validatedData['estado_id'];
         $product->price = $validatedData['price'];
-        $product->category_id = $validatedData['category_id'];
         $product->user_id = auth()->id();
-
         $product->save();
+
+        // Guardar las categorías en la tabla intermedia
+        if (isset($validatedData['categories']) && is_array($validatedData['categories'])) {
+            $product->categories()->sync($validatedData['categories']);
+        }
 
         // Manejar imágenes - Corregido el manejo de thumbnails
         if ($request->hasFile('thumbnails')) {
@@ -67,7 +69,7 @@ class ProductControllerAdvance extends Controller
         if ($product->user_id !== auth()->user()->id && !auth()->user()->hasPermissionTo('product-all')) {
             return response()->json(['status' => 405, 'success' => false, 'message' => 'You can only edit your own products']);
         } else {
-            $product->load('user','category','estado', 'media');
+            $product->load('user','categories','estado', 'media');
             return new ProductResource($product);
         }
     }
@@ -114,7 +116,7 @@ class ProductControllerAdvance extends Controller
 
 
 
-            $product->load('user','category','estado', 'media');
+            $product->load('user','categories','estado', 'media');
 
             return new ProductResource($product);
 
@@ -132,9 +134,13 @@ class ProductControllerAdvance extends Controller
         }
     }
 
+    /**
+     * obtiene todos los productos filtrados o no(por defecto)
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function getProducts()
     {
-
+        $paginate = request('paginate', null);
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'title', 'created_at', 'price'])) {
             $orderColumn = 'created_at';
@@ -158,7 +164,7 @@ class ProductControllerAdvance extends Controller
         $searchGlobal = request('search_global', null);
 
         // Muestra todos los productos con su categoria y foto
-        $products = Product::with('user','estado','category', 'media')
+        $products = Product::with('user','estado','categories', 'media')
             // Busqueda global
             ->when($searchGlobal = request('search_global'), function($query) use ($searchGlobal) {
                 $query->where(function($q) use ($searchGlobal) {
@@ -176,12 +182,8 @@ class ProductControllerAdvance extends Controller
 
                 // Se ejecutara si existe el parametro search_category
             ->when(request('search_category'), function($query) {
-                // Busca los prooductos que tengan una relacion con la tabla categorias
-                $query->whereHas('category', function($q) {
-                    // Si el nombre de la categoria pasada por parametro coincide con alguna relacion producto - categoria
-                    // Devolvera solo los productos con esa categoria
-                    $q->whereRaw('LOWER(name) = ?', [strtolower(request('search_category'))]
-                    );
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.name', request('search_category'));
                 });
             })
             // Filtrar por estado
@@ -256,7 +258,7 @@ class ProductControllerAdvance extends Controller
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
             })
-            ->paginate(8);
+            ->paginate($paginate);
             // excluye los productos ya vendidos de transactions
             $soldProductIds = Transactions::pluck('product_id');
             $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
@@ -314,107 +316,5 @@ class ProductControllerAdvance extends Controller
             $favoritos = $user->favoritos;
 
             return ProductResource::collection($favoritos);
-    }
-
-    public function sellProduct(Request $request){
-        $userSeller = auth()->user();
-        $userBuyer = User::findOrFail($request -> userBuyer_id);
-        $product = Product::findOrFail($request -> product_id);
-        
-        if ($request -> finalPrice == 0){
-            $initialPrice = $product-> price;
-            $finalPrice = $product -> price;
-            $isRegated = false;
-        }else{
-            $initialPrice = $product -> price;
-            $finalPrice = $request -> finalPrice;
-            $isRegated = true;
-        }
-
-        $transaction = new Transactions();
-        $transaction -> userSeller_id = $userSeller -> id;
-        $transaction -> userBuyer_id = $userBuyer -> id;
-        $transaction -> product_id = $product -> id;
-        $transaction -> initialPrice = $initialPrice;
-        $transaction -> finalPrice = $finalPrice;
-        $transaction -> isToSend = $request -> isToSend;
-        $transaction -> isRegated = $isRegated;
-
-        $transaction -> save();
-
-        // EMAIL SELL ---------------------------------------------------------------------------------------
-        $data = [
-            'from_email'    => 'soomfy@gmail.com',
-            'from_name'     => 'Soomfy Seller',
-            'to_email'      => $userSeller -> email,
-            'to_name'       => $userSeller -> name,
-            'subject'       => 'Hey acabas de vender un producto',
-            'view'          => 'emails.sellProduct',
-            'finalPrice'    => $finalPrice,
-            'userSeller'    => $userSeller,
-            'userBuyer'     => $userBuyer,
-            'product'       => $product,
-            'saleDate'      => $transaction -> created_at,
-            'url'           => getenv('APP_URL') . '/products/detalle/' . $product -> id,
-        ];
-        // Manda el email
-        $email = new ConstructEmail($data);
-        $data_email = sendEmail($email);
-
-        // EMAIL OPINION ---------------------------------------------------------------------------------------
-        $token=bin2hex(random_bytes(32));
-
-        $data = [
-            'from_email'    => 'soomfy@gmail.com',
-            'from_name'     => 'Soomfy Valoration',
-            'to_email'      => $userBuyer -> email,
-            'to_name'       => $userBuyer -> name,
-            'subject'       => '¡Comparte tu opinión sobre tu última compra!',
-            'view'          => 'emails.valoration',
-            'finalPrice'    => $finalPrice,
-            'userSeller'    => $userSeller,
-            'userBuyer'     => $userBuyer,
-            'product'       => $product,
-            'saleDate'      => $transaction -> created_at,
-            'url'           => getenv('APP_URL') . '/opinion?userIdS=' . $userSeller->id . '&userIdB=' . $userBuyer->id . '&productId=' . $product->id . '&token=' . $token,
-        ];
-        // Manda el email
-        $email = new ConstructEmail($data);
-        $data_email = sendEmail($email);
-
-
-        return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
-    }
-
-    public function getUsersConversations($productId){
-    $productOwnerId = Product::find( $productId)->load([ 'users' ]);
-    // dd($productOwnerId['users'][0]['id']);
-    
-    $userIds = Message::where('product_id', $productId)
-        ->pluck('userRemitent_id')
-        ->unique()
-        ->reject(fn($id) => $id == $productOwnerId['users'][0]['id']);
-    $allUsers = User::whereIn('id', $userIds)->with('media')->get();
-    // dd($allUsers);
-    return $allUsers;
-    }
-
-    public function checkReview(Request $request){
-        $valoration = UserOpinion::where('token', $request->token)->first();
-        if($valoration!=null){
-            return response()->json(['check'=>true]);
-        }
-        return response()->json(['check'=>false]);
-    }
-    public function valorate(Request $request){
-        $userOpinion = new UserOpinion();
-        $userOpinion -> title = $request -> title;
-        $userOpinion -> destription = $request -> description;
-        $userOpinion -> calification = $request -> rating;
-        $userOpinion -> product_id = $request -> productId;
-        $userOpinion -> user_id = $request -> userBuyer;
-        $userOpinion -> token = $request -> token;
-
-        $userOpinion -> save();
     }
 }
