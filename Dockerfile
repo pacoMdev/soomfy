@@ -20,7 +20,8 @@ COPY . .
 
 # Instalar dependencias de PHP y Node
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+RUN npm install || { echo "❌ Error en npm install"; exit 1; }
+RUN npm run build || { echo "❌ Error en npm run build"; exit 1; }
 
 # Generar la clave de Laravel
 RUN php artisan key:generate
