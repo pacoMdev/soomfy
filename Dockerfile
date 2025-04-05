@@ -44,7 +44,6 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
     echo "DB_USERNAME=${DB_USERNAME}" >> .env && \
     echo "DB_PASSWORD=${DB_PASSWORD}" >> .env && \
     echo "BROADCAST_DRIVER=${BROADCAST_DRIVER}" >> .env && \
-    echo "CACHE_DRIVER=${CACHE_DRIVER}" >> .env && \
     echo "FILESYSTEM_DISK=${FILESYSTEM_DISK}" >> .env && \
     echo "QUEUE_CONNECTION=${QUEUE_CONNECTION}" >> .env && \
     echo "SESSION_DRIVER=${SESSION_DRIVER}" >> .env && \
@@ -85,7 +84,8 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
     echo "STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}" >> .env && \
     echo "STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}" >> .env
 # Generar la clave de Laravel
-RUN php artisan key:generate
+# Limpiar caché de configuración antes de generar la clave
+RUN php artisan config:clear && php artisan key:generate
 
 # Configurar permisos
 RUN chown -R www-data:www-data storage bootstrap/cache && \
