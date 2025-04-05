@@ -26,6 +26,9 @@ RUN npm cache clean --force
 RUN npm --verbose install || { echo "❌ Error en npm install"; exit 1; }
 RUN npm run build || { echo "❌ Error en npm run build"; exit 1; }
 
+# Configurar variables de entorno
+RUN printenv | grep -v "no_proxy" > .env
+
 # Generar la clave de Laravel
 RUN php artisan key:generate
 
