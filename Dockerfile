@@ -33,6 +33,7 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
     echo "APP_KEY=${APP_KEY}" >> .env && \
     echo "APP_DEBUG=${APP_DEBUG}" >> .env && \
     echo "APP_URL=${APP_URL}" >> .env && \
+    echo "CACHE_DRIVER=file" >> .env && \
     echo "LOG_CHANNEL=${LOG_CHANNEL}" >> .env && \
     echo "LOG_DEPRECATIONS_CHANNEL=${LOG_DEPRECATIONS_CHANNEL}" >> .env && \
     echo "LOG_LEVEL=${LOG_LEVEL}" >> .env && \
@@ -87,7 +88,8 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
 RUN php artisan key:generate
 
 # Configurar permisos
-RUN chmod -R 777 storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
 # Exponer el puerto 8000
 EXPOSE 8000
