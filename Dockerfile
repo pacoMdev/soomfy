@@ -27,8 +27,8 @@ RUN npm --verbose install || { echo "❌ Error en npm install"; exit 1; }
 RUN npm run build || { echo "❌ Error en npm run build"; exit 1; }
 
 # Configurar variables de entorno
-RUN cp .env.example .env && \
-    printenv | grep -E '^(APP|DB|REDIS|MAIL|QUEUE|LOG)' >> .env
+RUN printenv | grep -E '^(APP|DB|REDIS|MAIL|QUEUE|LOG|GOOGLE|STRIPE|VITE|SESSION|FILESYSTEM|CACHE|BROADCAST)' > .env
+
 # Generar la clave de Laravel
 RUN php artisan key:generate
 
