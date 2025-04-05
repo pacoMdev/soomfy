@@ -92,8 +92,8 @@
 import { onMounted, watch } from 'vue';
 import Rating from 'primevue/rating';
 import ProductoNew from '../../components/ProductoNew.vue';
-import HistoricInfo from '@/components/historicInfo.vue';
-import ValorationInfo from '@/components/valorationInfo.vue';
+import HistoricInfo from '@/components/HistoricInfo.vue';
+import ValorationInfo from '@/components/ValorationInfo.vue';
 import useProfile from '../../composables/profile';
 
 const {
