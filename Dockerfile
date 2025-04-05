@@ -1,5 +1,9 @@
 FROM php:8.2-fpm
 
+# Instalar Node.js y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     zip unzip curl git libpng-dev libonig-dev libxml2-dev libzip-dev \
