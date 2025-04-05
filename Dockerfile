@@ -20,6 +20,9 @@ COPY . .
 
 # Instalar dependencias de PHP y Node
 RUN composer install --no-dev --optimize-autoloader
+RUN apt-get install -y build-essential
+RUN rm -f package-lock.json
+RUN npm cache clean --force
 RUN npm install || { echo "❌ Error en npm install"; exit 1; }
 RUN npm run build || { echo "❌ Error en npm run build"; exit 1; }
 
