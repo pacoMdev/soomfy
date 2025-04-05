@@ -51,6 +51,7 @@ const model = ref([
             { label: 'Estados', icon: 'pi pi-fw pi-check-circle', to: '/admin/states', permision: 'all' },
             { label: 'Transactions', icon: 'pi pi-truck', to: '/admin/transactions', permision: 'all' },
             { label: 'Opinions', icon: 'pi pi-comment', to: '/admin/opinions', permision: 'all' },
+            { label: 'Establecimientos', icon: 'pi pi-building-columns', to: '/admin/establecimientos', permision: 'all' },
 
         ]
     }

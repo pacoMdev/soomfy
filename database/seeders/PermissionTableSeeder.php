@@ -48,7 +48,11 @@ class PermissionTableSeeder extends Seeder
             'opinions-list',
             'opinions-create',
             'opinions-edit',
-            'opinions-delete',        
+            'opinions-delete',     
+            'establecimiento-list',
+            'establecimiento-create',
+            'establecimiento-edit',
+            'establecimiento-delete',     
         ];
 
         foreach ($permissions as $permission) {

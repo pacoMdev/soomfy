@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateAdminUserSeeder::class);
         $this->call(EstadosTableSeeder::class);
         $this->call(ProductsSeeder::class);
+        $this->call(EstablecimientoSeeder::class);
 
     }
 }

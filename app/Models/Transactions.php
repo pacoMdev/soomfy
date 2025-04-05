@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Transactions extends Model
 {
     use HasFactory;
@@ -34,6 +35,10 @@ class Transactions extends Model
     // 1:N Transaction && shippingAddress
     public function shippingAddress() {
         return $this->hasOne(ShippingAddress::class, 'transaction_id');
+    }
+
+    public function establecimientos(){
+        return $this->belongsToMany(Establecimiento::class, 'establecimiento_transactions');
     }
 
 }
