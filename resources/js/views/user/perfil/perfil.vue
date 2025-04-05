@@ -244,7 +244,7 @@ import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
 import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag } from 'primevue';
 import ProductoUser from '../../../components/ProductoUser.vue';
-import HistoricInfo from '../../../components/historicInfo.vue';
+import HistoricInfo from '@/components/historicInfo.vue';
 import ValorationInfo from '../../../components/valorationInfo.vue';
 import { usePrimeVue } from 'primevue/config';
 import Skeleton from 'primevue/skeleton';
