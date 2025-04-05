@@ -8,6 +8,8 @@
 /vendor
 .env
 .env.backup
+.DS_Store
+/public/.DS_Store
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

@@ -143,7 +143,7 @@ export default [
             // Subir producto
             {
                 path: 'profile',
-                name: 'cuenta',
+                name: 'logged.cuenta',
                 component: () => import('../views/user/perfil/perfil.vue'),
             },
             {
@@ -222,7 +222,7 @@ export default [
             },
             {
                 name: 'profile',
-                path: '',
+                path: 'profile',
                 component: () => import('../views/user/perfil/perfil.vue'),
                 meta: { breadCrumb: 'Perfil' }
             },
@@ -445,6 +445,37 @@ export default [
                         component: () => import('../views/admin/opinions/Edit.vue'),
                         meta: {
                             breadCrumb: 'Edit Opinions',
+                            linked: false
+                        }
+                    }
+                ]
+            },
+            {
+                name: 'establecimientos',
+                path: 'establecimientos',
+                meta: { breadCrumb: 'establecimientos'},
+                children: [
+                    {
+                        name: 'establecimientos.index',
+                        path: '',
+                        component: () => import('../views/admin/establecimiento/Index.vue'),
+                        meta: { breadCrumb: 'establecimientos' }
+                    },
+                    {
+                        name: 'establecimientos.create',
+                        path: 'create',
+                        component: () => import('../views/admin/establecimiento/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Create establecimientos',
+                            linked: false
+                        }
+                    },
+                    {
+                        name: 'establecimientos.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/establecimiento/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit establecimientos',
                             linked: false
                         }
                     }

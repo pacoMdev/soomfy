@@ -1,59 +1,52 @@
 <template>
     <div class="d-none d-md-block">
-        <div class="footer">
-            <div class="footer-columns">
-                <div class="footer-column">
-                    <h3>PÁGINAS</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Home</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>INFO</h3>
-                    <ul>
-                        <li><a href="#">Como funciona</a></li>
-                        <li><a href="#">Sobre nosotros</a></li>
-                        <li><a href="#">Legal</a></li>
-                        <li><a href="#">Devoluciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>INFO</h3>
-                    <ul>
-                        <li><a href="#">Como funciona</a></li>
-                        <li><a href="#">Sobre nosotros</a></li>
-                        <li><a href="#">Legal</a></li>
-                        <li><a href="#">Devoluciones</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="language-selector">
-                <select name="" id="" class="" style="width: 250px;">
-                    <option value="">
-                        <img src="/images/flags/flag-for-flag-spain-svgrepo-com.svg" alt="Español">
-                        <p>Español</p>
-                    </option>
-                    <option value="">
-                        <div>
-                            <img src="/images/flags/flag-us-svgrepo-com.svg" alt="Ingles">
-                            <p>Ingles</p>
-                        </div>
-                    </option>
-                </select>
-                
-            </div>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <h5 class="mb-3">PÁGINAS</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">About Us</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">Contact</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
+          </ul>
         </div>
-        <footer class="navbar navbar-expand-md navbar-light shadow-sm justify-content-center">
-            <div class="container p-0 m-0 d-flex justify-content-center">
-                <div class="d-flex w-50 align-items-center justify-content-center">
-                    <p>© {{ currentYear }} Soomfy. Compra venta de segunda mano</p>
-                </div>
-                
-            </div>
-        </footer>
+        <div class="col-md-4 mb-4">
+          <h5 class="mb-3">INFO</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-decoration-none text-secondary">Como funciona</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">Sobre nosotros</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">Legal</a></li>
+            <li><a href="#" class="text-decoration-none text-secondary">Devoluciones</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h5 class="mb-3">Idioma</h5>
+          <Dropdown
+            v-model="selectedLanguage"
+            :options="languages"
+            optionLabel="label"
+            placeholder="Selecciona idioma"
+            class="w-100"
+          >
+            <template #value="slotProps">
+              <div class="d-flex align-items-center" v-if="slotProps.value">
+                <span :class="`flag-icon ${slotProps.value.icon} me-2`" />
+                <span>{{ slotProps.value.label }}</span>
+              </div>
+              <span v-else class="text-muted">Selecciona idioma</span>
+            </template>
+            <template #option="slotProps">
+              <div class="d-flex align-items-center">
+                <span :class="`flag-icon ${slotProps.option.icon} me-2`" />
+                <span>{{ slotProps.option.label }}</span>
+              </div>
+            </template>
+          </Dropdown>
+        </div>
+      </div>
+      <footer class="text-center py-3 border-top">
+        <p class="mb-0">© {{ currentYear }} Soomfy. Compra venta de segunda mano</p>
+      </footer>
     </div>
     <div class="d-block d-md-none w-100 bg-bs-color-primary tx-color-secondari fixed-bottom">
         <div class="d-flex w-100 justify-content-between px-5 py-2 container-nav-movile">
@@ -76,11 +69,10 @@
             <router-link to="/app/profile" class="tx-color-secondari d-flex flex-column justify-content-center">
                 <img src="../../../public/images/home/Icon-4.svg" alt="Cuenta">
                 <p>Cuenta</p>
-            </router-link>               
-        </div>
+            </router-link>
+      </div>
     </div>
 </template>
-
 
 <script setup>
 
@@ -88,9 +80,16 @@ import useAuth from "@/composables/auth";
 import LocaleSwitcher from "../components/LocaleSwitcher.vue";
 import { authStore } from "../store/auth";
 import { ref, onMounted } from "vue";
+import Dropdown from 'primevue/dropdown';
+import 'primeicons/primeicons.css';
 
 const { processing, logout } = useAuth();
 const currentYear = ref("");
+const languages = ref([
+  { label: 'Español', value: 'es', icon: 'flag-icon-es' },
+  { label: 'Inglés', value: 'en', icon: 'flag-icon-us' },
+]);
+const selectedLanguage = ref(languages.value[0]);
 
 onMounted(()=>{
     currentYear.value = new Date().getFullYear();
@@ -109,5 +108,18 @@ onMounted(()=>{
     width: 100%;
     text-align: center;
     padding: 10px;
+}
+
+.flag-icon {
+    width: 20px;
+    height: 15px;
+    background-size: cover;
+    display: inline-block;
+}
+.flag-icon-es {
+    background-image: url('/images/flags/flag-for-flag-spain-svgrepo-com.svg');
+}
+.flag-icon-us {
+    background-image: url('/images/flags/flag-us-svgrepo-com.svg');
 }
 </style>

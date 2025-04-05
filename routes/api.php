@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\EstablecimientoController;
 use App\Http\Controllers\Api\PermissionController;
 use App\Http\Controllers\Api\ProductControllerAdvance;
 use App\Http\Controllers\Api\ProfileController;
@@ -42,6 +43,9 @@ Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); //
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
 Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
+
+// Establecimientos
+Route::apiResource('establecimientos', controller: EstablecimientoController::class);
 
 //Opinions
 Route::apiResource('opinions', controller: UsersOpinionController::class);

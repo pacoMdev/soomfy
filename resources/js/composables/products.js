@@ -236,10 +236,12 @@ export default function useProducts() {
         axios.delete('/api/products/' + id)
         .then(response => {
             getProducts()
-            router.push({name: 'profile'})
+            router.push({ name: 'home' });
             swal({
                 icon: 'success',
-                title: 'Product deleted successfully'
+                title: 'Product deleted successfully',
+                showConfirmButton: false,
+                timer: 1500,
             })
         })
         .catch(error => {

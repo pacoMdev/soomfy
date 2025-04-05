@@ -1,0 +1,79 @@
+<template>
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-header bg-transparent ps-0 pe-0">
+                    <h5 class="float-start mb-0">Gestor establecimientos:</h5>
+                </div>
+                <DataTable  :value="establecimientos.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id, nombre, direccion, zip, poblacion, ciudad, telefono, email, nombre_comercial, created_at" size="small">
+
+                    <template #header>
+
+                        <Toolbar pt:root:class="toolbar-table">
+                            <template #start>
+                                <IconField >
+                                    <InputIcon class="pi pi-search"> </InputIcon>
+                                    <InputText v-model="filters['global'].value" placeholder="Buscar" class="mr-1"/>
+                                </IconField>
+
+                                <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="initFilters()" />
+                                <Button type="button" icon="pi pi-refresh" class="h-100 ml-1" outlined @click="getGroups()" />
+                            </template>
+
+                            <template #end>
+                                <Button v-if="can('establecimiento-create')"  @click="$router.push('states/create')" icon="pi pi-external-link" label="Crear establecimiento" class="float-end" />
+                            </template>
+                        </Toolbar>
+                    </template>
+
+                    <template #empty> No establecimiento found. </template>
+
+                    <Column field="id" header="ID" sortable>
+                        <template #body="{ data }">
+                            {{ data.id }}
+                        </template>
+                    </Column>
+                    <Column field="nombre" header="nombre" sortable></Column>
+                    <Column field="direccion" header="direccion" sortable></Column>
+                    <Column field="zip" header="zip" sortable></Column>
+                    <Column field="poblacion" header="poblacion" sortable></Column>
+                    <Column field="ciudad" header="ciudad" sortable></Column>
+                    <Column field="telefono" header="telefono" sortable></Column>
+                    <Column field="email" header="email" sortable></Column>
+                    <Column field="nombre_comercial" header="nombre_comercial" sortable></Column>
+                    <Column field="created_at" header="Created_at" sortable></Column>
+                </DataTable>
+
+            </div>
+        </div>
+    </div>
+
+
+</template>
+
+<script setup>
+    import {ref, onMounted, watch} from "vue";
+    import useEstablecimiento from "../../../composables/establecimiento";
+    import {useAbility} from '@casl/vue'
+    import {FilterMatchMode} from "@primevue/core/api";
+
+    const {establecimientos, getEstablecimientos, deleteEstablecimiento} = useEstablecimiento()
+    const {can} = useAbility()
+
+    onMounted(() => {
+        getEstablecimientos()
+    })
+
+    const filters = ref({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+
+    })
+
+    const initFilters = () => {
+        filters.value = {
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        };
+    }
+
+</script>
