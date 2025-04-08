@@ -3,18 +3,22 @@
     <!-- Lista de contactos -->
     <div class="d-flex flex-column">
       <div class="d-flex flex-column">
-        <h3>Chats</h3>
+        <h3 class="text-center my-4">Chats</h3>
       </div>
       <div class="chat-sidebar">
         <div v-if="activeChats" class="bordes d-flex flex-column gap-3 align-items-center">
           <div v-for="chat in activeChats" :key="chat.id" @click="selectChat(chat.id, chat.users, chat.productId)" class="chat-item bordes d-flex flex-row align-items-center" :class="{ selected: currentChat?.id === chat.id }">
-            <img :src="chat.product?.original_image" alt="" width="80" height="80" class="rounded-1">
+            <div class="d-flex flex-column">
+              <p class="p-0 m-0">Chat.</p>
+              <img :src="chat.product?.original_image" alt="" width="80" height="80" class="rounded-1">
+
+            </div>
             <div class="d-flex centradoChat flex-column text-start ms-2">
               <p class="m-0">{{ chat.product?.title }}</p>
               <p v-if="chat.lastMessage">
                 {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
               </p>
-              <p>{{ chat.users }}</p>
+              
             </div>
           </div>
         </div>
@@ -30,16 +34,14 @@
       <img src="images/noChatSelected.png" alt="">
     </div>
     <div v-else class="chat-content">
-      <div class="d-flex justify-content-start align-items-start">
-        <img :src="product?.original_image" alt="" width="200px">
-        <div class="p-4">
+      <div class="d-flex justify-content-start align-items-start gap-3">
+          <img :src="user?.avatar" class="rounded-circle" width="60px"  alt="">
+          <h4>{{ user?.name }}</h4>
           <h4 class="my-1">{{ product?.title }}</h4>
           <p class="m-0 h3-p ">{{ product?.price }} €</p>
           <p class="m-0 h4-p ">{{ product?.estado?.name }}</p>
-        </div>
-        <div class="height-100 align-items-center d-flex flex-column justify-content-center">
-          <img :src="user?.avatar" class="rounded-circle" width="60px"  alt="">
-        </div>
+        
+        
       </div>
       <div class="messages" ref="messagesContainer">
         <div v-for="msg in messages" :key="msg.id" :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">

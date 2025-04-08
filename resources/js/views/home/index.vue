@@ -1,66 +1,79 @@
 <template>
-  <div class="separacion-general">
-    <div class="d-none d-md-block">
-      <div class="separacion-general-web">
-        <div class="fondoBienvenida d-flex justify-content-center">
-          <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
-            <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
-            <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
-            <SearchBar class="search-bar-home" />
-          </div>
+  <div class="d-none d-md-block py-8">
+    <div class="separacion-general-web">
+      <div class="fondoBienvenida d-flex justify-content-center">
+        <div class="d-flex flex-column align-items-center justify-content-center contenidoBienvenida text-center">
+          <h1 class="tamañoH1">¡Compra y vende artículos de segunda mano sin salir de casa!</h1>
+          <h2 class="pb-6 m-0">¡Todo a solo un clic de distancia!</h2>
+          <SearchBar class="search-bar-home" />
         </div>
-        <div class="centrar-categories">
-          <div class="categories-carousel">
-            <button class="carousel-arrow left-arrow" @click="scrollLeft">‹</button>
-            <div class="categories-wrapper" ref="carousel">
-              <div class="d-flex flex-column text-center gap-2" @click="redirectAll()">
-                <img src="/images/others.webp" alt="Todas">
-                <p>Todas</p>
-              </div>
-              <div v-for="category in categories" :key="category.id">
-                <div class="d-flex flex-column text-center gap-2" @click="redirectCategory(category)">
-                  <img :src="category.original_image" :alt="category.original_image" />
-                  <p>{{ category.name }}</p>
-                </div>
-              </div>
+      </div>
+      <div class="centrar-categories">
+        <Carousel 
+          :value="[{name: 'Todas', img: '/images/others.webp'}, ...categories]" 
+          :numVisible="7" 
+          :numScroll="7" 
+          :responsiveOptions="responsiveOptions"
+          class="categories-carousel"
+        >
+          <template #item="slotProps">
+            <div class="categories d-flex flex-column text-center gap-2"
+            @click="slotProps.data.name === 'Todas' ? redirectAll() : redirectCategory(slotProps.data)"
+            >
+                <img 
+                  :src="slotProps.data.name === 'Todas' ? slotProps.data.img : slotProps.data.original_image" 
+                  :alt="slotProps.data.name"
+                />
+                <p>{{ slotProps.data.name }}</p>
             </div>
-            <button class="carousel-arrow right-arrow" @click="scrollRight">›</button>
-          </div>
-        </div>
+          </template>
+        </Carousel>
+      </div>
 
-        <div class="centrar-productos">
-          <div class="productos">
-            <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
-          </div>
+      <div class="centrar-productos">
+        <div class="productos">
+          <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
         </div>
-        <div class="d-flex justify-content-center">
-          <button
-              class="secondary-button-2"
-              @click="cargarMasProductos"
-              :disabled="cargando"
-          >
-            {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
-          </button>
-        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button
+            class="secondary-button-2"
+            @click="cargarMasProductos"
+            :disabled="cargando"
+        >
+          {{ cargando ? 'Cargando...' : '¡Ver mas!' }}
+        </button>
+      </div>
 
-        <div class="apartado-mensaje">
-          <h1>Dale una nueva vida a lo que ya no usas!</h1>
-          <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
+      <div class="apartado-mensaje">
+        <h1>Dale una nueva vida a lo que ya no usas!</h1>
+        <h2 class="m-0">¡¡Compra, vende y haz la diferencia!</h2>
 
-          <img src="images/cascos-decoracion.webp" alt="Cascos" class="cascos" />
-          <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota" />
-          <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj" />
-          <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato" />
-        </div>
+        <img src="images/cascos-decoracion.webp" alt="Cascos" class="cascos" />
+        <img src="images/pelota-decoracion.webp" alt="Pelota" class="pelota" />
+        <img src="images/reloj-decoracion.webp" alt="Reloj" class="reloj" />
+        <img src="images/zapato-decoracion.webp" alt="Zapatilla" class="zapato" />
       </div>
     </div>
   </div>
   <div class="d-flex d-md-none">
     <div class="my-5">
       <div class="contenedor-informativo">
+        <Carousel 
+          :value="productos" 
+          :numVisible="1" 
+          :numScroll="1" 
+          class="productos-carousel"
+        >
+          <template #item="slotProps">
+            <ProductoNew 
+              :productos="[slotProps.data]" 
+              :actualizarProductos="obtenerProductos" 
+            />
+          </template>
+        </Carousel>
       </div>
       <div class="d-flex justify-content-center my-6">
-        <!-- falta ajustar el responsive -->
         <div class="productos">
           <ProductoNew :productos="productos" :actualizarProductos="obtenerProductos"/>
         </div>
@@ -86,16 +99,40 @@ import { onMounted, ref } from 'vue';
 import ProductoNew from '@/components/ProductoNew.vue';
 import router from "@/routes/index.js";
 import SearchBar from "@/components/SearchBar.vue";
+import Carousel from 'primevue/carousel';
+
+const responsiveOptions = ref([
+  {
+    breakpoint: '1412px',
+    numVisible: 7,
+    numScroll: 7
+  },
+  {
+    breakpoint: '1375px',
+    numVisible: 6,
+    numScroll: 6
+  },
+  {
+    breakpoint: '1100px',
+    numVisible: 5,
+    numScroll: 5
+  },
+  {
+    breakpoint: '977px',
+    numVisible: 4,
+    numScroll: 4
+  }
+]);
 
 import useProducts from '@/composables/products.js';
 const { products, getProducts } = useProducts();
 import useCategories from '@/composables/categories.js';
 const { categories, getCategories } = useCategories();
 
+
 const productos = ref([]);
 const paginaActual = ref(1);
 const cargando = ref(false);
-const carousel = ref(null);
 
 onMounted(async () => {
   await obtenerProductos(1); // Carga la primera pagina
@@ -178,18 +215,6 @@ const redirectAll = () => {
   });
 };
 
-const scrollLeft = () => {
-  if (carousel.value) {
-    carousel.value.scrollBy({ left: -200, behavior: 'smooth' });
-  }
-};
-
-const scrollRight = () => {
-  if (carousel.value) {
-    carousel.value.scrollBy({ left: 200, behavior: 'smooth' });
-  }
-};
-
 // Removed unused responsiveOptions variable
 
 </script>
@@ -203,44 +228,83 @@ const scrollRight = () => {
   width: 75%;
 }
 
+/* Estilo carrousel */
 .categories-carousel {
-  display: flex;
-  align-items: center;
-  position: relative;
-  width: 70%;
+  max-width: 70%;
   margin: 0 auto;
 }
 
-.categories-wrapper {
-  display: flex;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  gap: 15px;
-  flex: 1;
+.categories-carousel :deep(.p-carousel-container) {
+  padding: 0 1rem;
 }
 
-.categories-wrapper img {
-  width: 70px; /* Original size */
-  height: 70px; /* Original size */
+.categories-carousel :deep(.p-carousel-items-container) {
+  margin: 0 -0.5rem;
+}
+
+.categories-carousel :deep(.p-carousel-item) {
+  padding: 0.5rem;
+}
+
+.categories-carousel :deep(.p-carousel-prev),
+.categories-carousel :deep(.p-carousel-next) {
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 50%;
+}
+
+.categories-carousel :deep(.p-carousel-prev:hover),
+.categories-carousel :deep(.p-carousel-next:hover) {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Mantener tus estilos actuales para las imágenes y textos */
+.categories-carousel img {
+  width: 70px;
+  height: 70px;
+  padding: 5px;
   object-fit: cover;
-  border-radius: 50%; /* Keep circular shape */
+  border-radius: 50%;
 }
 
-.carousel-arrow {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  user-select: none;
+.categories-carousel p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-color);
+}
+/* Estilo para el nuevo carousel de productos */
+.productos-carousel {
+  width: 400px; /* Limit the carousel width on smaller screens */
+  margin: 0 auto;
+  overflow: hidden; /* Prevents content from overflowing */
 }
 
-.left-arrow {
-  position: absolute;
-  left: -30px;
+.separacion-general-web {
+  padding: 0px;
 }
 
-.right-arrow {
-  position: absolute;
-  right: -30px;
+@media (max-width: 576px) {
+  .productos-carousel :deep(.p-carousel-container) {
+    padding: 0;
+  }
+
+  .productos-carousel :deep(.p-carousel-container) {
+    padding: 0 1rem;
+    width: 100%; /* Ensures the carousel container fits within the page */
+  }
+  .productos-carousel :deep(.p-carousel-item) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .productos-carousel :deep(.p-carousel-item) {
+    padding: 0.5rem;
+  }
 }
 </style>

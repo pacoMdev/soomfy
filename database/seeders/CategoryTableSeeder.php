@@ -17,7 +17,7 @@ class CategoryTableSeeder extends Seeder
     {
         $categories_svg = [
             [
-                'name' => 'Vehículos',
+                'name' => 'Vehiculos',
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'vehiculos.svg'
             ],
             [
@@ -33,7 +33,7 @@ class CategoryTableSeeder extends Seeder
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'camion.svg'
             ],
             [
-                'name' => 'Tecnología',
+                'name' => 'Tecnologia',
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'tecnologia.svg'
             ],
             [
@@ -61,11 +61,11 @@ class CategoryTableSeeder extends Seeder
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'muebles.svg'
             ],
             [
-                'name' => 'Decoración',
+                'name' => 'Decoracion',
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'decoracion.svg'
             ],
             [
-                'name' => 'Electrodomésticos',
+                'name' => 'Electrodomesticos',
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'electrodomesticos.svg'
             ],
             [
@@ -73,7 +73,7 @@ class CategoryTableSeeder extends Seeder
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'servicios.svg'
             ],
             [
-                'name' => 'Construcción',
+                'name' => 'Construccion',
                 'images' => DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'categories_svg'.DIRECTORY_SEPARATOR.'construccion.svg'
             ],
             [
