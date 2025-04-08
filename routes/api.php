@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\TransactionsController;
 use App\Http\Controllers\Api\UsersOpinionController;
 use App\Http\Controllers\Api\GoogleController;
 use App\Http\Controllers\Api\EstadoController;
+use App\Http\Controllers\Api\ShippingAddressController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
@@ -45,7 +46,10 @@ Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); 
 Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
 
 // Establecimientos
-Route::apiResource('establecimientos', controller: EstablecimientoController::class);
+Route::apiResource('shippingAddress', controller: ShippingAddressController::class);
+Route::get('getDistributionsCenters', action: [ShippingAddressController::class, 'getDistributionsCenters']);
+Route::get('getProximityCenters', action: [ShippingAddressController::class, 'getProximityCenters']);
+
 
 //Opinions
 Route::apiResource('opinions', controller: UsersOpinionController::class);

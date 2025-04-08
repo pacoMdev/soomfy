@@ -16,12 +16,11 @@
 
           <div class="container-info-profile d-flex flex-column gap-1">
             <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
-            <div class="d-flex gap-2 container-rating">
+            <div class="d-flex gap-2 container-rating py-2">
               <Rating v-model="mediaRating" readonly />
-              <p>({{ reviews.length }})</p>
             </div>
             <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
-    : 'Direccion no disponible 🚫'" rounded></Tag>
+    : 'Ubicacion no disponible'" rounded></Tag>
 
           </div>
         </div>
@@ -183,7 +182,7 @@
         </div>
 
         <div class="container w-100 d-flex gap-5">
-          <div v-if="loading">Cargando...</div>
+          <!-- <div v-if="loading">Cargando...</div> -->
           <div v-if="error" style="color: red;">{{ error }}</div>
 
            <!-- COMPRAS -------------------------------------------------------------------------------------------- -->
@@ -209,9 +208,9 @@
             </div>
           </div>
           <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'activeProducts'">
-            <div v-if="activeProducts.length > 0">
-              <h4>Mis Productos</h4>
+          <div v-if="selectedTab === 'activeProducts'" class="w-100">
+            <div v-if="activeProducts.length > 0" class="py-4">
+              <h4 class="text-center">Mis Productos</h4>
               <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
             <div v-else class="container-else">

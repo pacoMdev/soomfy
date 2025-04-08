@@ -13,7 +13,7 @@ class ShippingAddress extends Model
 
     protected $fillable = [
         'address',
-        'zip',
+        'cp',
         'country',
         'city',
         'role_address',

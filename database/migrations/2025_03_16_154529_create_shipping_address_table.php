@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('city');
-            $table->string('zip');
+            $table->string('cp');
             $table->string('country');
             $table->unsignedBigInteger('role_address');
             $table->foreign(columns: 'role_address')->references('id')->on('role_address');

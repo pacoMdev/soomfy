@@ -15,7 +15,7 @@ class ShippingAddressSeeder extends Seeder
         $ship_add = [
             [
                 'address' => 'Calle Ficticia 123',
-                'zip' => '28001',
+                'cp' => '28001',
                 'country' => 'Chamartín',
                 'city' => 'Madrid',
                 'role_address' => '1',
@@ -26,7 +26,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Avenida Envíos 45',
-                'zip' => '41012',
+                'cp' => '41012',
                 'country' => 'Bellavista',
                 'city' => 'Sevilla',
                 'role_address' => '1',
@@ -37,7 +37,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Plaza Mayor 1',
-                'zip' => '08002',
+                'cp' => '08002',
                 'country' => 'Ciutat Vella',
                 'city' => 'Barcelona',
                 'role_address' => '1',
@@ -48,7 +48,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Valencia 85',
-                'zip' => '46007',
+                'cp' => '46007',
                 'country' => 'Ruzafa',
                 'city' => 'Valencia',
                 'role_address' => '1',
@@ -59,7 +59,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Gran Vía 55',
-                'zip' => '48011',
+                'cp' => '48011',
                 'country' => 'Abando',
                 'city' => 'Bilbao',
                 'role_address' => '1',
@@ -70,7 +70,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Av. Andalucía 10',
-                'zip' => '29007',
+                'cp' => '29007',
                 'country' => 'Cruz de Humilladero',
                 'city' => 'Málaga',
                 'role_address' => '1',
@@ -81,7 +81,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Alfonso I 78',
-                'zip' => '50003',
+                'cp' => '50003',
                 'country' => 'Casco Antiguo',
                 'city' => 'Zaragoza',
                 'role_address' => '1',
@@ -92,7 +92,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Real 12',
-                'zip' => '15003',
+                'cp' => '15003',
                 'country' => 'city Vieja',
                 'city' => 'A Coruña',
                 'role_address' => '1',
@@ -103,7 +103,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Recogidas 9',
-                'zip' => '18005',
+                'cp' => '18005',
                 'country' => 'Ronda',
                 'city' => 'Granada',
                 'role_address' => '1',
@@ -114,7 +114,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Gran Vía Escultor Salzillo 4',
-                'zip' => '30004',
+                'cp' => '30004',
                 'country' => 'Centro',
                 'city' => 'Murcia',
                 'role_address' => '1',
@@ -125,7 +125,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Rúa do Príncipe 20',
-                'zip' => '36202',
+                'cp' => '36202',
                 'country' => 'Casco Vello',
                 'city' => 'Vigo',
                 'role_address' => '1',
@@ -136,7 +136,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Avenida Ordoño II 17',
-                'zip' => '24001',
+                'cp' => '24001',
                 'country' => 'Centro',
                 'city' => 'León',
                 'role_address' => '1',
@@ -147,7 +147,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Boulevard 5',
-                'zip' => '20003',
+                'cp' => '20003',
                 'country' => 'Parte Vieja',
                 'city' => 'San Sebastián',
                 'role_address' => '1',
@@ -158,7 +158,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Plaza San Juan de Dios',
-                'zip' => '11005',
+                'cp' => '11005',
                 'country' => 'Centro Histórico',
                 'city' => 'Cádiz',
                 'role_address' => '1',
@@ -169,7 +169,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Laurel 15',
-                'zip' => '26001',
+                'cp' => '26001',
                 'country' => 'Centro',
                 'city' => 'Logroño',
                 'role_address' => '1',
@@ -180,7 +180,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Paseo del Espolón 3',
-                'zip' => '09003',
+                'cp' => '09003',
                 'country' => 'Centro',
                 'city' => 'Burgos',
                 'role_address' => '1',
@@ -191,7 +191,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Rambla Obispo Orberá 8',
-                'zip' => '04001',
+                'cp' => '04001',
                 'country' => 'Centro',
                 'city' => 'Almería',
                 'role_address' => '1',
@@ -202,7 +202,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Avenida Andalucía 55',
-                'zip' => '21005',
+                'cp' => '21005',
                 'country' => 'Isla Chica',
                 'city' => 'Huelva',
                 'role_address' => '1',
@@ -213,7 +213,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Zocodover 2',
-                'zip' => '45001',
+                'cp' => '45001',
                 'country' => 'Casco Histórico',
                 'city' => 'Toledo',
                 'role_address' => '1',
@@ -224,7 +224,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Plaza Mayor 20',
-                'zip' => '37002',
+                'cp' => '37002',
                 'country' => 'Centro',
                 'city' => 'Salamanca',
                 'role_address' => '1',
@@ -235,7 +235,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Paseo de la Estación 10',
-                'zip' => '23008',
+                'cp' => '23008',
                 'country' => 'Centro',
                 'city' => 'Jaén',
                 'role_address' => '1',
@@ -246,7 +246,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Burgos 25',
-                'zip' => '39001',
+                'cp' => '39001',
                 'country' => 'Centro',
                 'city' => 'Santander',
                 'role_address' => '1',
@@ -257,7 +257,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Carretería 50',
-                'zip' => '16004',
+                'cp' => '16004',
                 'country' => 'Centro',
                 'city' => 'Cuenca',
                 'role_address' => '1',
@@ -268,7 +268,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Plaza del Torico 3',
-                'zip' => '44001',
+                'cp' => '44001',
                 'country' => 'Centro',
                 'city' => 'Teruel',
                 'role_address' => '1',
@@ -279,7 +279,7 @@ class ShippingAddressSeeder extends Seeder
             ],
             [
                 'address' => 'Calle Mayor 18',
-                'zip' => '12001',
+                'cp' => '12001',
                 'country' => 'Centro',
                 'city' => 'Castellón',
                 'role_address' => '1',

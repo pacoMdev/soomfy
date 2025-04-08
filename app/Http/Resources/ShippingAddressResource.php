@@ -17,7 +17,7 @@ class ShippingAddressResource extends JsonResource
         return [
             'id' => $this->id,
             'address' => $this->address,
-            'zip' => $this->zip,
+            'cp' => $this->cp,
             'country' => $this->country,
             'city' => $this->city,
             'telefono' => $this->telefono,

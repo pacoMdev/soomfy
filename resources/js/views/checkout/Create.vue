@@ -88,14 +88,34 @@
             </template>
         </Dialog>
         <!-- Dialog añadir dirección ------------------------------------------------------------------------  -->
-        <Dialog v-model:visible="showSelectCenter" modal header="Selecciona centro" :style="{ width: '26rem' }">
-            <Maps  />
+        <Dialog v-model:visible="showSelectCenter" modal header="Selecciona centro" style=" width: min(90vw, 500px); height: min(90vh, 500px); ">
             <div class="d-flex flex-column gap-4 py-4">
                 <div class="p-fluid">
                     <FloatLabel>
-                        <InputText id="cp" v-model="address.newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
-                        <label for="cp">Introduce direccion</label>
+                        <InputText id="cp" v-model="cpCercano" inputId="withoutgrouping" :useGrouping="false" fluid />
+                        <label for="cp">Intoduce codigo postal</label>
                     </FloatLabel>
+                </div>
+                <div>
+                    <Listbox v-model="selectedStablishment" :options="stablishments || []" optionLabel="name" class="w-full md:w-56" listStyle="max-height:250px">
+                        <template #option="slotProps">
+                            <div class="flex items-center">
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex gap-3 p-1">
+                                        <i class="pi pi-map-marker" style="font-size: 1.5rem"></i>
+                                        <div>
+                                            <div class="d-flex gap-2">
+                                                <p class="m-0"><b>{{ slotProps.option.contact_name }}</b></p>
+                                                <i v-tooltip.right="'Telefono: ' + slotProps.option.contact_phone + '\n Email: ' + slotProps.option.contact_email" class="pi pi-info-circle" style="font-size: 1rem"></i>
+                                            </div>
+                                            <p class="m-0">{{ slotProps.option.address }}, {{ slotProps.option.country }}, {{ slotProps.option.city }}</p>
+                                            <p class="m-0">{{ slotProps.option.notes }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </Listbox>
                 </div>
             </div>
             <template #footer class="">
@@ -111,16 +131,25 @@
         </div>
     </div>
     <div v-else>
-        <h1>Este producto no es para enviar</h1>
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
     </div>
 </template>
   
 <script setup>
-    import { Dialog, RadioButton, Button, InputText } from 'primevue';
-    import { onMounted, watch } from 'vue';
+    import { Dialog, RadioButton, Button, InputText, Listbox, Tooltip } from 'primevue';
+    import { onMounted, watch, ref } from 'vue';
     import Producto from '../../components/Producto.vue';
     import useCheckout from '../../composables/checkout';
-    import Maps from '../../components/Map.vue'
+    import useShippingAddress from '../../composables/shippingAddress'; 
+import { right } from '@popperjs/core';
+    
+    const selectedStablishment = ref([]);
+    const {
+        stablishments,
+        cpCercano,
+        getDistributionsCenters,
+        getProximityCenters,
+    } = useShippingAddress();
 
     const { 
         checkout,
@@ -144,25 +173,18 @@
 
     onMounted (() => {
         getUserProduct();
+        getDistributionsCenters();
+        console.log('stablishments', stablishments.value);
     });
-
-
-    watch(newCp, async (cp) => {
-        if (cp.length === 5) {
-            try {
-                const response = await axios.get('/api/geocode', {
-                    params: { address: cp,}
-                });
-                const components = response.data.results[0]?.address_components;
-                if (components) {
-                    newCity.value = components.find(c => c.types.includes('locality'))?.long_name || '';
-                    newCountry.value = components.find(c => c.types.includes('country'))?.long_name || '';
-                }
-            } catch (error) {
-                console.error("Eror en api de GOOGLE -->", error);
-            }
+    watch(cpCercano, () => {
+        if(cpCercano.value.length == 5){
+            console.log('CP -->', cpCercano.value);
+            // getProximityCenters(cpCercano.value);
         }
     });
+    watch(stablishments, (newVal) => {
+    console.log('stablishments:', newVal);
+});
 </script>
 
 <style scoped>

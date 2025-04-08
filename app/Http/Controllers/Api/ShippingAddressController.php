@@ -119,8 +119,13 @@ class ShippingAddressController extends Controller
         return ShippingAddressResource::collection(ShippingAddress::all());
     }
 
-    public function getDistributionCenters(){
-        $distributionCenters = ShippingAddress::where('role_address', '2')->get();
+    public function getDistributionsCenters(){
+        $distributionCenters = ShippingAddress::where('role_address', '1')->get();  // role_address = 1 --> Centro de distribucion
         return ShippingAddressResource::collection($distributionCenters);
+    }
+    public function getProximityCenters(Request $request){
+        
+        $proximityCenters = ShippingAddress::where('role_address', '1')->get();  // role_address = 1 --> Centro de distribuicion
+        return ShippingAddressResource::collection($proximityCenters);
     }
 }

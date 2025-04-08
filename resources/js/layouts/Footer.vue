@@ -1,11 +1,11 @@
 <template>
     <div class="d-none d-md-block">
-      <div class="row">
+      <div class="row container mx-auto py-4">
         <div class="col-md-4 mb-4">
           <h5 class="mb-3">PÁGINAS</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
-            <li><a href="#" class="text-decoration-none text-secondary">About Us</a></li>
+            <li><a href="/" class="text-decoration-none text-secondary">Home</a></li>
+            <li><a href="/products" class="text-decoration-none text-secondary">Productos</a></li>
             <li><a href="#" class="text-decoration-none text-secondary">Contact</a></li>
             <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
           </ul>
