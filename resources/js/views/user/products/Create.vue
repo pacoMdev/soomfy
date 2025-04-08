@@ -1,196 +1,199 @@
 
 <template>
   <div class="show"></div>
-    <form @submit.prevent="submitForm">
-        <div class="card flex justify-center">
-            <Stepper value="1" class="basis-[50rem]">
-                <StepList>
-                    <Step value="1">Informacion Basica</Step>
-                    <Step value="2">Informacion Adicional</Step>
-                </StepList>
-                <StepPanels>
-                    <StepPanel v-slot="{ activateCallback }" value="1">
-                        <div class="display-flex flex-column gap-5">
-                            <!-- IMAGE PRODUCT ---------------------------------------------------- -->
-                            <div class="card-body">
-                                <h3>Fotos</h3>
-                                    <DropZoneV v-model="product.thumbnails" class="imagenes"/>
-                            </div>
-                            <!-- TITLE ---------------------------------------------------- -->
-                            <div class="mb-3 input-nombre">
+  <div class="py-5">
+      <form @submit.prevent="submitForm" style=" width: min(90vw, 800px); height: min(90vh, 550px); " class="mx-auto">
+          <div class="card flex justify-center">
+              <Stepper value="1" class="basis-[50rem]">
+                  <StepList>
+                      <Step value="1">Informacion Basica</Step>
+                      <Step value="2">Informacion Adicional</Step>
+                  </StepList>
+                  <StepPanels>
+                      <StepPanel v-slot="{ activateCallback }" value="1">
+                          <div class="d-flex flex-column gap-5">
+                              <!-- IMAGE PRODUCT ---------------------------------------------------- -->
+                              <div class="card-body">
+                                  <h3>Fotos</h3>
+                                      <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+                              </div>
+                              <!-- TITLE ---------------------------------------------------- -->
+                              <div class="mb-3 input-nombre">
+                                  <FloatLabel>
+                                      <InputText v-model="product.title" id="product-title" />
+                                      <label for="product-title">Nombre del producto</label>
+                                  </FloatLabel>
+                                  <div class="text-danger mt-1">
+                                      {{ errors.title }}
+                                  </div>
+                                  <div class="text-danger mt-1">
+                                      <div v-for="message in validationErrors?.title">
+                                          {{ message }}
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
+                          <div class="flex pt-6 justify-end">
+                              <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
+                          </div>
+                      </StepPanel>
+  
+                      <StepPanel v-slot="{ activateCallback }" value="2">
+                        <div class="d-flex flex-column gap-3">
+                            <!-- CONTENT ---------------------------------------------------- -->
+                            <div class="mb-3 w-50">
                                 <FloatLabel>
-                                    <InputText v-model="product.title" id="product-title" />
-                                    <label for="product-title">Nombre del producto</label>
+                                    <Textarea id="content" v-model="product.content" rows="5" cols="45" />
+                                    <label for="content">Content</label>
                                 </FloatLabel>
                                 <div class="text-danger mt-1">
-                                    {{ errors.title }}
+                                    {{ errors.content }}
                                 </div>
                                 <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.title">
+                                    <div v-for="message in validationErrors?.content">
                                         {{ message }}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
-                        <div class="flex pt-6 justify-end">
-                            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
-                        </div>
-                    </StepPanel>
-
-                    <StepPanel v-slot="{ activateCallback }" value="2">
-                        <!-- CONTENT ---------------------------------------------------- -->
-                        <div class="mb-3">
-                            <FloatLabel>
-                                <Textarea id="content" v-model="product.content" rows="5" cols="50" />
-                                <label for="content">Content</label>
-                            </FloatLabel>
-                            <div class="text-danger mt-1">
-                                {{ errors.content }}
-                            </div>
-                            <div class="text-danger mt-1">
-                                <div v-for="message in validationErrors?.content">
-                                    {{ message }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- CATEGORY ---------------------------------------------------- -->
-                        <div class="mb-3 input-categorias">
-                            <FloatLabel>
-                                <MultiSelect
-                                    v-model="product.categories"
-                                    :options="categoryList"
-                                    optionLabel="name"
-                                    optionValue="id"
-                                    :loading="isLoading"
-                                    :disabled="isLoading"
-                                    class="w-full md:w-80"
-                                    appendTo=".show"
-                                    placeholder="Selecciona categorías"
-                                />
-                                <label>Selecciona categorías</label>
-                            </FloatLabel>
-                            <div class="text-danger mt-1">
-                                {{ errors.categories }}
-                            </div>
-                            <div class="text-danger mt-1">
-                                <div v-for="message in validationErrors?.categories">
-                                    {{ message }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ESTADO ---------------------------------------------------- -->
-                        <div class="mb-3 input-estado">
-                            <FloatLabel>
-                            <Select
-                                v-model="product.estado"
-                                :options="estadoList"
-                                optionLabel="name"
-                                optionValue="id"
-                                :loading="isLoadingEstados"
-                                class="w-full md:w-80"
-                                appendTo=".show"
-                            />
-                            <label for="estado">Selecciona estado</label>
-                            </FloatLabel>
-
-                            <div class="text-danger mt-1">
-                            {{ errors.estado_id }}
-                            </div>
-                            <div class="text-danger mt-1">
-                            <div v-for="message in validationErrors?.estado_id">
-                                {{ message }}
-                            </div>
-                            </div>
-                        </div>
-
-                        <!-- PRICE ---------------------------------------------------- -->
-                        <div class="mb-3 input-price">
-                            <FloatLabel>
-                                <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
-                                <label for="price-product">Precio</label>
-                            </FloatLabel>
-                        </div>
-
-                        <!-- PRICE ---------------------------------------------------- -->
-                        
-                        <div class="mb-3 input-toSend card d-flex flex-row gap-3 p-3 p-0 m-0 w-25 justify-content-between">
-                            <p class="m-0">Para enviar 📦</p>
-                            <ToggleSwitch v-model="toSend" />
-                        </div>
-                        
-                        <div v-if="product.toSend == true" class="d-flex flex-column gap-3 py-3 ">
-                            <div class="mb-3 input-estado">
+                            <!-- CATEGORY ---------------------------------------------------- -->
+                            <div class="mb-3 input-categorias w-50">
                                 <FloatLabel>
-                                    <Select
-                                        v-model="product.weight"
-                                        :options="pseoProducto"
+                                    <MultiSelect
+                                        v-model="product.categories"
+                                        :options="categoryList"
                                         optionLabel="name"
-                                        optionValue="total"
-                                        :loading="isLoadingEstados"
+                                        optionValue="id"
+                                        :loading="isLoading"
+                                        :disabled="isLoading"
                                         class="w-full md:w-80"
                                         appendTo=".show"
                                     />
-                                    <label for="estado">Selecciona el peso</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
-                                    </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.weight">
+                                    <label>Selecciona categorías</label>
+                                </FloatLabel>
+                                <div class="text-danger mt-1">
+                                    {{ errors.categories }}
+                                </div>
+                                <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.categories">
                                         {{ message }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3 input-ancho">
+    
+                            <!-- ESTADO ---------------------------------------------------- -->
+                            <div class="mb-3 input-estado w-50">
                                 <FloatLabel>
-                                    <InputNumber v-model="product.width" />
-                                    <label for="estado">Introduce el ancho</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
+                                <Select
+                                    v-model="product.estado"
+                                    :options="estadoList"
+                                    optionLabel="name"
+                                    optionValue="id"
+                                    :loading="isLoadingEstados"
+                                    class="w-full md:w-80"
+                                    appendTo=".show"
+                                />
+                                <label for="estado">Selecciona estado</label>
+                                </FloatLabel>
+    
+                                <div class="text-danger mt-1">
+                                {{ errors.estado_id }}
+                                </div>
+                                <div class="text-danger mt-1">
+                                <div v-for="message in validationErrors?.estado_id">
+                                    {{ message }}
+                                </div>
+                                </div>
+                            </div>
+    
+                            <!-- PRICE ---------------------------------------------------- -->
+                            <div class="mb-3 input-price w-50">
+                                <FloatLabel>
+                                    <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
+                                    <label for="price-product">Precio</label>
+                                </FloatLabel>
+                            </div>
+    
+                            <!-- PRICE ---------------------------------------------------- -->
+                            
+                            <div class="mb-3 input-toSend card d-flex flex-row gap-3 p-3 p-0 m-0 w-50 justify-content-between">
+                                <p class="m-0">Para enviar 📦</p>
+                                <ToggleSwitch v-model="product.toSend" />
+                            </div>
+                            
+                            <div v-if="product.toSend == 1" class="d-flex flex-column gap-3 py-3 ">
+                                <div class="mb-3 input-estado">
+                                    <FloatLabel>
+                                        <Select
+                                            v-model="product.weight"
+                                            :options="pseoProducto"
+                                            optionLabel="name"
+                                            optionValue="total"
+                                            :loading="isLoadingEstados"
+                                            class="w-full md:w-80"
+                                            appendTo=".show"
+                                        />
+                                        <label for="estado">Selecciona el peso</label>
+                                        </FloatLabel>
+    
+                                        <div class="text-danger mt-1">
+                                        {{ errors.estado_id }}
+                                        </div>
+                                        <div class="text-danger mt-1">
+                                        <div v-for="message in validationErrors?.weight">
+                                            {{ message }}
+                                        </div>
                                     </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.width">
-                                        {{ message }}
+                                </div>
+                                <div class="mb-3 input-ancho">
+                                    <FloatLabel>
+                                        <InputNumber v-model="product.width" />
+                                        <label for="estado">Introduce el ancho</label>
+                                        </FloatLabel>
+    
+                                        <div class="text-danger mt-1">
+                                        {{ errors.estado_id }}
+                                        </div>
+                                        <div class="text-danger mt-1">
+                                        <div v-for="message in validationErrors?.width">
+                                            {{ message }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 input-alto">
+                                    <FloatLabel>
+                                        <InputNumber v-model="product.heigth" />
+    
+                                        <label for="estado">Introduce la altura</label>
+                                        </FloatLabel>
+    
+                                        <div class="text-danger mt-1">
+                                        {{ errors.estado_id }}
+                                        </div>
+                                        <div class="text-danger mt-1">
+                                        <div v-for="message in validationErrors?.heigth">
+                                            {{ message }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3 input-alto">
-                                <FloatLabel>
-                                    <InputNumber v-model="product.heigth" />
-
-                                    <label for="estado">Introduce la altura</label>
-                                    </FloatLabel>
-
-                                    <div class="text-danger mt-1">
-                                    {{ errors.estado_id }}
-                                    </div>
-                                    <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.heigth">
-                                        {{ message }}
-                                    </div>
-                                </div>
+                            <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
+                            <div class="d-flex gap-4 pt-6 justify-between">
+                                <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
+                                <Button :disabled="isLoading" class="p-button secondary">
+                                    <div v-show="isLoading" class=""></div>
+                                    <span v-if="isLoading">Processing...</span>
+                                    <span v-else>Publish</span>
+                                </Button>
+                                <!-- <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" /> -->
                             </div>
                         </div>
-                        <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
-                        <div class="flex pt-6 justify-between">
-                            <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
-                            <button :disabled="isLoading" class="btn btn-primary">
-                                <div v-show="isLoading" class=""></div>
-                                <span v-if="isLoading">Processing...</span>
-                                <span v-else>Publish</span>
-                            </button>
-                            <!-- <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" /> -->
-                        </div>
-                    </StepPanel>
-                </StepPanels>
-            </Stepper>
-        </div>
-    </form>
+                      </StepPanel>
+                  </StepPanels>
+              </Stepper>
+          </div>
+      </form>
+  </div>
 </template>
 
 
