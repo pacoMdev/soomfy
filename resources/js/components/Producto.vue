@@ -28,8 +28,7 @@
           <h4 class="">{{ producto.title }}</h4>
           <p class="">{{ producto.content }}</p>
           <p class="">{{ producto.estado.name }}</p>
-          <Button :label="producto.category.name" rounded />
-
+          <Tag v-for="category in producto.categories" :key="category.id" severity="secondary" :value="category.name" rounded></Tag>
         </div>
       </router-link>
     </div>

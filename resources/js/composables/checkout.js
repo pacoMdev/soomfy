@@ -21,6 +21,7 @@ export default function useCheckout() {
     const userProduct = ref({});
     const selectedMethod = ref('1');
     const showDialog = ref(false);
+    const showSelectCenter = ref(false);
     const newAddress = ref('');
     const newCity = ref('');
     const newCp = ref('');
@@ -101,6 +102,7 @@ export default function useCheckout() {
         newCountry,
         error,
         typeShippment,
+        showSelectCenter,
         getUserProduct,
         submitPurchaseForm,
         saveAddress,

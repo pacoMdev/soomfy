@@ -34,11 +34,10 @@ class Transactions extends Model
 
     // 1:N Transaction && shippingAddress
     public function shippingAddress() {
-        return $this->hasOne(ShippingAddress::class, 'transaction_id');
+        return $this->belongsToMany(ShippingAddress::class)
+        ->withPivot('status', 'traking_number')
+        ->withTimestamps();
     }
 
-    public function establecimientos(){
-        return $this->belongsToMany(Establecimiento::class, 'establecimiento_transactions');
-    }
 
 }

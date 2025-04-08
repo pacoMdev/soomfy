@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_establecimiento', function (Blueprint $table) {
+        Schema::create('rec_trans_address', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('transaction_id');
-            $table->unsignedBigInteger('establecimiento_id');
+            $table->unsignedBigInteger('ship_address_id');
             $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
-            $table->foreign('establecimiento_id')->references('id')->on('establecimiento')->onDelete('cascade');
-            $table->integer('valocation')->nullable();
+            $table->foreign('ship_address_id')->references('id')->on('shipping_address')->onDelete('cascade');
+
+            $table->string('status')->default('Pendiente'); // "Pendiente", "Enviado", "Entregado"
+            $table->string('tracking_number')->nullable();
             $table->timestamps();
 
         });

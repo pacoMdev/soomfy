@@ -13,17 +13,16 @@ return new class extends Migration
     {
         Schema::create('shipping_address', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('transaction_id');
-            $table->unsignedBigInteger('user_id');
-
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('address');
             $table->string('city');
-            $table->string('postal_code');
+            $table->string('zip');
             $table->string('country');
-            $table->string('status')->default('Pendiente'); // "Pendiente", "Enviado", "Entregado"
-            $table->string('tracking_number')->nullable();
+            $table->unsignedBigInteger('role_address');
+            $table->foreign(columns: 'role_address')->references('id')->on('role_address');
+            $table->string('notes')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_email')->nullable();
             $table->timestamps();
         });
     }

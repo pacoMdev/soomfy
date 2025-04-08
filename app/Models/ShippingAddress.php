@@ -12,21 +12,20 @@ class ShippingAddress extends Model
     protected $table = 'shipping_address';
 
     protected $fillable = [
-        'transaction_id',
-        'user_id',
         'address',
-        'city',
-        'postal_code',
+        'zip',
         'country',
-        'status',
-        'tracking_number',
+        'city',
+        'role_address',
+        'notes',
+        'contact_name',
+        'contact_phone',
+        'contact_email',
     ];
 
     public function transaction(){
-        return $this -> belongsTo(Transactions::class);
-    }
-
-    public function user(){
-        return $this -> belongsTo(User::class);
+        return $this -> belongsToMany(Transactions::class)
+        ->withPivot('status', 'traking_number')
+        ->withTimestamps();
     }
 }

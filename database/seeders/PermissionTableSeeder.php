@@ -53,6 +53,10 @@ class PermissionTableSeeder extends Seeder
             'establecimiento-create',
             'establecimiento-edit',
             'establecimiento-delete',     
+            'shippingAddress-list',
+            'shippingAddress-create',
+            'shippingAddress-edit',
+            'shippingAddress-delete',     
         ];
 
         foreach ($permissions as $permission) {

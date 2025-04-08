@@ -20,7 +20,7 @@ return new class extends Migration
             $table -> unsignedBigInteger('product_id');
             $table -> unsignedBigInteger('user_id');
             $table -> foreign('product_id') -> references('id') -> on('products');
-            $table -> foreign('user_id') -> references('id') -> on('users');
+            $table -> foreign(columns: 'user_id') -> references('id') -> on('users');
             $table -> timestamps();
     
             

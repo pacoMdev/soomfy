@@ -5,61 +5,31 @@
             <form @submit.prevent="submitPurchaseForm" class="d-flex flex-column gap-4">
                 <div class="d-flex flex-column gap-5">
                     <div class="flex flex-column gap-4">
-                        <div class="flex justify-between gap-2 items-center">
-                            <div>
-                                <div class="d-flex gap-3">
-                                    <i class="pi pi-home" style="font-size: 2rem"></i>
-                                    <p style="font-size: 1.1rem">Entrega en mi dirección 4,78 €</p>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="flex justify-between gap-2 items-center">
+                                <div>
+                                    <div class="d-flex gap-3">
+                                        <i class="pi pi-home" style="font-size: 2rem"></i>
+                                        <p style="font-size: 1.1rem">Entrega en mi dirección 4,78 €</p>
+                                    </div>
                                 </div>
+                                <RadioButton v-model="selectedMethod" :inputId="1" name="dynamic" value="1" />
                             </div>
-                            <RadioButton v-model="selectedMethod" :inputId="1" name="dynamic" value="1" />
+                            <Button label="Añadir dirección" icon="pi pi-plus" class="p-button-text w-100" @click="showDialog = true" :disabled="selectedMethod!=1" />
+                        </div>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="flex justify-between gap-2 items-center">
+                                <div>
+                                    <div class="d-flex gap-3">
+                                        <i class="pi pi-building" style="font-size: 2rem"></i>
+                                        <p style="font-size: 1.1rem">Entrega en centro de recogida</p>
+                                    </div>
+                                </div>
+                                <RadioButton v-model="selectedMethod" :inputId="2" name="dynamic" value="2" />
+                            </div>
+                            <Button label="Seleccionar centro" icon="pi pi-plus" class="p-button-text w-100" @click="showSelectCenter = true" :disabled="selectedMethod!=2" />
                         </div>
 
-                        <Button label="Añadir dirección" icon="pi pi-plus" class="p-button-text" @click="showDialog = true" />
-
-                        <!-- Dialog para añadir dirección -->
-                        <Dialog v-model:visible="showDialog" modal header="Añadir dirección" :style="{ width: '26rem' }">
-                            <div class="d-flex flex-column gap-4 py-4">
-                                <!-- SECTION DATA ADDRESS ------------------------------------ -->
-                                <div class="d-flex flex-column gap-4 py-4">
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="address" v-model="address.newAddress" fluid />
-                                            <label for="address">Dirección</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="cp" v-model="address.newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
-                                            <label for="cp">Codigo postal</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="city" v-model="address.newCity" fluid/>
-                                            <label for="city">Ciudad</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <div class="p-fluid">
-                                        <FloatLabel>
-                                            <InputText id="country" v-model="address.newCountry" fluid />
-                                            <label for="country">Pais</label>
-                                        </FloatLabel>
-                                    </div>
-                                    <!-- AÑADIR MAS CAMPOS EN CASO DE ENVIAR A DIRECCION -->
-                                     <!-- Revisar la pagina con stripe(pagina de pagos) -->
-                                    <!-- <div class="d-flex flex-column">
-                                        <FloatLabel>
-                                            <label for="">Tipo de envio</label>
-                                            <Select v-model="typeShippment" :options="typeShippemt" optionLabel="name" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-                                        </FloatLabel>
-                                    </div> -->
-                                </div>
-                            </div>
-                            <template #footer class="">
-                                <Button label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" @click="saveAddress" />
-                            </template>
-                        </Dialog>
                         <div class="flex justify-content-between w-100 gap-2">
                             <div class="d-flex gap-3">
                                 <i class="pi pi-map-marker" style="font-size: 2rem"></i>
@@ -74,6 +44,64 @@
 
             </form>
         </div>
+        <!-- Dialog añadir dirección ------------------------------------------------------------------------  -->
+        <Dialog v-model:visible="showDialog" modal header="Añadir dirección" :style="{ width: '26rem' }">
+            <div class="d-flex flex-column gap-4 py-4">
+                <!-- SECTION DATA ADDRESS ------------------------------------ -->
+                <div class="d-flex flex-column gap-4 py-4">
+                    <div class="p-fluid">
+                        <FloatLabel>
+                            <InputText id="address" v-model="address.newAddress" fluid />
+                            <label for="address">Dirección</label>
+                        </FloatLabel>
+                    </div>
+                    <div class="p-fluid">
+                        <FloatLabel>
+                            <InputText id="cp" v-model="address.newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
+                            <label for="cp">Codigo postal</label>
+                        </FloatLabel>
+                    </div>
+                    <div class="p-fluid">
+                        <FloatLabel>
+                            <InputText id="city" v-model="address.newCity" fluid/>
+                            <label for="city">Ciudad</label>
+                        </FloatLabel>
+                    </div>
+                    <div class="p-fluid">
+                        <FloatLabel>
+                            <InputText id="country" v-model="address.newCountry" fluid />
+                            <label for="country">Pais</label>
+                        </FloatLabel>
+                    </div>
+                    <!-- AÑADIR MAS CAMPOS EN CASO DE ENVIAR A DIRECCION -->
+                        <!-- Revisar la pagina con stripe(pagina de pagos) -->
+                    <!-- <div class="d-flex flex-column">
+                        <FloatLabel>
+                            <label for="">Tipo de envio</label>
+                            <Select v-model="typeShippment" :options="typeShippemt" optionLabel="name" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
+                        </FloatLabel>
+                    </div> -->
+                </div>
+            </div>
+            <template #footer class="">
+                <Button label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" @click="saveAddress" />
+            </template>
+        </Dialog>
+        <!-- Dialog añadir dirección ------------------------------------------------------------------------  -->
+        <Dialog v-model:visible="showSelectCenter" modal header="Selecciona centro" :style="{ width: '26rem' }">
+            <Maps  />
+            <div class="d-flex flex-column gap-4 py-4">
+                <div class="p-fluid">
+                    <FloatLabel>
+                        <InputText id="cp" v-model="address.newCp" inputId="withoutgrouping" :useGrouping="false" fluid />
+                        <label for="cp">Introduce direccion</label>
+                    </FloatLabel>
+                </div>
+            </div>
+            <template #footer class="">
+                <Button label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" />
+            </template>
+        </Dialog>
         <div v-if="userProduct">
             <Producto :productos="userProduct" />
         </div>
@@ -92,6 +120,7 @@
     import { onMounted, watch } from 'vue';
     import Producto from '../../components/Producto.vue';
     import useCheckout from '../../composables/checkout';
+    import Maps from '../../components/Map.vue'
 
     const { 
         checkout,
@@ -106,6 +135,7 @@
         newCountry,
         error,
         typeShippment,
+        showSelectCenter,
         getUserProduct,
         submitPurchaseForm,
         saveAddress,
