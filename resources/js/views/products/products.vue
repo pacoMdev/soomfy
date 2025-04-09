@@ -5,12 +5,16 @@
         <form @submit.prevent="aplicarFiltro">
           <!-- Categoría -->
           <label for="categoria" class="h1-p">Categoría</label>
-          <select v-model="categoriaSeleccionada" id="categoria" name="categoria">
-            <option value="">Todas</option>
-            <option v-for="categoria in categoryList" :key="categoria.id" :value="categoria.name">
-              {{ categoria.name }}
-            </option>
-          </select>
+          <MultiSelect
+            v-model="categoriaSeleccionada"
+            :options="categoryList"
+            label="name"
+            track-by="name"
+            placeholder="Selecciona categorías"
+            :close-on-select="false"
+            :clear-on-select="false"
+            :hide-selected="true"
+          />
 
           <!-- Título -->
           <label for="titulo" class="h1-p">Título</label>
@@ -101,27 +105,10 @@ import ProductoNew from "@/components/ProductoNew.vue";
 import useProducts from '@/composables/products.js';
 import router from "@/routes/index.js";
 import useCategories from "@/composables/categories.js";
-
+import { MultiSelect } from 'primevue'; // Import the MultiSelect component
 
 const route = useRoute();
-// const { 
-//   products,
-//   estadoList,
-//   getEstadoList,
-//   fetchProducts,
-//   aplicarFiltro,
-//   limpiarFiltros,
-//   categoriaSeleccionada,
-//   buscarTitulo,
-//   buscarPrecioMin,
-//   buscarPrecioMax,
-//   buscarRadio,
-//   latitude,
-//   longitude,
-//   buscarEstado,
-//   ordenarFecha,
-//   ordenarPrecio,
-//  } = useProducts();
+
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
 
 const {categoryList, getCategoryList} = useCategories()
@@ -132,7 +119,7 @@ const fetchProducts = async () => {
 
     await getProducts(
         1, // Página inicial
-        route.query.search_category || '', // Categoría
+        route.query.search_category || '', // Categoría (correctly using 'search_category')
         route.query.search_id || '', // ID (vacío por defecto)
         route.query.search_title || '', // Título de búsqueda
         route.query.min_price || '', // Precio mínimo
@@ -153,7 +140,7 @@ const fetchProducts = async () => {
 };
 
 
-const categoriaSeleccionada = ref(route.query.search_category);
+const categoriaSeleccionada = ref([]); // Update to store multiple selected categories
 const buscarTitulo = ref('');
 const buscarEstado = ref('');
 const buscarPrecioMin = ref();
@@ -171,7 +158,7 @@ const aplicarFiltro = async () => {
   try {
     // Crear objeto con los filtros usando el prefijo search_
     const filtros = {
-      search_category: categoriaSeleccionada.value || '',
+      search_category: categoriaSeleccionada.value.join(','), // Join selected categories with commas
       search_title: buscarTitulo.value || '',
       search_estado: buscarEstado.value || '',
       order_column: 'created_at',
@@ -207,7 +194,7 @@ const aplicarFiltro = async () => {
     // Llamar a getProducts con los parámetros ordenados manualmente
     await getProducts(
         1, // Page
-        filtrosLimpios.search_category || '', // Categoría
+        filtrosLimpios.search_category || '', // Categorías separadas por comas
         '', // search_id vacío (no lo estás usando actualmente, pero se requiere por posición)
         filtrosLimpios.search_title || '', // Título
         filtrosLimpios.min_price || '', // Precio mínimo

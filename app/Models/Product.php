@@ -27,6 +27,11 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(User::class, 'product_id', 'user_id');
     }
 
+    // Esta funcion saca las opiniones que tiene cada producto productos
+    public function opinions() {
+        return $this->belongsToMany(UserOpinion::class, 'product_id', 'id');
+    }
+
     // Relacion 1N tabla estados
     public function estado()
     {

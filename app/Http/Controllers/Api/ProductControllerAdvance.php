@@ -167,7 +167,7 @@ class ProductControllerAdvance extends Controller
                     $q->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
                         ->orWhereRaw('LOWER(content) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
                         ->orWhere('id', 'LIKE', '%' . $searchGlobal . '%')
-                        ->orWhereHas('category', function($categoryQuery) use ($searchGlobal) {
+                        ->orWhereHas('categories', function($categoryQuery) use ($searchGlobal) { // Changed from 'category' to 'categories'
                             $categoryQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
                         })
                         ->orWhereHas('estado', function($estadoQuery) use ($searchGlobal) {
@@ -176,10 +176,11 @@ class ProductControllerAdvance extends Controller
                 });
             })
 
-                // Se ejecutara si existe el parametro search_category
+                // Se ejecutará si existe el parámetro search_category
             ->when(request('search_category'), function($query) {
-                $query->whereHas('categories', function($q) {
-                    $q->where('categories.name', request('search_category'));
+                $categories = explode(',', request('search_category')); // Split categories by commas
+                $query->whereHas('categories', function($q) use ($categories) {
+                    $q->whereIn('categories.name', $categories); // Use whereIn for OR condition
                 });
             })
             // Filtrar por estado
