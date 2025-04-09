@@ -234,7 +234,7 @@ export default function useFirebase() {
 
                 let lastMessage = null;
                 let userData = null;
-
+                
                 if (Array.isArray(chatData.lastMessage) && chatData.lastMessage.length >= 2) {
                     lastMessage = chatData.lastMessage;
                     userData = await getCachedUser(lastMessage[0]);
