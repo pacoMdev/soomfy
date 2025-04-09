@@ -138,7 +138,6 @@ onMounted(async () => {
   await obtenerProductos(1); // Carga la primera pagina
   getCategories(); // Carga las categorias
   console.log("Productos después de cargar la primera página:", productos.value); // Depuración
-
 });
 
 const obtenerProductos = async (page = 1) => {
@@ -203,7 +202,7 @@ const redirectCategory = (category) => {
     name: 'public.products',
     // Y agregara searc_category en la url
     query: {
-      search_category: category.name
+      search_category: category.name === 'Todas' ? '' : category.name // If "Todas", clear the category filter
     }
   });
 };
@@ -212,6 +211,9 @@ const redirectAll = () => {
   // Y te redirigira al apartado de categorias, filtrado por categoria
   router.push({
     name: 'public.products',
+    query: {
+      search_category: '' // Clear the category filter to show all products
+    }
   });
 };
 
