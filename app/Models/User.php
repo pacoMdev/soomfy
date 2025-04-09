@@ -56,9 +56,10 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(Product::class, 'user_id');
     }
-    public function products2()
-    {
-        return $this->hasMany(User::class, 'id');
+    // Relacion NM ( usuarios / opiniones /  productos )
+    // Esta funcion saca las opiniones que el usuario ha dado
+    public function opinions() {
+        return $this->belongsToMany(UserOpinion::class, 'user_id', 'id');
     }
 
     public function purchase()
@@ -70,7 +71,8 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Transactions::class , 'userSeller_id');
     }
 
-    // Relacion NM (usuarios / favoritos / products)
+    // Relacion NM (usuarios / opiniones / products)
+    // Esta funcion saca las opiniones que el usuario ha dado
     public function favoritos()
     {
         return $this->belongsToMany(Product::class, 'productos_favoritos')
@@ -81,7 +83,6 @@ class User extends Authenticatable implements HasMedia
     {
         $this->notify(new UserResetPasswordNotification($token));
     }
-
 
     public function registerMediaCollections(): void
     {

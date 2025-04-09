@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usersOpinion', function(Blueprint $table){
-            $table -> id();
             $table -> string('title');
             $table -> string('destription');
             $table -> integer('calification'); // dese 1 - 5
@@ -22,8 +21,6 @@ return new class extends Migration
             $table -> foreign('product_id') -> references('id') -> on('products');
             $table -> foreign(columns: 'user_id') -> references('id') -> on('users');
             $table -> timestamps();
-    
-            
         });
     }
 

@@ -57,7 +57,7 @@
 }
 
 .categories img {
-    width: 80px;
+    width: 20px;
     padding: 12px;
     object-fit: contain; /* Cambiado de cover a contain para que la imagen no se corte */
     background-color: rgb(225, 223, 223);

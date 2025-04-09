@@ -5,12 +5,17 @@
         <form @submit.prevent="aplicarFiltro">
           <!-- Categoría -->
           <label for="categoria" class="h1-p">Categoría</label>
-          <select v-model="categoriaSeleccionada" id="categoria" name="categoria">
-            <option value="">Todas</option>
-            <option v-for="categoria in categoryList" :key="categoria.id" :value="categoria.name">
-              {{ categoria.name }}
-            </option>
-          </select>
+          <MultiSelect
+            v-model="categoriaSeleccionada"
+            :options="categoryList"
+            label="name"
+            track-by="id"
+            optionLabel="name"
+            placeholder="Selecciona categorías"
+            :close-on-select="false"
+            :clear-on-select="false"
+            :hide-selected="true"
+          />
 
           <!-- Título -->
           <label for="titulo" class="h1-p">Título</label>
@@ -26,19 +31,24 @@
 
           <!-- Filtro de Estados -->
           <label for="estado" class="h1-p">Estado</label>
-          <select v-model="buscarEstado" id="estado" name="estado">
-            <option value="">Todos</option>
-            <option v-for="estado in estadoList" :key="estado.id" :value="estado.name">
-              {{ estado.name }}
-            </option>
-          </select>
+          <MultiSelect
+            v-model="buscarEstado"
+            :options="estadoList"
+            label="name"
+            track-by="id"
+            optionLabel="name"
+            placeholder="Selecciona estados"
+            :close-on-select="false"
+            :clear-on-select="false"
+            :hide-selected="true"
+          />
 
           <!-- Precio -->
           <!-- Precio MIN / MAX-->
           <label for="precio" class="h1-p">Precio minimo / maximo</label>
           <div class="d-flex justify-content-between">
-            <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€">
-            <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€">
+            <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€" class="price-input">
+            <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€" class="price-input">
           </div>
 
           <!--Ordenar-->
@@ -101,27 +111,10 @@ import ProductoNew from "@/components/ProductoNew.vue";
 import useProducts from '@/composables/products.js';
 import router from "@/routes/index.js";
 import useCategories from "@/composables/categories.js";
-
+import { MultiSelect } from 'primevue'; // Import the MultiSelect component
 
 const route = useRoute();
-// const { 
-//   products,
-//   estadoList,
-//   getEstadoList,
-//   fetchProducts,
-//   aplicarFiltro,
-//   limpiarFiltros,
-//   categoriaSeleccionada,
-//   buscarTitulo,
-//   buscarPrecioMin,
-//   buscarPrecioMax,
-//   buscarRadio,
-//   latitude,
-//   longitude,
-//   buscarEstado,
-//   ordenarFecha,
-//   ordenarPrecio,
-//  } = useProducts();
+
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
 
 const {categoryList, getCategoryList} = useCategories()
@@ -132,7 +125,7 @@ const fetchProducts = async () => {
 
     await getProducts(
         1, // Página inicial
-        route.query.search_category || '', // Categoría
+        route.query.search_category || '', // If no category, show all products
         route.query.search_id || '', // ID (vacío por defecto)
         route.query.search_title || '', // Título de búsqueda
         route.query.min_price || '', // Precio mínimo
@@ -153,14 +146,12 @@ const fetchProducts = async () => {
 };
 
 
-const categoriaSeleccionada = ref(route.query.search_category);
+const categoriaSeleccionada = ref([]); // Asegúrate de inicializarlo como un array vacío
+const buscarEstado = ref([]); // También inicializa como un array vacío
 const buscarTitulo = ref('');
-const buscarEstado = ref('');
-const buscarPrecioMin = ref();
-const buscarPrecioMax = ref();
-// Ubicacion
+const buscarPrecioMin = ref(null); // Usa null para valores numéricos iniciales
+const buscarPrecioMax = ref(null);
 const buscarRadio = ref(0);
-// Ordenar
 const ordenarPrecio = ref('');
 const ordenarFecha = ref('');
 const latitude = ref(41.38740000);
@@ -169,11 +160,20 @@ const longitude = ref(2.16860000);
 
 const aplicarFiltro = async () => {
   try {
-    // Crear objeto con los filtros usando el prefijo search_
+    // Map selected categories and states to their names
+    const selectedCategoryNames = Array.isArray(categoriaSeleccionada.value)
+      ? categoriaSeleccionada.value.map(category => category.name)
+      : [];
+
+    const selectedEstadoNames = Array.isArray(buscarEstado.value)
+      ? buscarEstado.value.map(estado => estado.name)
+      : [];
+
     const filtros = {
-      search_category: categoriaSeleccionada.value || '',
+      search_category: selectedCategoryNames.join(','), // Join categories with commas
+      search_estado: selectedEstadoNames.join(','), // Join states with commas
       search_title: buscarTitulo.value || '',
-      search_estado: buscarEstado.value || '',
+      search_global: route.query.search_global || '', // Preserve searchGlobal
       order_column: 'created_at',
       order_direction: ordenarFecha.value || 'desc',
       order_price: ordenarPrecio.value || '',
@@ -181,50 +181,39 @@ const aplicarFiltro = async () => {
       max_price: buscarPrecioMax.value || '',
     };
 
-    // Solo agregamos los parámetros de ubicación si hay un radio seleccionado
     if (buscarRadio.value) {
       filtros.search_latitude = latitude.value;
       filtros.search_longitude = longitude.value;
       filtros.search_radius = buscarRadio.value;
     }
 
-    console.log("Filtros a enviar:", filtros);
-
-    // Eliminar los filtros vacíos (solo claves con valores no vacíos)
     const filtrosLimpios = Object.fromEntries(
-        Object.entries(filtros).filter(([_, value]) =>
-            value !== '' && value !== null && value !== undefined
-        )
+      Object.entries(filtros).filter(([_, value]) => value !== '' && value !== null && value !== undefined)
     );
 
     console.log("Filtros limpios:", filtrosLimpios);
 
-    // Actualizar la URL con los filtros limpios
-    await router.push({
-      query: filtrosLimpios,
-    });
+    await router.push({ query: filtrosLimpios });
 
-    // Llamar a getProducts con los parámetros ordenados manualmente
     await getProducts(
-        1, // Page
-        filtrosLimpios.search_category || '', // Categoría
-        '', // search_id vacío (no lo estás usando actualmente, pero se requiere por posición)
-        filtrosLimpios.search_title || '', // Título
-        filtrosLimpios.min_price || '', // Precio mínimo
-        filtrosLimpios.max_price || '', // Precio máximo
-        filtrosLimpios.search_estado || '', // Estado
-        filtrosLimpios.search_location || '', // Ubicación
-        '', // search_content vacío (no lo estás usando actualmente)
-        '', // search_global vacío (no lo estás usando actualmente)
-        'created_at', // Columna para ordenar
-        filtrosLimpios.order_direction || '',
-        filtrosLimpios.order_price || '' ,// Precio ordenado
-        filtrosLimpios.search_latitude || '', // Pasar la latitud
-        filtrosLimpios.search_longitude || '', // Pasar la longitud
-        filtrosLimpios.search_radius || '',
-        ''
-
-  );
+      1,
+      filtrosLimpios.search_category || '',
+      '',
+      filtrosLimpios.search_title || '',
+      filtrosLimpios.min_price || '',
+      filtrosLimpios.max_price || '',
+      filtrosLimpios.search_estado || '',
+      filtrosLimpios.search_location || '',
+      filtrosLimpios.search_global || '',
+      '',
+      'created_at',
+      filtrosLimpios.order_direction || '',
+      filtrosLimpios.order_price || '',
+      filtrosLimpios.search_latitude || '',
+      filtrosLimpios.search_longitude || '',
+      filtrosLimpios.search_radius || '',
+      ''
+    );
 
   } catch (error) {
     console.error('Error al aplicar filtro:', error);
@@ -367,6 +356,15 @@ onMounted(() => {
   background-color: var(--primary-color);
 }
 
+/* Add styles for the price inputs using a specific class */
+.contenedor-filtro .price-input {
+  width: 48%; /* Adjust width to fit side by side */
+  margin-right: 2%; /* Add spacing between inputs */
+}
+
+.contenedor-filtro .price-input:last-child {
+  margin-right: 0; /* Remove margin for the last input */
+}
 
 </style>
 

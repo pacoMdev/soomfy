@@ -167,7 +167,7 @@ class ProductControllerAdvance extends Controller
                     $q->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
                         ->orWhereRaw('LOWER(content) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
                         ->orWhere('id', 'LIKE', '%' . $searchGlobal . '%')
-                        ->orWhereHas('category', function($categoryQuery) use ($searchGlobal) {
+                        ->orWhereHas('categories', function($categoryQuery) use ($searchGlobal) { // Changed from 'category' to 'categories'
                             $categoryQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
                         })
                         ->orWhereHas('estado', function($estadoQuery) use ($searchGlobal) {
@@ -176,20 +176,32 @@ class ProductControllerAdvance extends Controller
                 });
             })
 
-                // Se ejecutara si existe el parametro search_category
+            // Se ejecutara si existe el parametro search_category
             ->when(request('search_category'), function($query) {
-                $query->whereHas('categories', function($q) {
-                    $q->where('categories.name', request('search_category'));
+                $categories = explode(',', request('search_category')); // Split categories by commas
+                $query->whereHas('categories', function($q) use ($categories) {
+                    $q->whereIn('categories.name', $categories); // Use whereIn to match any of the categories
                 });
             })
             // Filtrar por estado
             ->when(request('search_estado'), function($query) {
-                // Busca los prooductos que tengan una relacion con la tabla estados
-                $query->whereHas('estado', function($q) {
-                    // Si el nombre de la estado pasada por parametro coincide con alguna relacion producto - estado
-                    // Devolvera solo los productos con ese estado
-                    $q->whereRaw('LOWER(name) = ?', [strtolower(request('search_estado'))]
-                    );
+                $estados = explode(',', request('search_estado')); // Split states by commas
+                $query->whereHas('estado', function($q) use ($estados) {
+                    $q->whereIn('name', $estados); // Use whereIn to match any of the states
+                });
+            })
+            // Preserve searchGlobal
+            ->when($searchGlobal, function($query) use ($searchGlobal) {
+                $query->where(function($q) use ($searchGlobal) {
+                    $q->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
+                        ->orWhereRaw('LOWER(content) LIKE ?', ['%' . strtolower($searchGlobal) . '%'])
+                        ->orWhere('id', 'LIKE', '%' . $searchGlobal . '%')
+                        ->orWhereHas('categories', function($categoryQuery) use ($searchGlobal) {
+                            $categoryQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
+                        })
+                        ->orWhereHas('estado', function($estadoQuery) use ($searchGlobal) {
+                            $estadoQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchGlobal) . '%']);
+                        });
                 });
             })
             // Filtro por título
