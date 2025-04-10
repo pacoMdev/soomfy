@@ -6,6 +6,7 @@ import {
 
 import useProducts from "@/composables/products.js";
 import useUsers from "@/composables/users.js";
+import { CacheManager } from './cache-manager';
 
 const { getUser } = useUsers();
 const { product, getProduct } = useProducts();
@@ -23,6 +24,8 @@ const firebaseConfig = {
 // Inicializamos la aplicación de Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const cacheManager = new CacheManager();
 
 export default function useFirebase() {
     const chats = ref({ id: null }); // Referencia para almacenar un chat específico
@@ -52,12 +55,13 @@ export default function useFirebase() {
             const chatData = {
                 productId,
                 users: [compradorId, vendedorId],
-                createdAt: serverTimestamp()
+                createdAt: serverTimestamp(),
+                messages: {}, // Ensure messages is initialized as an empty object
             };
 
             if (chatSnapshot.exists()) {
                 console.log("✔️ El chat ya existe:", chatSnapshot.data());
-                return { ...chatData, id: chat_id };
+                return { ...chatSnapshot.data(), id: chat_id };
             } else {
                 console.log("ℹ️ El chat no existe, creándolo ahora...");
                 await setDoc(chatRef, chatData);
@@ -174,44 +178,38 @@ export default function useFirebase() {
                 return;
             }
 
-            const messageId = Date.now().toString();
+            const messageId = Date.now().toString(); // Unique ID for the message
 
             const newMessage = {
                 userId,
                 text,
                 createdAt: serverTimestamp(),
-                read: false
+                read: false,
             };
 
-            await updateDoc(chatRef, {
-                [`messages.${messageId}`]: newMessage,
-                lastMessage: [userId, text],
-                lastMessageTimestamp: serverTimestamp()
-            });
+            // Append the new message to the existing messages object
+            const updates = {
+                [`messages.${messageId}`]: newMessage, // Add the new message
+                lastMessage: { userId, text }, // Update last message
+                lastMessageTimestamp: serverTimestamp(), // Update last message timestamp
+            };
+
+            await updateDoc(chatRef, updates);
 
             console.log("✔️ Mensaje enviado con éxito");
         } catch (error) {
             console.error("❌ Error al enviar mensaje:", error);
         }
     };
-    const productCache = new Map(); // Caché para productos
-    const userCache = new Map();
+
     const getCachedProduct = async (productId) => {
-        if (productCache.has(productId)) {
-            return productCache.get(productId);
-        }
-        const productData = await getProduct(productId);
-        productCache.set(productId, productData);
-        return productData;
+        if (!productId) return null;
+        return cacheManager.get(`product_${productId}`, () => getProduct(productId));
     };
 
     const getCachedUser = async (userId) => {
-        if (userCache.has(userId)) {
-            return userCache.get(userId);
-        }
-        const userData = await getUser(userId);
-        userCache.set(userId, userData);
-        return userData;
+        if (!userId) return null;
+        return cacheManager.get(`user_${userId}`, () => getUser(userId));
     };
 
     /**
@@ -225,39 +223,35 @@ export default function useFirebase() {
 
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
             loading.value = true;
-            const chats = await Promise.all(querySnapshot.docs.map(async (doc) => {
-                const chatData = doc.data();
-                const productId = chatData.productId;
+            try {
+                const chats = [];
+                for (const doc of querySnapshot.docs) {
+                    const chatData = doc.data();
+                    const productData = await getCachedProduct(chatData.productId);
+                    const userData = chatData.lastMessage?.userId ? 
+                        await getCachedUser(chatData.lastMessage.userId) : null;
 
-                
-                const productData = await getCachedProduct(productId);
-
-                let lastMessage = null;
-                let userData = null;
-
-                if (Array.isArray(chatData.lastMessage) && chatData.lastMessage.length >= 2) {
-                    lastMessage = chatData.lastMessage;
-                    userData = await getCachedUser(lastMessage[0]);
+                    chats.push({
+                        id: doc.id,
+                        productId: chatData.productId,
+                        product: productData,
+                        lastMessage: chatData.lastMessage,
+                        user: userData,
+                        users: chatData.users,
+                        lastMessageTimestamp: chatData.lastMessageTimestamp || chatData.createdAt
+                    });
                 }
 
-                return {
-                    id: doc.id,
-                    product: productData,
-                    lastMessage,
-                    lastMessageTimestamp: chatData.lastMessageTimestamp || chatData.createdAt,
-                    user: userData,
-                    ...chatData
-                };
-            }));
-
-            chats.sort((a, b) => {
-                const timeA = a.lastMessageTimestamp?.seconds || 0;
-                const timeB = b.lastMessageTimestamp?.seconds || 0;
-                return timeB - timeA;
-            });
-
-            activeChats.value = chats;
-            loading.value = false;
+                activeChats.value = chats.sort((a, b) => {
+                    const timeA = a.lastMessageTimestamp?.seconds || 0;
+                    const timeB = b.lastMessageTimestamp?.seconds || 0;
+                    return timeB - timeA;
+                });
+            } catch (error) {
+                console.error("Error loading chats:", error);
+            } finally {
+                loading.value = false;
+            }
         });
 
         return unsubscribe;
