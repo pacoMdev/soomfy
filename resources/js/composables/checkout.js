@@ -27,6 +27,8 @@ export default function useCheckout() {
     const newCp = ref('');
     const newCountry = ref('');
     const error = ref(false);
+    const errorMessage = ref('ERROR');
+    const selectedStablishment = ref(undefined);
     const typeShippment = ref([ 'EXPRESS', 'STANDARD' ]);
 
 
@@ -46,25 +48,35 @@ export default function useCheckout() {
     const submitPurchaseForm = async () => {
         // check direccion de envio
         if (selectedMethod.value === '1'){
-            if (!newAddress.value || !newCity.value || !newCp.value || !newCountry.value){
+            if (!address.newAddress || !address.newCity || !address.newCp || !address.newCountry){
                 error.value = true;
+                errorMessage.value = 'Por favor, completa los campos de la dirección de envío';
             return;
+            }
+        }else if (selectedMethod.value ==='2'){
+            if (selectedStablishment.value == undefined){
+                error.value = true;
+                errorMessage.value = 'Por favor selecciona un centro de recogida';
+                return;
             }
         }
         // check ok
         error.value = false;
+        errorMessage.value = '';
         try {
-            const respuesta = await axios.post('/api/fakePurchaseProduct', {
+            await axios.post('/api/fakePurchaseProduct', {
                 product_id: parseInt(productId),
                 userSeller_id: userProduct.value[0].user.id,
                 price: userProduct.value[0].price,
                 isToSend: parseInt(selectedMethod.value),
                 shippingAddress: {
-                    'newAddress': newAddress.value,
-                    'newCity': newCity.value,
-                    'newCp': newCp.value,
-                    'newCountry': newCountry.value
-                }
+                    'newAddress': address.newAddress,
+                    'newCity': address.newCity,
+                    'newCp': address.newCp,
+                    'newCountry': address.newCountry
+                },
+                selectedStablishment: { ...selectedStablishment.value },
+                selectedMethod: selectedMethod.value,
             }).then( async response =>{
                 console.log('Producto comprado', response);
                 console.log('👌 Status:', response.status);
@@ -85,6 +97,11 @@ export default function useCheckout() {
     const saveAddress = () => {
         showDialog.value = false;
     };
+    const saveShippingAddress = () => {
+        console.log('saveShippingAddress');
+        showSelectCenter.value = false;
+
+    }
 
 
 
@@ -103,8 +120,11 @@ export default function useCheckout() {
         error,
         typeShippment,
         showSelectCenter,
+        errorMessage,
+        selectedStablishment,
         getUserProduct,
         submitPurchaseForm,
         saveAddress,
+        saveShippingAddress,
     }
 }

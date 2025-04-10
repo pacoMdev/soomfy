@@ -59,7 +59,11 @@ class User extends Authenticatable implements HasMedia
     // Relacion NM ( usuarios / opiniones /  productos )
     // Esta funcion saca las opiniones que el usuario ha dado
     public function opinions() {
-        return $this->belongsToMany(UserOpinion::class, 'user_id', 'id');
+        // return $this->belongsToMany(UserOpinion::class, 'user_id', 'id');
+
+        return $this->belongsToMany(Product::class, 'usersOpinion')
+        ->withPivot('title', 'destription', 'calification', 'token')
+        ->withTimestamps();
     }
 
     public function purchase()

@@ -40,7 +40,7 @@
                     </div> 
                 </div>
                 <Button label="Comprar" type="submit" class="w-full" />
-                <p v-if="error" class="text-red-500 text-center mt-2" style="color: red!important;">Por favor, completa la dirección antes de continuar.</p>
+                <p v-if="error" class="text-red-500 text-center mt-2 w-75 mx-auto" style="color: red!important;">{{ errorMessage }}</p>
 
             </form>
         </div>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             <template #footer class="">
-                <Button label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" />
+                <Button :disabled="selectedStablishment == undefined" @click="saveShippingAddress" label="Guardar" icon="pi pi-check" class="p-button-primary mx-auto" />
             </template>
         </Dialog>
         <div v-if="userProduct">
@@ -143,7 +143,6 @@
     import useShippingAddress from '../../composables/shippingAddress'; 
 import { right } from '@popperjs/core';
     
-    const selectedStablishment = ref([]);
     const {
         stablishments,
         cpCercano,
@@ -168,6 +167,9 @@ import { right } from '@popperjs/core';
         getUserProduct,
         submitPurchaseForm,
         saveAddress,
+        saveShippingAddress,
+        errorMessage,
+        selectedStablishment,
     } = useCheckout();
 
 
@@ -182,9 +184,10 @@ import { right } from '@popperjs/core';
             // getProximityCenters(cpCercano.value);
         }
     });
-    watch(stablishments, (newVal) => {
-    console.log('stablishments:', newVal);
-});
+    watch(selectedStablishment, () => {
+        console.log('selectedStablishment', selectedStablishment.value?.address || undefined);
+        console.log(errorMessage.value);
+    })
 </script>
 
 <style scoped>

@@ -106,6 +106,19 @@ const submitOpinionForm = async () => {
                 userBuyer: userIdBuyer,
                 productId: productId,
                 token: token,
+            })
+            .then( async response =>{
+                console.log('Opinion realizada', response);
+                console.log('👌 Status:', response.status);
+                if(response.status == 200){    // compra realizada con exito
+                    swal({
+                        icon: 'success',
+                        title: 'Opinion realizada',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    router.push({ name: 'home' });
+                }
             });
             console.log(respuesta);
         } catch (error) {

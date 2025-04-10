@@ -52,10 +52,10 @@ Route::get('getProximityCenters', action: [ShippingAddressController::class, 'ge
 
 
 //Opinions
-Route::apiResource('opinions', controller: UsersOpinionController::class);
-Route::get('/checkReview', [UsersOpinionController::class, 'checkReview']);
-Route::post('/valorate', [UsersOpinionController::class, 'valorate']);
-Route::post('getValorations', [UsersOpinionController::class, 'getValorations']);
+// Route::apiResource('opinions', controller: UsersOpinionController::class);
+Route::get('/checkReview', [UserController::class, 'checkReview']);
+Route::post('/valorate', [UserController::class, 'valorate']);
+Route::post('getValorations', [UserController::class, 'getValorations']);
 
 // GEOCODE GOOGLE_MAPS
 Route::get('geoLocation', [GoogleController::class, 'geoLocation']);

@@ -61,8 +61,10 @@
                                 <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
                                     <Button label="Comprar" variant="outlined" class="w-100" rounded />
                                 </router-link>
-                                  <Button v-if="isYourOwnProduct(product.user?.id)" label="Editar" class="w-50 p-button secondary" rounded />
-                                  <Button v-else @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
+                                <router-link :to="'/app/profile'" class="w-100" v-if="isYourOwnProduct(product.user?.id)">
+                                    <Button label="Editar" class="w-50 p-button secondary" rounded />
+                                </router-link>
+                                <Button v-else @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">

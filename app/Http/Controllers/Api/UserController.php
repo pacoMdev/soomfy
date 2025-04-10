@@ -6,7 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Product;
-use App\Models\Task;
+use App\Models\UserOpinion;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -145,6 +145,48 @@ class UserController extends Controller
             ->paginate();
 
         return $products;
+    }
+
+    public function valorate(Request $request){
+        $user = auth()->user();
+
+        $userB = User::find($user->id)
+            ->first();
+
+        $userB -> opinions() 
+        -> attach($request -> productId, [
+            'title' => $request -> title,
+            'destription' => $request -> description,
+            'calification' => $request -> rating,
+            'token' => $request -> token,
+        ]);
+
+        return response() -> json(['opinion' => $userB->opinions(), 'status' => 200]);
+    }
+    public function getValorations(Request $request){
+        $userId = $request->userId;
+        // $reviews = UserOpinion::whereIn('product_id', function ($query) use ($userId) {
+        //     $query->select('product_id')
+        //           ->from('transactions')
+        //           ->where('userSeller_id', $userId);
+        // })->with(['user', 'product'])->get();
+        // Obtener productos vendidos por el usuario
+        $productIds = \DB::table('transactions')
+        ->where('userSeller_id', $userId)
+        ->pluck('product_id');
+
+        // Obtener opiniones sobre esos productos desde la tabla intermedia
+        $reviews = UserOpinion::whereIn('product_id', $productIds)
+        ->with(['user.media', 'product.media']) // ya que tienes .with('media') en las relaciones
+        ->get();
+        return $this->successResponse($reviews, 'Reviews found');
+    }
+    public function checkReview(Request $request){
+        $valoration = UserOpinion::where('token', $request->token)->first();
+        if($valoration!=null){
+            return response()->json(['check'=>true]);
+        }
+        return response()->json(['check'=>false]);
     }
 
 

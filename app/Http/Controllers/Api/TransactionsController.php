@@ -82,43 +82,49 @@ class TransactionsController extends Controller
         $userSeller = User::findOrFail($request -> userSeller_id);
         $product = Product::findOrFail($request -> product_id);
 
-        $transaction = new Transactions();
+        // segun tipo de envio 
+        if ($request -> selectedMethod == '1'){     // Custom address
+            $shippingAddress = new ShippingAddress();
+            $shippingAddress -> address = $request -> shippingAddress['newAddress'];
+            $shippingAddress -> city = $request -> shippingAddress['newCity'];
+            $shippingAddress -> cp = $request -> shippingAddress['newCp'];
+            $shippingAddress -> country = $request -> shippingAddress['newCountry'];
+            $shippingAddress -> role_address = 2;
+            $shippingAddress -> contact_name = $userBuyer -> name;
+            $shippingAddress -> contact_phone = $userBuyer -> phone ?? '';
+            $shippingAddress -> contact_email = $userBuyer -> email;
 
+            $shippingAddress -> save();
+
+        }else if($request -> selectedMethod == '2'){    // Selected address
+            $shippingAddress = (object) $request -> selectedStablishment;
+        }
+
+        $transaction = new Transactions();      // crea transaccion
         $transaction -> userSeller_id = $request -> userSeller_id; 
         $transaction -> userBuyer_id = $userBuyer -> id; 
         $transaction -> product_id = $request -> product_id; 
         $transaction -> initialPrice = $request -> price; 
         $transaction -> finalPrice = $request -> price; 
-        $transaction -> isToSend = true; 
+        $transaction -> isToSend = $request -> isToSend == 0 ? false : true; 
         $transaction -> isRegated = false; 
-        if ($request -> isToSend == 0){
-            $transaction -> isToSend = false; 
-            
-            $message = new Message();
+        $transaction->save();
 
-            $message -> fullMessage = 'Hola, te informamos que ' . $userBuyer->name . ' ha adquirido tu producto. Por favor, coordina el envío o entrega. ¡Gracias!”';
-            $message -> userDestination_id = $userSeller -> id;
-            $message -> userRemitent_id = $userBuyer -> id;
-            $message -> product_id = $request -> product_id;
-            $message -> isReaded = false;
+        $transaction -> shippingAddress() 
+        -> attach($shippingAddress -> id, [
+            'status' => 'pending',
+            'tracking_number' => $this -> generateTN()
+        ]);
+    
+        // $message = new Message();
 
-            $message -> save();
-        }else{
-            $transaction -> save();
+        // $message -> fullMessage = 'Hola, te informamos que ' . $userBuyer->name . ' ha adquirido tu producto. Por favor, coordina el envío o entrega. ¡Gracias!”';
+        // $message -> userDestination_id = $userSeller -> id;
+        // $message -> userRemitent_id = $userBuyer -> id;
+        // $message -> product_id = $request -> product_id;
+        // $message -> isReaded = false;
 
-            $shippingAddress = new ShippingAddress();
-
-            $shippingAddress -> transaction_id = $transaction -> id;
-            $shippingAddress -> user_id = $transaction -> userBuyer_id;
-            $shippingAddress -> address = $request -> shippingAddress['newAddress'];
-            $shippingAddress -> city = $request -> shippingAddress['newCity'];
-            $shippingAddress -> postal_code = $request -> shippingAddress['newCp'];
-            $shippingAddress -> country = $request -> shippingAddress['newCountry'];
-            $shippingAddress -> status = 'Pendiente';
-            $shippingAddress -> tracking_number = $this->generateTN();
-
-            $shippingAddress -> save();
-        }
+        // $message -> save();
 
 
 
@@ -129,7 +135,7 @@ class TransactionsController extends Controller
             'from_name'     => 'Soomfy Buyer',
             'to_email'      => $userBuyer -> email,
             'to_name'       => $userBuyer -> name,
-            'subject'       => '¡Tu compra ha sido confirmada! 📦✨',
+            'subject'       => '¡Tu compra ha sido confirmada! 📦',
             'view'          => 'emails.purchaseProduct',
             'finalPrice'    => $transaction -> finalPrice,
             'userSeller'    => $userSeller,
@@ -148,7 +154,7 @@ class TransactionsController extends Controller
             'from_name'     => 'Soomfy Valoration',
             'to_email'      => $userBuyer -> email,
             'to_name'       => $userBuyer -> name,
-            'subject'       => '¡Comparte tu opinión sobre tu última compra!',
+            'subject'       => '¡Comparte tu opinión sobre tu última compra! 🔎',
             'view'          => 'emails.valoration',
             'finalPrice'    => $transaction -> finalPrice,
             'userSeller'    => $userSeller,
@@ -160,9 +166,6 @@ class TransactionsController extends Controller
         // Manda el email
         $email = new ConstructEmail($data);
         $data_email = sendEmail($email);
-
-        // Despues de mandar los 2 emails uno al vendedor y otro al comprador
-        // Vendedor --> 
 
         return response()->json(data: ['status' => 200, 'success' => true, 'mensaje' => 'fackePurchser OK and sended email purchase', 'message' => $transaction]);
     }

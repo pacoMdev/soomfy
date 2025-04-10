@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rec_trans_address', function (Blueprint $table) {
+        Schema::create('shipping_address_transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('transaction_id');
-            $table->unsignedBigInteger('ship_address_id');
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
-            $table->foreign('ship_address_id')->references('id')->on('shipping_address')->onDelete('cascade');
+            $table->unsignedBigInteger('transactions_id');
+            $table->unsignedBigInteger('shipping_address_id');
+            $table->foreign('transactions_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreign('shipping_address_id')->references('id')->on('shipping_address')->onDelete('cascade');
 
             $table->string('status')->default('Pendiente'); // "Pendiente", "Enviado", "Entregado"
             $table->string('tracking_number')->nullable();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_establecimiento');
+        Schema::dropIfExists('shipping_address_transactions');
     }
 };
