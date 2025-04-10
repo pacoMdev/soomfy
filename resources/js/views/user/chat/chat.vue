@@ -12,27 +12,36 @@
       >
         {{ showChatList ? 'Ocultar Chats' : 'Mostrar Chats' }}
       </button>
-      <div v-if="activeChats" class="bordes d-flex flex-column gap-3 align-items-center">
-        <div 
-          v-for="chat in activeChats" 
-          :key="chat.id" 
-          @click="selectChat(chat.id, chat.users, chat.productId)" 
-          class="chat-item bordes d-flex flex-row align-items-center" 
-          :class="{ selected: currentChat?.id === chat.id }"
-        >
-          <div class="d-flex flex-column">
-            <img :src="chat.product?.original_image" alt="" width="80" height="80" class="rounded-1">
-          </div>
-          <div class="d-flex centradoChat flex-column text-start ms-2">
-            <p class="m-0">{{ chat.product?.title }}</p>
-            <p v-if="chat.lastMessage">
-              {{ chat.user?.name || "" }}: {{ chat.lastMessage[1] }}
-            </p>
+      
+      <!-- Título fijo -->
+      <div class="chat-sidebar-title">
+        <h3 class="m-0 text-center"><b><u>Mis Chats</u></b></h3>
+      </div>
+      
+      <!-- Contenedor scrolleable de chats -->
+      <div class="chat-list-container">
+        <div v-if="activeChats" class="d-flex flex-column gap-3 align-items-center">
+          <div 
+            v-for="chat in activeChats" 
+            :key="chat.id" 
+            @click="selectChat(chat.id, chat.users, chat.productId)" 
+            class="chat-item d-flex flex-row align-items-center" 
+            :class="{ selected: currentChat?.id === chat.id }"
+          >
+            <div class="d-flex flex-column">
+              <img :src="chat.product?.original_image" alt="" width="80" height="80" class="rounded-1">
+            </div>
+            <div class="d-flex centradoChat flex-column text-start ms-2">
+              <p class="m-0">{{ chat.product?.title }}</p>
+              <p v-if="chat.lastMessage">
+                {{ chat.user?.name || "" }}: {{ chat.lastMessage.text }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div v-else>
-        <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
+        <div v-else>
+          <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
+        </div>
       </div>
     </div>
 
@@ -44,55 +53,77 @@
       <div v-if="!activeChats || !currentChat">
         <img src="images/noChatSelected.png" alt="">
       </div>
-      <div v-else>
-        <!-- Chat content -->
-        <div class="ps-3 gap-3 m-3 position-relative">
-          <div :class="[!showProductDetails ? 'divider py-4' : '']">
-            <div v-if="showProductDetails" class="d-flex flex-column justify-content-start align-items-center gap-3 m-3">
-              <img :src="user?.avatar" class="rounded-circle" width="60px" alt="">
-              <h4 class="m-0">{{ user?.name }}</h4>
-            </div>
-            <div v-else class="d-flex flex-row justify-content-start align-items-center gap-3">
-              <img :src="product?.original_image" class="rounded-2" width="80px" alt="">
-              <h4 class="m-0">{{ product?.title }}</h4>
-            </div>
-            <div v-if="product" class="info-icon-container">
-              <span class="info-icon" @click="toggleProductDetails">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#042A2D">
-                  <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
-                </svg>
-              </span>
-            </div>
-          </div>
-          <div v-if="showProductDetails" class="product-details-container">
-            <img :src="product?.original_image" alt="product-image" width="200px">
-            <div class="product-details">
-              <p class="m-0 h3-p "><b>Descripcion:</b></p>
-              <p>{{ product?.content }}</p>
-              <p class="m-0 h3-p "><b>Precio:</b></p>
-              <p>{{ product?.price }}</p>
-              <p class="m-0 h3-p "><b>Estado:</b></p>
-              <p>{{ product?.estado?.name }}</p>
-              <p class="m-0 h3-p "><b>Marca:</b></p>
-              <p>{{ product?.marca }}</p>
-              <p class="m-0 h3-p "><b>Color:</b></p>
-              <p>{{ product?.product?.color }}</p>
-              <p class="m-0 h4-p ">{{ product?.toSend == 1 ? "Envio disponible" : "Envio no disponible" }}</p>
+      <div v-else class="d-flex flex-column h-100">
+        <div class="chat-wrapper">
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="header-content">
+              <div v-if="showProductDetails" class="d-flex flex-column justify-content-start align-items-center gap-3">
+                <div class="my-3 text-center">
+                  <img :src="user?.avatar" class="rounded-circle" height="60px" alt="">
+                  <h4 class="m-0 text-center">{{ user?.name }}</h4>
+                </div>
+              </div>
+              <div v-else class="d-flex flex-row justify-content-start align-items-center gap-3">
+                <div class="d-flex flex-row align-items-center gap-3">
+                  <img :src="product?.original_image" class="rounded-2" width="120" height="80px" alt="">
+                  <h4 class="m-0 text-center">{{ product?.title }}</h4>
+                </div>
+                <div class="">
+                  <img :src="user?.avatar" class="rounded-circle" width="60px" alt="">
+                  <h4 class="m-0 text-center">{{ user?.name }}</h4>
+                </div>
+              </div>
+              <div v-if="product" class="info-icon-container">
+                <span class="info-icon" @click="toggleProductDetails">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#042A2D">
+                    <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                  </svg>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="!showProductDetails" class="messages" ref="messagesContainer">
-          <div v-for="msg in messages" :key="msg.id" :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
-            <p class="message-text">{{ msg.text }}</p>
-            <div class="centradoInfoMessage" :style="{ justifyContent: msg.userId === usuarioAutenticado ? 'flex-end' : 'flex-start' }">
-              <small>{{ formatMessageTime(msg.timestamp) }}</small>
-              <small v-if="msg.userId === auth.user.id" v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
+
+          <!-- Main content area -->
+          <div class="chat-main-content">
+            <!-- Product details when shown -->
+            <div v-if="showProductDetails" class="product-details-container">
+              <img :src="product?.original_image" width="200px" alt="" class="rounded-2">
+              <div class="product-details">
+                <p class="m-0 h3-p"><b>Descripción:</b></p>
+                <p>{{ product?.content }}</p>
+                <p class="m-0 h3-p"><b>Precio:</b></p>
+                <p>{{ product?.price }}</p>
+                <p class="m-0 h3-p"><b>Estado:</b></p>
+                <p>{{ product?.estado?.name }}</p>
+                <p class="m-0 h3-p"><b>Marca:</b></p>
+                <p>{{ product?.marca }}</p>
+                <p class="m-0 h3-p"><b>Color:</b></p>
+                <p>{{ product?.product?.color }}</p>
+                <p class="m-0 h4-p">{{ product?.toSend == 1 ? "Envío disponible" : "Envío no disponible" }}</p>
+              </div>
+            </div>
+
+            <!-- Messages area with scroll -->
+            <div v-if="!showProductDetails" class="messages" ref="messagesContainer">
+              <div v-for="msg in messages" :key="msg.id" :class="['msg', msg.userId === usuarioAutenticado ? 'outgoing' : 'incoming']">
+                <div class="sender-name">
+                  {{ msg.userId === usuarioAutenticado ? 'Tú' : user?.name }}
+                </div>
+                <p class="message-text">{{ msg.text }}</p>
+                <div class="centradoInfoMessage" :style="{ justifyContent: msg.userId === usuarioAutenticado ? 'flex-end' : 'flex-start' }">
+                  <small>{{ formatMessageTime(msg.timestamp) }}</small>
+                  <small v-if="msg.userId === auth.user.id" v-html="msg.userId === auth.user.id && msg.read ? checkIconSVG : notCheckIconSVG"></small>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="!showProductDetails" class="chat-input">
-          <input type="text" v-model="newMessage" @keyup.enter="sendNewMessage" placeholder="Escribe tu mensaje">
-          <button class="secondary-button-2" @click="sendNewMessage">Enviar</button>
+
+          <!-- Input area -->
+          <div v-if="!showProductDetails" class="chat-input">
+            <input type="text" v-model="newMessage" @keyup.enter="sendNewMessage" placeholder="Escribe tu mensaje">
+            <button class="secondary-button-2" @click="sendNewMessage">Enviar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -297,3 +328,4 @@ window.addEventListener('resize', () => {
   isSmallScreen.value = window.innerWidth <= 768;
 });
 </script>
+
