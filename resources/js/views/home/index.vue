@@ -288,6 +288,20 @@ const redirectAll = () => {
   padding: 0px;
 }
 
+.p-carousel-indicator-active .p-carousel-indicator button {
+  background: var(--primary-color) !important;
+}
+
+/* Sobrescribir el color del indicador del carousel */
+:deep(.p-carousel-indicators .p-carousel-indicator.p-highlight button) {
+  background-color: var(--primary-color) !important;
+}
+
+.secondary-button-2 {
+  border-top-left-radius: none !important;
+  border-bottom-left-radius: none !important;
+}
+
 @media (max-width: 576px) {
   .productos-carousel :deep(.p-carousel-container) {
     padding: 0;
