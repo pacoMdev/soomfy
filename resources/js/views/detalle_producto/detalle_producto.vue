@@ -210,6 +210,7 @@
 
     onMounted(async () => {
       await getProduct();
+      console.log("HOLAAAAAAAAAAAA",product.value);
       if (auth.user) {
         console.log(auth.user);
         compradorId.value = auth.user.id;

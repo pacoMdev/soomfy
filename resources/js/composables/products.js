@@ -16,6 +16,8 @@ export default function useProducts() {
         width: '',
         heigth: '',
     })
+
+    
     const router = useRouter()
     const validationErrors = ref({})
     const isLoading = ref(false)

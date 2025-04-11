@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import useFirebase from "@/composables/firebase.js";
 import { authStore } from "@/store/auth.js";
@@ -22,9 +22,9 @@ export default function useProductDetail() {
     const home = ref({
         icon: 'pi pi-home', route: '/'
     });
-    const breadcrumbs = ref([
-        { label: 'Products', route: '/' }, 
-        { label: 'product.title' }, 
+    const breadcrumbs = computed(() => [
+        { label: 'Products', route: '/' },
+        { label: product.value?.title || 'Cargando...', route: null }
     ]);
     const responsiveOptions = ref([
         {
