@@ -36,6 +36,9 @@
               <p v-if="chat.lastMessage">
                 {{ chat.user?.name || "" }}: {{ chat.lastMessage.text }}
               </p>
+              <p v-else>
+                {{ chat.user?.name || "" }}: <i>No hay mensajes aún</i>
+              </p>
             </div>
           </div>
         </div>
@@ -88,7 +91,7 @@
           <div class="chat-main-content">
             <!-- Product details when shown -->
             <div v-if="showProductDetails" class="product-details-container">
-              <img :src="product?.original_image" width="200px" alt="" class="rounded-2">
+              <div class="w-100"><img :src="product?.original_image" width="200px" alt="" class="rounded-2"></div>
               <div class="product-details">
                 <p class="m-0 h3-p"><b>Descripción:</b></p>
                 <p>{{ product?.content }}</p>
