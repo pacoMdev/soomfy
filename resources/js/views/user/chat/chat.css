@@ -87,8 +87,9 @@
   justify-content: space-between;
   height: 100%;
   padding: 0.5rem;
+  padding-right: 55px; /* Añadir espacio para el botón de info */
+  gap: 8px; /* Añadir gap más pequeño */
 }
-
 
 .header-content.divider {
   border-bottom: 1px solid #e0e0e0;
@@ -313,11 +314,15 @@
 .info-icon-container {
   position: absolute;
   top: 50%;
-  right: 20px;
+  right: 8px;
   transform: translateY(-50%);
   z-index: 10;
   margin-left: auto;
-  padding-left: 1rem;
+  padding-left: 8px;
+  background-color: white; /* Asegurar que tenga fondo */
+  height: 40px; /* Altura fija */
+  display: flex;
+  align-items: center;
 }
 
 .info-icon {
@@ -331,6 +336,8 @@
   background-color: var(--secondary-color);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
+  position: relative; /* Añadir posición relativa */
+  z-index: 11; /* Mayor que el contenedor */
 }
 
 .info-icon:hover {
@@ -441,6 +448,23 @@
   margin: 0.25rem 0 0 0;
 }
 
+.back-to-chats-btn {
+  padding: 0 !important;
+  width: 32px !important;  /* Reducido de 40px */
+  height: 32px !important; /* Reducido de 40px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  margin-right: 8px;  /* Reducido de 10px */
+  min-width: 32px !important; /* Asegurar ancho mínimo */
+  flex-shrink: 0; /* Evitar que el botón se encoja */
+}
+
+.back-to-chats-btn i {
+  font-size: 1rem; /* Reducido de 1.2rem */
+}
+
 @media (max-width: 768px) {
   .chat-sidebar {
     width: 100%;
@@ -456,5 +480,62 @@
 
   .chat-content.active {
     display: flex;
+  }
+
+  .back-to-chats-btn {
+    display: block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    cursor: pointer;
+  }
+
+  .header-content {
+    padding-left: 0; /* Eliminar el padding extra ya que el botón está dentro */
+  }
+
+  .info-icon-container {
+    right: 4px;
+    padding-left: 4px;
+    height: 32px;
+  }
+
+  .info-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .info-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-content img {
+    max-width: 80px; /* Imagen del producto más pequeña */
+    height: auto;
+  }
+
+  .header-content .rounded-circle {
+    width: 40px !important; /* Avatar más pequeño */
+    height: 40px !important;
+  }
+
+  .header-content h4 {
+    font-size: 14px; /* Texto más pequeño */
+    margin-bottom: 0;
+  }
+
+  .product-details-container img {
+    width: 150px !important; /* Imagen más pequeña en detalles */
+  }
+
+  .product-details p {
+    font-size: 14px;
+  }
+
+  .product-details .h3-p {
+    font-size: 15px;
   }
 }
