@@ -62,6 +62,10 @@ Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
 Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
 Route::get('/geocode', [GoogleController::class, 'geoCode']);
 
+// Rutas para geolocalización
+Route::get('/geoLocation', 'App\Http\Controllers\API\GeoLocationController@getGeoLocation');
+Route::get('/geocode', 'App\Http\Controllers\API\GeoLocationController@getGeocode');
+
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 

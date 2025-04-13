@@ -39,6 +39,9 @@ return [
         'client_id'         => env('STRIPE_CLIENT_KEY'),
         'client_secret'     => env('STRIPE_SECRET_KEY'),
         'redirect'          => env('STRIPE_CALLBACK_RECIRECT'),
+    ],
+    'google_maps' => [
+        'key'               => env('GOOGLE_MAPS_API_KEY', 'AIzaSyBlIXCsBY23dgXutYyJifkcoNdO46Z7VUo'),
     ]
 
 ];

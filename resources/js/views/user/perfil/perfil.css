@@ -1,0 +1,113 @@
+.fondo-perfil {
+    background-image: url('/images/home/bannerIcons.webp') !important;
+  background-size: contain;
+  background-position: center;
+}
+
+.header-perfil {
+    height: 220px;
+}
+
+.container-info img {
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+  background-color: var(--primary-color);
+}
+
+.container-else {
+  width: 100%;
+  text-align: center;
+}
+
+.image-else {
+  width: auto;
+  max-height: 200px;
+}
+
+.google-map {
+  height: 300px; /* Define la altura del mapa */
+  width: 100%; /* Define el ancho del mapa */
+  border: 1px solid #ccc; /* Opcional: bordes del mapa */
+  border-radius: 8px; /* Opcional: bordes redondeados */
+  margin-bottom: 1rem; /* Añadido margen inferior */
+  display: block; /* Garantiza que el mapa se muestre como bloque */
+  min-height: 300px; /* Altura mínima para el mapa */
+  position: relative; /* Para posicionamiento */
+  z-index: 10; /* Aseguramos que esté por encima */
+}
+
+.map-container {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column; /* Primero el mapa, luego los controles */
+  width: 100%;
+}
+
+.map-controls {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Estilos para el diálogo de edición */
+.fu-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.fu-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.fu {
+  width: 100%;
+  padding: 1rem;
+}
+
+.img-profile {
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor de información */
+.container-info {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.container-info-profile {
+  min-width: 200px;
+}
+
+.container-rating {
+  display: flex;
+  align-items: center;
+}
+
+.container-extra-info {
+  padding: 1rem;
+  min-width: 200px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .container-extra-info {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

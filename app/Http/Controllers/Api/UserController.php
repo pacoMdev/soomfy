@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\UserOpinion;
 use App\Models\User;
@@ -137,14 +138,17 @@ class UserController extends Controller
         return $products;
     }
 
-    function getUserProducts($id){
-        // dd($user);
-        $products = Product::with('user_product')
-            ->where('user_id', $id)
-            ->latest()
-            ->paginate();
+    public function getUserProducts($id)
+    {
+        try {
+            $products = Product::where('user_id', $id)
+                ->with(['estado', 'categories', 'media'])
+                ->get();
 
-        return $products;
+            return ProductResource::collection($products);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function valorate(Request $request){

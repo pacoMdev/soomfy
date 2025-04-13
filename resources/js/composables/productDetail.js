@@ -19,6 +19,8 @@ export default function useProductDetail() {
     const { chatExists } = useFirebase();
     const products = ref();
     const chatData = ref();
+    const userProducts = ref([]);
+    const relatedProducts = ref([]);
     const home = ref({
         icon: 'pi pi-home', route: '/'
     });
@@ -71,9 +73,17 @@ export default function useProductDetail() {
         console.log('PRODUCT:', respuesta.data.data);
     };
     const getRelatedProducts = async () => {
-        const respuesta = await axios.get('/api/products');
-        relatedPost.value = respuesta.data;
-        console.log('RELATED PRODUCTS:', respuesta.data);
+        try {
+            // Asumiendo que el producto tiene categorías y tomamos la primera
+            if (product.value?.categories?.[0]?.id) {
+                const categoryId = product.value.categories[0].id;
+                const response = await axios.get(`/api/get-category-products/${categoryId}`);
+                relatedProducts.value = response.data;
+                console.log('RELATED PRODUCTS:', response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching related products:', error);
+        }
     };
 
 
@@ -94,8 +104,22 @@ export default function useProductDetail() {
     };
 
 
-    function getImage(resized_image){
-        return Object.values(resized_image || {});
+    function getImage(media) {
+        // Si no hay media, devolver array vacío
+        if (!media) return [];
+        
+        // Si media ya es un array y tiene la estructura correcta, devolverlo directamente
+        if (Array.isArray(media) && media[0]?.original_url) {
+            return media;
+        }
+
+        // Si es un objeto con resized_image (formato antiguo)
+        if (media.resized_image) {
+            return Object.values(media.resized_image);
+        }
+
+        // Si es un objeto plano, convertirlo a array
+        return Object.values(media);
     }
 
     const isYourOwnProduct = (productId) => {
@@ -128,6 +152,16 @@ export default function useProductDetail() {
             console.error("❌ Error al verificar o crear el xat:", error);
         }
     }
+
+    const getUserProducts = async (userId) => {
+        try {
+            const response = await axios.get(`/api/get-user-products/${userId}`);
+            userProducts.value = response.data;
+            console.log('USER PRODUCTS:', response.data);
+        } catch (error) {
+            console.error('Error fetching user products:', error);
+        }
+    };
       
 
     return {
@@ -149,11 +183,14 @@ export default function useProductDetail() {
         products,
         responsiveOptions,
         responsiveOptions2,
+        userProducts,
+        relatedProducts,
         getProduct,
         getRelatedProducts,
         getGeoLocation,
         getImage,
         isYourOwnProduct,
         handleChatCreation,
+        getUserProducts,
     }
 }

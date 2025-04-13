@@ -3,8 +3,8 @@
 
   </div>
   <main>
-    <div class="">
-      <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center py-5">
+    <div class="fondo-perfil">
+      <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center 8 header-perfil">
         <div v-if="user.email" class="container-info d-flex gap-5">
           <div v-if="isLoading">
             <Skeleton shape="circle" size="5rem"></Skeleton>
@@ -19,14 +19,12 @@
             <div class="d-flex gap-2 container-rating py-2">
               <Rating v-model="mediaRating" readonly />
             </div>
-            <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address
-    : 'Ubicacion no disponible'" rounded></Tag>
-
+            <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address : 'Ubicación no disponible'" rounded></Tag>
           </div>
         </div>
 
         <!-- Botones de acciones -->
-        <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info">
+        <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info align-items-center justify-content-center">
           <div class="d-flex flex-column gap-3 mx-auto">
             <router-link class="" v-if="authStore().isAdmin" to="/admin">
               <Button label="Admin panel" class="w-100" rounded />
@@ -148,17 +146,16 @@
                       </div>
                     </div>
                     <div class="">
-                      <FloatLabel>
-                        <Button placeholder="Buscar" label="iniciar mapa" class="btn btn-primary" @click="startMap"/>
-                        <div class="my-3">
-                          <FloatLabel>
-                            <InputText v-model="partialAddress" id="address-input" @keyup.enter="buscarUbicacio"/>
-                            <label for="address-input">Intoduce una direccion</label>
-                          </FloatLabel>
-                          <Button @click="getGeoPartialAddress" label="Buscar" class="mt-2" />
-                        </div>
+                      <div class="map-container">
                         <div id="map" class="google-map"></div>
-                      </FloatLabel>
+                        <div class="map-controls">
+                          <FloatLabel>
+                            <InputText v-model="partialAddress" id="address-input" @keyup.enter="buscarUbicacion"/>
+                            <label for="address-input">Introduce una dirección</label>
+                          </FloatLabel>
+                          <Button @click="buscarUbicacion" label="Buscar" class="mt-2" />
+                        </div>
+                      </div>
                     </div>
 
                   </div>
@@ -172,12 +169,12 @@
       <div>
         <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
           <div class="d-flex gap-3">
-            <Button @click="fetchProducts(`getAllToSell`, user.id, 'activeProducts')" label="Mis Productos" class="" icon="pi pi-shop" :badge="activeProducts.length" rounded />
-            <Button @click="fetchProducts(`getPurchase`, user.id, 'purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
+            <Button @click="seleccionarTab('activeProducts')" label="Mis Productos" class="" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+            <Button @click="seleccionarTab('purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
           </div>
           <div class="d-flex gap-3">
-            <Button @click="fetchProducts(`getSales`, user.id, 'sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
-            <Button @click="fetchProducts(`getValorations`, user.id, 'reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
+            <Button @click="seleccionarTab('sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
+            <Button @click="seleccionarTab('reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
           </div>
         </div>
 
@@ -210,10 +207,10 @@
           <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
           <div v-if="selectedTab === 'activeProducts'" class="w-100">
             <div v-if="activeProducts.length > 0" class="py-4">
-              <h4 class="text-center">Mis Productos</h4>
+              <h3 class="text-center my-6 "><b><u>Mis Productos</u></b></h3>
               <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
-            <div v-else class="container-else">
+            <div v-else class="container-else my-5">
               <h1>Parece que aun no hay productos</h1>
               <img src="/images/undraw_file-search_cbur.svg" alt="Imagen productos" class="image-else">
             </div>
@@ -238,7 +235,6 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
 import useAuth from "@/composables/auth";
 import { authStore } from "../../../store/auth";
 import { Rating, Dialog, Password, Tabs, TabList, Tab, TabPanels, TabPanel, Tag } from 'primevue';
@@ -247,216 +243,125 @@ import HistoricInfo from '@/components/HistoricInfo.vue';
 import ValorationInfo from '@/components/ValorationInfo.vue';
 import { usePrimeVue } from 'primevue/config';
 import Skeleton from 'primevue/skeleton';
+import usePerfil from "@/composables/perfil";
+import useMaps from "@/composables/Maps";
 
+// Importar hooks y utilidades
 import useUsers from "@/composables/users";
-const { updateUser, validationErrorsm, isLoading } = useUsers();
 import { useForm, useField, defineRule } from "vee-validate";
 import { required, min } from "@/validation/rules";
-import {map} from "lodash";
+
+// Definir reglas de validación
 defineRule('required', required);
 defineRule('min', min);
-const address = ref('');
 
-const mediaRating = ref(0);
-const activeProducts = ref([]);
-const selectedUser = ref(null);
-const purchases = ref([]);
-const sales = ref([]);
-const reviews = ref([]);
-const loading = ref(false);
-const error = ref(null);
+// Composables
+const { updateUser, validationErrors, isLoading } = useUsers();
 const { logout } = useAuth();
-const user = ref({});
-const selectedTab = ref(null);
-//variables imagen
+const { 
+  user, 
+  activeProducts, 
+  purchases,
+  sales,
+  reviews,
+  loading, 
+  error,
+  mediaRating,
+  fullAddress,
+  getDataProfile,
+  fetchProducts,
+  calcularMediaRating,
+  getGeoLocation
+} = usePerfil();
+
+const { 
+  latitude, 
+  longitude, 
+  partialAddress,
+  initMap, 
+  getGeoPartialAddress
+} = useMaps();
+
+// Variables locales
+const selectedUser = ref(null);
+const selectedTab = ref('activeProducts'); // Establecer un tab por defecto
+const visibleEditUser = ref(false);
+
+// Variables para imagen
 const totalSize = ref(0);
 const totalSizePercent = ref(0);
 const files = ref([]);
 const $primevue = usePrimeVue();
-const fullAddress = ref(null);
-const partialAddress = ref('');
-// DIALOGS
-const visibleEditUser = ref(false);
-// variables para el edit user
-const { value: id } = useField('id', null, { initialValue: selectedUser.id });
-const { value: name } = useField('name', null, { initialValue: selectedUser.name });
-const { value: surname1 } = useField('surname1', null, { initialValue: selectedUser.surname1 });
-const { value: surname2 } = useField('surname2', null, { initialValue: selectedUser.surname2 });
-const { value: email } = useField('email', null, { initialValue: selectedUser.email });
+
+// Variables para el formulario de edición
+const { value: id } = useField('id', null, { initialValue: '' });
+const { value: name } = useField('name', null, { initialValue: '' });
+const { value: surname1 } = useField('surname1', null, { initialValue: '' });
+const { value: surname2 } = useField('surname2', null, { initialValue: '' });
+const { value: email } = useField('email', null, { initialValue: '' });
 const { value: password } = useField('password', null, { initialValue: '' });
-// const { value: latitude } = useField('latitude', null, { initialValue: '41.38740000' });
-// const { value: longitude } = useField('longitude', null, { initialValue: '2.16860000' });
-const latitude = ref(40.4165);
-const longitude = ref(-3.70256);
-const schema = {
-}
-const { validate, errors } = useForm({ validationSchema: schema })
+
+const schema = {};
+const { validate, errors } = useForm({ validationSchema: schema });
 
 const userData = ref({
-  id,
-  name,
-  surname1,
-  surname2,
-  email,
-  password,
-  latitude,
-  longitude
-})
+  id: '',
+  name: '',
+  surname1: '',
+  surname2: '',
+  email: '',
+  password: '',
+  latitude: null,
+  longitude: null
+});
 
-const getGeoPartialAddress = async ()=>{
-  // realizar consulta a api GOOGLE
-  // Recojer las coordenadas y modificar las default (latitude, longitude)
-  console.log('✅ CHEKING ADDRESS');
-  console.log('🏠 ADDRESS -->', partialAddress.value);
-  console.log('📟 LATITUDE && longitude', latitude, longitude);
+// Métodos para el componente
+const startMap = () => {
+  setTimeout(() => {
+    // Utiliza las coordenadas del usuario para inicializar el mapa
+    if (user.value?.latitude && user.value?.longitude) {
+      latitude.value = parseFloat(user.value.latitude);
+      longitude.value = parseFloat(user.value.longitude);
+    }
+    
+    initMap("map", latitude.value, longitude.value);
+    
+    // Si hay una dirección formateada disponible, mostrarla en el campo
+    if (fullAddress.value?.results && fullAddress.value.results.length > 0) {
+      partialAddress.value = fullAddress.value.results[0].formatted_address;
+    }
+  }, 500);
+};
 
-  try {
-      const response = await axios.get('/api/geocode', {
-          params: { address: partialAddress.value,}
-      });
-      const components = response.data;
-      console.log('API -->', components.results[0]);
+const buscarUbicacion = async () => {
+  await getGeoPartialAddress();
+};
 
-      if (components) {
-        latitude.value = components.results[0].geometry.location.lat;
-      longitude.value = components.results[0].geometry.location.lng;
-
-      console.log('🏞️ API Response', components.results);
-      console.log('📟 LATITUDE && longitude', latitude, longitude);
-      }
-  } catch (error) {
-      console.error("Eror en api de GOOGLE -->", error);
-  }
-}
-
-const getGeocodeData = async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/api/geocode', {
-      params: {
-        address: 'Barcelona'
-      }
-    });
-
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error durant la crida:', error);
+const seleccionarTab = (tab) => {
+  selectedTab.value = tab;
+  
+  // Si ya tenemos el ID del usuario, refrescamos los datos del tab seleccionado
+  if (user.value && user.value.id) {
+    if (tab === 'purchases') fetchProducts('getPurchase', user.value.id, 'purchases');
+    else if (tab === 'sales') fetchProducts('getSales', user.value.id, 'sales');
+    else if (tab === 'activeProducts') fetchProducts('getAllToSell', user.value.id, 'activeProducts');
+    else if (tab === 'reviews') fetchProducts('getValorations', user.value.id, 'reviews');
   }
 };
 
-const startMap = async () => {
-  const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: latitude.value, lng: longitude.value },
-    zoom: 13,
-  });
-
-  // Crear un marcador en el mapa
-  const marker = new google.maps.Marker({
-    // Coordenadas iniciales donde se colocara el marcador
-    position: { lat: latitude.value, lng: longitude.value },
-    map, // Indica que mapa
-    draggable: true, // Permitimos que se pueda arrastrar por e l mapa
-  });
-
-  // Evento: al arrastrar el marcador
-  marker.addListener("dragend", (event) => {
-    const { lat, lng } = event.latLng.toJSON();
-    latitude.value = lat;
-    longitude.value = lng;
-    console.log('🆕 POSITION');
-    console.log('📟 latitude -->', latitude.value);
-    console.log('📟 longitude -->', longitude.value);
-  });
-
-  // Evento: clic en el mapa
-  map.addListener("click", (event) => {
-    const { lat, lng } = event.latLng.toJSON();
-    latitude.value = lat;
-    longitude.value = lng;
-    marker.setPosition({ lat, lng });
-    console.log("Mapa clickeado en:", latitude.value, longitude.value);
-  });
-}
-
-
-const buscarUbicacio = async () => {
-  try {
-    const response = await axios.get('/geocode', { params: { address: address.value } })
-    const resultats = response.data.results
-
-    if(resultats.length > 0) {
-      const {lat, lng} = resultats[0].geometry.location
-      actualitzarMapa(lat, lng)
-    } else {
-      alert("No s'han trobat resultats.")
-    }
-
-  } catch (error) {
-    console.error(error)
-    alert("Error en obtenir ubicació.")
-  }
-}
-
-
-
-
-onMounted(async () => {
-  await getGeocodeData();
-  await getDataProfile();
-  map.value = new google.maps.Map(document.getElementById("mapa"), {
-    center: { lat: latitude, lng: longitude },
-    zoom: 12,
-  })
-
-  marker.value = new google.maps.Marker({
-    position: { lat: latitude, lng: longitude },
-    map: map.value,
-  })
-
-  // ProductService.getProductsSmall().then((data) => (products.value = data));
-
-});
-
-const actualitzarMapa = (lat, lng) => {
-  const position = {lat, lng}
-  map.value.setCenter(position)
-  marker.value.setPosition(position)
-}
-
-
-// ejecuta fetchProducts cuando userData este disponible
-watch(user, (newUser) => {
-  if (newUser.id) {
-    fetchProducts(`getPurchase`, newUser.id, 'purchases');
-    fetchProducts(`getSales`, newUser.id, 'sales');
-    fetchProducts(`getValorations`, newUser.id, 'reviews');
-    fetchProducts(`getAllToSell`, newUser.id, 'activeProducts');
-    getGeoLocation();
-    // getMediaRating(reviews);
-  }
-});
-
-// Funciones de subida imagen
+// Funciones para subida de imagen
 const onBeforeUpload = (event) => {
-  // console.log('onBeforeUpload')
-  event.formData.append('id', user.value.id)
+  event.formData.append('id', user.value.id);
 };
 
 const uploadEvent = async (callback, uploadedFiles) => {
-  console.log('uploadEvent');
   totalSizePercent.value = totalSize.value / 10;
-  console.log(totalSizePercent.value);
   await callback();
   visibleEditUser.value = false;
   window.location.reload();
-
-
-  // if (uploadedFiles.length > 1) {
-  //     uploadedFiles = uploadedFiles.splice(0, uploadedFiles.length - 1);
-  // }
 };
 
 const onSelectedFiles = (event) => {
-  console.log('onSelectedFiles');
   files.value = event.files;
 
   if (event.files.length > 1) {
@@ -467,6 +372,7 @@ const onSelectedFiles = (event) => {
     totalSize.value += parseInt(formatSize(file.size));
   });
 };
+
 const formatSize = (bytes) => {
   const k = 1024;
   const dm = 3;
@@ -482,118 +388,80 @@ const formatSize = (bytes) => {
   return `${formattedSize} ${sizes[i]}`;
 };
 
-const getGeoLocation = async () => {
-    try{
-        const latitude = user.value.latitude;
-        const longitude = user.value.longitude;
-
-        const respuesta = await axios.get('/api/geoLocation', {
-            params: {latitude, longitude}
-        });
-        fullAddress.value = respuesta.data || {};
-        console.log('FULLADDRESS -->', fullAddress);
-
-    }catch(err){
-        console.log('Falla en API: ', err);
-    }
-};
-
-
-
-
-const openEditProfile = async (user) => {
-  selectedUser.value = user;
-  userData.value.id = user.id;
-  userData.value.name = user.name;
-  userData.value.surname1 = user.surname1;
-  userData.value.surname2 = user.surname2;
-  userData.value.email = user.email;
-  visibleEditUser.value = true; // abre el Dialog 
-  console.log('🔎 USER ID SELECTED', userData.id)
-  console.log('🔎 SELECTED USER -->', selectedUser);
-  console.log('------------------------------');
-  latitude.value = Number(user.latitude);
-  longitude.value = Number(user.longitude);
-  console.log('📟 latitude -->', latitude.value);
-  console.log('📟 longitude -->', longitude.value);
-};
-
-const fetchProducts = async (endpoint, id, type) => {
-  console.log('ID ---------->', id)
-  loading.value = true;
-  error.value = null;
-  selectedTab.value = type; // guardamos que se esta viendo
-
-  try {
-    const response = await axios.post(`/api/${endpoint}`, {
-      userId: id,
-    });
-
-    // guarda info segun seccion
-    if (type === 'purchases') purchases.value = response.data.data || [];
-    else if (type === 'sales') sales.value = response.data.data || [];
-    else if (type === 'activeProducts') activeProducts.value = response.data.data || [];
-    else if (type === 'reviews') {reviews.value = response.data.data || []; calcularMediaRating();};
-    // console.log('purchase -->', purchases);
-    // console.log('sales -->', sales);
-    // console.log('activeProducts -->', activeProducts);
-    // console.log('reviews -->', reviews);
-
-  } catch (err) {
-    error.value = "Error al obtener los datos.";
-  } finally {
-    loading.value = false;
+const openEditProfile = async (userProfile) => {
+  selectedUser.value = userProfile;
+  userData.value.id = userProfile.id;
+  userData.value.name = userProfile.name;
+  userData.value.surname1 = userProfile.surname1;
+  userData.value.surname2 = userProfile.surname2;
+  userData.value.email = userProfile.email;
+  userData.value.password = '';
+  visibleEditUser.value = true;
+  
+  // Actualizar la posición del mapa basado en la ubicación del usuario
+  if (userProfile.latitude && userProfile.longitude) {
+    latitude.value = Number(userProfile.latitude);
+    longitude.value = Number(userProfile.longitude);
   }
-};
-
-const getDataProfile = async () => {
-  try {
-    const respuesta = await axios.get('/api/user');
-    user.value = respuesta.data.data || {};
-  } catch (error) {
-    console.error("Error al obtener usuario:", error);
-  }
-};
-const calcularMediaRating = () => {
-  if (reviews.value.length === 0) {
-    mediaRating.value = 0;
-    return;
-  }
-  const total = reviews.value.reduce((sum, review) => sum + review.calification, 0);
-  mediaRating.value = total / reviews.value.length;
+  
+  // Inicializar el mapa después de que esté visible el diálogo
+  setTimeout(() => {
+    startMap();
+  }, 500);
 };
 
 function editUser() {
-  console.log('FORMULARIO USER -->', userData);
-  validate().then(form => { if (form.valid) updateUser(userData.value) });
-  visibleEditUser.value = false; // close el Dialog
-  // window.location.reload();
+  // Actualizar las coordenadas en el formulario antes de enviar
+  userData.value.latitude = latitude.value;
+  userData.value.longitude = longitude.value;
+  
+  validate().then(form => { 
+    if (form.valid) {
+      updateUser(userData.value);
+      visibleEditUser.value = false;
+    }
+  });
+};
 
-}
+// Hooks del ciclo de vida
+onMounted(async () => {
+  await getDataProfile();
+  selectedTab.value = 'activeProducts'; // Establecer un tab por defecto
+});
 
+// Watchers
+watch(user, (newUser) => {
+  if (newUser && newUser.id) {
+    fetchProducts('getPurchase', newUser.id, 'purchases');
+    fetchProducts('getSales', newUser.id, 'sales');
+    fetchProducts('getValorations', newUser.id, 'reviews');
+    fetchProducts('getAllToSell', newUser.id, 'activeProducts');
+    
+    if (newUser.latitude && newUser.longitude) {
+      getGeoLocation(newUser.latitude, newUser.longitude)
+        .then(() => {
+          // Cuando tengamos la dirección, podemos actualizar el campo de búsqueda
+          if (fullAddress.value?.results && fullAddress.value.results.length > 0 && visibleEditUser.value) {
+            partialAddress.value = fullAddress.value.results[0].formatted_address;
+          }
+        });
+    }
+  }
+}, { deep: true });
+
+// Observar cambios en las coordenadas del mapa
+watch([latitude, longitude], ([newLat, newLng]) => {
+  userData.value.latitude = newLat;
+  userData.value.longitude = newLng;
+});
+
+// Observar cambios en la dirección formateada
+watch(() => fullAddress.value, (newAddress) => {
+  if (newAddress?.results && newAddress.results.length > 0 && visibleEditUser.value) {
+    partialAddress.value = newAddress.results[0].formatted_address;
+  }
+}, { deep: true });
 </script>
 
-
-<style scoped>
-.container-info img {
-  height: 100px;
-  width: 100px;
-  border-radius: 100px;
-  background-color: var(--primary-color);
-}
-.container-else {
-    width: 100%;
-    text-align: center;
-  }
-  .image-else {
-    width: auto;
-    max-height: 200px;
-  }
-
-.google-map {
-  height: 300px; /* Define la altura del mapa */
-  width: 100%; /* Define el ancho del mapa */
-  border: 1px solid #ccc; /* Opcional: bordes del mapa */
-  border-radius: 8px; /* Opcional: bordes redondeados */
-}
-</style>
+<!-- Importar el archivo CSS externo -->
+<style src="./perfil.css" scoped></style>

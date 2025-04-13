@@ -122,4 +122,11 @@ onMounted(()=>{
 .flag-icon-us {
     background-image: url('/images/flags/flag-us-svgrepo-com.svg');
 }
+
+footer {
+  height: 40px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

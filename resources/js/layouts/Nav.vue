@@ -41,7 +41,7 @@
                                 <p class="nav-text mobile-only-text">Tu cuenta</p>
                             </router-link>
                             <router-link to="/subir-producto" class="d-flex align-items-center">
-                                <button class="d-flex secondary-button-2 gap-2">
+                                <button class="d-flex primary-button-2 gap-2">
                                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8.59383 5.88469V12.1152M5.47856 8.99995H11.7091M16.382 8.99995C16.382 13.3012 12.8951 16.7881 8.59383 16.7881C4.29254 16.7881 0.805664 13.3012 0.805664 8.99995C0.805664 4.69867 4.29254 1.21179 8.59383 1.21179C12.8951 1.21179 16.382 4.69867 16.382 8.99995Z" stroke="currentColor" stroke-width="1.40187" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -76,14 +76,23 @@ import {useRoute} from "vue-router";
 const { processing, logout } = useAuth();
 const route = useRoute(); // Añadimos esta línea
 
-// Verificar si estamos en una ruta restringida
+/**
+ * Comprueba si la ruta actual es una ruta restringida (home, login, register)
+ * Se usa para controlar el layout y comportamiento del nav
+ */
 const isRestrictedRoute = computed(() => {
   const restrictedRoutes = ['home', 'login', 'register'];
   return restrictedRoutes.includes(route.name);
 });
 
+/**
+ * Estado del menú móvil (abierto/cerrado)
+ */
 const isMenuOpen = ref(false);
 
+/**
+ * Alterna el estado del menú móvil
+ */
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
