@@ -112,12 +112,16 @@ import useProducts from '@/composables/products.js';
 import router from "@/routes/index.js";
 import useCategories from "@/composables/categories.js";
 import { MultiSelect } from 'primevue'; // Import the MultiSelect component
+import useMap from '@/composables/useMap';
+import './products.css';
 
 const route = useRoute();
 
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
 
-const {categoryList, getCategoryList} = useCategories()
+const {categoryList, getCategoryList} = useCategories();
+
+const { latitude, longitude, initMap } = useMap();
 
 const fetchProducts = async () => {
   try {
@@ -154,8 +158,6 @@ const buscarPrecioMax = ref(null);
 const buscarRadio = ref(0);
 const ordenarPrecio = ref('');
 const ordenarFecha = ref('');
-const latitude = ref(41.38740000);
-const longitude = ref(2.16860000);
 
 
 const aplicarFiltro = async () => {
@@ -263,110 +265,12 @@ watch(
 
 
 onMounted(() => {
-  // Creamos el mapa en el div que tiene como id "map"
-  const map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: latitude.value, lng: longitude.value },
-    zoom: 13,
-  });
-
-  // Crear un marcador en el mapa
-  const marker = new google.maps.Marker({
-    // Coordenadas iniciales donde se colocara el marcador
-    position: { lat: latitude.value, lng: longitude.value },
-    map, // Indica que mapa
-    draggable: true, // Permitimos que se pueda arrastrar por e l mapa
-  });
-
-  // Evento: al arrastrar el marcador
-  marker.addListener("dragend", (event) => {
-    const { lat, lng } = event.latLng.toJSON();
-    latitude.value = lat;
-    longitude.value = lng;
-    console.log("Nueva posición:", latitude.value, longitude.value);
-  });
-
-  // Evento: clic en el mapa
-  map.addListener("click", (event) => {
-    const { lat, lng } = event.latLng.toJSON();
-    latitude.value = lat;
-    longitude.value = lng;
-    marker.setPosition({ lat, lng });
-    console.log("Mapa clickeado en:", latitude.value, longitude.value);
-  });
-
-
-  fetchProducts();
-  getCategoryList();
-  getEstadoList();
-
+    initMap('map');
+    fetchProducts();
+    getCategoryList();
+    getEstadoList();
 });
 </script>
-
-<style scoped>
-
-.google-map {
-  height: 300px; /* Define la altura del mapa */
-  width: 100%; /* Define el ancho del mapa */
-  border: 1px solid #ccc; /* Opcional: bordes del mapa */
-  border-radius: 8px; /* Opcional: bordes redondeados */
-}
-
-.contenedor-filtro {
-  background-color: white;
-  border: 1px solid var(--primary-color);
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.contenedor-filtro h2 {
-  margin-bottom: 15px;
-}
-
-.contenedor-filtro form {
-  display: flex;
-  flex-direction: column;
-}
-
-.contenedor-filtro label {
-  margin-top: 10px;
-}
-
-.contenedor-filtro input,
-.contenedor-filtro select {
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid var(--primary-color);
-  border-radius: 5px;
-  font-size: 1rem;
-}
-
-.contenedor-filtro button {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.contenedor-filtro button:hover {
-  background-color: var(--primary-color);
-}
-
-/* Add styles for the price inputs using a specific class */
-.contenedor-filtro .price-input {
-  width: 48%; /* Adjust width to fit side by side */
-  margin-right: 2%; /* Add spacing between inputs */
-}
-
-.contenedor-filtro .price-input:last-child {
-  margin-right: 0; /* Remove margin for the last input */
-}
-
-</style>
 
 
 
