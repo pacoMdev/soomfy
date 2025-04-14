@@ -17,6 +17,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        // Si se llama sin el parámetro paginated=true y con raw=true
+        // delegamos al método getCategories para mantener la compatibilidad
+        if (request('raw') && !request('paginated')) {
+            return $this->getCategories();
+        }
+
         $orderColumn = request('order_column', 'created_at');
         if (!in_array($orderColumn, ['id', 'name', 'created_at'])) {
             $orderColumn = 'created_at';
@@ -53,8 +59,6 @@ class CategoryController extends Controller
     {
         $categories = Category::with('media')->get();
         return CategoryResource::collection($categories);
-
-
     }
 
     /**
