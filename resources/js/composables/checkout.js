@@ -64,20 +64,22 @@ export default function useCheckout() {
         error.value = false;
         errorMessage.value = '';
         try {
-            await axios.post('/api/fakePurchaseProduct', {
-                product_id: parseInt(productId),
-                userSeller_id: userProduct.value[0].user.id,
-                price: userProduct.value[0].price,
-                isToSend: parseInt(selectedMethod.value),
-                shippingAddress: {
-                    'newAddress': address.newAddress,
-                    'newCity': address.newCity,
-                    'newCp': address.newCp,
-                    'newCountry': address.newCountry
-                },
-                selectedStablishment: { ...selectedStablishment.value },
-                selectedMethod: selectedMethod.value,
-            }).then( async response =>{
+            // await axios.post('/api/fakePurchaseProduct', {
+            //     product_id: parseInt(productId),
+            //     userSeller_id: userProduct.value[0].user.id,
+            //     price: userProduct.value[0].price,
+            //     isToSend: parseInt(selectedMethod.value),
+            //     shippingAddress: {
+            //         'newAddress': address.newAddress,
+            //         'newCity': address.newCity,
+            //         'newCp': address.newCp,
+            //         'newCountry': address.newCountry
+            //     },
+            //     selectedStablishment: { ...selectedStablishment.value },
+            //     selectedMethod: selectedMethod.value,
+            // })
+            await axios.post('/api/checkout')
+            .then( async response =>{
                 console.log('Producto comprado', response);
                 console.log('👌 Status:', response.status);
                 if(response.status == 200){    // compra realizada con exito

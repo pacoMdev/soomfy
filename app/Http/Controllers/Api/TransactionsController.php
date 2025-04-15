@@ -11,6 +11,8 @@ use App\Models\Product;
 use App\Models\Message;
 use App\Mail\ConstructEmail;
 use App\Models\ShippingAddress;
+use App\Models\ShippingAddressTransaction;
+use Stripe\FinancialConnections\Transaction;
 
 class TransactionsController extends Controller
 {
@@ -209,20 +211,35 @@ class TransactionsController extends Controller
         return $prefix . $timestamp . $randomNumber;
     }
 
+    /**
+     * obtiene todas las transacciones de compra del usuario
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getPurchase(Request $request){
         $userId = $request->userId;
-        $purchase = User::find($userId)->purchase()
-        ->with(['product', 'seller', 'buyer'])
-        ->get();
+        $transactions_id = Transactions::where('userBuyer_id', $userId)->pluck('id');
+
+        $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
+            ->where('status', 'finished')
+            ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
+            ->get();
 
         return $this->successResponse($purchase, 'Transaction found');
     }
-    
+    /**
+     * obtiene todas las transacciones de venta del usuario
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getSales(Request $request){
         $userId = $request->userId;
-        $purchase = User::find($userId)->sales()
-        ->with(['product', 'seller', 'buyer'])
-        ->get();
+        $transactions_id = Transactions::where('userSeller_id', $userId)->pluck('id');
+
+        $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
+            ->where('status', 'finished')
+            ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
+            ->get();
 
         return $this->successResponse($purchase, 'Transaction found');
     }

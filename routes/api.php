@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\UsersOpinionController;
 use App\Http\Controllers\Api\GoogleController;
 use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Api\ShippingAddressController;
+use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Models\Transactions;
@@ -43,6 +44,7 @@ Route::get('products', [ProductControllerAdvance::class, 'getProducts']); // Pro
 Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); // Productos del usuario autenticado
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
+Route::post('/checkSelledProduct', [ProductControllerAdvance::class, 'checkSelledProduct']); // verifica si el producto ya fue vendido
 Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
 
 // Establecimientos
@@ -62,6 +64,16 @@ Route::get('geoLocation', [GoogleController::class, 'geoLocation']);
 Route::get('/reverse-geocode', [GoogleController::class, 'reverseGeocode']);
 Route::get('/geocode', [GoogleController::class, 'geoCode']);
 
+//STRIPE CONTROLLER
+Route::get('/payment', [StripeController::class, 'index'])->name('payment.form');
+Route::post('/checkout', [StripeController::class, 'checkout'])->name('payment.checkout');
+Route::get('/success', function () {
+    return "Payment Successful!";
+})->name('payment.success');
+Route::get('/cancel', function () {
+    return "Payment Canceled!";
+})->name('payment.cancel');
+
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos
 
@@ -70,6 +82,7 @@ Route::get('get-product/nearby/{latitude}/{longitude}/{radius}', [UserController
 
 // protege las rutas
 Route::group(['middleware' => 'auth:sanctum'], function() {
+    
 
     // Buy || Sell
     Route::post('fakePurchaseProduct', [TransactionsController::class, 'fakePurchase']);

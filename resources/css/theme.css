@@ -191,7 +191,7 @@
 }
 .primary-button:hover {
     background-color: var(--primary-color);
-    border-radius: 100px;
+    /* border-radius: 100px; */
     white-space: nowrap;
     height: 40px;
     padding: 0px 30px !important;

@@ -36,9 +36,8 @@ return [
         'redirect'          => env('GOOGLE_CALLBACK_REDIRECT'),
     ],
     'stripe' => [
-        'client_id'         => env('STRIPE_CLIENT_KEY'),
-        'client_secret'     => env('STRIPE_SECRET_KEY'),
-        'redirect'          => env('STRIPE_CALLBACK_RECIRECT'),
+        'public_key'         => env('STRIPE_CLIENT_KEY'),
+        'secret_key'     => env('STRIPE_SECRET_KEY'),
     ]
 
 ];
