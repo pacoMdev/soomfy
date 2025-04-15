@@ -38,6 +38,9 @@ return [
     'stripe' => [
         'public_key'         => env('STRIPE_CLIENT_KEY'),
         'secret_key'     => env('STRIPE_SECRET_KEY'),
+    ],
+    'google_maps' => [
+        'key'               => env('GOOGLE_MAPS_API_KEY', 'AIzaSyBlIXCsBY23dgXutYyJifkcoNdO46Z7VUo'),
     ]
 
 ];

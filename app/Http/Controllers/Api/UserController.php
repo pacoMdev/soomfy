@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\UserOpinion;
 use App\Models\User;
@@ -46,21 +47,27 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-        $role = Role::find($request->role_id);
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->surname1 = $request->surname1;
         $user->surname2 = $request->surname2;
-
         $user->password = Hash::make($request->password);
 
         if ($user->save()) {
-            if ($role) {
-                $user->assignRole($role);
+            // Si hay un rol especificado, asignarlo con manejo de guard correcto
+            if ($request->role_id) {
+                $role = Role::find($request->role_id);
+                if ($role) {
+                    // Asignar el rol directamente usando el nombre del rol que ya existe en la DB
+                    $user->assignRole($role->name);
+                }
             }
+            
             return new UserResource($user);
         }
+        
+        return response()->json(['message' => 'Error al crear el usuario'], 500);
     }
 
     /**
@@ -84,8 +91,6 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $role = Role::find($request->role_id);
-
         $user->name = $request->name;
         $user->email = $request->email;
         $user->surname1 = $request->surname1;
@@ -98,11 +103,19 @@ class UserController extends Controller
         }
 
         if ($user->save()) {
-            if ($role) {
-                $user->syncRoles($role);
+            // Si hay un rol especificado, sincronizarlo con manejo de guard correcto
+            if ($request->role_id) {
+                $role = Role::find($request->role_id);
+                if ($role) {
+                    // Sincronizar usando el nombre del rol
+                    $user->syncRoles([$role->name]);
+                }
             }
+            
             return new UserResource($user);
         }
+        
+        return response()->json(['message' => 'Error al actualizar el usuario'], 500);
     }
 
     public function updateimg(Request $request)
@@ -137,14 +150,17 @@ class UserController extends Controller
         return $products;
     }
 
-    function getUserProducts($id){
-        // dd($user);
-        $products = Product::with('user_product')
-            ->where('user_id', $id)
-            ->latest()
-            ->paginate();
+    public function getUserProducts($id)
+    {
+        try {
+            $products = Product::where('user_id', $id)
+                ->with(['estado', 'categories', 'media'])
+                ->get();
 
-        return $products;
+            return ProductResource::collection($products);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function valorate(Request $request){

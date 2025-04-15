@@ -82,7 +82,6 @@ const buscarProductos = () => {
 </script>
 
 <style scoped>
-/* Falta la etiqueta de apertura <style> */
 .buscadorProductos {
   border-radius: 25px 0px 0px 25px;
   border: 1px solid var(--primary-color);
@@ -96,6 +95,13 @@ const buscarProductos = () => {
   border: 1px solid var(--primary-color);
   padding-left: 25px;
   width: 45%;
+}
+
+@media (max-width: 1125px) {
+    .buscadorProductos2 {
+        width: 100%;
+        max-width: 600px;
+    }
 }
 </style>
 

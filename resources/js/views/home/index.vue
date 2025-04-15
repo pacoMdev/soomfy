@@ -91,8 +91,6 @@
   </div>
 </template>
 
-
-
 <script setup>
 import '../../../css/home/home.css';
 import { onMounted, ref } from 'vue';
@@ -101,6 +99,10 @@ import router from "@/routes/index.js";
 import SearchBar from "@/components/SearchBar.vue";
 import Carousel from 'primevue/carousel';
 
+/**
+ * Opciones de responsive para el carousel de categorías
+ * Define cómo se comportará el carousel en diferentes tamaños de pantalla
+ */
 const responsiveOptions = ref([
   {
     breakpoint: '1412px',
@@ -129,17 +131,29 @@ const { products, getProducts } = useProducts();
 import useCategories from '@/composables/categories.js';
 const { categories, getCategories } = useCategories();
 
-
+/**
+ * Referencias reactivas para el manejo de productos
+ * productos: Array de productos a mostrar
+ * paginaActual: Número de página actual para la paginación
+ * cargando: Estado de carga para mostrar/ocultar indicadores
+ */
 const productos = ref([]);
 const paginaActual = ref(1);
 const cargando = ref(false);
 
+/**
+ * Inicializa la página cargando productos y categorías
+ */
 onMounted(async () => {
   await obtenerProductos(1); // Carga la primera pagina
   getCategories(); // Carga las categorias
   console.log("Productos después de cargar la primera página:", productos.value); // Depuración
 });
 
+/**
+ * Obtiene los productos de la API según la página especificada
+ * @param {number} page - Número de página a cargar
+ */
 const obtenerProductos = async (page = 1) => {
   cargando.value = true;
   try {
@@ -188,6 +202,9 @@ const obtenerProductos = async (page = 1) => {
   }
 };
 
+/**
+ * Carga la siguiente página de productos cuando el usuario solicita ver más
+ */
 const cargarMasProductos = async () => {
   if (cargando.value) return;
 
@@ -195,18 +212,24 @@ const cargarMasProductos = async () => {
   await obtenerProductos(paginaActual.value); // Carga la siguiente página
 };
 
-// Cada vez que hagas clic a una categoria, lo que hara es llamar a esta funcion pasandole la categoria
+/**
+ * Redirige al usuario a la vista de productos filtrada por categoría
+ * @param {Object} category - Objeto categoría seleccionada
+ */
 const redirectCategory = (category) => {
   // Y te redirigira al apartado de categorias, filtrado por categoria
   router.push({
     name: 'public.products',
-    // Y agregara searc_category en la url
+    // Y agregara search_category en la url
     query: {
       search_category: category.name === 'Todas' ? '' : category.name // If "Todas", clear the category filter
     }
   });
 };
 
+/**
+ * Redirige al usuario a la vista de productos sin filtros de categoría
+ */
 const redirectAll = () => {
   // Y te redirigira al apartado de categorias, filtrado por categoria
   router.push({
@@ -217,110 +240,4 @@ const redirectAll = () => {
   });
 };
 
-// Removed unused responsiveOptions variable
-
 </script>
-
-<style scoped>
-.buscadorProductos {
-  height: 40px;
-  border-radius: 25px;
-  border: 1px solid var(--primary-color);
-  padding-left: 25px;
-  width: 75%;
-}
-
-/* Estilo carrousel */
-.categories-carousel {
-  max-width: 70%;
-  margin: 0 auto;
-}
-
-.categories-carousel :deep(.p-carousel-container) {
-  padding: 0 1rem;
-}
-
-.categories-carousel :deep(.p-carousel-items-container) {
-  margin: 0 -0.5rem;
-}
-
-.categories-carousel :deep(.p-carousel-item) {
-  padding: 0.5rem;
-}
-
-.categories-carousel :deep(.p-carousel-prev),
-.categories-carousel :deep(.p-carousel-next) {
-  width: 2rem;
-  height: 2rem;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  border-radius: 50%;
-}
-
-.categories-carousel :deep(.p-carousel-prev:hover),
-.categories-carousel :deep(.p-carousel-next:hover) {
-  background: var(--primary-color);
-  color: white;
-}
-
-/* Mantener tus estilos actuales para las imágenes y textos */
-.categories-carousel img {
-  width: 70px;
-  height: 70px;
-  padding: 5px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.categories-carousel p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--text-color);
-}
-/* Estilo para el nuevo carousel de productos */
-.productos-carousel {
-  width: 400px; /* Limit the carousel width on smaller screens */
-  margin: 0 auto;
-  overflow: hidden; /* Prevents content from overflowing */
-}
-
-.separacion-general-web {
-  padding: 0px;
-}
-
-.p-carousel-indicator-active .p-carousel-indicator button {
-  background: var(--primary-color) !important;
-}
-
-/* Sobrescribir el color del indicador del carousel */
-:deep(.p-carousel-indicators .p-carousel-indicator.p-highlight button) {
-  background-color: var(--primary-color) !important;
-}
-
-.secondary-button-2 {
-  border-top-left-radius: none !important;
-  border-bottom-left-radius: none !important;
-}
-
-@media (max-width: 576px) {
-  .productos-carousel :deep(.p-carousel-container) {
-    padding: 0;
-  }
-
-  .productos-carousel :deep(.p-carousel-container) {
-    padding: 0 1rem;
-    width: 100%; /* Ensures the carousel container fits within the page */
-  }
-  .productos-carousel :deep(.p-carousel-item) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-
-  .productos-carousel :deep(.p-carousel-item) {
-    padding: 0.5rem;
-  }
-}
-</style>

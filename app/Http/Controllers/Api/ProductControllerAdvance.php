@@ -287,9 +287,17 @@ class ProductControllerAdvance extends Controller
 
     public function getCategoryByProducts($id)
     {
-        $products = Product::whereRelation('products', 'id', '=', $id)->paginate();
+        try {
+            $products = Product::whereHas('categories', function($query) use ($id) {
+                $query->where('categories.id', $id);
+            })
+            ->with(['estado', 'categories', 'media'])
+            ->get();
 
-        return ProductResource::collection($products);
+            return ProductResource::collection($products);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getEstadoList()

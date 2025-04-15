@@ -1,4 +1,4 @@
-/* Contenedor principal del chat */
+/* Contenedor principal */
 .chat-container {
   display: flex;
   height: 600px;
@@ -10,6 +10,7 @@
   font-family: Arial, sans-serif;
 }
 
+/* Wrapper del chat */
 .chat-wrapper {
   width: 100%;
   height: 100%;
@@ -17,9 +18,9 @@
   flex-direction: column;
 }
 
-/* Barra lateral de contactos */
+/* Sidebar del chat */
 .chat-sidebar {
-  width: 30%; /* Ancho fijo del sidebar */
+  width: 30%;
   background: #f7f9fc;
   border-right: 1px solid #ddd;
   display: flex;
@@ -27,6 +28,7 @@
   height: 100%;
 }
 
+/* Título del sidebar */
 .chat-sidebar-title {
   padding: 31.1px;
   background: #f7f9fc;
@@ -34,6 +36,7 @@
   z-index: 1;
 }
 
+/* Contenedor de lista de chats */
 .chat-list-container {
   flex: 1;
   overflow-y: auto;
@@ -41,6 +44,7 @@
   row-gap: 15px;
 }
 
+/* Input de búsqueda */
 .search-input {
   width: 100%;
   padding: 5px;
@@ -49,16 +53,36 @@
   border: 1px solid #ddd;
 }
 
+/* Item de chat */
 .chat-item {
   width: 100%;
-  height: 20%;
+  height: auto;
   padding: 8px;
   cursor: pointer;
   border-radius: 5px;
+  overflow: hidden;
 }
 
+/* Estado seleccionado de chat */
 .chat-item.selected, .chat-item:hover {
   background: #ddd;
+}
+
+/* Centrado dentro de item */
+.chat-item .centradoChat {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Texto en item de chat */
+.chat-item p {
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Contenido del chat */
@@ -67,11 +91,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  min-width: 0; /* Importante para evitar que el contenido empuje el ancho */
+  height: 598px;
+  min-width: 0;
 }
 
-/* Header del chat */
+/* Cabecera del chat */
 .chat-header {
   height: 100px;
   flex-shrink: 0;
@@ -80,6 +104,7 @@
   background: white;
 }
 
+/* Contenido de la cabecera */
 .header-content {
   position: relative;
   display: flex;
@@ -87,18 +112,21 @@
   justify-content: space-between;
   height: 100%;
   padding: 0.5rem;
-  padding-right: 55px; /* Añadir espacio para el botón de info */
-  gap: 8px; /* Añadir gap más pequeño */
+  padding-right: 55px;
+  gap: 8px;
 }
 
+/* Divisor en cabecera */
 .header-content.divider {
   border-bottom: 1px solid #e0e0e0;
 }
 
+/* Primer elemento de cabecera */
 .header-content > div:first-child {
   flex: 1;
 }
 
+/* Área principal del chat */
 .chat-main-content {
   flex: 1;
   min-height: 0;
@@ -106,33 +134,34 @@
   position: relative;
 }
 
-/* Area de mensajes con scroll */
+/* Área de mensajes */
 .messages {
   overflow-y: auto;
-  overflow-x: hidden; /* Evita scroll horizontal en mensajes */
+  overflow-x: hidden;
   padding: 1.5rem 1rem;
   margin: 4px;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Aumentar el espacio entre mensajes */
-  max-height: 435px; /* Ajusta este valor según el tamaño de tu header y chat-input */
+  gap: 20px;
+  max-height: 435px;
   width: 100%;
 }
 
-/* Estilo de cada mensaje */
+/* Estilo de mensajes */
 .msg {
   position: relative;
   padding: 12px;
-  max-width: 60%; /* Limita el ancho de los mensajes */
+  max-width: 60%;
   border-radius: 8px;
   font-size: 14px;
-  word-wrap: break-word; /* Ajusta palabras largas */
-  overflow-wrap: break-word; /* Evita desbordamientos */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
-  width: fit-content; /* Ajusta el ancho al contenido */
-  margin-top: 20px; /* Espacio para el nombre del remitente */
+  width: fit-content;
+  margin-top: 20px;
 }
 
+/* Nombre del remitente */
 .msg .sender-name {
   position: absolute;
   top: -18px;
@@ -142,18 +171,21 @@
   color: var(--primary-color);
 }
 
+/* Nombre en mensaje saliente */
 .outgoing .sender-name {
   right: 0;
   left: auto;
   text-align: right;
 }
 
+/* Mensaje entrante */
 .incoming {
   align-self: flex-start;
   background: var(--secondary-color);
   color: var(--primary-color);
 }
 
+/* Mensaje saliente */
 .outgoing {
   align-self: flex-end;
   background: var(--primary-color);
@@ -167,28 +199,30 @@
   line-height: 1.5;
 }
 
-/* Contenedor de hora y estado de lectura */
+/* Centrado en chat */
 .centradoChat {
   display: flex;
-  gap: 8px; /* Espaciado entre elementos */
+  gap: 8px;
   margin-top: 4px;
 }
 
+/* Centrado de información */
 .centradoInfoMessage {
   display: flex;
   align-items: center;
   justify-content: end;
-  gap: 8px; /* Espaciado entre elementos */
+  gap: 8px;
   margin-top: 4px;
 }
 
-/* Estilo para los elementos pequeños */
+/* Elementos pequeños */
 .msg small {
   font-size: 12px;
   color: #666;
-  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  white-space: nowrap;
 }
 
+/* Etiqueta de propietario */
 .msg small.propietario {
   position: absolute;
   top: -19px;
@@ -210,6 +244,7 @@
   width: 100%;
 }
 
+/* Campo de entrada */
 .chat-input input {
   flex: 1;
   height: 45px;
@@ -220,6 +255,7 @@
   font-size: 14px;
 }
 
+/* Botón secundario */
 .chat-input .secondary-button-2 {
   height: 45px;
   padding: 0 20px;
@@ -234,28 +270,34 @@
   font-weight: 500;
 }
 
+/* Hover de botón */
 .chat-input .secondary-button-2:hover {
   background-color: var(--primary-hover-color);
 }
 
+/* Contenedor de detalles */
 .product-details-container {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   padding: 2rem;
-  gap: 25px;
+  gap: 5px;
   text-align: center;
   overflow-y: auto;
 }
 
+/* Divisor */
 .divider {
   border-bottom : 1px solid #ddd;
 }
 
+/* Imagen de producto */
 .product-details-container img {
   object-fit:contain
 }
 
+/* Detalles de producto */
 .product-details {
   display: flex;
   flex-direction: column;
@@ -265,22 +307,26 @@
   flex: 1;
 }
 
+/* Párrafos en detalles */
 .product-details p {
   margin: 0;
   line-height: 1.6;
 }
 
+/* Título mediano */
 .product-details .h3-p {
   font-size: 1.1rem;
   margin-top: 1rem;
 }
 
+/* Título pequeño */
 .product-details .h4-p {
   color: var(--primary-color);
   margin-top: 1rem;
   font-weight: bold;
 }
 
+/* Botón secundario */
 .secondary-button-2 {
   margin-top: 10px;
   padding: 8px 16px;
@@ -291,26 +337,31 @@
   cursor: pointer;
 }
 
+/* Hover del botón */
 .secondary-button-2:hover {
   background-color: var(--primary-hover-color);
 }
 
+/* Flecha para alternar */
 .toggle-arrow {
   cursor: pointer;
   margin-top: 5px;
   font-size: 16px;
   color: var(--primary-color);
-  user-select: none; /* Prevent text selection */
+  user-select: none;
 }
 
+/* Hover de flecha */
 .toggle-arrow:hover {
   color: var(--primary-hover-color);
 }
 
+/* Imagen de flecha */
 .toggle-arrow img {
   display: block;
 }
 
+/* Contenedor de icono info */
 .info-icon-container {
   position: absolute;
   top: 50%;
@@ -319,12 +370,13 @@
   z-index: 10;
   margin-left: auto;
   padding-left: 8px;
-  background-color: white; /* Asegurar que tenga fondo */
-  height: 40px; /* Altura fija */
+  background-color: white;
+  height: 40px;
   display: flex;
   align-items: center;
 }
 
+/* Icono de información */
 .info-icon {
   display: flex;
   align-items: center;
@@ -336,29 +388,34 @@
   background-color: var(--secondary-color);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
-  position: relative; /* Añadir posición relativa */
-  z-index: 11; /* Mayor que el contenedor */
+  position: relative;
+  z-index: 11;
 }
 
+/* Hover de icono */
 .info-icon:hover {
   background-color: var(--primary-color);
   transform: scale(1.1);
 }
 
+/* SVG dentro de icono */
 .info-icon svg {
   width: 24px;
   height: 24px;
   transition: fill 0.3s ease;
 }
 
+/* Hover de SVG */
 .info-icon:hover svg {
   fill: var(--secondary-color);
 }
 
+/* Sidebar oculto */
 .hidden-sidebar {
   display: none;
 }
 
+/* Botón para alternar sidebar */
 .toggle-sidebar-btn {
   display: none;
   margin-bottom: 10px;
@@ -370,10 +427,12 @@
   cursor: pointer;
 }
 
+/* Hover del botón */
 .toggle-sidebar-btn:hover {
   background-color: var(--primary-hover-color);
 }
 
+/* Wrapper de detalles */
 .product-details-wrapper {
   flex: 1;
   overflow-y: auto;
@@ -381,6 +440,7 @@
   background-color: white;
 }
 
+/* Información de producto */
 .product-info {
   display: flex;
   flex-direction: column;
@@ -390,6 +450,7 @@
   margin: 0 auto;
 }
 
+/* Imagen de producto */
 .product-image {
   width: 100%;
   max-width: 300px;
@@ -398,16 +459,19 @@
   border-radius: 8px;
 }
 
+/* Detalles de producto */
 .product-details {
   width: 100%;
   text-align: left;
 }
 
+/* Título en detalles */
 .product-details h3 {
   margin: 0 0 1rem 0;
   color: var(--primary-color);
 }
 
+/* Precio */
 .price {
   font-size: 1.5rem;
   font-weight: bold;
@@ -415,12 +479,14 @@
   margin: 0.5rem 0;
 }
 
+/* Descripción */
 .description {
   color: #666;
   line-height: 1.6;
   margin: 1rem 0;
 }
 
+/* Info del vendedor */
 .seller-info {
   display: flex;
   align-items: center;
@@ -431,6 +497,7 @@
   border-radius: 8px;
 }
 
+/* Avatar del vendedor */
 .seller-avatar {
   width: 50px;
   height: 50px;
@@ -438,50 +505,94 @@
   object-fit: cover;
 }
 
+/* Nombre del vendedor */
 .seller-name {
   font-weight: bold;
   margin: 0;
 }
 
+/* Valoración del vendedor */
 .seller-rating {
   color: #666;
   margin: 0.25rem 0 0 0;
 }
 
+/* Botón de volver */
 .back-to-chats-btn {
   padding: 0 !important;
-  width: 32px !important;  /* Reducido de 40px */
-  height: 32px !important; /* Reducido de 40px */
+  width: 32px !important;
+  height: 32px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50% !important;
-  margin-right: 8px;  /* Reducido de 10px */
-  min-width: 32px !important; /* Asegurar ancho mínimo */
-  flex-shrink: 0; /* Evitar que el botón se encoja */
+  margin-right: 8px;
+  min-width: 32px !important;
+  flex-shrink: 0;
 }
 
+/* Icono de botón */
 .back-to-chats-btn i {
-  font-size: 1rem; /* Reducido de 1.2rem */
+  font-size: 1rem;
 }
 
+/* Spinner de carga */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* Animación de spinner */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #042A2D;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+/* Animación webkit */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+/* Animación estándar */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive para tablets */
 @media (max-width: 768px) {
+  /* Sidebar en móviles */
   .chat-sidebar {
     width: 100%;
   }
 
+  /* Botón alternar sidebar */
   .toggle-sidebar-btn {
     display: block;
   }
 
+  /* Contenido oculto en móviles */
   .chat-content {
     display: none;
   }
 
+  /* Contenido activo en móviles */
   .chat-content.active {
     display: flex;
   }
 
+  /* Botón volver en móviles */
   .back-to-chats-btn {
     display: block;
     padding: 8px 16px;
@@ -492,49 +603,59 @@
     cursor: pointer;
   }
 
+  /* Ajuste de cabecera */
   .header-content {
-    padding-left: 0; /* Eliminar el padding extra ya que el botón está dentro */
+    padding-left: 0;
   }
 
+  /* Contenedor de icono */
   .info-icon-container {
     right: 4px;
     padding-left: 4px;
     height: 32px;
   }
 
+  /* Icono redimensionado */
   .info-icon {
     width: 32px;
     height: 32px;
   }
 
+  /* SVG redimensionado */
   .info-icon svg {
     width: 20px;
     height: 20px;
   }
 
+  /* Imagen de cabecera */
   .header-content img {
-    max-width: 80px; /* Imagen del producto más pequeña */
+    max-width: 80px;
     height: auto;
   }
 
+  /* Avatar redimensionado */
   .header-content .rounded-circle {
-    width: 40px !important; /* Avatar más pequeño */
-    height: 40px !important;
+    width: 60px !important;
+    height: 60px !important;
   }
 
+  /* Título reducido */
   .header-content h4 {
-    font-size: 14px; /* Texto más pequeño */
+    font-size: 14px;
     margin-bottom: 0;
   }
 
+  /* Imagen de producto */
   .product-details-container img {
-    width: 150px !important; /* Imagen más pequeña en detalles */
+    width: 150px !important;
   }
 
+  /* Texto de detalles */
   .product-details p {
     font-size: 14px;
   }
 
+  /* Título de detalles */
   .product-details .h3-p {
     font-size: 15px;
   }

@@ -1,8 +1,9 @@
-/* Estilos para los indicadores del carousel */
+/* Indicadores del carousel */
 .p-carousel .p-carousel-indicators {
     padding: 1rem;
 }
 
+/* Botones indicadores del carousel */
 .p-carousel .p-carousel-indicators .p-carousel-indicator button {
     width: 12px;
     height: 12px;
@@ -12,10 +13,103 @@
     border: 0 none;
 }
 
+/* Indicador activo del carousel */
 .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
     background: var(--primary-color, #6366F1);
 }
 
+/* Botón activo del carousel */
 .p-carousel-indicator-active .p-carousel-indicator-button { 
     background-color: var(--primary-color) !important;
 }
+
+/* Estilos para inputs */
+.p-inputtext,
+.p-multiselect,
+.p-dropdown,
+.p-listbox,
+.p-password input,
+.p-calendar input,
+.p-selectbutton,
+.p-inputnumber input,
+.p-inputmask,
+.p-chips input,
+.p-autocomplete input,
+.p-float-label input {
+    border-color: var(--primary-color) !important;
+}
+
+/* Estado focus de inputs */
+.p-inputtext:focus,
+.p-multiselect:focus,
+.p-dropdown:focus,
+.p-listbox:focus,
+.p-password input:focus,
+.p-calendar input:focus,
+.p-selectbutton:focus,
+.p-inputnumber input:focus,
+.p-inputmask:focus,
+.p-chips input:focus,
+.p-autocomplete input:focus,
+.p-float-label input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 1px var(--secondary-color) !important;
+}
+
+/* Estado hover de inputs */
+.p-inputtext:hover,
+.p-multiselect:hover,
+.p-dropdown:hover,
+.p-listbox:hover,
+.p-password input:hover,
+.p-calendar input:hover,
+.p-selectbutton:hover,
+.p-inputnumber input:hover,
+.p-inputmask:hover,
+.p-chips input:hover,
+.p-autocomplete input:hover,
+.p-float-label input:hover {
+    border-color: var(--primary-color) !important;
+}
+
+/* Checkbox en multiselect */
+.p-multiselect-item .p-checkbox .p-checkbox-box {
+    border-color: var(--primary-color) !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 4px !important;
+}
+
+/* Checkbox seleccionado */
+.p-checkbox .p-checkbox-box.p-highlight,
+.p-multiselect-item .p-checkbox .p-checkbox-box.p-highlight {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Icono del checkbox */
+.p-checkbox .p-checkbox-box .p-checkbox-icon,
+.p-multiselect-item .p-checkbox .p-checkbox-box .p-checkbox-icon {
+    color: white !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    transform: scale(1.2) !important;
+}
+
+/* Hover del checkbox */
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover,
+.p-multiselect-item:hover .p-checkbox .p-checkbox-box {
+    border-color: var(--primary-color) !important;
+}
+
+/* Focus del checkbox */
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus,
+.p-multiselect-item .p-checkbox .p-checkbox-box.p-focus {
+    box-shadow: 0 0 0 1px var(--secondary-color) !important;
+}
+
+/* Color del icono de check */
+.p-checkbox-box .p-checkbox-icon {
+    color: white !important;
+}
+

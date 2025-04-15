@@ -1,0 +1,44 @@
+.contenedor-favoritos {
+  display: flex;
+  justify-content: center;
+}
+
+.centrar-favoritos {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 45px;
+}
+
+.empty-favorites {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-favorites img {
+  width: 200px;
+  height: auto;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.empty-favorites svg {
+  width: 300px;  /* Ajusta este valor al tamaño que desees */
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.empty-favorites h3 {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.empty-favorites p {
+  color: #888;
+  font-size: 0.9rem;
+}

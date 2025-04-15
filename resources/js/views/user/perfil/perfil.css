@@ -1,0 +1,554 @@
+/* Fondo de la página */
+.fondo-perfil {
+  background-image: url('/images/home/bannerIcons.webp') !important;
+  background-size: contain;
+  background-position: center;
+}
+
+/* Cabecera del perfil */
+.profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  padding: 1rem 0;
+}
+
+/* Contenedor de información del usuario */
+.profile-info {
+  display: flex;
+  gap: 1.5rem;
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Imagen de perfil */
+.profile-avatar img {
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+  background-color: var(--primary-color);
+}
+
+/* Datos del usuario */
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 200px;
+}
+
+/* Nombre del usuario */
+.profile-name {
+  margin: 0;
+}
+
+/* Estrellas de calificación */
+.profile-rating {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+/* Área de acciones */
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: auto;
+  height: 100%;
+  padding: 1rem;
+  min-width: 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenedor de botones principales */
+.profile-header-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 auto;
+}
+
+/* Botones admin y editar */
+.admin-button, .edit-button {
+  width: 100%;
+}
+
+/* Botón cerrar sesión */
+.logout-button {
+  width: 100%;
+}
+
+/* Barra de navegación por pestañas */
+.profile-tabs {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+/* Grupos de botones en pestañas */
+.profile-tabs-group {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Área de contenido principal */
+.profile-tab-content {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Secciones de contenido */
+.tab-section {
+  width: 100%;
+}
+
+/* Secciones generales */
+.content-section {
+  margin-bottom: 1rem;
+}
+
+/* Sección de productos */
+.products-section {
+  padding: 1rem 0;
+}
+
+/* Título de la sección de productos */
+.products-title {
+  text-align: center;
+  margin: 1.5rem 0;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Estado vacío de productos */
+.products-empty {
+  margin: 1.25rem 0;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: red;
+}
+
+/* Mapa de Google */
+.google-map {
+  height: 300px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: block;
+  min-height: 300px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Contenedor del mapa */
+.map-container {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Controles del mapa */
+.map-controls {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Diálogo de edición */
+.edit-dialog {
+  width: min(90vw, 500px);
+  height: min(90vh, 550px);
+}
+
+/* Contenido del uploader */
+.fu-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Cabecera del uploader */
+.fu-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+/* Uploader completo */
+.fu {
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Imagen de perfil */
+.img-profile {
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor para estados vacíos */
+.container-else {
+  width: 100%;
+  text-align: center;
+}
+
+/* Imágenes para estados vacíos */
+.image-else {
+  width: auto;
+  max-height: 200px;
+}
+
+/* Responsive: Tablets y móviles grandes */
+@media (max-width: 768px) {
+  /* Info de usuario en columna */
+  .profile-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Área de acciones a ancho completo */
+  .profile-actions {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* Botones en horizontal */
+  .profile-header-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  /* Botones con ancho automático */
+  .admin-button, .edit-button, .logout-button {
+    width: auto;
+    min-width: 120px;
+    margin: 0;
+  }
+  
+  /* Ajuste del espaciado de pestañas */
+  .profile-tabs {
+    margin-top: 1.5rem;
+  }
+  
+  /* Ajuste de altura de cabecera */
+  .profile-header {
+    height: auto;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Responsive: Móviles medianos */
+@media (max-width: 598px) {
+  /* Pestañas en horizontal con wrap */
+  .profile-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  /* Grupos de pestañas flexibles */
+  .profile-tabs-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Botones optimizados para móvil */
+  .p-button {
+    width: auto !important;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
+  }
+
+  /* Ajustes de espaciado en cabecera */
+  .profile-header {
+    min-height: auto;
+    padding-bottom: 1.5rem;
+  }
+
+  /* Ajustes del contenedor de información */
+  .profile-info {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  /* Iconos de botones reducidos */
+  .p-button .p-button-icon {
+    font-size: 0.85rem;
+  }
+
+  /* Badges más pequeños */
+  .p-badge {
+    font-size: 0.7rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+  }
+  
+  /* Contenido en columna vertical */
+  .profile-tab-content {
+    flex-direction: column;
+  }
+  
+  /* Distribución de botones de cabecera */
+  .profile-header-buttons {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  /* Tamaño de botones de acción */
+  .admin-button, .edit-button, .logout-button {
+    min-width: auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Responsive: Móviles pequeños */
+@media (max-width: 380px) {
+  /* Botones compactos */
+  .p-button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+    min-width: 80px;
+  }
+
+  /* Iconos reducidos */
+  .p-button .p-button-icon {
+    font-size: 0.75rem;
+    margin-right: 0.2rem;
+  }
+
+  /* Badges optimizados */
+  .p-button .p-badge {
+    font-size: 0.65rem;
+  }
+
+  /* Etiquetas compactas */
+  .p-button-label {
+    margin-right: 0.2rem;
+  }
+  
+  /* Botones de cabecera en horizontal */
+  .profile-header-buttons {
+    flex-direction: row;
+    width: 100%;
+    margin: 0 auto;
+    gap: 0.4rem;
+  }
+  
+  /* Botones de acción compactos */
+  .admin-button, .edit-button, .logout-button {
+    width: auto;
+    margin: 0;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Espaciado de pestañas reducido */
+  .profile-tabs {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  /* Espaciado entre grupos de botones */
+  .profile-tabs-group {
+    gap: 0.4rem;
+  }
+}
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.name-fields {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 0.25rem;
+}
+
+.upload-panel {
+  width: 100%;
+}
+
+.upload-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  gap: 0.5rem;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upload-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-button {
+  margin-top: 0.5rem;
+}
+
+.update-button {
+  width: 100%;
+}
+
+/* Estilos para la sección principal de contenido */
+.profile-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Mejorar diseño de las pestañas activas */
+.p-button.p-highlight {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Mejorar forma del dialogo */
+.p-dialog-content {
+  padding: 1.5rem !important;
+}
+
+/* Diseño del formulario */
+.p-float-label {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Input a ancho completo */
+.p-inputtext, .p-password {
+  width: 100%;
+}
+
+/* Asegurar que el mapa se muestra correctamente */
+#map {
+  min-height: 300px;
+}
+
+/* Contenedor para las secciones de tab */
+.tab-section {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+/* Ajustes para componente FileUpload */
+.p-fileupload-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Tamaño de la imagen de perfil en el uploader */
+.img-profile {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Corregir margin en secciones principales */
+.content-section h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Estilos para estado vacío */
+.container-else {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.container-else h1 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+/* Mejora de responsividad */
+@media (max-width: 768px) {
+  .profile-content {
+    padding: 0 0.5rem;
+  }
+  
+  .tab-section {
+    padding: 1rem;
+  }
+  
+  .name-fields {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  /* Ajuste para las pestañas */
+  .profile-tabs-group .p-button {
+    min-width: 110px;
+  }
+  
+  .profile-tab-content {
+    padding: 0.5rem;
+  }
+}
+

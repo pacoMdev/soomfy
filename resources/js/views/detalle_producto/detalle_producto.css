@@ -2,18 +2,20 @@
     border: solid 1px grey;
     border-radius: 14px;
 }
-.info-profile-product img{
+
+.info-profile-product img {
     background-color: #042A2D;
     border-radius: 100px;
     height: 50px;
 }
-.container-info-prod{
+
+.container-info-prod {
     border: solid 1px grey;
     border-radius: 14px;
     font-size: smaller;
 }
 
-.cont-category{
+.cont-category {
     width: auto;
     padding: 5px 25px;
     margin: 0px;
@@ -22,49 +24,44 @@
     background-color: #042A2D;
     color: #C1F9F4;
 }
-/* .container-carrusel {
-    height: 500px;
-} */
- .contenido-producto {
+
+.contenido-producto {
     width: 200px;
     height: 350px;
- }
- .container-user-products {
-    margin-top: 50px;
- }
- .container-related-products {
-    margin-top: 50px;
- }
+    padding: 10px;
+    margin: 0 10px;
+}
 
- .container-security-info {
+.container-user-products,
+.container-related-products {
+    margin-top: 50px;
+    padding: 0 15px;
+}
+
+.container-security-info {
     border: solid 1px grey;
     border-radius: 14px;
+}
 
- }
- .info-profile-product{
-    border: solid 1px grey;
-    border-radius: 14px;
- }
- .container-security-info img {
+.container-security-info img {
     height: 50px;
     width: 50px;
     background-color: #C1F9F4;
     border-radius: 100px;
     padding: 5px;
- }
+}
 
 .gallery-image,
 .gallery-thumbnail {
-  width: 100%; /* Ajusta al contenedor */
-  height: 510px; /* Altura consistente */
-  object-fit: cover; /* Ajusta la imagen conservando su proporción */
-  border-radius: 8px; /* Opcional, para esquinas redondeadas */
-  display: block; /* Asegura el comportamiento como bloque */
+    width: 100%;
+    height: 510px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
 }
 
-/* Miniaturas en la galería */
 .gallery-thumbnail {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
 }

@@ -27,7 +27,7 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 
 // Categoria
 Route::apiResource('categories', CategoryController::class);
-Route::get('/categories', [CategoryController::class, 'getCategories']); // Obtener todas las categorias
+Route::get('/categories', [CategoryController::class, 'getCategories']); // Restaurado como estaba originalmente
 Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene las categorias (Uso: selects)
 
 
@@ -73,6 +73,9 @@ Route::get('/success', function () {
 Route::get('/cancel', function () {
     return "Payment Canceled!";
 })->name('payment.cancel');
+// Rutas para geolocalización
+Route::get('/geoLocation', 'App\Http\Controllers\API\GeoLocationController@getGeoLocation');
+Route::get('/geocode', 'App\Http\Controllers\API\GeoLocationController@getGeocode');
 
 // Productos favoritos
 Route::post('gestor-favoritos/{productId}', [ProductControllerAdvance::class, 'gestorFavoritos']); // Agrega producto a favoritos

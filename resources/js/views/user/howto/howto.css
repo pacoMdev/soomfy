@@ -1,0 +1,167 @@
+/* Contenedor principal - un poco de espacio para respirar */
+.howto-container {
+    padding: 0 1rem 2rem 1rem;
+}
+
+/* BANNER PRINCIPAL - El encabezado con gradiente */
+.howto-banner {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    color: white;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Añadiendo un efecto de onda al banner */
+.howto-banner::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='var(--neutral-color)' opacity='.25'%3E%3C/path%3E%3C/svg%3E") bottom center no-repeat;
+    background-size: 100% 100%;
+}
+
+.howto-banner h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.howto-banner p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* MENÚ DE NAVEGACIÓN - Se queda fijo al hacer scroll */
+.sticky-menu {
+    position: sticky;
+    top: 100px; /* ajusta esto según la altura de tu navbar */
+}
+
+.menu-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-list li {
+    margin-bottom: 0.5rem;
+}
+
+.menu-list a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* Estos estilos hacen que la navegación sea más interactiva */
+.menu-list a:hover {
+    background-color: var(--surface-hover);
+}
+
+.menu-list a.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+/* SECCIONES DEL TUTORIAL - Estilos generales */
+.tutorial-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+/* Eliminar el borde de la última sección */
+.tutorial-section:last-child {
+    border-bottom: none;
+}
+
+.tutorial-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+}
+
+.tutorial-section h3 {
+    margin: 1.5rem 0 1rem;
+    color: var(--text-color);
+    font-size: 1.4rem;
+}
+
+/* Esta clase es para dar sangría al contenido y que quede mejor visualmente */
+.section-content {
+    padding-left: 1rem;
+}
+
+.section-content p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* Estilos para listas - mejoran la legibilidad */
+.section-content ul, 
+.section-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+}
+
+.section-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+/* PLACEHOLDERS PARA IMÁGENES
+   Esto es temporal hasta que tengamos las capturas reales */
+.image-placeholder {
+    background-color: #f0f4f9;
+    border: 1px dashed #ccd7e6;
+    border-radius: 8px;
+    height: 200px;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-text {
+    color: #546e7a;
+    font-style: italic;
+}
+
+/* RESPONSIVE - arreglos para móviles y tablets */
+@media (max-width: 768px) {
+    .sticky-menu {
+        position: relative;
+        top: 0;
+        margin-bottom: 2rem;
+    }
+    
+    /* Banner más pequeño en móvil */
+    .howto-banner {
+        padding: 2rem 1rem;
+    }
+    
+    .howto-banner h1 {
+        font-size: 2rem;
+    }
+    
+    /* Podríamos añadir más ajustes si hiciera falta */
+}

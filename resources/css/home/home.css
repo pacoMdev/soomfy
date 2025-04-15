@@ -1,16 +1,26 @@
+/**
+ * Estilos de estructura general
+ * Controla el espaciado y disposición de las secciones principales
+ */
 .separacion-general {
     display: flex;
     flex-direction: column;
     gap: 100px;
     padding-bottom: 130px;
-    
 }
+
 .separacion-general-web {
     display: flex;
     flex-direction: column;
     gap: 100px;
     padding-top: 80px;
+    padding: 0px;
 }
+
+/**
+ * Sección de bienvenida
+ * Banner principal y contenido introductorio
+ */
 .fondoBienvenida {
     background-image: url('../../../public/images/home/bannerIcons.webp');
     width: 100%;
@@ -24,9 +34,20 @@
     max-width: 1033px;
 }
 
-/* Buscador products */
+/**
+ * Estilos del buscador
+ * Configuración del input de búsqueda principal
+ */
+.buscadorProductos {
+    height: 40px;
+    border-radius: 25px;
+    border: 1px solid var(--primary-color);
+    padding-left: 25px;
+    width: 75%;
+}
+
 .contenidoBienvenida .buscadorProductos {
-    width: 90% !important;
+    width: 90%;
     height: 50px;
     border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
@@ -35,12 +56,10 @@
     padding-left: 25px;
 }
 
-.no-borders-left {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
-
-/* Categorias */
+/**
+ * Estilos de categorías
+ * Configuración del grid y elementos de categorías
+ */
 .centrar-categories {
     width: 100%;
     display: flex;
@@ -50,7 +69,7 @@
 .categories {
     width: 67%;
     display: flex;
-    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
     column-gap: 71px;
     row-gap: 40px;
@@ -59,10 +78,10 @@
 .categories img {
     width: 20px;
     padding: 12px;
-    object-fit: contain; /* Cambiado de cover a contain para que la imagen no se corte */
+    object-fit: contain;
     background-color: rgb(225, 223, 223);
-    border-radius: 50%; /* Ajustado para que se mantenga redondo */
-    overflow: visible; /* Asegura que la imagen sobresalga si es necesario */
+    border-radius: 50%;
+    overflow: visible;
     transition: all .2s ease-in-out;
     cursor: pointer;
 }
@@ -72,12 +91,66 @@
     border: 0.5px dotted var(--primary-color);
     border-style: dashed;
 }
-/* Product */
+
+/**
+ * Configuración del carousel de categorías
+ */
+.categories-carousel {
+    max-width: 70%;
+    margin: 0 auto;
+}
+
+.categories-carousel :deep(.p-carousel-container) {
+    padding: 0 1rem;
+}
+
+.categories-carousel :deep(.p-carousel-items-container) {
+    margin: 0 -0.5rem;
+}
+
+.categories-carousel :deep(.p-carousel-item) {
+    padding: 0.5rem;
+}
+
+.categories-carousel :deep(.p-carousel-prev),
+.categories-carousel :deep(.p-carousel-next) {
+    width: 2rem;
+    height: 2rem;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+}
+
+.categories-carousel :deep(.p-carousel-prev:hover),
+.categories-carousel :deep(.p-carousel-next:hover) {
+    background: var(--primary-color);
+    color: white;
+}
+
+.categories-carousel img {
+    width: 70px;
+    height: 70px;
+    padding: 5px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.categories-carousel p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+/**
+ * Sección de productos
+ * Layout y disposición de la grid de productos
+ */
 .centrar-productos {
     width: 100%;
     display: flex;
     justify-content: center;
 }
+
 .productos {
     width: 70%;
     display: flex;
@@ -85,9 +158,15 @@
     flex-wrap: wrap;
     gap: 45px;
 }
+
 .productos-movile {
     width: 100%;
-    
+}
+
+.productos-carousel {
+    width: 400px;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 .h1-p {
@@ -100,18 +179,14 @@
     font-size: 13px;
 }
 
-/* Ver mas */
-.primary-button {
-    border-width: 2px;
-    color: var(--primary-color);
-}
-
-/* Mensaje */
-
+/**
+ * Sección de mensaje final
+ * Diseño del banner inferior con gradient y elementos decorativos
+ */
 .apartado-mensaje {
     background: linear-gradient(to bottom, #f9f9f9 0%, var(--secondary-color) 50%, #f9f9f9 100%);
     width: 100%;
-    height: 450px; /* Ajusta la altura según necesites */
+    height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -120,7 +195,7 @@
     position: relative;
 }
 
-.cascos , .pelota , .reloj , .zapato{
+.cascos, .pelota, .reloj, .zapato {
     position: absolute;
 }
 
@@ -144,27 +219,54 @@
     right: 200px;
 }
 
-/* Cuando lleguen a un tamaño los movemos de lugar */
+/**
+ * Media Queries
+ * Ajustes responsivos para diferentes tamaños de pantalla
+ */
 @media (max-width: 1640px) {
     .cascos, .pelota, .reloj, .zapato {
         position: absolute;
-        top: auto !important; /* Elimina cualquier top */
-        bottom: 0 !important; /* Los baja al fondo */
+        top: auto !important;
+        bottom: 0 !important;
     }
 
     .cascos {
-        left: 10%; /* Separado hacia la izquierda */
+        left: 10%;
     }
 
     .pelota {
-        left: 30%; /* Más al centro */
+        left: 30%;
     }
 
     .reloj {
-        right: 30%; /* Más al centro desde la derecha */
+        right: 30%;
     }
 
     .zapato {
-        right: 10%; /* Separado hacia la derecha */
+        right: 10%;
     }
+}
+
+@media (max-width: 576px) {
+    .productos-carousel :deep(.p-carousel-container) {
+        padding: 0 1rem;
+        width: 100%;
+    }
+
+    .productos-carousel :deep(.p-carousel-item) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem;
+        box-sizing: border-box;
+    }
+}
+
+.p-carousel-indicator-active .p-carousel-indicator button {
+    background: var(--primary-color) !important;
+}
+
+.secondary-button-2 {
+    border-top-left-radius: none !important;
+    border-bottom-left-radius: none !important;
 }

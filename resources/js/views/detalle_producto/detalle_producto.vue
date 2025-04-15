@@ -119,23 +119,30 @@
                 <div class="container-user-products">
                     <h2>Articulos del usuario</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="6" :numScroll="1" :responsiveOptions="responsiveOptions2">
+                        <Carousel :value="userProducts.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
                                         <div class="d-flex justify-content-end w-100">
                                             <i class="fa-regular fa-heart justify-content-rigth"></i>
                                         </div>
-                                        <Galleria :value="getImage(slotProps.data.resized_image)" :responsiveOptions="responsiveOptions" :numVisible="5" :circular="true" containerStyle="height: 150px; width: 100%; border-radius: 10px;"
-                                        :showItemNavigators="true" :showThumbnails="false">
+                                        <Galleria :value="getImage(slotProps.data.resized_image)" 
+                                                :responsiveOptions="responsiveOptions" 
+                                                :numVisible="5" 
+                                                :circular="true" 
+                                                containerStyle="height: 150px; width: 200px; border-radius: 10px;"
+                                                :showItemNavigators="true" 
+                                                :showThumbnails="false">
                                             <template #item="slotProps">
-                                                <img :src="slotProps.item.original_url" :alt="slotProps.item.title" style="width: auto; height: 150px; display: block; object-fit: cover;" />
+                                                <img :src="slotProps.item.original_url" 
+                                                     :alt="slotProps.item.title" 
+                                                     style="width: auto; height: 150px; display: block; object-fit: cover;" />
                                             </template>
                                         </Galleria>
                                         <p class="h1-p">{{ slotProps.data.price }}€</p>
                                         <p class="h4-p">{{ slotProps.data.title }}</p>
-                                      <p class="" v-if="slotProps.data.content">{{ slotProps.data.content }}</p>
-                                      <p class="tamaño-estadoProducto">{{ slotProps.data.estado.name }}</p>
+                                        <p class="">{{ slotProps.data.content }}</p>
+                                        <p class="tamaño-estadoProducto">{{ slotProps.data.estado.name }}</p>
                                     </div>
                                 </router-link>
                             </template>
@@ -147,7 +154,7 @@
                 <div class="container-related-products">
                     <h2>Articulos relacionados</h2>
                     <div class="card">
-                        <Carousel :value="relatedPost.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
+                        <Carousel :value="relatedProducts.data" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions2">
                             <template #item="slotProps">
                                 <router-link :to="'/products/detalle/' + slotProps.data.id" :key="slotProps.data.id" target="_blank" class="producto col-6 col-md-4 col-lg-3">
                                     <div class="contenido-producto">
@@ -179,6 +186,7 @@
     import { onMounted, watch } from 'vue';
     import { Skeleton, Carousel, Breadcrumb } from 'primevue';
     import '../../../../resources/css/theme.css'
+    import './detalle_producto.css'
     import useProductDetail from '../../composables/productDetail';
     import useProducts from '../../composables/products';
     import './detalle_producto.css';
@@ -212,9 +220,12 @@
         getImage,
         isYourOwnProduct,
         handleChatCreation,
+        userProducts,
+        relatedProducts,
+        getUserProducts,
     } = useProductDetail();
     
-
+    
     watch(product, (standProduct) => {
         if (standProduct?.id) {
             getGeoLocation();
@@ -232,6 +243,9 @@
         compradorId.value = auth.user.id;
       }
       console.log("ID DEL USUARIO AUTENTICADO", compradorId.value);
+      if (product.value?.user?.id) {
+        await getUserProducts(product.value.user.id);
+      }
       await getRelatedProducts();
-    });
+    })
 </script>
