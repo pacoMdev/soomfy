@@ -21,7 +21,9 @@
                     <!-- Menú que se convertirá en dropdown -->
                     <div class="nav-menu" :class="{ 'menu-active': isMenuOpen }">
                         <ul class="navbar-nav align-items-center gap-2">
-                            <button class="primary-button">Como funciona</button>
+                            <router-link to="/howto" class="nav-link">
+                                <button class="primary-button">Como funciona</button>
+                            </router-link>
                             <router-link to="/chat" class="nav-link d-flex align-items-center gap-2">
                                 <img src="/images/chat.svg" class="icons-size" alt="">
                                 <p class="nav-text">Chat</p>
