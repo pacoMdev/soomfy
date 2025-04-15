@@ -1,8 +1,9 @@
-/* Estilos para los indicadores del carousel */
+/* Indicadores del carousel */
 .p-carousel .p-carousel-indicators {
     padding: 1rem;
 }
 
+/* Botones indicadores del carousel */
 .p-carousel .p-carousel-indicators .p-carousel-indicator button {
     width: 12px;
     height: 12px;
@@ -12,15 +13,17 @@
     border: 0 none;
 }
 
+/* Indicador activo del carousel */
 .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
     background: var(--primary-color, #6366F1);
 }
 
+/* Botón activo del carousel */
 .p-carousel-indicator-active .p-carousel-indicator-button { 
     background-color: var(--primary-color) !important;
 }
 
-/* Estilos globales para todos los inputs de PrimeVue */
+/* Estilos para inputs */
 .p-inputtext,
 .p-multiselect,
 .p-dropdown,
@@ -36,7 +39,7 @@
     border-color: var(--primary-color) !important;
 }
 
-/* Estado focus para todos los inputs */
+/* Estado focus de inputs */
 .p-inputtext:focus,
 .p-multiselect:focus,
 .p-dropdown:focus,
@@ -53,7 +56,7 @@
     box-shadow: 0 0 0 1px var(--secondary-color) !important;
 }
 
-/* Estado hover para todos los inputs */
+/* Estado hover de inputs */
 .p-inputtext:hover,
 .p-multiselect:hover,
 .p-dropdown:hover,
@@ -69,7 +72,7 @@
     border-color: var(--primary-color) !important;
 }
 
-/* Estilos para Checkbox */
+/* Checkbox en multiselect */
 .p-multiselect-item .p-checkbox .p-checkbox-box {
     border-color: var(--primary-color) !important;
     width: 20px !important;
@@ -77,13 +80,14 @@
     border-radius: 4px !important;
 }
 
+/* Checkbox seleccionado */
 .p-checkbox .p-checkbox-box.p-highlight,
 .p-multiselect-item .p-checkbox .p-checkbox-box.p-highlight {
     background: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
 }
 
-/* Estilo del icono check */
+/* Icono del checkbox */
 .p-checkbox .p-checkbox-box .p-checkbox-icon,
 .p-multiselect-item .p-checkbox .p-checkbox-box .p-checkbox-icon {
     color: white !important;
@@ -92,19 +96,19 @@
     transform: scale(1.2) !important;
 }
 
-/* Hover estados */
+/* Hover del checkbox */
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover,
 .p-multiselect-item:hover .p-checkbox .p-checkbox-box {
     border-color: var(--primary-color) !important;
 }
 
-/* Focus estados */
+/* Focus del checkbox */
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus,
 .p-multiselect-item .p-checkbox .p-checkbox-box.p-focus {
     box-shadow: 0 0 0 1px var(--secondary-color) !important;
 }
 
-/* Para el icono de check dentro del checkbox */
+/* Color del icono de check */
 .p-checkbox-box .p-checkbox-icon {
     color: white !important;
 }

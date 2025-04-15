@@ -26,7 +26,7 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 
 // Categoria
 Route::apiResource('categories', CategoryController::class);
-Route::get('/categories', [CategoryController::class, 'getCategories']); // Obtener todas las categorias
+Route::get('/categories', [CategoryController::class, 'getCategories']); // Restaurado como estaba originalmente
 Route::get('category-list', [CategoryController::class, 'getList']); // Obtiene las categorias (Uso: selects)
 
 

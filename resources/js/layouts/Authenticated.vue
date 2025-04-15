@@ -1,40 +1,42 @@
 <template>
     <div class="layout-wrapper" :class="containerClass">
         <Navbar />
-        <div class="layout-sidebar">
-            <app-sidebar></app-sidebar>
-        </div>
+        <div class="d-flex">
+            <div class="layout-sidebar">
+                <app-sidebar></app-sidebar>
+            </div>
 
-        <div class="layout-main-container ">
+            <div class="layout-main-container ">
 
-            <div class="card mb-2 bread">
+                <div class="card mb-2 bread">
 
-                <Breadcrumb :home="home" :model="crumbs" >
-                    <template #item="{ item, props }">
-                        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                            <a :href="href" v-bind="props.action" class="btn btn-link"   @click="navigate">
-                                <span :class="[item.icon, 'text-color']" />
-                                <span class="text-primary font-semibold">{{ item.label }}</span>
+                    <Breadcrumb :home="home" :model="crumbs" >
+                        <template #item="{ item, props }">
+                            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                                <a :href="href" v-bind="props.action" class="btn btn-link"   @click="navigate">
+                                    <span :class="[item.icon, 'text-color']" />
+                                    <span class="text-primary font-semibold">{{ item.label }}</span>
+                                </a>
+                            </router-link>
+                            <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                                <span class="text-color">{{ item.label }}</span>
                             </a>
-                        </router-link>
-                        <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                            <span class="text-color">{{ item.label }}</span>
-                        </a>
-                    </template>
+                        </template>
 
-                </Breadcrumb>
+                    </Breadcrumb>
 
+
+                </div>
+
+
+
+                <div class="layout-main">
+                    <Suspense>
+                        <router-view></router-view>
+                    </Suspense>
+                </div>
 
             </div>
-
-
-
-            <div class="layout-main">
-                <Suspense>
-                    <router-view></router-view>
-                </Suspense>
-            </div>
-
         </div>
         <Footer />
         <div class="layout-mask"></div>

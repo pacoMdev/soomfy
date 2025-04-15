@@ -12,7 +12,7 @@
                                         <Button @click="googleAuth" icon="pi pi-google" rounded variant="outlined" aria-label="primary" />
                                         <!-- <Button icon="pi pi-apple" rounded variant="outlined" aria-label="Filter" /> -->
                                     </div>
-                                    <p>o usa tu centa</p>
+                                    <p>o usa tu cuenta</p>
                                     
                                     <!-- Email -->
                                     <div class="mb-3">

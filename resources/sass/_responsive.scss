@@ -32,10 +32,6 @@
         }
 
         &.layout-static {
-            .layout-main-container {
-                margin-left: 200px;
-            }
-
             &.layout-static-inactive {
                 .layout-sidebar {
                     transform: translateX(-100%);

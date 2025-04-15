@@ -1,22 +1,20 @@
 <template>
-  <div class="show">
-
-  </div>
+  <div class="show"></div>
   <main>
     <div class="fondo-perfil">
-      <div class="d-flex flex-wrap gap-5 align-items-center justify-content-center 8 header-perfil">
-        <div v-if="user.email" class="container-info d-flex gap-5">
+      <div class="profile-header">
+        <div v-if="user.email" class="profile-info">
           <div v-if="isLoading">
             <Skeleton shape="circle" size="5rem"></Skeleton>
           </div>
-          <div v-else>
-            <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.media[0]['original_url']">
+          <div v-else class="profile-avatar">
+            <img v-if="user.media?.[0]" :src="user.media[0]['original_url']" :alt="user.name + ' ' + user.surname1 + ' - Foto de perfil de usuario'">
             <Skeleton v-else shape="circle" size="5rem"></Skeleton>
           </div>
 
-          <div class="container-info-profile d-flex flex-column gap-1">
-            <h4 class="m-0">{{ user.name }} {{ user.surname1 }}</h4>
-            <div class="d-flex gap-2 container-rating py-2">
+          <div class="profile-details">
+            <h4 class="profile-name">{{ user.name }} {{ user.surname1 }}</h4>
+            <div class="profile-rating">
               <Rating v-model="mediaRating" readonly />
             </div>
             <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address : 'Ubicación no disponible'" rounded></Tag>
@@ -24,23 +22,24 @@
         </div>
 
         <!-- Botones de acciones -->
-        <div class="d-flex flex-column gap-3 w-auto h-100 container-extra-info align-items-center justify-content-center">
-          <div class="d-flex flex-column gap-3 mx-auto">
-            <router-link class="" v-if="authStore().isAdmin" to="/admin">
-              <Button label="Admin panel" class="w-100" rounded />
+        <div class="profile-actions">
+          <div class="profile-header-buttons">
+            <router-link v-if="authStore().isAdmin" to="/admin">
+              <Button label="Admin panel" class="admin-button" rounded />
             </router-link>
-            <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="w-100" rounded />
-            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="w-100 p-button closeSession" rounded />
+            <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="edit-button" rounded />
+            <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="logout-button" rounded />
           </div>
         </div>
       </div>
-      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" style=" width: min(90vw, 500px); height: min(90vh, 550px); " appendTo=".show" >
+      
+      <Dialog v-model:visible="visibleEditUser" modal :header="'Editando perfil'" class="edit-dialog" appendTo=".show">
         <Tabs value="0">
           <TabList>
               <Tab appendTo=".show" value="0">Foto de Perfil 📸</Tab>
               <Tab appendTo=".show" value="1">Detalles del Perfil 📝</Tab>
           </TabList>
-          <TabPanels class="w-100">
+          <TabPanels class="upload-panel">
               <TabPanel value="0">
                 <FileUpload
                     name="picture"
@@ -56,8 +55,8 @@
                     class="fu"
                 >
                   <template #header="{ chooseCallback, uploadCallback, clearCallback, files, uploadedFiles }">
-                    <div class="flex flex-wrap justify-content-center align-items-center flex-1 gap-2 w-50 mx-auto">
-                      <div class="flex gap-2">
+                    <div class="upload-controls">
+                      <div class="upload-buttons">
                         <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
                         <Button @click="uploadEvent(uploadCallback, uploadedFiles)" icon="pi pi-cloud-upload" rounded outlined severity="success" :disabled="!files || files.length === 0"></Button>
                         <Button @click="clearCallback()" icon="pi pi-times" rounded outlined severity="danger" :disabled="!files || files.length === 0"></Button>
@@ -66,86 +65,86 @@
                   </template>
 
                   <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                    <img v-if=" files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="file.name" :src="file.objectURL" class="object-fit-cover w-50 h-50 img-profile" />
+                    <img v-if="files.length > 0" v-for="(file, index) of files" :key="file.name + file.type + file.size" role="presentation" :alt="'Vista previa de imagen de perfil: ' + file.name" :src="file.objectURL" class="img-profile" />
                     <div v-else>
-                      <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="object-fit-cover w-50 h-50 img-profile" />
+                      <img v-if="uploadedFiles.length > 0" :key="uploadedFiles[uploadedFiles.length-1].name + uploadedFiles[uploadedFiles.length-1].type + uploadedFiles[uploadedFiles.length-1].size" role="presentation" :alt="'Imagen de perfil recién subida: ' + uploadedFiles[uploadedFiles.length-1].name" :src="uploadedFiles[uploadedFiles.length-1].objectURL" class="img-profile" />
                     </div>
                   </template>
 
                   <template #empty>
-                    <img v-if="user.avatar" :src=user.avatar alt="Avatar" class="object-fit-cover w-50 h-50 img-profile">
-                    <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar Default" class="object-fit-cover w-50 h-50 img-profile">
+                    <img v-if="user.avatar" :src="user.avatar" alt="Fotografía actual del perfil de usuario" class="img-profile">
+                    <img v-if="!user.avatar" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Imagen predeterminada para perfil de usuario" class="img-profile">
                   </template>
                 </FileUpload>
               </TabPanel>
               <TabPanel value="1">
 
-                <form @submit.prevent="editUser" class="d-flex flex-column gap-5 py-4">
-                  <div class="d-flex flex-column gap-5">
-                    <div class="">
+                <form @submit.prevent="editUser" class="edit-profile-form">
+                  <div class="form-fields">
+                    <div class="form-group">
                       <FloatLabel>
                           <InputText appendTo=".show" v-model="userData.name" inputId="name-user" fluid id="name"/>
                           <label for="name-user">Nombre</label>
                       </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.name }}</div>
-                      <div class="text-danger mt-1">
+                      <div class="error-message">{{ errors.name }}</div>
+                      <div class="error-message">
                           <div v-for="message in validationErrors?.name">
                               {{ message }}
                           </div>
                       </div>
                     </div>
 
-                    <div class="d-flex gap-3 w-100">
-                      <div class="">
+                    <div class="name-fields">
+                      <div class="form-group">
                         <FloatLabel>
                             <InputText appendTo=".show" v-model="userData.surname1" inputId="surname1-user" fluid id="surname1"/>
                             <label for="surname1-user">Apellido 1</label>
                         </FloatLabel>
-                        <div class="text-danger mt-1">{{ errors.surname1 }}</div>
-                        <div class="text-danger mt-1">
+                        <div class="error-message">{{ errors.surname1 }}</div>
+                        <div class="error-message">
                           <div v-for="message in validationErrors?.surname1">
                               {{ message }}
                           </div>
                         </div>
                       </div>
-                      <div class="">
+                      <div class="form-group">
                         <FloatLabel>
                             <InputText appendTo=".show" v-model="userData.surname2" inputId="surname2-user" fluid id="surname2"/>
                             <label for="surname2-user">Apellido 2</label>
                         </FloatLabel>
-                        <div class="text-danger mt-1">{{ errors.surname2 }}</div>
-                        <div class="text-danger mt-1">
+                        <div class="error-message">{{ errors.surname2 }}</div>
+                        <div class="error-message">
                           <div v-for="message in validationErrors?.surname2">
                               {{ message }}
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="">
+                    <div class="form-group">
                       <FloatLabel>
                           <InputText appendTo=".show" v-model="userData.email" inputId="email-user" fluid id="email" disabled=""/>
                           <label for="email-user">Email</label>
                       </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.email }}</div>
-                      <div class="text-danger mt-1">
+                      <div class="error-message">{{ errors.email }}</div>
+                      <div class="error-message">
                           <div v-for="message in validationErrors?.email">
                               {{ message }}
                           </div>
                       </div>
                     </div>
-                    <div class="">
+                    <div class="form-group">
                       <FloatLabel>
                           <Password appendTo=".show" v-model="userData.password" inputId="password-user" toggleMask fluid id="password"/>
                           <label for="password-user">Contraseña</label>
                       </FloatLabel>
-                      <div class="text-danger mt-1">{{ errors.password }}</div>
-                      <div class="text-danger mt-1">
+                      <div class="error-message">{{ errors.password }}</div>
+                      <div class="error-message">
                           <div v-for="message in validationErrors?.password">
                               {{ message }}
                           </div>
                       </div>
                     </div>
-                    <div class="">
+                    <div class="form-group">
                       <div class="map-container">
                         <div id="map" class="google-map"></div>
                         <div class="map-controls">
@@ -153,77 +152,79 @@
                             <InputText v-model="partialAddress" id="address-input" @keyup.enter="buscarUbicacion"/>
                             <label for="address-input">Introduce una dirección</label>
                           </FloatLabel>
-                          <Button @click="buscarUbicacion" label="Buscar" class="mt-2" />
+                          <Button @click="buscarUbicacion" label="Buscar" class="search-button" />
                         </div>
                       </div>
                     </div>
 
                   </div>
-                  <Button type="submit" label="Actualizar" class="w-100" appendTo=".show" outlined severity="secondary" autofocus />
+                  <Button type="submit" label="Actualizar" class="update-button" appendTo=".show" outlined severity="secondary" autofocus />
                 </form>
               </TabPanel>
           </TabPanels>
         </Tabs>
       </Dialog>
 
-      <div>
-        <div class="d-flex gap-3 w-100 justify-content-center flex-wrap">
-          <div class="d-flex gap-3">
-            <Button @click="seleccionarTab('activeProducts')" label="Mis Productos" class="" icon="pi pi-shop" :badge="activeProducts.length" rounded />
+      <div class="profile-content">
+        <div class="profile-tabs">
+          <div class="profile-tabs-group">
+            <Button @click="seleccionarTab('activeProducts')" label="Mis Productos" icon="pi pi-shop" :badge="activeProducts.length" rounded />
             <Button @click="seleccionarTab('purchases')" label="Compras" icon="pi pi-box" :badge="purchases.length" rounded />
           </div>
-          <div class="d-flex gap-3">
+          <div class="profile-tabs-group">
             <Button @click="seleccionarTab('sales')" label="Ventas" icon="pi pi-dollar" :badge="sales.length" rounded />
             <Button @click="seleccionarTab('reviews')" label="Valoraciones" icon="pi pi-comment" :badge="reviews.length" rounded />
           </div>
         </div>
 
-        <div class="container w-100 d-flex gap-5">
-          <!-- <div v-if="loading">Cargando...</div> -->
-          <div v-if="error" style="color: red;">{{ error }}</div>
+        <div class="profile-tab-content">
+          <div v-if="error" class="error-message">{{ error }}</div>
 
-           <!-- COMPRAS -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'purchases'" class="w-100">
-            <div v-if="purchases.length > 0">
+           <!-- COMPRAS -->
+          <div v-if="selectedTab === 'purchases'" class="tab-section">
+            <div v-if="purchases.length > 0" class="content-section">
               <h4>Historial de Compras</h4>
               <HistoricInfo :historic="purchases" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay compras</h1>
-              <img src="/images/undraw_file-search_cbur.svg" alt="Imagen compras" class="image-else">
+              <img src="/images/undraw_file-search_cbur.svg" alt="Ilustración de búsqueda vacía para sección de compras" class="image-else">
             </div>
           </div>
-          <!-- VENTAS -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'sales'" class="w-100">
-            <div v-if="sales.length > 0">
+          
+          <!-- VENTAS -->
+          <div v-if="selectedTab === 'sales'" class="tab-section">
+            <div v-if="sales.length > 0" class="content-section">
               <h4>Historial de Ventas</h4>
               <HistoricInfo :historic="sales" />
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay ventas</h1>
-              <img src="/images/undraw_file-search_cbur.svg" alt="Imagen ventas" class="image-else">
+              <img src="/images/undraw_file-search_cbur.svg" alt="Ilustración de búsqueda vacía para sección de ventas" class="image-else">
             </div>
           </div>
-          <!-- PRODUCTOS -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'activeProducts'" class="w-100">
-            <div v-if="activeProducts.length > 0" class="py-4">
-              <h3 class="text-center my-6 "><b><u>Mis Productos</u></b></h3>
+          
+          <!-- PRODUCTOS -->
+          <div v-if="selectedTab === 'activeProducts'" class="tab-section">
+            <div v-if="activeProducts.length > 0" class="products-section">
+              <h3 class="products-title">Mis Productos</h3>
               <ProductoUser :productos="activeProducts" :actualizarProductos="fetchProducts" />
             </div>
-            <div v-else class="container-else my-5">
+            <div v-else class="container-else products-empty">
               <h1>Parece que aun no hay productos</h1>
-              <img src="/images/undraw_file-search_cbur.svg" alt="Imagen productos" class="image-else">
+              <img src="/images/undraw_file-search_cbur.svg" alt="Ilustración de búsqueda vacía para sección de productos" class="image-else">
             </div>
           </div>
-          <!-- OPINIONES -------------------------------------------------------------------------------------------- -->
-          <div v-if="selectedTab === 'reviews'" class="w-100">
-            <div v-if="reviews.length > 0">
+          
+          <!-- OPINIONES -->
+          <div v-if="selectedTab === 'reviews'" class="tab-section">
+            <div v-if="reviews.length > 0" class="content-section">
               <h4>Valoraciones</h4>
               <ValorationInfo :reviews="reviews" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay valoraciones</h1>
-              <img src="/images/undraw_public-discussion_693m.svg" alt="Imagen valoracion" class="image-else">
+              <img src="/images/undraw_public-discussion_693m.svg" alt="Ilustración de discusión pública vacía para sección de valoraciones" class="image-else">
             </div>
           </div>
         </div>
@@ -464,4 +465,7 @@ watch(() => fullAddress.value, (newAddress) => {
 </script>
 
 <!-- Importar el archivo CSS externo -->
-<style src="./perfil.css" scoped></style>
+<style scoped>
+@import './perfil.css';
+</style>
+
