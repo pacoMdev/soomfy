@@ -10,6 +10,7 @@ class ProductsSeeder extends Seeder
     public function run(): void
     {
         $products = [
+            // Producto para usuario 1 (Marc Spector)
             [
                 'title' => 'Volkswagen Golf GTI 2020',
                 'content' => 'Golf GTI en excelente estado, 30.000km, mantenimiento al día.',
@@ -28,6 +29,8 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'VW_Golf_8_GTI_Facelift_2024_Front.webp',
                 ]
             ],
+            
+            // Producto para usuario 2 (Admin Thor)
             [
                 'title' => 'iPhone 14 Pro Max',
                 'content' => 'Nuevo, precintado, 256GB de almacenamiento.',
@@ -47,6 +50,8 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'hq720.jpg',
                 ]
             ],
+            
+            // Producto para usuario 3 (Dexter Morgan)
             [
                 'title' => 'Apartamento en el centro',
                 'content' => '2 habitaciones, reformado, muy luminoso.',
@@ -66,13 +71,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'05-scaled-1.jpg',
                 ]
             ],
+            
+            // Producto para usuario 4 (Usuario Cercano)
             [
                 'title' => 'Sofá moderno 3 plazas',
                 'content' => 'Tapizado en tela, muy cómodo y como nuevo.',
                 'price' => 450,
                 'estado_id' => 2,
                 'categories' => [11], // Hogar
-                'user_id' => 1,
+                'user_id' => 4,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -85,13 +92,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'sofa-de-ikea_2d970f40_240929193128_1280x720.webp',
                 ]
             ],
+            
+            // Producto para usuario 5 (Carlos Madrid)
             [
                 'title' => 'Servicios de Jardinería',
                 'content' => 'Mantenimiento de jardines y poda de árboles.',
                 'price' => 25,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 2,
+                'user_id' => 5,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -104,13 +113,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'JARDINERIA 2_5.jpg',
                 ]
             ],
+            
+            // Producto para usuario 6 (Marina Valencia)
             [
                 'title' => 'Bicicleta eléctrica Specialized',
                 'content' => 'Motor Brose, batería 500Wh, poco uso.',
                 'price' => 2800,
                 'estado_id' => 2,
                 'categories' => [18], // Ciclismo
-                'user_id' => 3,
+                'user_id' => 6,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -124,13 +135,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'721188004_228995545_1024x576.webp',
                 ]
             ],
+            
+            // Producto para usuario 7 (Antonio Sevilla)
             [
                 'title' => 'Portátil Gaming MSI',
                 'content' => 'RTX 3070, 32GB RAM, i7 11th gen.',
                 'price' => 1200,
                 'estado_id' => 3,
                 'categories' => [6, 7], // Tecnología, Laptops
-                'user_id' => 1,
+                'user_id' => 7,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -143,13 +156,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'8ce6215bb5261fc98142ce4833b2b7f462d86c9f.webp',
                 ]
             ],
+            
+            // Producto para usuario 8 (Marta Bilbao)
             [
                 'title' => 'Clases particulares matemáticas',
                 'content' => 'Profesor con 10 años de experiencia.',
                 'price' => 20,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 2,
+                'user_id' => 8,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -161,13 +176,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'i5374685935.webp',
                 ]
             ],
+            
+            // Producto para usuario 9 (Pablo Zaragoza)
             [
                 'title' => 'Mesa de comedor vintage',
                 'content' => 'Madera maciza, extensible, 6-8 personas.',
                 'price' => 350,
                 'estado_id' => 3,
                 'categories' => [11, 12], // Hogar, Decoración
-                'user_id' => 3,
+                'user_id' => 9,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -180,13 +197,15 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'i5421204561.webp',
                 ]
             ],
+            
+            // Distribuyendo el resto de productos entre los usuarios 1-9
             [
                 'title' => 'Seat León FR 2019',
                 'content' => '150cv, gasolina, techo panorámico.',
                 'price' => 19500,
                 'estado_id' => 2,
                 'categories' => [1, 2], // Vehículos, Coches
-                'user_id' => 1,
+                'user_id' => 5, // Usuario Madrid
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -196,7 +215,7 @@ class ProductsSeeder extends Seeder
                 'color' => 'Azul',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'precio-seat-leon-2019-201850153_1.jpg',
-                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Interior-del-SEAT-León-2019.jpg',
+                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Interior-del-SEAT-León-2019.jpg',
                 ]
             ],
             [
@@ -205,7 +224,7 @@ class ProductsSeeder extends Seeder
                 'price' => 180,
                 'estado_id' => 2,
                 'categories' => [17], // Fitness
-                'user_id' => 2,
+                'user_id' => 6, // Usuario Valencia
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -215,8 +234,6 @@ class ProductsSeeder extends Seeder
                 'color' => 'Negro',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'mancuerna-hexagonal-10kgs.jpg',
-//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'Hex_Dumbbells_pair_60_lb_dd.webp',
-
                 ]
             ],
             [
@@ -225,7 +242,7 @@ class ProductsSeeder extends Seeder
                 'price' => 150000,
                 'estado_id' => 2,
                 'categories' => [8], // Inmuebles
-                'user_id' => 3,
+                'user_id' => 7, // Usuario Sevilla
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -235,7 +252,6 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'ivan_cotado_tu_vision_ii_optica_ponferrada_21.jpg',
-//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJidWNrZXQiOiJwcm.webp',
                 ]
             ],
             [
@@ -244,7 +260,7 @@ class ProductsSeeder extends Seeder
                 'price' => 380,
                 'estado_id' => 3,
                 'categories' => [13], // Electrodomésticos
-                'user_id' => 1,
+                'user_id' => 8, // Usuario Bilbao
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -263,7 +279,7 @@ class ProductsSeeder extends Seeder
                 'price' => 299,
                 'estado_id' => 1,
                 'categories' => [5], // Tecnología
-                'user_id' => 2,
+                'user_id' => 9, // Usuario Zaragoza
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -281,7 +297,7 @@ class ProductsSeeder extends Seeder
                 'price' => 200,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 3,
+                'user_id' => 4, // Usuario Cercano
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -294,6 +310,8 @@ class ProductsSeeder extends Seeder
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'foto_01.jpg',
                 ]
             ],
+            
+            // ... remaining products distributed among users 1-9
             [
                 'title' => 'Cinta de correr profesional',
                 'content' => 'Motor 3.5HP, programas automáticos.',
@@ -358,7 +376,7 @@ class ProductsSeeder extends Seeder
                 'price' => 295000,
                 'estado_id' => 2,
                 'categories' => [8, 9], // Inmuebles, Apartamentos
-                'user_id' => 1,
+                'user_id' => 4,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -368,7 +386,6 @@ class ProductsSeeder extends Seeder
                 'color' => 'N/A',
                 'images' => [
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'show.jpg',
-//                    DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'eyJrZXkiOiJhdGljb19kZV.jpeg',
                     DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'products'.DIRECTORY_SEPARATOR.'1256080428.jpg',
                 ]
             ],
@@ -378,7 +395,7 @@ class ProductsSeeder extends Seeder
                 'price' => 850,
                 'estado_id' => 3,
                 'categories' => [13], // Electrodomésticos
-                'user_id' => 2,
+                'user_id' => 5,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -397,7 +414,7 @@ class ProductsSeeder extends Seeder
                 'price' => 25,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 3,
+                'user_id' => 6,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -415,7 +432,7 @@ class ProductsSeeder extends Seeder
                 'price' => 180,
                 'estado_id' => 2,
                 'categories' => [18], // Ciclismo
-                'user_id' => 1,
+                'user_id' => 7,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -434,7 +451,7 @@ class ProductsSeeder extends Seeder
                 'price' => 35,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 2,
+                'user_id' => 8,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -452,7 +469,7 @@ class ProductsSeeder extends Seeder
                 'price' => 450,
                 'estado_id' => 1,
                 'categories' => [5], // Tecnología
-                'user_id' => 3,
+                'user_id' => 9,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -471,7 +488,7 @@ class ProductsSeeder extends Seeder
                 'price' => 45,
                 'estado_id' => 1,
                 'categories' => [14], // Servicios
-                'user_id' => 1,
+                'user_id' => 9,
                 'toSend' => false,
                 'isDeleted' => false,
                 'isBoost' => true,
@@ -490,7 +507,7 @@ class ProductsSeeder extends Seeder
                 'price' => 295,
                 'estado_id' => 2,
                 'categories' => [17], // Fitness
-                'user_id' => 2,
+                'user_id' => 8,
                 'toSend' => true,
                 'isDeleted' => false,
                 'isBoost' => false,
@@ -533,6 +550,5 @@ class ProductsSeeder extends Seeder
                 }
             }
         }
-    
     }
 }

@@ -6,8 +6,114 @@ export default function useMaps() {
     const longitude = ref(-3.70256);
     const mapInstance = ref(null);
     const marker = ref(null);
+    const circle = ref(null);
     const partialAddress = ref('');
     const error = ref(null);
+    const searchRadius = ref(0);
+
+    /**
+     * Dibuja un círculo en el mapa con el radio especificado
+     * @param {number} radius - Radio del círculo en metros
+     */
+    const drawCircle = (radius) => {
+        // Este método ahora recreará el círculo desde cero cada vez
+        
+        // 1. Asegurarnos de tener instancias válidas
+        if (!mapInstance.value || !marker.value) return null;
+        
+        try {
+            // 2. Eliminar completamente cualquier círculo existente
+            removeCircle();
+            
+            // 3. Actualizar el valor del radio de búsqueda
+            searchRadius.value = parseInt(radius) || 0;
+            
+            // 4. Si el radio es 0 o inválido, no dibujamos ningún círculo
+            if (searchRadius.value <= 0) {
+                mapInstance.value.setZoom(15);
+                return null;
+            }
+            
+            // 5. Asegurarnos de que las coordenadas sean números válidos
+            const position = { 
+                lat: parseFloat(latitude.value), 
+                lng: parseFloat(longitude.value) 
+            };
+            
+            // 6. Crear un nuevo círculo
+            circle.value = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.15,
+                map: mapInstance.value,
+                center: position,
+                radius: searchRadius.value
+            });
+            
+            // 7. Ajustar el zoom basado en el radio
+            adjustZoom(searchRadius.value);
+            
+            return true;
+        } catch (e) {
+            console.error("Error al dibujar círculo:", e);
+            error.value = `Error al dibujar círculo: ${e.message}`;
+            return null;
+        }
+    };
+    
+    /**
+     * Ajusta el zoom del mapa basado en el radio
+     * @param {number} radius - Radio en metros
+     */
+    const adjustZoom = (radius) => {
+        if (!mapInstance.value) return;
+        
+        // Establecer zoom basado en el tamaño del círculo
+        const radiusValue = parseInt(radius) || 0;
+        
+        if (radiusValue <= 100) {
+            mapInstance.value.setZoom(18);
+        } else if (radiusValue <= 500) {
+            mapInstance.value.setZoom(16);
+        } else if (radiusValue <= 2000) {
+            mapInstance.value.setZoom(14);
+        } else if (radiusValue <= 10000) {
+            mapInstance.value.setZoom(12);
+        } else {
+            mapInstance.value.setZoom(10);
+        }
+    };
+
+    /**
+     * Elimina completamente cualquier círculo existente
+     */
+    const removeCircle = () => {
+        if (circle.value) {
+            // 1. Desvincularlo del mapa
+            circle.value.setMap(null);
+            
+            // 2. Remover event listeners si existen
+            if (typeof google !== 'undefined') {
+                google.maps.event.clearInstanceListeners(circle.value);
+            }
+            
+            // 3. Eliminar la referencia
+            circle.value = null;
+        }
+    };
+
+    /**
+     * Actualiza el círculo cuando cambian las coordenadas
+     * En lugar de actualizar, redibuja completamente
+     */
+    const updateCircle = () => {
+        // Si hay un radio establecido, redibujamos el círculo completo
+        if (searchRadius.value > 0) {
+            drawCircle(searchRadius.value);
+        }
+    };
 
     /**
      * Inicializa y muestra el mapa de Google Maps
@@ -58,6 +164,7 @@ export default function useMaps() {
                 const { lat, lng } = event.latLng.toJSON();
                 latitude.value = lat;
                 longitude.value = lng;
+                updateCircle();
             });
 
             // Evento: clic en el mapa
@@ -66,12 +173,18 @@ export default function useMaps() {
                 latitude.value = lat;
                 longitude.value = lng;
                 marker.value.setPosition({ lat, lng });
+                updateCircle();
             });
             
             // Forzamos una actualización del tamaño del mapa después de que se haya dibujado
             setTimeout(() => {
                 google.maps.event.trigger(mapInstance.value, 'resize');
             }, 100);
+
+            // Dibujar círculo si hay un radio establecido
+            if (searchRadius.value > 0) {
+                drawCircle(searchRadius.value);
+            }
 
             error.value = null;
             return { map: mapInstance.value, marker: marker.value };
@@ -108,6 +221,7 @@ export default function useMaps() {
                     };
                     mapInstance.value.setCenter(newPosition);
                     marker.value.setPosition(newPosition);
+                    updateCircle();
                 }
                 
                 return components.results[0];
@@ -130,16 +244,28 @@ export default function useMaps() {
         try {
             if (!mapInstance.value || !marker.value) return false;
             
+            // Asegurarnos de que los valores sean números
+            latitude.value = parseFloat(lat);
+            longitude.value = parseFloat(lng);
+            
             const position = { 
-                lat: parseFloat(lat), 
-                lng: parseFloat(lng) 
+                lat: latitude.value, 
+                lng: longitude.value 
             };
             
+            // Actualizar el mapa y el marcador
             mapInstance.value.setCenter(position);
             marker.value.setPosition(position);
             
-            latitude.value = lat;
-            longitude.value = lng;
+            // Si hay un radio establecido, redibujar el círculo
+            if (searchRadius.value > 0) {
+                // Eliminar cualquier círculo existente antes de dibujar uno nuevo
+                removeCircle();
+                // Esperar un momento para asegurar que la eliminación se ha completado
+                setTimeout(() => {
+                    drawCircle(searchRadius.value);
+                }, 50);
+            }
             
             return true;
         } catch (e) {
@@ -160,6 +286,7 @@ export default function useMaps() {
                     marker.value.setMap(null);
                     marker.value = null;
                 }
+                removeCircle();
                 mapInstance.value = null;
             } catch (e) {
                 console.error("Error al limpiar recursos del mapa:", e);
@@ -171,9 +298,12 @@ export default function useMaps() {
         latitude,
         longitude,
         partialAddress,
+        searchRadius,
         error,
         initMap,
         getGeoPartialAddress,
-        updateMapPosition
+        updateMapPosition,
+        drawCircle,
+        removeCircle
     };
 }

@@ -1,87 +1,117 @@
 <template>
   <div class="container my-8">
     <div class="row g-5">
-      <div class="col-md-3 contenedor-filtro">
-        <form @submit.prevent="aplicarFiltro">
-          <!-- Categoría -->
-          <label for="categoria" class="h1-p">Categoría</label>
-          <MultiSelect
-            v-model="categoriaSeleccionada"
-            :options="categoryList"
-            label="name"
-            track-by="id"
-            optionLabel="name"
-            placeholder="Selecciona categorías"
-            :close-on-select="false"
-            :clear-on-select="false"
-            :hide-selected="true"
-          />
+      <div class="col-md-3">
+        <div class="contenedor-filtro">
+          <form @submit.prevent="aplicarFiltro">
+            <!-- Categoría -->
+            <label for="categoria" class="h1-p">Categoría</label>
+            <MultiSelect
+              v-model="categoriaSeleccionada"
+              :options="categoryList"
+              label="name"
+              track-by="id"
+              optionLabel="name"
+              placeholder="Selecciona categorías"
+              :close-on-select="false"
+              :clear-on-select="false"
+              :hide-selected="true"
+            />
 
-          <!-- Título -->
-          <label for="titulo" class="h1-p">Título</label>
-          <input v-model="buscarTitulo" type="text" id="titulo" name="titulo" placeholder="Buscar por título...">
+            <!-- Título -->
+            <label for="titulo" class="h1-p">Título</label>
+            <input v-model="buscarTitulo" type="text" id="titulo" name="titulo" placeholder="Buscar por título...">
 
-          <!-- Fecha -->
-          <label for="fecha" class="h1-p">Fecha</label>
-          <select v-model="ordenarFecha" id="ordenarFecha" name="ordenarFecha">
-            <option value="">Todas</option>
-            <option value="asc">Asc</option>
-            <option value="desc">Desc</option>
-          </select>
+            <!-- Fecha -->
+            <label for="fecha" class="h1-p">Fecha</label>
+            <select v-model="ordenarFecha" id="ordenarFecha" name="ordenarFecha">
+              <option value="">Todas</option>
+              <option value="asc">Asc</option>
+              <option value="desc">Desc</option>
+            </select>
 
-          <!-- Filtro de Estados -->
-          <label for="estado" class="h1-p">Estado</label>
-          <MultiSelect
-            v-model="buscarEstado"
-            :options="estadoList"
-            label="name"
-            track-by="id"
-            optionLabel="name"
-            placeholder="Selecciona estados"
-            :close-on-select="false"
-            :clear-on-select="false"
-            :hide-selected="true"
-          />
+            <!-- Filtro de Estados -->
+            <label for="estado" class="h1-p">Estado</label>
+            <MultiSelect
+              v-model="buscarEstado"
+              :options="estadoList"
+              label="name"
+              track-by="id"
+              optionLabel="name"
+              placeholder="Selecciona estados"
+              :close-on-select="false"
+              :clear-on-select="false"
+              :hide-selected="true"
+            />
 
-          <!-- Precio -->
-          <!-- Precio MIN / MAX-->
-          <label for="precio" class="h1-p">Precio minimo / maximo</label>
-          <div class="d-flex justify-content-between">
-            <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€" class="price-input">
-            <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€" class="price-input">
-          </div>
+            <!-- Precio -->
+            <!-- Precio MIN / MAX-->
+            <label for="precio" class="h1-p">Precio minimo / maximo</label>
+            <div class="d-flex justify-content-between">
+              <input v-model="buscarPrecioMin" type="number" id="precioMin" name="precioMin" placeholder="€" class="price-input">
+              <input v-model="buscarPrecioMax" type="number" id="precioMax" name="precioMax" placeholder="€" class="price-input">
+            </div>
 
-          <!--Ordenar-->
-          <label for="ordenarPrecio" class="h1-p">Precio</label>
-          <select v-model="ordenarPrecio" id="ordenarPrecio" name="ordenarPrecio">
-            <option value="">Ninguno</option>
-            <option value="desc">Mayor</option>
-            <option value="asc">Menor</option>
-          </select>
+            <!--Ordenar-->
+            <label for="ordenarPrecio" class="h1-p">Precio</label>
+            <select v-model="ordenarPrecio" id="ordenarPrecio" name="ordenarPrecio">
+              <option value="">Ninguno</option>
+              <option value="desc">Mayor</option>
+              <option value="asc">Menor</option>
+            </select>
 
-          <!-- Ubicación -->
-          <label for="ordenarUbicacion" class="h1-p">Ubicacion</label>
-          <div id="map" class="google-map"></div>
+            <!-- Ubicación -->
+            <label for="ordenarUbicacion" class="h1-p">Ubicacion</label>
+            <div class="form-group">
+              <div class="map-container">
+                <div class="input-group mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar ubicación"
+                    v-model="searchAddress"
+                    @keyup.enter="searchLocation"
+                  />
+                  <button 
+                    class="btn btn-outline-secondary" 
+                    type="button"
+                    @click="searchLocation"
+                    :disabled="isSearching"
+                  >
+                    <span v-if="isSearching" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span v-else>Buscar</span>
+                  </button>
+                </div>
+                
+                <div id="map" class="google-map"></div>
+                
+                <label for="radio" class="h1-p">Radio de búsqueda</label>
+                <select 
+                  v-model="buscarRadio" 
+                  id="radio" 
+                  name="radio" 
+                  @change="handleRadioChange($event)"
+                >
+                  <option value="0">Ubicación exacta</option>
+                  <option value="1000">A 1 km</option>
+                  <option value="5000">A 5 km</option>
+                  <option value="10000">A 10 km</option>
+                  <option value="20000">A 20 km</option>
+                </select>
+              </div>
+            </div>
 
-          <label for="radio" class="h1-p">Radio de búsqueda</label>
-          <select v-model="buscarRadio" id="radio" name="radio">
-            <option value="0">Ubicación exacta</option>
-            <option value="1000">A 1 km</option>
-            <option value="5000">A 5 km</option>
-            <option value="10000">A 10 km</option>
-            <option value="20000">A 20 km</option>
-          </select>
+            <!-- Coordenadas seleccionadas -->
+            <div>
+              <p>Coordenadas actuales:</p>
+              <p><strong>Latitud: </strong>{{ latitude }}</p>
+              <p><strong>Longitud: </strong>{{ longitude }}</p>
+            </div>
 
-          <!-- Coordenadas seleccionadas -->
-          <div>
-            <p>Coordenadas actuales:</p>
-            <p><strong>Latitud: </strong>{{ latitude }}</p>
-            <p><strong>Longitud: </strong>{{ longitude }}</p>
-          </div>
-
-          <!-- Botón de filtrar -->
-          <button @click="limpiarFiltros" type="submit">Limpiar Filtros</button>
-        </form>
+            <!-- Botón de filtrar -->
+            <button @click="limpiarFiltros" type="submit">Limpiar Filtros</button>
+          </form>
+        </div>
       </div>
 
       <div class="col-md-9">
@@ -112,16 +142,32 @@ import useProducts from '@/composables/products.js';
 import router from "@/routes/index.js";
 import useCategories from "@/composables/categories.js";
 import { MultiSelect } from 'primevue'; // Import the MultiSelect component
-import useMap from '@/composables/useMap';
+import useMaps from "@/composables/Maps";
+import { authStore } from "@/store/auth"; // Import auth store
+import axios from 'axios';
 import './products.css';
 
 const route = useRoute();
 
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
-
 const {categoryList, getCategoryList} = useCategories();
 
-const { latitude, longitude, initMap } = useMap();
+// Use the enhanced Maps composable
+const { 
+  latitude, 
+  longitude, 
+  partialAddress,
+  searchRadius,
+  initMap, 
+  getGeoPartialAddress,
+  drawCircle,
+  updateMapPosition,
+  removeCircle
+} = useMaps();
+
+// Set Barcelona coordinates as the default location
+const BARCELONA_LATITUDE = 41.3874;
+const BARCELONA_LONGITUDE = 2.1686;
 
 const fetchProducts = async () => {
   try {
@@ -158,7 +204,92 @@ const buscarPrecioMax = ref(null);
 const buscarRadio = ref(0);
 const ordenarPrecio = ref('');
 const ordenarFecha = ref('');
+const searchAddress = ref('');
+const isSearching = ref(false);
 
+let googleMap = null;
+let mapMarker = null;
+let mapCircle = null;
+
+// Get authenticated user's location
+const getUserLocation = async () => {
+  try {
+    // If the user is logged in
+    if (authStore().isAuthenticated) {
+      const response = await axios.get('/api/user');
+      if (response.data && response.data.latitude && response.data.longitude) {
+        latitude.value = parseFloat(response.data.latitude);
+        longitude.value = parseFloat(response.data.longitude);
+        
+        return true;
+      }
+    }
+    // If authentication fails or no coordinates, use Barcelona's coordinates
+    latitude.value = BARCELONA_LATITUDE;
+    longitude.value = BARCELONA_LONGITUDE;
+    return false;
+  } catch (error) {
+    console.error('Error al obtener la ubicación del usuario:', error);
+    // On error, also use Barcelona's coordinates
+    latitude.value = BARCELONA_LATITUDE;
+    longitude.value = BARCELONA_LONGITUDE;
+    return false;
+  }
+};
+
+// Update searchLocation function
+const searchLocation = async () => {
+  if (!searchAddress.value.trim()) return;
+  
+  isSearching.value = true;
+  
+  try {
+    partialAddress.value = searchAddress.value;
+    await getGeoPartialAddress();
+    
+    // Draw the circle if radius is set
+    if (buscarRadio.value > 0) {
+      drawCircle(buscarRadio.value);
+    }
+    
+    aplicarFiltro();
+  } catch (error) {
+    console.error('Error al buscar ubicación:', error);
+  } finally {
+    isSearching.value = false;
+  }
+};
+
+// Setup the map
+const setupMap = () => {
+  initMap("map", latitude.value, longitude.value);
+};
+
+// Force complete circle refresh when radius changes
+const forceCircleRefresh = (radiusValue) => {
+  // Ensure we have a clean integer value
+  const radius = parseInt(radiusValue) || 0;
+  
+  // Primero eliminamos cualquier círculo existente
+  removeCircle();
+  
+  // Añadimos un pequeño retardo antes de dibujar el nuevo círculo
+  setTimeout(() => {
+    drawCircle(radius);
+    
+    // Apply filter to update results after drawing the circle
+    setTimeout(() => {
+      aplicarFiltro();
+    }, 100);
+  }, 50);
+};
+
+// Listen for direct change events on the select element
+const handleRadioChange = (event) => {
+  const newValue = event.target.value;
+  buscarRadio.value = newValue;
+  forceCircleRefresh(newValue);
+};
 
 const aplicarFiltro = async () => {
   try {
@@ -183,7 +314,7 @@ const aplicarFiltro = async () => {
       max_price: buscarPrecioMax.value || '',
     };
 
-    if (buscarRadio.value) {
+    if (latitude.value && longitude.value && buscarRadio.value) {
       filtros.search_latitude = latitude.value;
       filtros.search_longitude = longitude.value;
       filtros.search_radius = buscarRadio.value;
@@ -246,11 +377,22 @@ const limpiarFiltros = async () => {
   buscarTitulo.value = '';
   ordenarFecha.value = '';
   ordenarPrecio.value = '';
-  latitude.value = 41.38740000;
-  longitude.value = 2.16860000;
   buscarPrecioMin.value = '';
   buscarPrecioMax.value = '';
   buscarRadio.value = 0;
+  
+  // Set to Barcelona's coordinates by default
+  latitude.value = BARCELONA_LATITUDE;
+  longitude.value = BARCELONA_LONGITUDE;
+  
+  // Try to get authenticated user location (will overwrite Barcelona if found)
+  await getUserLocation();
+  
+  // Update map with the new position
+  updateMapPosition(latitude.value, longitude.value);
+  
+  // Remove circle from map when setting radius to 0
+  drawCircle(0);
 };
 
 watch(
@@ -264,13 +406,95 @@ watch(
 );
 
 
-onMounted(() => {
-    initMap('map');
-    fetchProducts();
-    getCategoryList();
-    getEstadoList();
+onMounted(async () => {
+  // First try to get the authenticated user's location, or use Barcelona's coordinates
+  await getUserLocation();
+  
+  fetchProducts();
+  getCategoryList();
+  getEstadoList();
+  
+  // Initialize the map after a short delay to ensure the DOM is ready
+  setTimeout(() => {
+    setupMap();
+    
+    // If a radius is set in the URL, apply it
+    if (route.query.search_radius) {
+      buscarRadio.value = route.query.search_radius;
+      forceCircleRefresh(parseInt(buscarRadio.value));
+    }
+  }, 500);
 });
 </script>
+
+<style scoped>
+.contenedor-filtro {
+  position: sticky;
+  top: 20px; /* Adjust this value as needed to give some spacing from the top */
+  max-height: calc(100vh - 40px); /* Viewport height minus top and bottom spacing */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Add smooth scrolling for better user experience */
+.contenedor-filtro form {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #cccccc #f5f5f5; /* For Firefox */
+}
+
+/* For Webkit browsers like Chrome/Safari */
+.contenedor-filtro form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contenedor-filtro form::-webkit-scrollbar-track {
+  background: #f5f5f5; 
+}
+
+.contenedor-filtro form::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 6px;
+}
+
+/* You may need to ensure the container height is appropriate */
+.container.my-8 {
+  min-height: 100vh;
+}
+
+/* Make .productos always 100% width in this view */
+.productos {
+  width: 100% !important;
+}
+
+.google-map {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.map-hidden {
+  display: none;
+}
+
+.map-container {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.map-controls {
+  margin-top: 10px;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+</style>
 
 
 
