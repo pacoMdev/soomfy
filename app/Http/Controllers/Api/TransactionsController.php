@@ -79,18 +79,18 @@ class TransactionsController extends Controller
      */
     public function fakePurchase(Request $request)
     {
-
+        
         $userBuyer = auth()->user();
-        $userSeller = User::findOrFail($request -> userSeller_id);
-        $product = Product::findOrFail($request -> product_id);
+        $userSeller = User::findOrFail($request -> purchaseData['userSeller_id']);
+        $product = Product::findOrFail($request -> purchaseData['product_id']);
 
         // segun tipo de envio 
-        if ($request -> selectedMethod == '1'){     // Custom address
+        if ($request -> purchaseData['selectedMethod'] == '1'){     // Custom address
             $shippingAddress = new ShippingAddress();
-            $shippingAddress -> address = $request -> shippingAddress['newAddress'];
-            $shippingAddress -> city = $request -> shippingAddress['newCity'];
-            $shippingAddress -> cp = $request -> shippingAddress['newCp'];
-            $shippingAddress -> country = $request -> shippingAddress['newCountry'];
+            $shippingAddress -> address = $request -> purchaseData['shippingAddress']['newAddress'];
+            $shippingAddress -> city = $request -> purchaseData['shippingAddress']['newCity'];
+            $shippingAddress -> cp = $request -> purchaseData['shippingAddress']['newCp'];
+            $shippingAddress -> country = $request -> purchaseData['shippingAddress']['newCountry'];
             $shippingAddress -> role_address = 2;
             $shippingAddress -> contact_name = $userBuyer -> name;
             $shippingAddress -> contact_phone = $userBuyer -> phone ?? '';
@@ -98,18 +98,19 @@ class TransactionsController extends Controller
 
             $shippingAddress -> save();
 
-        }else if($request -> selectedMethod == '2'){    // Selected address
-            $shippingAddress = (object) $request -> selectedStablishment;
+        }else if($request -> purchaseData['selectedMethod'] == '2'){    // Selected address
+            $shippingAddress = (object) $request -> purchaseData['selectedStablishment'];
         }
 
         $transaction = new Transactions();      // crea transaccion
-        $transaction -> userSeller_id = $request -> userSeller_id; 
+        $transaction -> userSeller_id = $request -> purchaseData['userSeller_id']; 
         $transaction -> userBuyer_id = $userBuyer -> id; 
-        $transaction -> product_id = $request -> product_id; 
-        $transaction -> initialPrice = $request -> price; 
-        $transaction -> finalPrice = $request -> price; 
-        $transaction -> isToSend = $request -> isToSend == 0 ? false : true; 
+        $transaction -> product_id = $request -> purchaseData['product_id']; 
+        $transaction -> initialPrice = $request -> purchaseData['price']; 
+        $transaction -> finalPrice = $request -> purchaseData['price']; 
+        $transaction -> isToSend = $request -> purchaseData['isToSend'] == 0 ? false : true; 
         $transaction -> isRegated = false; 
+        $transaction -> delivery_type = $request ->purchaseData['selectedMethod'] == 1 ? 'home_delivery' : 'pickup_point';
         $transaction->save();
 
         $transaction -> shippingAddress() 
@@ -117,19 +118,6 @@ class TransactionsController extends Controller
             'status' => 'pending',
             'tracking_number' => $this -> generateTN()
         ]);
-    
-        // $message = new Message();
-
-        // $message -> fullMessage = 'Hola, te informamos que ' . $userBuyer->name . ' ha adquirido tu producto. Por favor, coordina el envío o entrega. ¡Gracias!”';
-        // $message -> userDestination_id = $userSeller -> id;
-        // $message -> userRemitent_id = $userBuyer -> id;
-        // $message -> product_id = $request -> product_id;
-        // $message -> isReaded = false;
-
-        // $message -> save();
-
-
-
         
         // EMAIL PURCHASE ---------------------------------------------------------------------------------------
         $data = [

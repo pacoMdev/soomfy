@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-preprodSoomfy',
         'version' => 'dev-preprodSoomfy',
-        'reference' => '2940b6afff2197606b94daa67f12817a44c870d2',
+        'reference' => '4653b77af641f4847d97c3a1cae5b7f4b88d13e7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -409,7 +409,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-preprodSoomfy',
             'version' => 'dev-preprodSoomfy',
-            'reference' => '2940b6afff2197606b94daa67f12817a44c870d2',
+            'reference' => '4653b77af641f4847d97c3a1cae5b7f4b88d13e7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

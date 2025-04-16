@@ -1,6 +1,6 @@
 <template>
     <div v-if="userProduct[0]?.toSend===1" class="d-flex flex-wrap justify-content-center gap-6 w-100  p-6">
-        <div v-if="isSelledProduct == false" class="w-100 d-flex flex-row justify-content-center gap-4">
+        <div v-if="isSelledProduct == false" class="w-100 d-flex flex-wrap justify-content-center gap-4">
             <div class="shadow rounded p-6 gap-5 m-0 container-opinion">
                 <h4>Comprando</h4>
                 <form @submit.prevent="submitPurchaseForm" class="d-flex flex-column gap-4">
@@ -40,16 +40,6 @@
                             </div>
                         </div> 
                     </div>
-                    <stripe-checkout
-                    ref="checkoutRef"
-                    mode="payment"
-                    :pk="publishableKey"
-                    :line-items="lineItems"
-                    :success-url="successURL"
-                    :cancel-url="cancelURL"
-                    @loading="v => loading = v"
-                    />
-                    <button @click="submit">Pay now!</button>
                     <Button label="Comprar" type="submit" class="w-full" />
                     <p v-if="error" class="text-red-500 text-center mt-2 w-75 mx-auto" style="color: red!important;">{{ errorMessage }}</p>
     
@@ -99,14 +89,6 @@
                         <label for="country">Pais</label>
                     </FloatLabel>
                 </div>
-                <!-- AÑADIR MAS CAMPOS EN CASO DE ENVIAR A DIRECCION -->
-                    <!-- Revisar la pagina con stripe(pagina de pagos) -->
-                <!-- <div class="d-flex flex-column">
-                    <FloatLabel>
-                        <label for="">Tipo de envio</label>
-                        <Select v-model="typeShippment" :options="typeShippemt" optionLabel="name" checkmark :highlightOnSelect="false" class="w-full md:w-56" />
-                    </FloatLabel>
-                </div> -->
             </div>
         </div>
         <template #footer class="">
@@ -158,7 +140,7 @@
     import useShippingAddress from '../../composables/shippingAddress'; 
     import useProduct from '../../composables/products';
     import { useRoute } from 'vue-router';
-    import { StripeCheckout } from '@vue-stripe/vue-stripe';
+    import { loadStripe } from '@stripe/stripe-js';
     import './Create.css';
     
     const route = useRoute();
@@ -202,7 +184,7 @@
         getUserProduct();
         await checkSelledProduct(route.query.productId);
         getDistributionsCenters();
-        console.log('stablishments', stablishments.value);
+
     });
     watch(cpCercano, () => {
         if(cpCercano.value.length == 5){
@@ -214,4 +196,14 @@
         console.log('selectedStablishment', selectedStablishment.value?.address || undefined);
         console.log(errorMessage.value);
     })
+
+
+    // const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+    // const response = await fetch('/api/create-checkout-session', {
+    // method: 'POST',
+    // body: JSON.stringify({ amount: 1000 }),
+    // });
+    // const session = await response.json();
+
+    // stripe.redirectToCheckout({ sessionId: session.id });
 </script>

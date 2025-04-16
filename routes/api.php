@@ -66,6 +66,7 @@ Route::get('/geocode', [GoogleController::class, 'geoCode']);
 
 //STRIPE CONTROLLER
 Route::get('/payment', [StripeController::class, 'index'])->name('payment.form');
+Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession']);
 Route::post('/checkout', [StripeController::class, 'checkout'])->name('payment.checkout');
 Route::get('/success', function () {
     return "Payment Successful!";
@@ -73,6 +74,8 @@ Route::get('/success', function () {
 Route::get('/cancel', function () {
     return "Payment Canceled!";
 })->name('payment.cancel');
+
+
 // Rutas para geolocalización
 Route::get('/geoLocation', 'App\Http\Controllers\API\GeoLocationController@getGeoLocation');
 Route::get('/geocode', 'App\Http\Controllers\API\GeoLocationController@getGeocode');
