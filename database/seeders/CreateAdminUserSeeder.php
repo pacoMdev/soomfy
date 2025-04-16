@@ -75,5 +75,86 @@ class CreateAdminUserSeeder extends Seeder
         $user->addMedia(file: storage_path(path: DIRECTORY_SEPARATOR.'seed_images'.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR.'dexter-dexter-morgan.png'))->preservingOriginal()->toMediaCollection('images');
 
         $user->assignRole([$roleUser->id]);
+        
+        // Crear usuario con ubicación específica para pruebas de geolocalización
+        $usuarioCercano = User::create([
+            'id' => 4,
+            'name' => 'Usuario',
+            'surname1' => 'Cercano',
+            'alias' => 'UCercano',
+            'email' => 'usuario.cercano@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4154752,
+            'longitude' => 1.9955712, // Ubicación específica proporcionada
+        ]);
+        
+        $usuarioCercano->assignRole([$roleUser->id]);
+        
+        // Usuarios con ubicaciones cercanas a Barcelona (dentro de 20km)
+        
+        // Usuario en Badalona (10km de Barcelona)
+        $usuarioBadalona = User::create([
+            'id' => 5,
+            'name' => 'Carlos',
+            'surname1' => 'Mendoza',
+            'alias' => 'CMendoza',
+            'email' => 'carlos.mendoza@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4500,
+            'longitude' => 2.2474, // Badalona
+        ]);
+        $usuarioBadalona->assignRole([$roleUser->id]);
+        
+        // Usuario en L'Hospitalet de Llobregat (7km de Barcelona)
+        $usuarioHospitalet = User::create([
+            'id' => 6,
+            'name' => 'Marina',
+            'surname1' => 'Torres',
+            'alias' => 'MTorres',
+            'email' => 'marina.torres@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.3661,
+            'longitude' => 2.1164, // L'Hospitalet de Llobregat
+        ]);
+        $usuarioHospitalet->assignRole([$roleUser->id]);
+        
+        // Usuario en Sant Cugat del Vallès (15km de Barcelona)
+        $usuarioSantCugat = User::create([
+            'id' => 7,
+            'name' => 'Antonio',
+            'surname1' => 'Reyes',
+            'alias' => 'AReyes',
+            'email' => 'antonio.reyes@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4667,
+            'longitude' => 2.0833, // Sant Cugat del Vallès
+        ]);
+        $usuarioSantCugat->assignRole([$roleUser->id]);
+        
+        // Usuario en Castelldefels (18km de Barcelona)
+        $usuarioCastelldefels = User::create([
+            'id' => 8,
+            'name' => 'Marta',
+            'surname1' => 'Etxebarria',
+            'alias' => 'MEtxe',
+            'email' => 'marta.etxebarria@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.2800,
+            'longitude' => 1.9767, // Castelldefels
+        ]);
+        $usuarioCastelldefels->assignRole([$roleUser->id]);
+        
+        // Usuario en Mataró (20km de Barcelona)
+        $usuarioMataro = User::create([
+            'id' => 9,
+            'name' => 'Pablo',
+            'surname1' => 'Sanchez',
+            'alias' => 'PSanchez',
+            'email' => 'pablo.sanchez@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.5400,
+            'longitude' => 2.4447, // Mataró
+        ]);
+        $usuarioMataro->assignRole([$roleUser->id]);
     }
 }
