@@ -1,47 +1,212 @@
 import { ref, onUnmounted } from 'vue';
 import axios from 'axios';
 
+/**
+ * Composable para gestionar mapas de Google Maps y funcionalidades de geolocalización
+ * 
+ * Este composable proporciona todas las herramientas necesarias para:
+ * - Inicializar un mapa de Google Maps
+ * - Manejar marcadores y círculos de radio
+ * - Gestionar búsquedas por ubicación
+ * - Controlar el zoom según el radio seleccionado
+ * 
+ * @returns {Object} Conjunto de métodos y referencias para trabajar con mapas
+ */
 export default function useMaps() {
-    const latitude = ref(40.4165);
-    const longitude = ref(-3.70256);
-    const mapInstance = ref(null);
-    const marker = ref(null);
-    const circle = ref(null);
-    const partialAddress = ref('');
-    const error = ref(null);
-    const searchRadius = ref(0);
+    // Referencias reactivas para coordenadas y elementos del mapa
+    const latitude = ref(40.4165);      // Latitud inicial (Madrid)
+    const longitude = ref(-3.70256);    // Longitud inicial (Madrid)
+    const mapInstance = ref(null);      // Instancia del mapa de Google Maps
+    const marker = ref(null);           // Marcador en el mapa
+    const circles = ref([]);            // Array para gestionar círculos en el mapa
+    const partialAddress = ref('');     // Dirección ingresada por el usuario
+    const error = ref(null);            // Almacena errores para mostrar al usuario
+    const searchRadius = ref(0);        // Radio de búsqueda en metros
 
     /**
-     * Dibuja un círculo en el mapa con el radio especificado
-     * @param {number} radius - Radio del círculo en metros
+     * Elimina completamente cualquier círculo existente en el mapa
+     * 
+     * Este método garantiza una limpieza total de todos los círculos
+     * para evitar problemas visuales o superposición de círculos.
+     * 
+     * @returns {Promise<boolean>} True si la eliminación fue exitosa, False en caso contrario
      */
-    const drawCircle = (radius) => {
-        // Este método ahora recreará el círculo desde cero cada vez
-        
-        // 1. Asegurarnos de tener instancias válidas
-        if (!mapInstance.value || !marker.value) return null;
-        
+    const removeCircle = () => {
+        return new Promise((resolve) => {
+            try {
+                console.log("⛔ Eliminando TODOS los círculos");
+                
+                // Si no hay círculos, resolvemos inmediatamente
+                if (circles.value.length === 0) {
+                    console.log("No hay círculos para eliminar");
+                    resolve(true);
+                    return;
+                }
+                
+                // Aseguramos que Google Maps existe
+                if (typeof google === 'undefined' || !google.maps) {
+                    console.warn("API de Google Maps no disponible");
+                    circles.value = [];
+                    resolve(false);
+                    return;
+                }
+                
+                // Recorremos y eliminamos TODOS los círculos uno por uno
+                circles.value.forEach(circle => {
+                    if (circle) {
+                        try {
+                            circle.setMap(null);
+                            google.maps.event.clearInstanceListeners(circle);
+                        } catch (err) {
+                            console.warn("Error al eliminar círculo:", err);
+                        }
+                    }
+                });
+                
+                // Limpiamos el array de círculos
+                circles.value = [];
+                
+                // Reseteamos el radio de búsqueda
+                searchRadius.value = 0;
+                
+                console.log("Todos los círculos eliminados correctamente");
+                
+                // Forzamos un refresco del mapa
+                if (mapInstance.value) {
+                    const currentCenter = mapInstance.value.getCenter();
+                    const currentZoom = mapInstance.value.getZoom();
+                    
+                    google.maps.event.trigger(mapInstance.value, 'resize');
+                    mapInstance.value.setCenter(currentCenter);
+                    mapInstance.value.setZoom(currentZoom);
+                }
+                
+                resolve(true);
+            } catch (e) {
+                console.error("Error al eliminar círculos:", e);
+                // Forzamos la limpieza incluso si hay error
+                circles.value = [];
+                searchRadius.value = 0;
+                resolve(false);
+            }
+        });
+    };
+
+    /**
+     * Actualiza solamente el círculo sin recrear todo el mapa
+     * 
+     * Método optimizado que intenta actualizar solo el círculo manteniendo
+     * el resto del mapa intacto, para una mejor experiencia de usuario.
+     *
+     * @param {number} radius - Radio del círculo en metros (0 para ubicación exacta)
+     * @returns {Promise<boolean>} True si la actualización fue exitosa, False en caso contrario
+     */
+    const updateCircleOnly = async (radius = 0) => {
         try {
-            // 2. Eliminar completamente cualquier círculo existente
-            removeCircle();
+            console.log("🔄 Actualizando solamente el círculo, radio:", radius);
             
-            // 3. Actualizar el valor del radio de búsqueda
-            searchRadius.value = parseInt(radius) || 0;
+            const validRadius = parseInt(radius) || 0;
             
-            // 4. Si el radio es 0 o inválido, no dibujamos ningún círculo
-            if (searchRadius.value <= 0) {
-                mapInstance.value.setZoom(15);
-                return null;
+            // Verificamos que tenemos un mapa válido
+            if (!mapInstance.value || !marker.value) {
+                console.error("Mapa o marcador no inicializado");
+                return false;
             }
             
-            // 5. Asegurarnos de que las coordenadas sean números válidos
+            // PRIMERA ETAPA: Eliminar TODOS los círculos existentes
+            await removeCircle();
+            
+            // SEGUNDA ETAPA: Si se necesita tiempo adicional para la limpieza visual
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            // Actualizar el valor del radio
+            searchRadius.value = validRadius;
+            
+            // Si el radio es 0, solo ajustamos el zoom y terminamos
+            if (validRadius <= 0) {
+                console.log("📍 Estableciendo ubicación exacta (sin círculo)");
+                adjustZoom(0);
+                return true;
+            }
+            
+            // Obtenemos la posición actual
             const position = { 
                 lat: parseFloat(latitude.value), 
                 lng: parseFloat(longitude.value) 
             };
             
-            // 6. Crear un nuevo círculo
-            circle.value = new google.maps.Circle({
+            // TERCERA ETAPA: Creamos un nuevo círculo (solo si el radio > 0)
+            const newCircle = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8, 
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.15,
+                map: mapInstance.value,
+                center: position,
+                radius: validRadius,
+                clickable: false,
+                zIndex: 1000 // Aseguramos que esté por encima de cualquier otra capa
+            });
+            
+            // CUARTA ETAPA: Añadimos el círculo nuevo al array para hacer seguimiento
+            circles.value.push(newCircle);
+            
+            // Ajustamos el zoom según el radio
+            adjustZoom(validRadius);
+            
+            console.log("✅ Círculo actualizado exitosamente con radio:", validRadius);
+            return true;
+        } catch (e) {
+            console.error("❌ Error al actualizar círculo:", e);
+            return false;
+        }
+    };
+
+    /**
+     * Dibuja un círculo en el mapa con el radio especificado
+     * 
+     * Método estándar para dibujar un círculo nuevo en el mapa,
+     * eliminando previamente cualquier círculo existente.
+     *
+     * @param {number} radius - Radio del círculo en metros
+     * @returns {Promise<boolean|null>} True si se dibujó exitosamente, null en caso de error
+     */
+    const drawCircle = async (radius) => {
+        try {
+            console.log("Dibujando círculo con radio:", radius);
+            
+            // Validamos el radio
+            const validRadius = parseInt(radius) || 0;
+            
+            // No dibujamos círculo si el radio es 0 o inválido
+            if (validRadius <= 0) {
+                console.log("Radio 0 o inválido - no se dibuja círculo");
+                await removeCircle();
+                adjustZoom(0);
+                return null;
+            }
+            
+            // Verificamos si tenemos un mapa válido
+            if (!mapInstance.value || !marker.value) {
+                console.error("Mapa o marcador no inicializados");
+                return null;
+            }
+            
+            // Aseguramos que no haya círculo previo
+            await removeCircle();
+            
+            // Actualizamos el valor del radio
+            searchRadius.value = validRadius;
+            
+            // Obtenemos la posición actual
+            const position = { 
+                lat: parseFloat(latitude.value), 
+                lng: parseFloat(longitude.value) 
+            };
+            
+            // Creamos un nuevo círculo con ID único
+            const newCircle = new google.maps.Circle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
@@ -49,12 +214,18 @@ export default function useMaps() {
                 fillOpacity: 0.15,
                 map: mapInstance.value,
                 center: position,
-                radius: searchRadius.value
+                radius: validRadius,
+                clickable: false,
+                zIndex: 1
             });
             
-            // 7. Ajustar el zoom basado en el radio
-            adjustZoom(searchRadius.value);
+            // Añadimos el círculo al array
+            circles.value.push(newCircle);
             
+            // Ajustamos el zoom según el radio
+            adjustZoom(validRadius);
+            
+            console.log("Círculo dibujado correctamente con radio:", validRadius);
             return true;
         } catch (e) {
             console.error("Error al dibujar círculo:", e);
@@ -62,67 +233,216 @@ export default function useMaps() {
             return null;
         }
     };
-    
+
     /**
-     * Ajusta el zoom del mapa basado en el radio
+     * Recrea completamente el mapa desde cero
+     * 
+     * Solución nuclear que destruye y reconstruye todo el mapa.
+     * Garantiza una limpieza total y evita problemas de círculos persistentes,
+     * aunque es más costoso en términos de rendimiento.
+     *
+     * @param {string} elementId - ID del elemento HTML donde se renderiza el mapa
+     * @param {number} radius - Radio del círculo en metros (0 para ubicación exacta)
+     * @returns {Promise<boolean>} True si la recreación fue exitosa, False en caso contrario
+     */
+    const recreateMap = async (elementId, radius = 0) => {
+        try {
+            console.log("🔄 Recreando mapa completo");
+            
+            // Guardamos los datos actuales
+            const currentLat = latitude.value;
+            const currentLng = longitude.value;
+            const validRadius = parseInt(radius) || 0;
+            
+            // PASOS ADICIONALES DE LIMPIEZA
+            // 1. Intentar limpiar todos los círculos
+            if (circles.value && circles.value.length > 0) {
+                circles.value.forEach(circle => {
+                    if (circle) {
+                        try {
+                            circle.setMap(null);
+                        } catch (e) {
+                            // Ignorar errores
+                        }
+                    }
+                });
+                circles.value = [];
+            }
+            
+            // 2. Buscar círculos residuales en el DOM
+            try {
+                const mapElement = document.getElementById(elementId);
+                if (mapElement) {
+                    // Forzar reflow
+                    void mapElement.offsetHeight;
+                }
+            } catch (e) {
+                // Ignorar errores
+            }
+            
+            // Si hay un mapa existente, limpiamos todos sus recursos
+            if (mapInstance.value) {
+                if (marker.value) {
+                    marker.value.setMap(null);
+                    google.maps.event.clearInstanceListeners(marker.value);
+                    marker.value = null;
+                }
+                
+                google.maps.event.clearInstanceListeners(mapInstance.value);
+                mapInstance.value = null;
+            }
+            
+            // Esperamos un momento para asegurar limpieza completa
+            await new Promise(resolve => setTimeout(resolve, 150));
+            
+            // Reinicializamos el mapa desde cero
+            const mapElement = document.getElementById(elementId);
+            if (!mapElement) {
+                console.error(`Elemento con ID "${elementId}" no encontrado`);
+                return false;
+            }
+            
+            // Recreamos el mapa con los valores actuales y zoom reducido
+            mapInstance.value = new google.maps.Map(mapElement, {
+                center: { lat: parseFloat(currentLat), lng: parseFloat(currentLng) },
+                zoom: getZoomForRadius(validRadius),
+                mapTypeControl: true,
+                fullscreenControl: false,
+                styles: [
+                    // Añadir estilos básicos para mejor visualización
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [{ visibility: "off" }]
+                    }
+                ]
+            });
+            
+            // Recreamos el marcador
+            marker.value = new google.maps.Marker({
+                position: { lat: parseFloat(currentLat), lng: parseFloat(currentLng) },
+                map: mapInstance.value,
+                draggable: true
+            });
+            
+            // Reestablecemos los eventos
+            marker.value.addListener("dragend", (event) => {
+                const { lat, lng } = event.latLng.toJSON();
+                latitude.value = lat;
+                longitude.value = lng;
+                updateCircle();
+            });
+            
+            mapInstance.value.addListener("click", (event) => {
+                const { lat, lng } = event.latLng.toJSON();
+                latitude.value = lat;
+                longitude.value = lng;
+                marker.value.setPosition({ lat, lng });
+                updateCircle();
+            });
+            
+            // Reseteamos el valor del radio
+            searchRadius.value = validRadius;
+            
+            // Pequeña pausa para asegurar que el mapa esté listo
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            // Dibujamos círculo si es necesario
+            if (validRadius > 0) {
+                // Dibujamos un círculo nuevo con estilo mejorado
+                const newCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.9,  // Más visible
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.15,
+                    map: mapInstance.value,
+                    center: { lat: parseFloat(currentLat), lng: parseFloat(currentLng) },
+                    radius: validRadius,
+                    clickable: false,
+                    zIndex: 9999  // Muy alto para asegurar visibilidad
+                });
+                
+                // Añadimos al array para seguimiento
+                circles.value = [newCircle]; // Solo un círculo en el array
+            }
+            
+            console.log("✅ Mapa recreado exitosamente" + (validRadius > 0 ? " con círculo de radio " + validRadius : ""));
+            return true;
+        } catch (e) {
+            console.error("❌ Error al recrear mapa:", e);
+            return false;
+        }
+    };
+
+    /**
+     * Ajusta el nivel de zoom del mapa según el radio seleccionado
+     * 
+     * Establece automáticamente un zoom apropiado para visualizar correctamente
+     * el área cubierta por el radio especificado.
+     *
      * @param {number} radius - Radio en metros
      */
     const adjustZoom = (radius) => {
         if (!mapInstance.value) return;
         
-        // Establecer zoom basado en el tamaño del círculo
-        const radiusValue = parseInt(radius) || 0;
-        
-        if (radiusValue <= 100) {
-            mapInstance.value.setZoom(18);
-        } else if (radiusValue <= 500) {
-            mapInstance.value.setZoom(16);
-        } else if (radiusValue <= 2000) {
-            mapInstance.value.setZoom(14);
-        } else if (radiusValue <= 10000) {
-            mapInstance.value.setZoom(12);
-        } else {
-            mapInstance.value.setZoom(10);
-        }
+        // Usando la función con zoom reducido
+        mapInstance.value.setZoom(getZoomForRadius(parseInt(radius) || 0));
     };
 
     /**
-     * Elimina completamente cualquier círculo existente
+     * Determina el nivel de zoom apropiado para un radio dado
+     * 
+     * Calcula el zoom óptimo para mostrar adecuadamente
+     * un área con el radio especificado.
+     *
+     * @param {number} radius - Radio en metros
+     * @returns {number} Nivel de zoom (valores más pequeños = más alejado)
      */
-    const removeCircle = () => {
-        if (circle.value) {
-            // 1. Desvincularlo del mapa
-            circle.value.setMap(null);
-            
-            // 2. Remover event listeners si existen
-            if (typeof google !== 'undefined') {
-                google.maps.event.clearInstanceListeners(circle.value);
-            }
-            
-            // 3. Eliminar la referencia
-            circle.value = null;
+    const getZoomForRadius = (radius) => {
+        const radiusValue = parseInt(radius) || 0;
+        
+        if (radiusValue === 0) {
+            return 12; // Reducido considerablemente para ubicación exacta
+        } else if (radiusValue <= 1000) {
+            return 12; // Reducido para 1km
+        } else if (radiusValue <= 5000) {
+            return 10; // Reducido para 5km
+        } else if (radiusValue <= 10000) {
+            return 9;  // Reducido para 10km
+        } else {
+            return 8;  // Reducido para 20km o más
         }
     };
 
     /**
      * Actualiza el círculo cuando cambian las coordenadas
-     * En lugar de actualizar, redibuja completamente
+     * 
+     * Se utiliza cuando el usuario mueve el marcador o hace clic en otra ubicación,
+     * manteniendo el mismo radio pero redibujando en la nueva posición.
      */
-    const updateCircle = () => {
-        // Si hay un radio establecido, redibujamos el círculo completo
+    const updateCircle = async () => {
+        // Si hay un radio establecido, eliminamos primero y luego redibujamos
+        await removeCircle();
+        
         if (searchRadius.value > 0) {
-            drawCircle(searchRadius.value);
+            await drawCircle(searchRadius.value);
         }
     };
 
     /**
-     * Inicializa y muestra el mapa de Google Maps
+     * Inicializa y muestra un mapa de Google Maps en el elemento especificado
+     * 
+     * Configura el mapa inicial con un marcador arrastrable y los eventos necesarios
+     * para interactuar con él.
+     *
      * @param {string} elementId - ID del elemento HTML donde se mostrará el mapa
      * @param {number} lat - Latitud inicial
      * @param {number} lng - Longitud inicial
-     * @param {number} zoom - Nivel de zoom
+     * @param {number} zoom - Nivel de zoom inicial
+     * @returns {Object|null} Objeto con referencias al mapa y marcador, o null si hay error
      */
-    const initMap = (elementId, lat = latitude.value, lng = longitude.value, zoom = 13) => {
+    const initMap = (elementId, lat = latitude.value, lng = longitude.value, zoom = 11) => {
         if (typeof google === 'undefined') {
             console.error('Google Maps API no está cargada');
             error.value = 'Google Maps API no está cargada';
@@ -149,7 +469,7 @@ export default function useMaps() {
 
             mapInstance.value = new google.maps.Map(mapElement, {
                 center: { lat: parseFloat(latitude.value), lng: parseFloat(longitude.value) },
-                zoom: zoom,
+                zoom: zoom, // Valor por defecto ahora es 11 en lugar de 13
             });
 
             // Crear un marcador en el mapa
@@ -196,8 +516,13 @@ export default function useMaps() {
     };
 
     /**
-     * Obtiene las coordenadas geográficas a partir de una dirección
-     * @param {string} address - Dirección a geocodificar
+     * Obtiene coordenadas geográficas a partir de una dirección
+     * 
+     * Utiliza la API de geocodificación para convertir una dirección en texto
+     * a coordenadas de latitud y longitud.
+     *
+     * @param {string} address - Dirección a geocodificar (opcional si existe partialAddress)
+     * @returns {Promise<Object|null>} Resultado de geocodificación o null si hay error
      */
     const getGeoPartialAddress = async (address) => {
         try {
@@ -237,10 +562,15 @@ export default function useMaps() {
 
     /**
      * Actualiza la posición del mapa y el marcador
+     * 
+     * Centra el mapa en nuevas coordenadas y actualiza la posición del marcador.
+     * Si hay un radio activo, redibuja el círculo en la nueva posición.
+     *
      * @param {number} lat - Nueva latitud
      * @param {number} lng - Nueva longitud
+     * @returns {Promise<boolean>} True si la actualización fue exitosa, False en caso contrario
      */
-    const updateMapPosition = (lat, lng) => {
+    const updateMapPosition = async (lat, lng) => {
         try {
             if (!mapInstance.value || !marker.value) return false;
             
@@ -257,14 +587,10 @@ export default function useMaps() {
             mapInstance.value.setCenter(position);
             marker.value.setPosition(position);
             
-            // Si hay un radio establecido, redibujar el círculo
+            // Si hay un radio establecido, primero eliminamos y luego redibujamos
             if (searchRadius.value > 0) {
-                // Eliminar cualquier círculo existente antes de dibujar uno nuevo
-                removeCircle();
-                // Esperar un momento para asegurar que la eliminación se ha completado
-                setTimeout(() => {
-                    drawCircle(searchRadius.value);
-                }, 50);
+                await removeCircle();
+                await drawCircle(searchRadius.value);
             }
             
             return true;
@@ -275,7 +601,12 @@ export default function useMaps() {
         }
     };
 
-    // Limpieza de recursos cuando se desmonta el componente
+    /**
+     * Limpieza de recursos cuando se desmonta el componente
+     * 
+     * Garantiza que todos los recursos del mapa se liberen correctamente
+     * para evitar fugas de memoria cuando se abandona la página.
+     */
     onUnmounted(() => {
         if (mapInstance.value) {
             try {
@@ -286,7 +617,22 @@ export default function useMaps() {
                     marker.value.setMap(null);
                     marker.value = null;
                 }
-                removeCircle();
+                
+                // Limpiamos todos los círculos
+                if (circles.value.length > 0) {
+                    circles.value.forEach(circle => {
+                        if (circle) {
+                            try {
+                                circle.setMap(null);
+                                google.maps.event.clearInstanceListeners(circle);
+                            } catch (e) {
+                                // Ignorar errores
+                            }
+                        }
+                    });
+                    circles.value = [];
+                }
+                
                 mapInstance.value = null;
             } catch (e) {
                 console.error("Error al limpiar recursos del mapa:", e);
@@ -294,6 +640,7 @@ export default function useMaps() {
         }
     });
 
+    // Retorna las variables y métodos que serán accesibles desde fuera
     return {
         latitude,
         longitude,
@@ -304,6 +651,8 @@ export default function useMaps() {
         getGeoPartialAddress,
         updateMapPosition,
         drawCircle,
-        removeCircle
+        removeCircle,
+        recreateMap,
+        updateCircleOnly
     };
 }
