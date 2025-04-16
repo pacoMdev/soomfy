@@ -50,21 +50,28 @@
                     </div>
                     <div class="col-md-5 col-lg-5 col-xl-4 d-flex flex-column gap-4 container-right">
                         <div v-if="product" class="container-info-prod p-5 d-flex flex-column gap-3">
-                            <h3 class="m-0">{{ product.price }} €</h3>
+                            <div  v-if="isSelledProduct" class="d-flex justify-content-between align-items-center">
+                                <h3 class="m-0">{{ product.price }} €</h3>
+                                <Avatar icon="pi pi-shopping-cart" class="mr-2" size="xlarge" shape="circle" style="background-color: white; color: #B51200; border: solid 2px #B51200" />
+                            </div>
                             <h2 class="m-0">{{ product.title }}</h2>
                             <p class="m-0 h2-p">{{ product.content }}</p>
                             <p class="m-0 h3-p" v-if="product.estado">{{ product.estado.name }}</p>
                             <div class="container-categories d-flex gap-2 flex-wrap">
                                 <Tag v-for="category in product.categories" :key="category.id" severity="secondary" :value="category.name" rounded></Tag>
                             </div>
-                            <div class="button d-flex gap-3 ">
-                                <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
-                                    <Button label="Comprar" variant="outlined" class="w-100" rounded />
-                                </router-link>
-                                <router-link :to="'/app/profile'" class="w-100" v-if="isYourOwnProduct(product.user?.id)">
-                                    <Button label="Editar" class="w-50 p-button secondary" rounded />
-                                </router-link>
-                                <Button v-else @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
+
+                            <div class="button d-flex gap-3" v-if="isSelledProduct==false">
+                                    <router-link :to="'/app/profile'" class="w-100" v-if="isYourOwnProduct(product.user?.id)">
+                                        <Button label="Editar" class="w-100 p-button secondary" rounded />
+                                    </router-link>
+                                    <div v-else class="d-flex gap-3 w-100">
+                                        <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
+                                        <Button label="Comprar" variant="outlined" class="w-100" rounded />
+                                        </router-link>
+                                        <Button @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
+
+                                    </div>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -181,7 +188,13 @@
     import '../../../../resources/css/theme.css'
     import './detalle_producto.css'
     import useProductDetail from '../../composables/productDetail';
+    import useProducts from '../../composables/products';
+    import './detalle_producto.css';
 
+    const {
+        checkSelledProduct,
+        isSelledProduct,
+    } = useProducts();
     const { 
         path,
         segments,
@@ -212,7 +225,7 @@
         getUserProducts,
     } = useProductDetail();
     
-
+    
     watch(product, (standProduct) => {
         if (standProduct?.id) {
             getGeoLocation();
@@ -221,7 +234,10 @@
 
     onMounted(async () => {
       await getProduct();
-      console.log("HOLAAAAAAAAAAAA",product.value);
+      console.log("🔎 PRODUCT DETAIL",product.value);
+      if (product.value) {
+        await checkSelledProduct(product.value.id);
+      }
       if (auth.user) {
         console.log(auth.user);
         compradorId.value = auth.user.id;

@@ -2,6 +2,12 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router';
+import { loadStripe } from '@stripe/stripe-js';
+import { usePurchaseStore } from '@/store/purchaseStore';
+
+
+const purchaseStore = usePurchaseStore();
+
 
 export default function useCheckout() {
 
@@ -63,35 +69,61 @@ export default function useCheckout() {
         // check ok
         error.value = false;
         errorMessage.value = '';
-        try {
-            await axios.post('/api/fakePurchaseProduct', {
-                product_id: parseInt(productId),
-                userSeller_id: userProduct.value[0].user.id,
-                price: userProduct.value[0].price,
-                isToSend: parseInt(selectedMethod.value),
-                shippingAddress: {
-                    'newAddress': address.newAddress,
-                    'newCity': address.newCity,
-                    'newCp': address.newCp,
-                    'newCountry': address.newCountry
-                },
-                selectedStablishment: { ...selectedStablishment.value },
-                selectedMethod: selectedMethod.value,
-            }).then( async response =>{
-                console.log('Producto comprado', response);
-                console.log('👌 Status:', response.status);
-                if(response.status == 200){    // compra realizada con exito
-                    swal({
-                        icon: 'success',
-                        title: 'Compra realizada',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    router.push({ name: 'home' });
-                }
+        if (selectedMethod.value == 0){
+            swal({
+                icon: 'success',
+                title: 'Mensaje enviado',
+                showConfirmButton: false,
+                timer: 1500,
             });
-        } catch (error) {
-            console.error("Error al valorar -->", error);
+            
+            router.push({ name: 'home' });
+        }else{
+            try {
+                // guarda en storage de pinia con persist
+                purchaseStore.setPurchase({
+                    product_id: parseInt(productId),
+                    userSeller_id: userProduct.value[0]?.user?.id ?? null,
+                    price: userProduct.value[0]?.price ?? 0,
+                    isToSend: parseInt(selectedMethod.value),
+                    shippingAddress: {
+                      newAddress: newAddress.value,
+                      newCity: newCity.value,
+                      newCp: newCp.value,
+                      newCountry: newCountry.value
+                    },
+                    selectedStablishment: selectedStablishment.value ? { ...selectedStablishment.value } : null,
+                    selectedMethod: selectedMethod.value
+                  });
+                // guarda en localStorage
+                localStorage.setItem('purchaseData', JSON.stringify(purchaseStore.purchaseData));
+                console.log('🔎 purchase_data', purchaseStore.purchaseData);
+    
+                const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+                const response = await fetch('/api/create-checkout-session', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ 
+                    title: userProduct.value[0].title,
+                    image: userProduct.value[0].original_image,
+                    amount: userProduct.value[0].price,
+                    product_id: parseInt(productId)
+                 }),
+                });
+              
+                const session = await response.json();
+                // Redirigir a Stripe al final, cuando ya se guardó la compra
+                await stripe.redirectToCheckout({ sessionId: session.id });
+            } catch (error) {
+            console.error('Error en el proceso de compra:', error);
+            swal({
+                icon: 'error',
+                title: 'Error en el pago',
+                text: 'Por favor, intenta nuevamente.',
+            });
+            }
         }
     };
     const saveAddress = () => {

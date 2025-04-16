@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\CategoryProduct;
 
 use App\Mail\ConstructEmail;
+use App\Models\ShippingAddressTransaction;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 
@@ -265,15 +266,22 @@ class ProductControllerAdvance extends Controller
             })
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
-            })
-            ->paginate($paginate);
-            // excluye los productos ya vendidos de transactions
-            $soldProductIds = Transactions::pluck('product_id');
-            $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
-                return $soldProductIds->contains($product->id);
             });
+            // ->paginate($paginate);
+            // excluye los productos ya vendidos de transactions
+            // $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
+                //     // return $soldProductIds->contains($product->id);
+                // });
+            $soldProductIds = ShippingAddressTransaction::where('status', 'finished')
+            ->with('transaction.product')
+            ->get()
+            ->pluck('transaction.product.id')
+            ->unique()
+            ->values();
+            $products = Product::whereNotIn('id', $soldProductIds) // excluye productos vendidos
+                ->paginate($paginate);
 
-        return ProductResource::collection($filteredProducts);
+        return ProductResource::collection($products);
     }
 
 
@@ -332,5 +340,27 @@ class ProductControllerAdvance extends Controller
             $favoritos = $user->favoritos;
 
             return ProductResource::collection($favoritos);
+    }
+    public function checkSelledProduct(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $userId = auth()->id();
+
+        // $isSelled = Transactions::where('user_id', $userId)
+        //     ->whereHas('product', function ($query) use ($productId) {
+        //         $query->where('id', $productId);
+        //     })
+        //     ->exists();
+
+        $isSelled = ShippingAddressTransaction::where('status', 'finished')
+            ->whereHas('transaction.product', function ($query) use ($productId) {
+                $query->where('id', $productId);
+            })
+            ->exists();
+        // dd($isSelled);
+        
+
+        return response()->json(['isSelled' => $isSelled]);
+
     }
 }

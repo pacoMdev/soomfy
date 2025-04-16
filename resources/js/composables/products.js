@@ -26,6 +26,7 @@ export default function useProducts() {
     const usersInterested = ref([]);
     const selectedUserId = ref(null); // Guardará el ID del usuario seleccionado
     const selectedUser = ref(null);
+    const isSelledProduct = ref(false);
 
 
 
@@ -310,6 +311,18 @@ export default function useProducts() {
           console.error('Error al vender el producto:', error);
         }
       }
+      const checkSelledProduct = async (productId) => {
+        try {
+          const response = await axios.post('/api/checkSelledProduct', {
+            product_id: productId,
+          });
+          isSelledProduct.value = response.data.isSelled;
+          console.log("Producto vendido -->", isSelledProduct.value);
+        } catch (error) {
+          console.error("Error al verificar el producto vendido:", error);
+          return false;
+        }
+      };
 
 
 
@@ -333,5 +346,7 @@ export default function useProducts() {
         usersInterested,
         selectedUserId,
         selectedUser,
+        checkSelledProduct,
+        isSelledProduct,
     }
 }

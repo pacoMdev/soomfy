@@ -182,6 +182,11 @@ export default [
                 component: () => import('../views/checkout/Create.vue'),
             },
             {
+                path: '/app/checkout-final',
+                name: 'checkout-final',
+                component: () => import('../views/checkout/FinalCheckout/FinalCheckout.vue'),
+            },
+            {
                 name: 'products',
                 path: 'products',
                 meta: { breadCrumb: 'Products'},
