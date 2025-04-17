@@ -184,7 +184,7 @@
           <div v-if="selectedTab === 'purchases'" class="tab-section">
             <div v-if="purchases.length > 0" class="content-section">
               <h4>Historial de Compras</h4>
-              <HistoricInfo :historic="purchases" appendTo=".show"/>
+              <HistoricInfo :historic="purchases" :fromUser="true" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay compras</h1>
@@ -196,7 +196,7 @@
           <div v-if="selectedTab === 'sales'" class="tab-section">
             <div v-if="sales.length > 0" class="content-section">
               <h4>Historial de Ventas</h4>
-              <HistoricInfo :historic="sales" />
+              <HistoricInfo :historic="sales" :fromUser="true" appendTo=".show"/>
             </div>
             <div v-else class="container-else">
               <h1>Parece que no hay ventas</h1>

@@ -10,46 +10,17 @@
 <script setup>
     import { onMounted, watch, ref } from 'vue';
     import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
-    import { useRoute } from 'vue-router'
-    import { usePurchaseStore } from '@/store/purchaseStore';
+    import useCheckout from '../../../composables/checkout';
+
     import './FinalCheckout.css';
     
-    const route = useRoute();
-    const purchaseStore = usePurchaseStore();
+    const { 
+        registerTransaction,
+    } = useCheckout();
 
 
-    onMounted (async () => {
-
-        const sessionId = route.query.session_id;
-
-        // datos guardados de store por pinia
-        const data = purchaseStore.purchaseData;
-        // recupera de localStorage y guarda en purchaseStore
-        const saved = localStorage.getItem('purchaseData');
-        if (saved && !purchaseStore.purchaseData) {
-            purchaseStore.setPurchase(JSON.parse(saved));
-        }
-
-
-        // Registrar la compra en tu backend
-        console.log('🔎 data', purchaseStore.purchaseData);
-        const purchaseResponse = await axios.post('/api/fakePurchaseProduct', {
-            purchaseData: purchaseStore.purchaseData,
-            sessionId: sessionId,
-        })
-        .then(() => {
-            console.log('Producto comprado', purchaseResponse.data);
-            console.log('👌 Status:', purchaseResponse.status);
-            
-            swal({
-                icon: 'success',
-                title: 'Compra realizada',
-                showConfirmButton: false,
-                timer: 1500,
-            }); 
-            
-            router.push({ name: 'home' });
-        });
+    onMounted ( () => {
+        registerTransaction();
     });
 
 </script>

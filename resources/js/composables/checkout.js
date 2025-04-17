@@ -6,6 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { usePurchaseStore } from '@/store/purchaseStore';
 
 
+
 const purchaseStore = usePurchaseStore();
 
 
@@ -134,6 +135,47 @@ export default function useCheckout() {
         showSelectCenter.value = false;
 
     }
+    const registerTransaction = async () => {
+        const sessionId = route.query.session_id;
+
+        // datos guardados de store por pinia
+        const data = purchaseStore.purchaseData;
+        // recupera de localStorage y guarda en purchaseStore
+        const saved = localStorage.getItem('purchaseData');
+        if (saved && !purchaseStore.purchaseData) {
+            purchaseStore.setPurchase(JSON.parse(saved));
+        }
+
+
+        // Registrar la compra en tu backend
+        console.log('🔎 data', purchaseStore.purchaseData);
+        try{
+            const purchaseResponse = await axios.post('/api/fakePurchaseProduct', {
+                purchaseData: purchaseStore.purchaseData,
+                sessionId: sessionId,
+            })
+            .then(res => {
+                console.log('Producto comprado', res.data);
+                console.log('👌 Status:', res.status);
+                
+                router.push({ name: 'home' });
+                swal({
+                    icon: 'success',
+                    title: 'Compra realizada',
+                    showConfirmButton: false,
+                    timer: 1500,
+                }); 
+                
+            });
+        }catch(error){
+            console.error('Error en el proceso de compra:', error);
+            swal({
+                icon: 'error',
+                title: 'Error en la transaccion',
+                text: 'Por favor, intenta nuevamente.',
+            });
+        }
+    };
 
 
 
@@ -158,5 +200,6 @@ export default function useCheckout() {
         submitPurchaseForm,
         saveAddress,
         saveShippingAddress,
+        registerTransaction,
     }
 }

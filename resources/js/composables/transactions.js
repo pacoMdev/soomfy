@@ -21,6 +21,7 @@ export default function useTransactions() {
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
+    const historicMove = ref();
 
     const getTransactions = async (
         page = 1,
@@ -76,11 +77,26 @@ export default function useTransactions() {
                 }
             })
     }
+    const historicMovements = async (trakingNumber) => {
+        try {
+          await axios.post('/api/historicMovements', {
+            trakingNumber: trakingNumber,
+          })
+          .then(response => {
+            historicMove.value = response.data;
+        console.log('📦 Historial de movimiento -->', historicMove.value);
+          })
+        } catch (err) {
+          error.value = "Error al obtener los datos.";
+        }
+      };
 
     return {
         transactions,
         transaction,
         getTransactions,
         deleteTransactions,
+        historicMove,
+        historicMovements,
     }
 }

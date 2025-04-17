@@ -111,6 +111,7 @@ class TransactionsController extends Controller
         $transaction -> isToSend = $request -> purchaseData['isToSend'] == 0 ? false : true; 
         $transaction -> isRegated = false; 
         $transaction -> delivery_type = $request ->purchaseData['selectedMethod'] == 1 ? 'home_delivery' : 'pickup_point';
+        $transaction -> $request -> session_id ?? null;
         $transaction->save();
 
         $transaction -> shippingAddress() 
@@ -299,5 +300,25 @@ class TransactionsController extends Controller
 
 
         return response() -> json(['status' => 200, ' succsss' => true, 'seller' => $userSeller, 'buyer' => $userBuyer, 'product' =>$transaction]);
+    }
+
+    public function historicMovements(Request $request){
+
+        $historic = ShippingAddressTransaction::where('tracking_number', $request->trakingNumber)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($query) {
+                $icon = match (strtolower($query->status)) {
+                    'ordered' => 'pi pi-shopping-cart',
+                    'processed' => 'pi pi-cog',
+                    'to_pick' => 'pi pi-truck',
+                    'finished' => 'pi pi-check',
+                    default => 'pi pi-info-circle',
+                };
+                $query->icon = $icon;
+                return $query;
+            });
+        // dd($historic);
+        return response() -> json($historic);
     }
 }

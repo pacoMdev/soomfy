@@ -344,23 +344,18 @@ class ProductControllerAdvance extends Controller
     public function checkSelledProduct(Request $request)
     {
         $productId = $request->input('product_id');
-        $userId = auth()->id();
 
-        // $isSelled = Transactions::where('user_id', $userId)
-        //     ->whereHas('product', function ($query) use ($productId) {
-        //         $query->where('id', $productId);
-        //     })
-        //     ->exists();
-
-        $isSelled = ShippingAddressTransaction::where('status', 'finished')
+        $isSelled = ShippingAddressTransaction::whereIn('status', ['finished', 'pending'])
             ->whereHas('transaction.product', function ($query) use ($productId) {
                 $query->where('id', $productId);
             })
-            ->exists();
-        // dd($isSelled);
-        
+            ->get();
+        // dd($isSelled);        
 
-        return response()->json(['isSelled' => $isSelled]);
+        return response()->json([
+            'isProcessed' => $isSelled->count() >= 1 ? true : false,
+            'isSelled' => $isSelled->count() >=2 ? true : false,
+        ]);
 
     }
 }

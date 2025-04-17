@@ -50,7 +50,11 @@
                     </div>
                     <div class="col-md-5 col-lg-5 col-xl-4 d-flex flex-column gap-4 container-right">
                         <div v-if="product" class="container-info-prod p-5 d-flex flex-column gap-3">
-                            <div  v-if="isSelledProduct" class="d-flex justify-content-between align-items-center">
+                            <div v-if="isProcessedProduct && !isSelledProduct" class="d-flex justify-content-between align-items-center">
+                                <h3 class="m-0">{{ product.price }} €</h3>
+                                <Avatar icon="pi pi-bookmark-fill" class="mr-2" size="xlarge" shape="circle" style="background-color: white; color: #B51200; border: solid 2px #B51200" />
+                            </div>
+                            <div v-else-if="isProcessedProduct && isSelledProduct" class="d-flex justify-content-between align-items-center">
                                 <h3 class="m-0">{{ product.price }} €</h3>
                                 <Avatar icon="pi pi-shopping-cart" class="mr-2" size="xlarge" shape="circle" style="background-color: white; color: #B51200; border: solid 2px #B51200" />
                             </div>
@@ -62,16 +66,16 @@
                             </div>
 
                             <div class="button d-flex gap-3" v-if="isSelledProduct==false">
-                                    <router-link :to="'/app/profile'" class="w-100" v-if="isYourOwnProduct(product.user?.id)">
-                                        <Button label="Editar" class="w-100 p-button secondary" rounded />
-                                    </router-link>
-                                    <div v-else class="d-flex gap-3 w-100">
-                                        <router-link v-if="product.toSend===1" :to="'/app/checkout?productId='+product.id" class="w-50">
+                                <router-link :to="'/app/profile'" class="w-100" v-if="isYourOwnProduct(product.user?.id)">
+                                    <Button label="Editar" class="w-100 p-button secondary" rounded />
+                                </router-link>
+                                <div v-else class="d-flex gap-3 w-100">
+                                    <router-link v-if="product.toSend===1 && !isProcessedProduct && !isSelledProduct" :to="'/app/checkout?productId='+product.id" class="w-50">
                                         <Button label="Comprar" variant="outlined" class="w-100" rounded />
-                                        </router-link>
-                                        <Button @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
+                                    </router-link>
+                                    <Button @click.prevent="handleChatCreation" label="Chat" class="w-50 p-button secondary" rounded />
 
-                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div v-else class="container-info-prod p-5">
@@ -193,6 +197,7 @@
 
     const {
         checkSelledProduct,
+        isProcessedProduct,
         isSelledProduct,
     } = useProducts();
     const { 

@@ -131,6 +131,7 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     // Transactions
     Route::apiResource('transactions', TransactionsController::class);
+    Route::post('/historicMovements', [TransactionsController::class, 'historicMovements']);
 
     // Habilidades
     Route::get('abilities', function(Request $request) {

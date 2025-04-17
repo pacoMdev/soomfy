@@ -23,6 +23,7 @@ return new class extends Migration
             $table -> double('finalPrice');
             $table -> boolean('isToSend') -> default(0);
             $table -> boolean('isRegated') -> default(0);
+            $table -> string('session_id');
             $table -> enum('delivery_type', ['in_person', 'home_delivery', 'pickup_point'])->default('in_person');  // in_person || home_delivery || pickup_point
             $table -> timestamps();
         });

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('transactions_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->foreign('shipping_address_id')->references('id')->on('shipping_address')->onDelete('cascade');
 
-            $table->string('status')->default('Pendiente'); // "Pendiente", "Enviado", "Entregado"
+            $table->string('status')->default('ordered'); // "Pendiente", "Enviado", "Entregado"
             $table->string('tracking_number')->nullable();
             $table->timestamps();
 
