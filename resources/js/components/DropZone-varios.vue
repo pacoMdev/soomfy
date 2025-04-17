@@ -1,47 +1,48 @@
 <template>
-  <div class="grid grid-cols-3 gap-5 w-100">
+  <!-- Contenedor principal con row-cols para visualización horizontal -->
+  <div class="row flex-nowrap overflow-auto py-2">
     <div
         v-for="(item, index) in thumbnails"
         :key="index"
-        @click="activarInput"
-        class="dropzone-container tamaño-imagen input-imagen"
-        @dragover="dragover"
-        @dragleave="dragleave"
+        class="col-4 px-2"
+    >
+      <div 
+        class="dropzone-container w-100"
+        @dragover.prevent="(e) => handleDragover(e, index)"
+        @dragleave="(e) => handleDragleave(e, index)"
         @drop="(e) => drop(e, index)"
         @mouseenter="() => hoverIndex = index"
         @mouseleave="() => hoverIndex = null"
-    >
-      <input
-          type="file"
-          class="hidden-input backgroundIcon"
-          @change="(e) => onChange(e, index)"
-          :ref="`refFiles${index}`"
-          accept=".webp, .png, .jpg, .heic, .avif"
-      />
-      <div class="file-label" @click="() => triggerFileInput(index)">
-        <!-- Si hay imagen -->
-        <div v-if="item.img" class="preview-wrapper" :class="{ 'hover-effect': hoverIndex === index }">
-          <img class="preview-img" :src="item.img" />
-          <div v-if="hoverIndex === index" class="overlay">
-            <i class="fas fa-edit edit-icon"></i>
+      >
+        <input
+            type="file"
+            class="hidden-input"
+            @change="(e) => onChange(e, index)"
+            :ref="`refFiles${index}`"
+            accept=".webp, .png, .jpg, .heic, .avif"
+        />
+        <div class="file-label w-100 h-100" @click="() => triggerFileInput(index)">
+          <!-- Si hay imagen -->
+          <div v-if="item.img" class="preview-wrapper" :class="{ 'hover-effect': hoverIndex === index }">
+            <img class="preview-img" :src="item.img" />
+            <div v-if="hoverIndex === index" class="overlay">
+              <i class="fas fa-edit edit-icon"></i>
+            </div>
           </div>
-        </div>
-        <!-- Si no hay imagen -->
-        <div v-else class="preview-wrapper">
-          <div class="overlay">
-            <i class="fas fa-edit edit-icon"></i>
-          </div>
-          <div class="placeholder">
-            <font-awesome-icon :icon="['fad', 'image']" />
+          <!-- Si no hay imagen -->
+          <div v-else class="preview-wrapper">
+            <div class="overlay">
+              <i class="fas fa-edit edit-icon"></i>
+            </div>
+            <div class="placeholder">
+              <font-awesome-icon :icon="['fad', 'image']" />
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
-
 
 <script setup>
 import { ref, watch, onMounted} from "vue";
@@ -58,8 +59,6 @@ const props = defineProps({
     type: Number,
     default: 3
   }
-
-
 });
 
 // Usar ref en Vue para referirse a los inputs dinámicos
@@ -115,9 +114,6 @@ watch(
     { immediate: true }  // Asegura que se ejecute inmediatamente
 );
 
-
-
-
 // Watcher para sincronizar datos desde este archivo a Create.vue
 // Este watcher observa los cambios en la estructura de thumbnails.
 // Su finalidad principal es detectar cualquier modificación en la propiedad `file` de los objetos
@@ -134,18 +130,26 @@ watch(
     }
 );
 
-
 const hoverIndex = ref(null);
+const isDragging = ref(Array(props.maxImages).fill(false));
 
-// Función de arrastre
-const dragover = (e) => {
+// Función mejorada para manejar el dragover
+const handleDragover = (e, index) => {
   e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy'; // Explícitamente establecer el efecto como copia
+  isDragging.value[index] = true;
 };
 
-const dragleave = () => {};
+// Función mejorada para manejar el dragleave
+const handleDragleave = (e, index) => {
+  e.preventDefault();
+  isDragging.value[index] = false;
+};
 
+// Función de drop actualizada
 const drop = (e, index) => {
   e.preventDefault();
+  isDragging.value[index] = false;
   const files = e.dataTransfer.files;
   if (files.length > 0) {
     const file = files[0];
@@ -164,13 +168,10 @@ const drop = (e, index) => {
       file: file,
       id:  thumbnails.value[index]?.id || null,
       order: index
-
     };
-
 
     // Envia las imagenes al padre (Al formulario de creacion)
     emit("update:modelValue",thumbnails.value);
-
   }
 };
 
@@ -194,68 +195,88 @@ const onChange = (e, index) => {
       order: index
     };
 
-
     // Envia las imagenes al padre (Al formulario de creacion)
     emit("update:modelValue",thumbnails.value);
-
   }
 };
 
-// Función para disparar el input cuando se hace clic
+// Función modificada para disparar el input cuando se hace clic
 const triggerFileInput = (index) => {
-  // Usar la referencia correcta para activar el input correspondiente
-  document.querySelectorAll('input[type="file"]')[index].click();
-};
-
-// Función adicional para manejar clic en el contenedor (opcional)
-const activarInput = () => {
-  // Aquí puedes agregar lógica para cuando el contenedor sea clickeado
+  const fileInput = document.querySelectorAll('input[type="file"]')[index];
+  // Aseguramos que no hay efectos secundarios al hacer clic
+  if (fileInput) {
+    // Técnica para evitar que el navegador cambie el cursor
+    setTimeout(() => {
+      fileInput.click();
+    }, 0);
+  }
 };
 </script>
 
 <style scoped>
 input {
   display: none;
-}
-
-.tamaño-imagen {
-  width: 31%;
+  pointer-events: none; /* Evita que el input interfiera con eventos del mouse */
 }
 
 .dropzone-container {
-  min-height: 100px;
-  height: 100px;
+  min-height: 160px;
+  height: 200px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: pointer !important; /* Forzar cursor pointer */
   position: relative;
-  overflow: hidden;
-  transition: filter 7s ease;
+  overflow: hidden; 
+  transition: background-color 0.2s ease;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none; /* Standard */
 }
 
-.dropzone-container:hover {
-  background-color: rgba(227, 227, 227, 0.8);
+.dropzone-container:hover,
+.dropzone-container:active,
+.dropzone-container:focus {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: #999;
+  cursor: pointer !important; /* Forzar cursor pointer */
 }
 
-.image-icon {
-  font-size: 48px;
-  color: #ccc;
+/* Clase explícita para cuando se está arrastrando */
+.dragging {
+  background-color: rgba(200, 200, 200, 0.5);
+  border-color: #666;
+  cursor: copy !important;
 }
 
+/* Prevenir cambio de cursor en todos los posibles estados */
+.dropzone-container *,
+.file-label,
+.preview-wrapper,
+.placeholder {
+  cursor: pointer !important;
+  -webkit-user-drag: none;
+  
+}
+
+/* Resto del código sin cambios */
 .preview-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .preview-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .overlay {
@@ -264,15 +285,16 @@ input {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .edit-icon {
-  color: #fff;
+  /* Aplicar filtro de opacidad directamente al elemento */
+  color: var(--primary-color);
+  opacity: 0.7; /* Ajusta este valor entre 0 y 1 para controlar la transparencia */
   font-size: 24px;
 }
 
@@ -284,7 +306,17 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #ccc;
   font-size: 24px;
+  width: 100%;
+  height: 100%;
+  background-color: transparent !important;
+
+}
+
+/* Ajustes de altura responsive con media queries */
+@media (max-width: 576px) {
+  .dropzone-container {
+    min-height: 200px;
+  }
 }
 </style>

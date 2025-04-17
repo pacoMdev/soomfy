@@ -1,26 +1,29 @@
-
 <template>
   <div class="show"></div>
-  <div class="py-5">
-      <form @submit.prevent="submitForm" style=" width: min(90vw, 800px); height: min(90vh, 550px); " class="mx-auto">
-          <div class="card flex justify-center">
-              <Stepper value="1" class="basis-[50rem]">
+  <div class="container-fluid py-5">
+      <form @submit.prevent="submitForm" class="product-form">
+          <div class="card">
+              <Stepper value="1" class="w-100">
                   <StepList>
                       <Step value="1">Informacion Basica</Step>
                       <Step value="2">Informacion Adicional</Step>
                   </StepList>
                   <StepPanels>
                       <StepPanel v-slot="{ activateCallback }" value="1">
-                          <div class="d-flex flex-column gap-5">
-                              <!-- IMAGE PRODUCT ---------------------------------------------------- -->
-                              <div class="card-body">
-                                  <h3>Fotos</h3>
-                                      <DropZoneV v-model="product.thumbnails" class="imagenes"/>
+                          <div class="form-panel">
+                              <!-- IMAGE PRODUCT -->
+                              <div class="card-body mb-4">
+                                  <h3 class="mb-3">Fotos del producto</h3>
+                                  <div class="row">
+                                      <div class="col-12">
+                                          <DropZoneV v-model="product.thumbnails" class="d-flex flex-wrap"/>
+                                      </div>
+                                  </div>
                               </div>
-                              <!-- TITLE ---------------------------------------------------- -->
-                              <div class="mb-3 input-nombre">
+                              <!-- TITLE -->
+                              <div class="mb-4">
                                   <FloatLabel>
-                                      <InputText v-model="product.title" id="product-title" />
+                                      <InputText v-model="product.title" id="product-title" class="w-100" />
                                       <label for="product-title">Nombre del producto</label>
                                   </FloatLabel>
                                   <div class="text-danger mt-1">
@@ -33,19 +36,19 @@
                                   </div>
                               </div>
                           </div>
-                          <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
-                          <div class="flex pt-6 justify-end">
-                              <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
+                          <!-- BUTTONS OPTIONS -->
+                          <div class="d-flex justify-content-end mt-4">
+                              <Button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" class="px-4" />
                           </div>
                       </StepPanel>
   
                       <StepPanel v-slot="{ activateCallback }" value="2">
-                        <div class="d-flex flex-column gap-3">
-                            <!-- CONTENT ---------------------------------------------------- -->
-                            <div class="mb-3 w-50">
+                        <div class="form-panel">
+                            <!-- CONTENT -->
+                            <div class="mb-4">
                                 <FloatLabel>
-                                    <Textarea id="content" v-model="product.content" rows="5" cols="45" />
-                                    <label for="content">Content</label>
+                                    <Textarea id="content" v-model="product.content" rows="5" class="w-100" />
+                                    <label for="content">Descripción del producto</label>
                                 </FloatLabel>
                                 <div class="text-danger mt-1">
                                     {{ errors.content }}
@@ -56,136 +59,134 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- CATEGORY ---------------------------------------------------- -->
-                            <div class="mb-3 input-categorias w-50">
-                                <FloatLabel>
-                                    <MultiSelect
-                                        v-model="product.categories"
-                                        :options="categoryList"
+
+                            <!-- CATEGORY & ESTADO -->
+                            <div class="row mb-4">
+                                <!-- CATEGORY -->
+                                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                    <FloatLabel>
+                                        <MultiSelect
+                                            v-model="product.categories"
+                                            :options="categoryList"
+                                            optionLabel="name"
+                                            optionValue="id"
+                                            :loading="isLoading"
+                                            :disabled="isLoading"
+                                            class="w-100"
+                                            appendTo=".show"
+                                        />
+                                        <label>Categorías</label>
+                                    </FloatLabel>
+                                    <div class="text-danger mt-1">
+                                        {{ errors.categories }}
+                                    </div>
+                                    <div class="text-danger mt-1">
+                                        <div v-for="message in validationErrors?.categories">
+                                            {{ message }}
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <!-- ESTADO -->
+                                <div class="col-12 col-md-6">
+                                    <FloatLabel>
+                                    <Select
+                                        v-model="product.estado"
+                                        :options="estadoList"
                                         optionLabel="name"
                                         optionValue="id"
-                                        :loading="isLoading"
-                                        :disabled="isLoading"
-                                        class="w-full md:w-80"
+                                        :loading="isLoadingEstados"
+                                        class="w-100"
                                         appendTo=".show"
                                     />
-                                    <label>Selecciona categorías</label>
-                                </FloatLabel>
-                                <div class="text-danger mt-1">
-                                    {{ errors.categories }}
-                                </div>
-                                <div class="text-danger mt-1">
-                                    <div v-for="message in validationErrors?.categories">
+                                    <label for="estado">Estado</label>
+                                    </FloatLabel>
+        
+                                    <div class="text-danger mt-1">
+                                    {{ errors.estado_id }}
+                                    </div>
+                                    <div class="text-danger mt-1">
+                                    <div v-for="message in validationErrors?.estado_id">
                                         {{ message }}
+                                    </div>
                                     </div>
                                 </div>
                             </div>
     
-                            <!-- ESTADO ---------------------------------------------------- -->
-                            <div class="mb-3 input-estado w-50">
+                            <!-- PRICE -->
+                            <div class="mb-4">
                                 <FloatLabel>
-                                <Select
-                                    v-model="product.estado"
-                                    :options="estadoList"
-                                    optionLabel="name"
-                                    optionValue="id"
-                                    :loading="isLoadingEstados"
-                                    class="w-full md:w-80"
-                                    appendTo=".show"
-                                />
-                                <label for="estado">Selecciona estado</label>
-                                </FloatLabel>
-    
-                                <div class="text-danger mt-1">
-                                {{ errors.estado_id }}
-                                </div>
-                                <div class="text-danger mt-1">
-                                <div v-for="message in validationErrors?.estado_id">
-                                    {{ message }}
-                                </div>
-                                </div>
-                            </div>
-    
-                            <!-- PRICE ---------------------------------------------------- -->
-                            <div class="mb-3 input-price w-50">
-                                <FloatLabel>
-                                    <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" fluid id="price-product"/>
+                                    <InputNumber v-model="product.price" inputId="local-user" :minFractionDigits="2" class="w-100" id="price-product"/>
                                     <label for="price-product">Precio</label>
                                 </FloatLabel>
                             </div>
     
-                            <!-- PRICE ---------------------------------------------------- -->
-                            
-                            <div class="mb-3 input-toSend card d-flex flex-row gap-3 p-3 p-0 m-0 w-50 justify-content-between">
-                                <p class="m-0">Para enviar 📦</p>
-                                <ToggleSwitch v-model="product.toSend" />
+                            <!-- SHIPPING TOGGLE -->
+                            <div class="mb-4 card p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="m-0 fw-medium">¿Es un producto para enviar? 📦</p>
+                                    <ToggleSwitch v-model="product.toSend" />
+                                </div>
                             </div>
                             
-                            <div v-if="product.toSend == 1" class="d-flex flex-column gap-3 py-3 ">
-                                <div class="mb-3 input-estado">
-                                    <FloatLabel>
-                                        <Select
-                                            v-model="product.weight"
-                                            :options="pseoProducto"
-                                            optionLabel="name"
-                                            optionValue="total"
-                                            :loading="isLoadingEstados"
-                                            class="w-full md:w-80"
-                                            appendTo=".show"
-                                        />
-                                        <label for="estado">Selecciona el peso</label>
+                            <div v-if="product.toSend == 1" class="bg-light p-3 rounded mb-4">
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <FloatLabel>
+                                            <Select
+                                                v-model="product.weight"
+                                                :options="pseoProducto"
+                                                optionLabel="name"
+                                                optionValue="total"
+                                                :loading="isLoadingEstados"
+                                                class="w-100"
+                                                appendTo=".show"
+                                            />
+                                            <label for="estado">Peso</label>
                                         </FloatLabel>
-    
                                         <div class="text-danger mt-1">
-                                        {{ errors.estado_id }}
-                                        </div>
-                                        <div class="text-danger mt-1">
-                                        <div v-for="message in validationErrors?.weight">
-                                            {{ message }}
+                                            <div v-for="message in validationErrors?.weight">
+                                                {{ message }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-3 input-ancho">
-                                    <FloatLabel>
-                                        <InputNumber v-model="product.width" />
-                                        <label for="estado">Introduce el ancho</label>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                        <FloatLabel>
+                                            <InputNumber v-model="product.width" class="w-100" />
+                                            <label>Ancho (cm)</label>
                                         </FloatLabel>
-    
                                         <div class="text-danger mt-1">
-                                        {{ errors.estado_id }}
-                                        </div>
-                                        <div class="text-danger mt-1">
-                                        <div v-for="message in validationErrors?.width">
-                                            {{ message }}
+                                            <div v-for="message in validationErrors?.width">
+                                                {{ message }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="mb-3 input-alto">
-                                    <FloatLabel>
-                                        <InputNumber v-model="product.heigth" />
-    
-                                        <label for="estado">Introduce la altura</label>
+                                    <div class="col-12 col-md-6">
+                                        <FloatLabel>
+                                            <InputNumber v-model="product.heigth" class="w-100" />
+                                            <label>Alto (cm)</label>
                                         </FloatLabel>
-    
                                         <div class="text-danger mt-1">
-                                        {{ errors.estado_id }}
-                                        </div>
-                                        <div class="text-danger mt-1">
-                                        <div v-for="message in validationErrors?.heigth">
-                                            {{ message }}
+                                            <div v-for="message in validationErrors?.heigth">
+                                                {{ message }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- BUTTONS OPTIONS ---------------------------------------------------- -->
-                            <div class="d-flex gap-4 pt-6 justify-between">
-                                <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
-                                <Button :disabled="isLoading" class="p-button secondary">
-                                    <div v-show="isLoading" class=""></div>
-                                    <span v-if="isLoading">Processing...</span>
-                                    <span v-else>Publish</span>
+                            
+                            <!-- BUTTONS OPTIONS -->
+                            <div class="d-flex flex-column flex-md-row justify-content-between mt-4">
+                                <Button label="Atrás" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" class="mb-3 mb-md-0" />
+                                <Button :disabled="isLoading" class="p-button-primary">
+                                    <div v-show="isLoading" class="spinner-border spinner-border-sm me-2" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                    <span v-if="isLoading">Procesando...</span>
+                                    <span v-else>Publicar</span>
                                 </Button>
-                                <!-- <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" /> -->
                             </div>
                         </div>
                       </StepPanel>
@@ -312,22 +313,19 @@ onMounted(() => {
 
 
 <style scoped>
-
-.imagenes {
-    width: 33%;
-}
-.input-nombre {
-    width: 70%;
-}
-.input-categorias {
-    width: 25%;
-}
-.input-estado {
-    width: 25%;
-}
-.input-price{
-    width: 25%;
+.product-form {
+    max-width: 1200px; /* Ampliado de 800px a 1200px para más espacio */
+    margin: 0 auto;
 }
 
+.form-panel {
+    padding: 1.5rem;
+}
+
+/* Small visual tweaks that no están en bootstrap */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
 </style>
