@@ -113,3 +113,92 @@
     color: white !important;
 }
 
+
+
+/* StepList */
+
+/* Estilos personalizados para Stepper y componentes Step */
+
+/* Stepper - Personalización general */
+.p-stepper .p-stepper-nav {
+    background-color: transparent;
+}
+
+/* StepList - Lista de pasos */
+.p-steplist {
+    color: var(--secondary-color);
+    background-color: transparent;
+}
+
+/* Step - Paso individual */
+.p-step-item {
+    color: var(--secondary-color);
+}
+
+/* Step - Número de paso */
+.p-step-item .p-step-number {
+    background-color: var(--secondary-color);
+    color: #ffffff;
+}
+
+/* Step - Paso activo */
+.p-step-item.p-highlight .p-step-number {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.p-step-item.p-highlight .p-step-title {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Step - Paso completado */
+.p-step-item.p-complete .p-step-number {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+/* Línea conectora entre pasos */
+.p-steplist .p-steplist-step:before {
+    border-top: 1px solid var(--secondary-color);
+}
+
+/* Panel de pasos */
+.p-steppanel {
+    border: none;
+    background-color: transparent;
+}
+
+/* Estilo para botones dentro del stepper */
+.p-stepper .p-button {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.p-stepper .p-button:hover {
+    background-color: var(--primary-color);
+    opacity: 0.9;
+    border-color: var(--primary-color);
+}
+
+.p-stepper .p-button.p-button-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.p-stepper .p-button.p-button-secondary:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.9;
+    border-color: var(--secondary-color);
+}
+
+/* Asegurarse de que estos estilos tengan mayor prioridad */
+.p-stepper .p-step-item.p-highlight .p-step-title,
+.p-stepper .p-step-item.p-highlight .p-step-number {
+    color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+}
+
+.p-stepper .p-step-item.p-highlight .p-step-number {
+    color: white !important;
+}

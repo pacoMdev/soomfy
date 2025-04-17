@@ -135,7 +135,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { useRoute } from "vue-router";
 import ProductoNew from "@/components/ProductoNew.vue";
 import useProducts from '@/composables/products.js';
@@ -147,12 +147,27 @@ import { authStore } from "@/store/auth"; // Import auth store
 import axios from 'axios';
 import './products.css';
 
+/**
+ * Variables reactivas principales para almacenar datos de los productos y categorías
+ */
 const route = useRoute();
-
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
-const {categoryList, getCategoryList} = useCategories();
+const { categoryList, getCategoryList } = useCategories();
 
-// Use the enhanced Maps composable
+/**
+ * Importación de funciones del composable de Mapas
+ * 
+ * - latitude/longitude: Coordenadas actuales
+ * - partialAddress: Dirección ingresada por el usuario
+ * - searchRadius: Radio de búsqueda actual
+ * - initMap: Inicializa el mapa en un elemento HTML
+ * - getGeoPartialAddress: Convierte dirección en coordenadas
+ * - drawCircle: Dibuja círculo en el mapa
+ * - updateMapPosition: Actualiza posición del mapa y marcador
+ * - removeCircle: Elimina círculos del mapa
+ * - recreateMap: Recrea el mapa completamente (solución radical)
+ * - updateCircleOnly: Actualiza solo el círculo sin recrear mapa
+ */
 const { 
   latitude, 
   longitude, 
@@ -162,13 +177,24 @@ const {
   getGeoPartialAddress,
   drawCircle,
   updateMapPosition,
-  removeCircle
+  removeCircle,
+  recreateMap,
+  updateCircleOnly
 } = useMaps();
 
-// Set Barcelona coordinates as the default location
+/**
+ * Coordenadas por defecto (Barcelona)
+ * Utilizadas cuando no se puede obtener la ubicación del usuario
+ */
 const BARCELONA_LATITUDE = 41.3874;
 const BARCELONA_LONGITUDE = 2.1686;
 
+/**
+ * Obtiene productos del servidor según los parámetros de filtrado
+ * 
+ * Esta función recupera los productos filtrados basados en los parámetros
+ * de la URL actual y los muestra en la interfaz.
+ */
 const fetchProducts = async () => {
   try {
     console.log('Parámetros de consulta actuales:', route.query);
@@ -195,23 +221,28 @@ const fetchProducts = async () => {
   }
 };
 
+/**
+ * Variables reactivas para los filtros de búsqueda
+ */
+const categoriaSeleccionada = ref([]);  // Categorías seleccionadas (multiselect)
+const buscarEstado = ref([]);           // Estados seleccionados (multiselect)
+const buscarTitulo = ref('');           // Texto para buscar en título
+const buscarPrecioMin = ref(null);      // Precio mínimo
+const buscarPrecioMax = ref(null);      // Precio máximo
+const buscarRadio = ref(0);             // Radio de búsqueda en metros
+const ordenarPrecio = ref('');          // Ordenamiento por precio (asc/desc)
+const ordenarFecha = ref('');           // Ordenamiento por fecha (asc/desc)
+const searchAddress = ref('');          // Dirección de búsqueda
+const isSearching = ref(false);         // Estado de búsqueda en progreso
 
-const categoriaSeleccionada = ref([]); // Asegúrate de inicializarlo como un array vacío
-const buscarEstado = ref([]); // También inicializa como un array vacío
-const buscarTitulo = ref('');
-const buscarPrecioMin = ref(null); // Usa null para valores numéricos iniciales
-const buscarPrecioMax = ref(null);
-const buscarRadio = ref(0);
-const ordenarPrecio = ref('');
-const ordenarFecha = ref('');
-const searchAddress = ref('');
-const isSearching = ref(false);
-
-let googleMap = null;
-let mapMarker = null;
-let mapCircle = null;
-
-// Get authenticated user's location
+/**
+ * Obtiene la ubicación del usuario autenticado
+ * 
+ * Si el usuario está autenticado y tiene coordenadas guardadas,
+ * las utiliza. De lo contrario, usa Barcelona como ubicación predeterminada.
+ * 
+ * @returns {Promise<boolean>} True si se obtuvo coordenadas del usuario, False en caso contrario
+ */
 const getUserLocation = async () => {
   try {
     // If the user is logged in
@@ -224,20 +255,82 @@ const getUserLocation = async () => {
         return true;
       }
     }
-    // If authentication fails or no coordinates, use Barcelona's coordinates
+    // Si la autenticacion falla o no hay coordenadas, usamos las de Barcelona
     latitude.value = BARCELONA_LATITUDE;
     longitude.value = BARCELONA_LONGITUDE;
     return false;
   } catch (error) {
     console.error('Error al obtener la ubicación del usuario:', error);
-    // On error, also use Barcelona's coordinates
+    // Si hay un error, usamos las coordenadas de Barcelona
     latitude.value = BARCELONA_LATITUDE;
     longitude.value = BARCELONA_LONGITUDE;
     return false;
   }
 };
 
-// Update searchLocation function
+/**
+ * Fuerza la actualización del círculo cuando cambia el radio
+ * 
+ * SOLUCIÓN DEFINITIVA: Recrea completamente el mapa cada vez que
+ * se cambia el radio, evitando problemas de círculos persistentes.
+ * 
+ * @param {number|string} radiusValue - Valor del radio en metros
+ */
+const forceCircleRefresh = async (radiusValue) => {
+  try {
+    const radius = parseInt(radiusValue) || 0;
+    console.log(`🔄 Cambiando radio a: ${radius}m`);
+    
+    // Actualizamos el valor del modelo
+    buscarRadio.value = radius;
+    
+    // SOLUCIÓN DEFINITIVA: Recrear SIEMPRE el mapa completo en cada cambio
+    // Esto garantiza que no queden restos de círculos antiguos
+    console.log("🔥 Recreando mapa completo para asegurar limpieza total");
+    await recreateMap("map", radius);
+    
+    console.log(`✅ Mapa recreado exitosamente con radio: ${radius}m`);
+    
+    // Aplicamos filtro después de recrear el mapa
+    setTimeout(() => {
+      aplicarFiltro();
+    }, 200);
+    
+  } catch (error) {
+    console.error("Error en forceCircleRefresh:", error);
+  }
+};
+
+/**
+ * Maneja el cambio de selección en el dropdown de radio
+ * 
+ * Se activa cuando el usuario selecciona un nuevo valor de radio,
+ * actualiza el modelo y aplica el cambio en el mapa.
+ * 
+ * @param {Event} event - Evento de cambio del elemento select
+ */
+const handleRadioChange = async (event) => {
+  try {
+    const newValue = event.target.value;
+    console.log("📏 Radio cambiado a:", newValue);
+    
+    // Actualizamos el valor
+    buscarRadio.value = newValue;
+    
+    // Usamos la nueva función más eficiente
+    await forceCircleRefresh(newValue);
+    
+  } catch (error) {
+    console.error("Error en handleRadioChange:", error);
+  }
+};
+
+/**
+ * Busca una ubicación basada en el texto ingresado
+ * 
+ * Geocodifica la dirección ingresada por el usuario y actualiza
+ * el mapa con las nuevas coordenadas, manteniendo el radio seleccionado.
+ */
 const searchLocation = async () => {
   if (!searchAddress.value.trim()) return;
   
@@ -247,11 +340,10 @@ const searchLocation = async () => {
     partialAddress.value = searchAddress.value;
     await getGeoPartialAddress();
     
-    // Draw the circle if radius is set
-    if (buscarRadio.value > 0) {
-      drawCircle(buscarRadio.value);
-    }
+    // Usamos updateCircleOnly para mantener consistencia
+    await updateCircleOnly(buscarRadio.value);
     
+    // Aplicamos el filtro después de actualizar la ubicación
     aplicarFiltro();
   } catch (error) {
     console.error('Error al buscar ubicación:', error);
@@ -260,37 +352,19 @@ const searchLocation = async () => {
   }
 };
 
-// Setup the map
+/**
+ * Inicializa el mapa en el elemento con id "map"
+ */
 const setupMap = () => {
   initMap("map", latitude.value, longitude.value);
 };
 
-// Force complete circle refresh when radius changes
-const forceCircleRefresh = (radiusValue) => {
-  // Ensure we have a clean integer value
-  const radius = parseInt(radiusValue) || 0;
-  
-  // Primero eliminamos cualquier círculo existente
-  removeCircle();
-  
-  // Añadimos un pequeño retardo antes de dibujar el nuevo círculo
-  setTimeout(() => {
-    drawCircle(radius);
-    
-    // Apply filter to update results after drawing the circle
-    setTimeout(() => {
-      aplicarFiltro();
-    }, 100);
-  }, 50);
-};
-
-// Listen for direct change events on the select element
-const handleRadioChange = (event) => {
-  const newValue = event.target.value;
-  buscarRadio.value = newValue;
-  forceCircleRefresh(newValue);
-};
-
+/**
+ * Aplica todos los filtros seleccionados a la búsqueda de productos
+ * 
+ * Recopila todos los criterios de filtrado (categoría, estado, precio, ubicación, etc.)
+ * y actualiza la URL y la lista de productos mostrados.
+ */
 const aplicarFiltro = async () => {
   try {
     // Map selected categories and states to their names
@@ -303,10 +377,10 @@ const aplicarFiltro = async () => {
       : [];
 
     const filtros = {
-      search_category: selectedCategoryNames.join(','), // Join categories with commas
-      search_estado: selectedEstadoNames.join(','), // Join states with commas
+      search_category: selectedCategoryNames.join(','),
+      search_estado: selectedEstadoNames.join(','),
       search_title: buscarTitulo.value || '',
-      search_global: route.query.search_global || '', // Preserve searchGlobal
+      search_global: route.query.search_global || '',
       order_column: 'created_at',
       order_direction: ordenarFecha.value || 'desc',
       order_price: ordenarPrecio.value || '',
@@ -314,7 +388,9 @@ const aplicarFiltro = async () => {
       max_price: buscarPrecioMax.value || '',
     };
 
-    if (latitude.value && longitude.value && buscarRadio.value) {
+    // Importante: Incluimos siempre la ubicación si hay coordenadas,
+    // incluso cuando el radio es 0 (ubicación exacta)
+    if (latitude.value && longitude.value) {
       filtros.search_latitude = latitude.value;
       filtros.search_longitude = longitude.value;
       filtros.search_radius = buscarRadio.value;
@@ -353,6 +429,48 @@ const aplicarFiltro = async () => {
   }
 };
 
+/**
+ * Limpia todos los filtros y restablece el mapa
+ * 
+ * Restablece todos los valores de filtro a sus valores predeterminados,
+ * actualiza el mapa y carga productos sin filtrar.
+ */
+const limpiarFiltros = async () => {
+  // Limpiamos todos los valores de filtros
+  categoriaSeleccionada.value = '';
+  buscarTitulo.value = '';
+  buscarEstado.value = '';
+  buscarTitulo.value = '';
+  ordenarFecha.value = '';
+  ordenarPrecio.value = '';
+  buscarPrecioMin.value = '';
+  buscarPrecioMax.value = '';
+  buscarRadio.value = 0;
+  
+  // Establecemos ubicación por defecto
+  latitude.value = BARCELONA_LATITUDE;
+  longitude.value = BARCELONA_LONGITUDE;
+  
+  // Esperamos a que se actualicen los valores
+  await nextTick();
+  
+  // Intentamos obtener la ubicación del usuario
+  await getUserLocation();
+  
+  // Actualizamos el mapa sin recrearlo
+  await updateMapPosition(latitude.value, longitude.value);
+  await updateCircleOnly(0); // Establecemos ubicación exacta
+  
+  // Aplicamos el filtro con los valores restablecidos
+  aplicarFiltro();
+};
+
+/**
+ * Observa cambios en los filtros y actualiza los resultados
+ * 
+ * Este watcher detecta cambios en cualquiera de los filtros
+ * y actualiza automáticamente la búsqueda de productos.
+ */
 watch(
   [
     categoriaSeleccionada,
@@ -369,60 +487,53 @@ watch(
   aplicarFiltro
 );
 
-
-const limpiarFiltros = async () => {
-  categoriaSeleccionada.value = '';
-  buscarTitulo.value = '';
-  buscarEstado.value = '';
-  buscarTitulo.value = '';
-  ordenarFecha.value = '';
-  ordenarPrecio.value = '';
-  buscarPrecioMin.value = '';
-  buscarPrecioMax.value = '';
-  buscarRadio.value = 0;
-  
-  // Set to Barcelona's coordinates by default
-  latitude.value = BARCELONA_LATITUDE;
-  longitude.value = BARCELONA_LONGITUDE;
-  
-  // Try to get authenticated user location (will overwrite Barcelona if found)
-  await getUserLocation();
-  
-  // Update map with the new position
-  updateMapPosition(latitude.value, longitude.value);
-  
-  // Remove circle from map when setting radius to 0
-  drawCircle(0);
-};
-
+/**
+ * Observa cambios en la URL y actualiza la lista de productos
+ * 
+ * Este watcher detecta cambios en los parámetros de la URL
+ * y recarga los productos según los nuevos criterios.
+ */
 watch(
-    () => route.query,
-    async (newQuery, oldQuery) => {
-      if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
-        await fetchProducts();
-      }
-    },
-    { deep: true }
+  () => route.query,
+  async (newQuery, oldQuery) => {
+    if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+      await fetchProducts();
+    }
+  },
+  { deep: true }
 );
 
-
+/**
+ * Configuración inicial cuando se carga la página
+ * 
+ * - Obtiene la ubicación del usuario
+ * - Carga productos iniciales
+ * - Inicializa listas de categorías y estados
+ * - Configura el mapa con los parámetros de la URL
+ */
 onMounted(async () => {
-  // First try to get the authenticated user's location, or use Barcelona's coordinates
   await getUserLocation();
   
   fetchProducts();
   getCategoryList();
   getEstadoList();
   
-  // Initialize the map after a short delay to ensure the DOM is ready
   setTimeout(() => {
     setupMap();
     
-    // If a radius is set in the URL, apply it
-    if (route.query.search_radius) {
-      buscarRadio.value = route.query.search_radius;
-      forceCircleRefresh(parseInt(buscarRadio.value));
-    }
+    setTimeout(async () => {
+      if (route.query.search_radius) {
+        buscarRadio.value = route.query.search_radius;
+        await updateCircleOnly(parseInt(buscarRadio.value));
+      } else {
+        // Si no hay radio en la URL, establecer explícitamente como ubicación exacta
+        buscarRadio.value = 0;
+        await updateCircleOnly(0);
+      }
+      
+      // Aplicar filtro para asegurar actualizaciones
+      aplicarFiltro();
+    }, 500);
   }, 500);
 });
 </script>
