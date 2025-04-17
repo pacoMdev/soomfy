@@ -111,7 +111,7 @@ class TransactionsController extends Controller
         $transaction -> isToSend = $request -> purchaseData['isToSend'] == 0 ? false : true; 
         $transaction -> isRegated = false; 
         $transaction -> delivery_type = $request ->purchaseData['selectedMethod'] == 1 ? 'home_delivery' : 'pickup_point';
-        $transaction -> $request -> session_id ?? null;
+        $transaction -> session_id = $request -> sessionId ?? null;
         $transaction->save();
 
         $transaction -> shippingAddress() 
@@ -210,7 +210,6 @@ class TransactionsController extends Controller
         $transactions_id = Transactions::where('userBuyer_id', $userId)->pluck('id');
 
         $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
-            ->where('status', 'finished')
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
             ->get();
 
@@ -226,7 +225,6 @@ class TransactionsController extends Controller
         $transactions_id = Transactions::where('userSeller_id', $userId)->pluck('id');
 
         $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
-            ->where('status', 'finished')
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
             ->get();
 
