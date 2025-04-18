@@ -76,41 +76,6 @@
                 </div>
             </div>
             
-            <!-- Gráficos reemplazados por visualizaciones simplificadas -->
-            <div class="col-12 lg:col-6">
-                <div class="card">
-                    <h5>Ventas mensuales</h5>
-                    <div class="sales-chart-container">
-                        <div v-for="(month, index) in salesMonths" :key="index" class="sales-bar-container">
-                            <div class="sales-bar-label">{{ month }}</div>
-                            <div class="sales-bar-chart">
-                                <div 
-                                    class="sales-bar current-year" 
-                                    :style="{ height: (salesData2023[index] / maxSales * 100) + '%' }"
-                                    :title="`Ventas 2023: ${formatCurrency(salesData2023[index])}`"
-                                ></div>
-                                <div 
-                                    class="sales-bar previous-year" 
-                                    :style="{ height: (salesData2022[index] / maxSales * 100) + '%' }"
-                                    :title="`Ventas 2022: ${formatCurrency(salesData2022[index])}`"
-                                ></div>
-                            </div>
-                            <div class="sales-bar-value">{{ formatShortCurrency(salesData2023[index]) }}</div>
-                        </div>
-                    </div>
-                    <div class="sales-chart-legend">
-                        <div class="legend-item">
-                            <div class="legend-color current-year-bg"></div>
-                            <span>Ventas 2023</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color previous-year-bg"></div>
-                            <span>Ventas 2022</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <div class="col-12 lg:col-6">
                 <div class="card">
                     <h5>Distribución de productos</h5>
@@ -146,39 +111,6 @@
                             </template>
                         </Column>
                     </DataTable>
-                </div>
-            </div>
-            
-            <!-- Tareas pendientes -->
-            <div class="col-12 lg:col-6">
-                <div class="card">
-                    <h5>Tareas pendientes</h5>
-                    <ul class="list-none p-0 m-0">
-                        <li v-for="(task, index) in pendingTasks" :key="index" class="flex align-items-center p-2 border-bottom-1 surface-border">
-                            <Checkbox v-model="task.completed" :binary="true" :inputId="'task_' + index" />
-                            <label :for="'task_' + index" class="ml-2" :class="{'line-through text-500': task.completed}">{{ task.description }}</label>
-                            <Badge :value="task.priority" :severity="getPrioritySeverity(task.priority)" class="ml-auto"></Badge>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Notificaciones -->
-            <div class="col-12 lg:col-6">
-                <div class="card">
-                    <h5>Notificaciones</h5>
-                    <div class="notification-item p-2 border-bottom-1 surface-border" v-for="(notification, index) in notifications" :key="index">
-                        <div class="flex align-items-center">
-                            <div :class="getNotificationIconClass(notification.type)">
-                                <i :class="getNotificationIcon(notification.type)"></i>
-                            </div>
-                            <div class="ml-3">
-                                <div class="font-bold">{{ notification.title }}</div>
-                                <div class="text-500">{{ notification.message }}</div>
-                                <small class="text-400">{{ notification.time }}</small>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

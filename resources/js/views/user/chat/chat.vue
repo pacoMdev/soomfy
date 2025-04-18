@@ -83,14 +83,18 @@
               >
                 <i class="pi pi-arrow-left"></i>
               </button>
-              <div class="d-flex flex-row align-items-center gap-3">
-                <img :src="product?.original_image" class="rounded-2" width="120" height="80px" alt="">
-                <h4 class="m-0 text-center">{{ product?.title }}</h4>
-              </div>
-              <div class="">
-                <img :src="user?.avatar" class="rounded-circle" width="60px" alt="">
-                <h4 class="m-0 text-center">{{ user?.name }}</h4>
-              </div>
+              <router-link :to="'products/detalle/'+product?.id">
+                <div class="d-flex flex-row align-items-center gap-3">
+                  <img :src="product?.original_image" class="rounded-2" width="120" height="80px" alt="">
+                  <h4 class="m-0 text-center">{{ product?.title }}</h4>
+                </div>
+              </router-link>
+              <router-link :to="'profile/detalle/'+user?.id">
+                <div class="">
+                  <img :src="user?.avatar" class="rounded-circle" width="60px" alt="">
+                  <h4 class="m-0 text-center">{{ user?.name }}</h4>
+                </div>
+              </router-link>
             </div>
             <div v-if="product" class="info-icon-container">
               <span class="info-icon" @click="toggleProductDetails">

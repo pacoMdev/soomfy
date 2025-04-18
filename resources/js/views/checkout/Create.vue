@@ -30,14 +30,6 @@
                                 </div>
                                 <Button label="Seleccionar centro" icon="pi pi-plus" class="p-button-text w-100" @click="showSelectCenter = true" :disabled="selectedMethod!=2" />
                             </div>
-    
-                            <div class="flex justify-content-between w-100 gap-2">
-                                <div class="d-flex gap-3">
-                                    <i class="pi pi-map-marker" style="font-size: 2rem"></i>
-                                    <p style="font-size: 1.1rem">Compra en persona</p>
-                                </div>
-                                <RadioButton v-model="selectedMethod" :inputId="0" name="dynamic" value="0" />
-                            </div>
                         </div> 
                     </div>
                     <Button label="Comprar" type="submit" class="w-full" />

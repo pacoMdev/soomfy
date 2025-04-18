@@ -55,12 +55,20 @@ class ShippingAddressController extends Controller
     {
         $this->authorize('shippingAddress-create');
 
-        $role = new Role();
-        $role->name = $request->name;
-        $role->guard_name = 'web';
+        $shippingAddress = new ShippingAddress();
+        $shippingAddress -> address = $request -> address;
+        $shippingAddress -> cp = $request -> cp;
+        $shippingAddress -> city = $request -> city;
+        $shippingAddress -> country = $request -> country;
+        $shippingAddress -> role_address = $request -> role_address;
+        $shippingAddress -> notes = $request -> notes;
+        $shippingAddress -> contact_name = $request -> contact_name;
+        $shippingAddress -> contact_phone = $request -> contact_phone;
+        $shippingAddress -> contact_email = $request -> contact_email;
+        
 
-        if ($role->save()) {
-            return new ShippingAddressResource($role);
+        if ($shippingAddress->save()) {
+            return new ShippingAddressResource($shippingAddress);
         }
 
         return response()->json(['status' => 405, 'success' => false]);

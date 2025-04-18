@@ -4,9 +4,9 @@
             <div class="card">
 
                 <div class="card-header bg-transparent ps-0 pe-0">
-                    <h5 class="float-start mb-0">Gestor establecimientos:</h5>
+                    <h5 class="float-start mb-0">Gestor establecimiento transaccion:</h5>
                 </div>
-                <DataTable  :value="establecimientos.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id, address, cp, country, city, role_address, contact_name, contact_phone, contact_email, created_at" size="small">
+                <DataTable  :value="tss.data" v-model:filters="filters" paginator :rows="15" stripedRows dataKey="id, transactions_id, shipping_address_id, status, tracking_number, created_at" size="small">
 
                     <template #header>
 
@@ -22,7 +22,7 @@
                             </template>
 
                             <template #end>
-                                <Button v-if="can('establecimiento-create')"  @click="$router.push('establecimientos/create')" icon="pi pi-external-link" label="Crear establecimiento" class="float-end" />
+                                <Button v-if="can('establecimientoTransaction-create')"  @click="$router.push('transaction_stablishment/create')" icon="pi pi-external-link" label="Crear TS" class="float-end" />
                             </template>
                         </Toolbar>
                     </template>
@@ -34,15 +34,10 @@
                             {{ data.id }}
                         </template>
                     </Column>
-                    <Column field="address" header="address" sortable></Column>
-                    <Column field="cp" header="cp" sortable></Column>
-                    <Column field="country" header="country" sortable></Column>
-                    <Column field="city" header="city" sortable></Column>
-                    <Column field="role_address" header="role_address" sortable></Column>
-                    <Column field="notes" header="notes" sortable></Column>
-                    <Column field="contact_name" header="contact_name" sortable></Column>
-                    <Column field="contact_phone" header="contact_phone" sortable></Column>
-                    <Column field="contact_email" header="contact_email" sortable></Column>
+                    <Column field="transactions_id" header="transactions_id" sortable></Column>
+                    <Column field="shipping_address_id" header="shipping_address_id" sortable></Column>
+                    <Column field="status" header="status" sortable></Column>
+                    <Column field="tracking_number" header="tracking_number" sortable></Column>
                     <Column field="created_at" header="Created_at" sortable></Column>
                 </DataTable>
 
@@ -55,15 +50,20 @@
 
 <script setup>
     import {ref, onMounted, watch} from "vue";
-    import useEstablecimiento from "../../../composables/establecimiento";
+    import useTS from "../../../composables/shippingTransaction";
     import {useAbility} from '@casl/vue'
     import {FilterMatchMode} from "@primevue/core/api";
 
-    const {establecimientos, getEstablecimientos, deleteEstablecimiento} = useEstablecimiento()
+    const {
+        tss,
+        ts, 
+        getTs, 
+        deleteTs,
+    } = useTS()
     const {can} = useAbility()
 
     onMounted(() => {
-        getEstablecimientos()
+        getTs()
     })
 
     const filters = ref({

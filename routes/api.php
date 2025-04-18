@@ -52,6 +52,10 @@ Route::apiResource('shippingAddress', controller: ShippingAddressController::cla
 Route::get('getDistributionsCenters', action: [ShippingAddressController::class, 'getDistributionsCenters']);
 Route::get('getProximityCenters', action: [ShippingAddressController::class, 'getProximityCenters']);
 
+// ShippingAddressTransaction
+Route::get('getShippingAddressTransaction', action: [TransactionsController::class, 'indexShippingAddressTransaction']);
+Route::post('postShippingAddressTransaction', action: [TransactionsController::class, 'storeShippingAddressTransaction']);
+
 
 //Opinions
 // Route::apiResource('opinions', controller: UsersOpinionController::class);

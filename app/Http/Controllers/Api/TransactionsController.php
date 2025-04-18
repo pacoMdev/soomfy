@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
+use App\Http\Resources\ShippingAddressTransactionResource;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Models\Product;
@@ -114,10 +115,24 @@ class TransactionsController extends Controller
         $transaction -> session_id = $request -> sessionId ?? null;
         $transaction->save();
 
+        $tn = $this -> generateTN();
+        // Ordered
         $transaction -> shippingAddress() 
         -> attach($shippingAddress -> id, [
-            'status' => 'pending',
-            'tracking_number' => $this -> generateTN()
+            'status' => 'ordered',
+            'tracking_number' => $tn
+        ]);
+        // processed
+        $transaction -> shippingAddress() 
+        -> attach($shippingAddress -> id, [
+            'status' => 'processed',
+            'tracking_number' => $tn
+        ]);
+        // to_pick
+        $transaction -> shippingAddress() 
+        -> attach($shippingAddress -> id, [
+            'status' => 'to_pick',
+            'tracking_number' => $tn
         ]);
         
         // EMAIL PURCHASE ---------------------------------------------------------------------------------------
@@ -211,7 +226,10 @@ class TransactionsController extends Controller
 
         $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
-            ->get();
+            ->get()
+            ->unique('transactions_id')
+            ->values();
+
 
         return $this->successResponse($purchase, 'Transaction found');
     }
@@ -226,7 +244,9 @@ class TransactionsController extends Controller
 
         $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
-            ->get();
+            ->get()
+            ->unique('transactions_id')
+            ->values();
 
         return $this->successResponse($purchase, 'Transaction found');
     }
@@ -319,4 +339,70 @@ class TransactionsController extends Controller
         // dd($historic);
         return response() -> json($historic);
     }
+
+
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function indexShippingAddressTransaction()
+    {
+        $orderColumn = request('order_column', 'created_at');
+        if (!in_array($orderColumn, ['id', 'name', 'created_at'])) {
+            $orderColumn = 'created_at';
+        }
+        $orderDirection = request('order_direction', 'desc');
+        if (!in_array($orderDirection, ['asc', 'desc'])) {
+            $orderDirection = 'desc';
+        }
+        $roles = ShippingAddressTransaction::
+            when(request('search_id'), function ($query) {
+                $query->where('id', request('search_id'));
+            })
+            ->when(request('search_title'), function ($query) {
+                $query->where('name', 'like', '%'.request('search_title').'%');
+            })
+            ->when(request('search_global'), function ($query) {
+                $query->where(function($q) {
+                    $q->where('id', request('search_global'))
+                        ->orWhere('name', 'like', '%'.request('search_global').'%');
+
+                });
+            })
+            ->orderBy($orderColumn, $orderDirection)
+            ->paginate(50);
+
+        return ShippingAddressTransactionResource::collection($roles);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return ShippingAddressResource
+     */
+    public function storeShippingAddressTransaction(Request $request)
+    {
+        $this->authorize('establecimientoTransaction-create');
+
+        $shippingAddressTransaction = new ShippingAddressTransaction();
+        $shippingAddressTransaction -> transactions_id = $request -> transactions_id;
+        $shippingAddressTransaction -> shipping_address_id = $request -> shipping_address_id;
+        $shippingAddressTransaction -> status = $request -> status;
+        $shippingAddressTransaction -> tracking_number = $request -> tracking_number;
+        
+
+        if ($shippingAddressTransaction->save()) {
+            return new ShippingAddressTransactionResource($shippingAddressTransaction);
+        }
+
+        return response()->json(['status' => 405, 'success' => false]);
+
+    }
+
+
+
 }

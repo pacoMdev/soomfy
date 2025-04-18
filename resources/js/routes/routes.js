@@ -491,6 +491,37 @@ export default [
                     }
                 ]
             },
+            {
+                name: 'transaction_stablishment',
+                path: 'transaction_stablishment',
+                meta: { breadCrumb: 'TS'},
+                children: [
+                    {
+                        name: 'transaction_stablishment.index',
+                        path: '',
+                        component: () => import('../views/admin/transaction_stablishment/Index.vue'),
+                        meta: { breadCrumb: 'TS' }
+                    },
+                    {
+                        name: 'transaction_stablishment.create',
+                        path: 'create',
+                        component: () => import('../views/admin/transaction_stablishment/Create.vue'),
+                        meta: {
+                            breadCrumb: 'Create TS',
+                            linked: false
+                        }
+                    },
+                    {
+                        name: 'transaction_stablishment.edit',
+                        path: 'edit/:id',
+                        component: () => import('../views/admin/transaction_stablishment/Edit.vue'),
+                        meta: {
+                            breadCrumb: 'Edit TS',
+                            linked: false
+                        }
+                    }
+                ]
+            },
 
 
 

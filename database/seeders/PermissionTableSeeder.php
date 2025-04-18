@@ -56,7 +56,11 @@ class PermissionTableSeeder extends Seeder
             'shippingAddress-list',
             'shippingAddress-create',
             'shippingAddress-edit',
-            'shippingAddress-delete',     
+            'shippingAddress-delete',
+            'establecimientoTransaction-list',
+            'establecimientoTransaction-create',
+            'establecimientoTransaction-edit',
+            'establecimientoTransaction-delete',
         ];
 
         foreach ($permissions as $permission) {

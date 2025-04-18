@@ -3,19 +3,16 @@ import { ref, inject, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { number, string } from 'yup'
 
-export default function useEstablecimiento() {
+export default function useTS() {
 
-    const establecimientos = ref([])
-    const establecimientoN = reactive({
-
-    })
+    const tss = ref([])
 
     const router = useRouter()
     const validationErrors = ref({})
     const isLoading = ref(false)
     const swal = inject('$swal')
 
-    const getEstablecimientos = async (
+    const getTs = async (
         page = 1,
         search_id = '',
         search_title = '',
@@ -24,31 +21,31 @@ export default function useEstablecimiento() {
         order_direction = 'desc'
     ) => {
         axios.get(
-            '/api/shippingAddress?page=' + page +
+            '/api/getShippingAddressTransaction?page=' + page +
             '&search_id=' + search_id +
             '&search_title=' + search_title +
             '&search_global=' + search_global +
             '&order_column=' + order_column +
             '&order_direction=' + order_direction
         ).then(response => {
-                establecimientos.value = response.data;
+                tss.value = response.data;
             })
     }
-    const storeEstablecimiento = async (establecimiento) => {
+    const storeTs = async (establecimientoTransaction) => {
         if (isLoading.value) return;
 
         isLoading.value = true
         validationErrors.value = {}
 
-        let serializedEstablecimiento = new FormData()
-        for (let item in establecimiento) {
+        let serializedEstablecimientoTransaction = new FormData()
+        for (let item in establecimientoTransaction) {
             console.log('dataEstablecimiento -->', item);
-            if (establecimiento.hasOwnProperty(item)) {
-                serializedEstablecimiento.append(item, establecimiento[item])
+            if (establecimientoTransaction.hasOwnProperty(item)) {
+                serializedEstablecimientoTransaction.append(item, establecimientoTransaction[item])
             }
         }
 
-        axios.post('/api/shippingAddress', serializedEstablecimiento)
+        axios.post('/api/postShippingAddressTransaction', serializedEstablecimientoTransaction)
             .then(response => {
                 router.push({name: 'home'})
                 swal({
@@ -65,7 +62,7 @@ export default function useEstablecimiento() {
             .finally(() => isLoading.value = false)
     }
 
-    const deleteEstablecimiento = async (id, index) => {
+    const deleteTs = async (id, index) => {
         swal({
             title: 'Are you sure?',
             text: 'You won\'t be able to revert this action!',
@@ -79,7 +76,7 @@ export default function useEstablecimiento() {
         })
             .then(result => {
                 if (result.isConfirmed) {
-                    axios.delete('/api/establecimiento/' + id)
+                    axios.delete('/api/shippingAddressTransaction/' + id)
                         .then(response => {
                             users.value.data.splice(index, 1);
 
@@ -101,11 +98,10 @@ export default function useEstablecimiento() {
     }
 
     return {
-        establecimientos,
-        establecimientoN,
-        getEstablecimientos,
-        storeEstablecimiento,
-        deleteEstablecimiento,
+        tss,
+        getTs,
+        storeTs,
+        deleteTs,
         validationErrors,
         isLoading,
     }

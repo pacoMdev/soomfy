@@ -20,7 +20,6 @@ class ShippingAddressResource extends JsonResource
             'cp' => $this->cp,
             'country' => $this->country,
             'city' => $this->city,
-            'telefono' => $this->telefono,
             'role_address' => $this->role_address,
             'notes' => $this->notes,
             'contact_name' => $this->contact_name,
