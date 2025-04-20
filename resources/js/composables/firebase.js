@@ -13,12 +13,12 @@ const { product, getProduct } = useProducts();
 
 // Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyCWsmiUVB20WRmJUam3W2eqa9wnEprKqus",
-    authDomain: "soomfy-f0f44.firebaseapp.com",
-    projectId: "soomfy-f0f44",
-    storageBucket: "soomfy-f0f44.firebasestorage.app",
-    messagingSenderId: "403822758985",
-    appId: "1:403822758985:web:2a2cc0e83f7f52c25d0398"
+    apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
+    authDomain: import.meta.VITE_FIREBASE_AUTHDOMAIN,
+    projectId:import.meta.env.VITE_FIREBASE_PROJECTID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID,
+    appId: import.meta.env.VITE_FIREBASE_APPID,
 };
 
 // Inicializamos la aplicación de Firebase
@@ -257,6 +257,25 @@ export default function useFirebase() {
         return unsubscribe;
     };
 
+    async function getUsersIdInterested(productId) {
+        const chatsRef = collection(db, "chats");
+        const q = query(chatsRef, where("productId", "==", productId));
+      
+        const querySnapshot = await getDocs(q);
+        const userIdsSet = new Set();
+        console.log(querySnapshot);
+      
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.users && Array.isArray(data.users) && data.users.length > 1) {
+            userIdsSet.add(data.users[0]); // solo usuario interesado
+          }
+        });
+        console.log('FIRABASE -->', Array.from(userIdsSet));
+        return Array.from(userIdsSet);
+      }
+
+
     return {
         activeChats,
         loading,
@@ -265,6 +284,7 @@ export default function useFirebase() {
         chatExists,
         sendMessage,
         getMessages,
-        getUserChats
+        getUserChats,
+        getUsersIdInterested,
     };
 }

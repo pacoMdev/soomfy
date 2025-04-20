@@ -41,6 +41,9 @@ return [
     ],
     'google_maps' => [
         'key'               => env('GOOGLE_MAPS_API_KEY', 'AIzaSyBlIXCsBY23dgXutYyJifkcoNdO46Z7VUo'),
-    ]
+    ],
+    'firebase' => [
+        'credentials' => storage_path('app/firebase/firebase_credentials.json'),
+    ],
 
 ];

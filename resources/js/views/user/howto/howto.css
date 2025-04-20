@@ -165,3 +165,11 @@
     
     /* Podríamos añadir más ajustes si hiciera falta */
 }
+
+
+.responsiveImage{
+    width: 100%; 
+    max-width: 800px;
+    height: auto; 
+    border-radius: 15px; 
+}

@@ -229,8 +229,15 @@ import DropZoneV from "@/components/DropZone-varios.vue";
 import useCategories from "@/composables/categories";
 import useProducts from "@/composables/products.js";
 import {required, min} from "@/validation/rules"
+import useFirebase from "../composables/firebase";
+
 defineRule('required', required)
 defineRule('min', min);
+
+
+const {
+  getUsersIdInterested,
+ } = useFirebase();
 
 
 // Variables del Dialog
@@ -238,7 +245,6 @@ const visible = ref(false);
 const visibleEditProduct = ref(false);
 const visibleDelete = ref(false);
 const user = ref(null);
-const finalPrice = ref(0);
 const confirmationDelete = ref(null);
 const randomNum = ref(null);
 const isBtnDelete = ref(true);
@@ -266,7 +272,7 @@ const selectedBuyer = ref(true);
     const { product: productData,getEstadoList,estadoList, 
       getProduct, updateProduct, validationErrors, isLoading, 
       delProduct, getInterested, sellProduct, selectedProduct,
-      usersInterested, selectedUserId, selectedUser, } = useProducts()
+      usersInterested, selectedUserId, selectedUser, finalPrice} = useProducts()
 
     const product = ref({
         title,
@@ -283,9 +289,9 @@ const selectedBuyer = ref(true);
     });
     watch ( selectedUserId, () => {
       if (selectedUserId != []){
-        selectedBuyer = false;
+        selectedBuyer.value = false;
       }else{ 
-        selectedBuyer = true;
+        selectedBuyer.value = true;
       }
     });
     watch( confirmationDelete, () => {
@@ -343,7 +349,12 @@ const selectedBuyer = ref(true);
     selectedProduct.value = producto; 
     visible.value = true;
     console.log('🔎 SELECTEDPRODUCT -->', selectedProduct);
-    getInterested(producto.id);
+    const usersInterestedIds = await getUsersIdInterested(producto.id);
+    console.log('🔎 usersInterested -->', usersInterestedIds);
+    getInterested(usersInterestedIds);
+
+
+
   };
   const openEditProduct = async (producto) => {
     selectedProduct.value = producto; 

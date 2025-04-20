@@ -10,7 +10,7 @@
                             <div class="flex flex-row md:flex-col justify-between items-start gap-2">
                                 <div>
                                     <div class="text-lg font-small mt-2" style="font-weight: 500;">{{ item.user.name }} {{ item.user.surname1 }}</div>
-                                    <Rating :model-v-model="item.rating" readonly />
+                                    <Rating :model-value="item.calification" readonly />
                                     <div class="text-lg font-medium mt-2">{{ item.title }}</div>
                                     <div class="text-lg font-medium mt-2">{{ item.destription }}</div>
                                 </div>

@@ -28,6 +28,7 @@ export default function useProducts() {
     const selectedUser = ref(null);
     const isProcessedProduct = ref(false);
     const isSelledProduct = ref(false);
+    const finalPrice = ref(0);
 
 
 
@@ -288,11 +289,16 @@ export default function useProducts() {
         })
     }
 
-    const getInterested = async (productId) => {
+    const getInterested = async (usersInterestedIds) => {
         try {
-          const response = await axios.get(`/api/getUsersConversations/${productId}`);
-          usersInterested.value = response.data || [];
-          console.log('🔎 USERS INTERESTED  --->', usersInterested);
+            await axios.post('/api/getUsersConversations', {
+                usersInterested: usersInterestedIds
+            })
+            .then (response =>{
+                usersInterested.value = response.data || [];
+                console.log('🔎 USERS INTERESTED  --->', usersInterested.value);
+
+            });
         } catch (err) {
           console.log("Error al obtener los datos.");
         }
@@ -352,5 +358,6 @@ export default function useProducts() {
         checkSelledProduct,
         isProcessedProduct,
         isSelledProduct,
+        finalPrice,
     }
 }

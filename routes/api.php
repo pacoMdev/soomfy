@@ -45,7 +45,7 @@ Route::get('get-user-products/', [UserController::class, 'getAuthProducts']); //
 Route::get('get-user-products/{id}', [UserController::class, 'getUserProducts']); // Productos del id de usuario recibido
 Route::get('/products/{id}', [ProfileController::class, 'getUserByProductId']); // Productos del id de usuario recibido
 Route::post('/checkSelledProduct', [ProductControllerAdvance::class, 'checkSelledProduct']); // verifica si el producto ya fue vendido
-Route::get('/getUsersConversations/{id}', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
+Route::post('/getUsersConversations', [MessageController::class, 'getUsersConversations']); // Productos del id de usuario recibido
 
 // Establecimientos
 Route::apiResource('shippingAddress', controller: ShippingAddressController::class);

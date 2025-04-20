@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Mail;
+use Kreait\Firebase\Factory;
 function getBackURL()
 {
     $url = '';
@@ -25,4 +26,9 @@ function sendEmail($email){
     }
 
     return "Correo enviado correctamente";
+}
+function firestoreDB(){
+    $factory = (new Factory)->withServiceAccount(config('services.firebase.credentials'));
+    $firestore = $factory->createFirestore();
+    return $firestore->database();
 }

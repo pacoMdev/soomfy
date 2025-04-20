@@ -6,14 +6,13 @@
           <ul class="list-unstyled">
             <li><a href="/" class="text-decoration-none text-secondary">Home</a></li>
             <li><a href="/products" class="text-decoration-none text-secondary">Productos</a></li>
-            <li><a href="#" class="text-decoration-none text-secondary">Contact</a></li>
-            <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
+            <li><a href="/app/profile" class="text-decoration-none text-secondary">Perfil</a></li>
           </ul>
         </div>
         <div class="col-md-4 mb-4">
           <h5 class="mb-3">INFO</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-decoration-none text-secondary">Como funciona</a></li>
+            <li><a href="/howto" class="text-decoration-none text-secondary">Como funciona</a></li>
             <li><a href="#" class="text-decoration-none text-secondary">Sobre nosotros</a></li>
             <li><a href="#" class="text-decoration-none text-secondary">Legal</a></li>
             <li><a href="#" class="text-decoration-none text-secondary">Devoluciones</a></li>

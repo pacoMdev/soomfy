@@ -57,9 +57,7 @@
                                 <li>¡Listo! Ya puedes acceder a tu cuenta personal</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Formulario de registro</div>
-                            </div>
+                            <img src="/docs_howto/register.png" class = "responsiveImage" alt="Register">
                             
                             <h3>Iniciar sesión</h3>
                             <p>
@@ -77,9 +75,8 @@
                                 en cualquier momento desde el panel "Mi cuenta".
                             </p>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Panel de perfil de usuario</div>
-                            </div>
+                            <img src="/docs_howto/profile.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -99,9 +96,8 @@
                                 <li><strong>Carrito:</strong> Revisa los productos que has seleccionado para comprar</li>
                             </ul>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Menú de navegación principal</div>
-                            </div>
+                            <img src="/docs_howto/nav.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -119,9 +115,8 @@
                                 <li>Presiona Enter o haz clic en el icono de lupa</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Barra de búsqueda y resultados</div>
-                            </div>
+                            <img src="/docs_howto/search.png" class = "responsiveImage" alt="Register">
+
                             
                             <h3>Aplicar filtros</h3>
                             <p>
@@ -135,9 +130,8 @@
                                 <li><strong>Ordenar por:</strong> Organiza los resultados por relevancia, precio o popularidad</li>
                             </ul>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Panel de filtros desplegado</div>
-                            </div>
+                            <img src="/docs_howto/products.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -161,9 +155,8 @@
                                 </ul>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Página de detalles de un producto</div>
-                            </div>
+                            <img src="/docs_howto/detail.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -181,9 +174,8 @@
                                 <li>Espera la respuesta del vendedor (recibirás una notificación)</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Interfaz de chat con vendedor</div>
-                            </div>
+                            <img src="/docs_howto/chat.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -201,9 +193,8 @@
                                 <li>Acuerda el precio final y método de entrega</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Botón de contacto con vendedor</div>
-                            </div>
+                            <img src="/docs_howto/sell_buy.png" class = "responsiveImage" alt="Register">
+
                             
                             <h3>Realizar el pago</h3>
                             <p>
@@ -217,9 +208,8 @@
                                 <li>El dinero queda retenido hasta que confirmes la recepción del artículo</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Pantalla de pago y confirmación</div>
-                            </div>
+                            <img src="/docs_howto/transaction.png" class = "responsiveImage" alt="Register">
+
                             
                             <h3>Seguimiento y recepción</h3>
                             <p>
@@ -232,9 +222,9 @@
                                 <li>Deja una valoración al vendedor para ayudar a otros compradores</li>
                             </ol>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Pantalla de confirmación de recepción</div>
-                            </div>
+                            <img src="/docs_howto/historic.png" class = "responsiveImage" alt="Register">
+                            <img src="/docs_howto/resumeHistoric.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
 
@@ -261,9 +251,8 @@
                                 <li>Puedes incluir fotos en tus valoraciones</li>
                             </ul>
                             
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Página de cupones y ofertas</div>
-                            </div>
+                            <img src="/docs_howto/opinion.png" class = "responsiveImage" alt="Register">
+
                         </div>
                     </section>
                 </div>

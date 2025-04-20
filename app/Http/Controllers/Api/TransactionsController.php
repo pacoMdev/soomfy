@@ -222,16 +222,32 @@ class TransactionsController extends Controller
      */
     public function getPurchase(Request $request){
         $userId = $request->userId;
+
         $transactions_id = Transactions::where('userBuyer_id', $userId)->pluck('id');
 
-        $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
+        $shippingTransactions = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
             ->get()
             ->unique('transactions_id')
             ->values();
 
+        $inPersonTransactions = Transactions::where('userBuyer_id', $userId)
+            ->where('delivery_type', 'in_person')
+            ->with(['product.media', 'seller.media', 'buyer.media'])
+            ->get();
 
-        return $this->successResponse($purchase, 'Transaction found');
+        // formata la transaction in_person como ShippingAddressTransaction
+        $formattedInPerson = $inPersonTransactions->map(function ($transaction) {
+            return (object)[
+                'transactions_id' => $transaction->id,
+                'transaction' => $transaction
+            ];
+        });
+
+        // concatena las colecciones
+        $allSales = $shippingTransactions->concat($formattedInPerson)->unique('transactions_id')->values();
+
+        return $this->successResponse($allSales, 'Transaction found');
     }
     /**
      * obtiene todas las transacciones de venta del usuario
@@ -240,15 +256,32 @@ class TransactionsController extends Controller
      */
     public function getSales(Request $request){
         $userId = $request->userId;
+
         $transactions_id = Transactions::where('userSeller_id', $userId)->pluck('id');
 
-        $purchase = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
+        $shippingTransactions = ShippingAddressTransaction::whereIn('transactions_id', $transactions_id)
             ->with(['transaction.product.media', 'transaction.seller.media', 'transaction.buyer.media'])
             ->get()
             ->unique('transactions_id')
             ->values();
 
-        return $this->successResponse($purchase, 'Transaction found');
+        $inPersonTransactions = Transactions::where('userSeller_id', $userId)
+            ->where('delivery_type', 'in_person')
+            ->with(['product.media', 'seller.media', 'buyer.media'])
+            ->get();
+
+        // formata la transaction in_person como ShippingAddressTransaction
+        $formattedInPerson = $inPersonTransactions->map(function ($transaction) {
+            return (object)[
+                'transactions_id' => $transaction->id,
+                'transaction' => $transaction
+            ];
+        });
+
+        // concatena las colecciones
+        $allSales = $shippingTransactions->concat($formattedInPerson)->unique('transactions_id')->values();
+
+        return $this->successResponse($allSales, 'Transaction found');
     }
     public function sellProduct(Request $request){
         $userSeller = auth()->user();
@@ -275,6 +308,12 @@ class TransactionsController extends Controller
         $transaction -> isRegated = $isRegated;
 
         $transaction -> save();
+
+        // $transaction -> shippingAddress() 
+        // -> attach($shippingAddress -> id, [
+        //     'status' => 'finished',
+        //     'tracking_number' => null,
+        // ]);
 
         // EMAIL SELL ---------------------------------------------------------------------------------------
         $data = [
