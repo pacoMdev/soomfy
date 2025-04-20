@@ -20,6 +20,7 @@ use App\Models\CategoryProduct;
 
 use App\Mail\ConstructEmail;
 use App\Models\ShippingAddressTransaction;
+use Kreait\Firebase\Database\Transaction;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 
@@ -344,6 +345,16 @@ class ProductControllerAdvance extends Controller
     public function checkSelledProduct(Request $request)
     {
         $productId = $request->input('product_id');
+
+        $selledInPerson = Transactions::where('product_id', $productId)
+        ->where('delivery_type', 'in_person')
+        ->get();
+        if ($selledInPerson){
+            return response()->json([
+                'isProcessed' => true,
+                'isSelled' => true,
+            ]);
+        }
 
         $isSelled = ShippingAddressTransaction::whereIn('status', ['finished', 'pending'])
             ->whereHas('transaction.product', function ($query) use ($productId) {
