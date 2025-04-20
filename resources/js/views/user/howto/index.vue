@@ -39,10 +39,6 @@
                                 sencillas, seguras y agradables. Esta guía te ayudará a familiarizarte con todas 
                                 nuestras funciones y facilitarte la navegación por nuestra plataforma.
                             </p>
-                            
-                            <div class="image-placeholder">
-                                <div class="placeholder-text">Imagen: Vista general de la página principal</div>
-                            </div>
                         </div>
                     </section>
 

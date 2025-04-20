@@ -19,9 +19,7 @@
             </div>
             <Tag icon="pi pi-map-marker" severity="secondary" :value="fullAddress?.results && fullAddress.results.length > 0 ? fullAddress.results[0].formatted_address : 'Ubicación no disponible'" rounded></Tag>
           </div>
-        </div>
-
-        <!-- Botones de acciones -->
+          <!-- Botones de acciones -->
         <div class="profile-actions">
           <div class="profile-header-buttons">
             <router-link v-if="authStore().isAdmin" to="/admin">
@@ -30,6 +28,7 @@
             <Button label="Editar perfil" @click.stop="openEditProfile(user)" class="edit-button" rounded />
             <Button label="Cerrar sesión" @click="logout" icon="pi pi-lock" severity="danger" variant="outlined" class="logout-button" rounded />
           </div>
+        </div>
         </div>
       </div>
       
