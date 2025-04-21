@@ -171,7 +171,6 @@ class ProductControllerAdvance extends Controller
 
         // Muestra todos los productos con su categoria y foto - excluyendo los vendidos
         $products = Product::with('user','estado','categories', 'media')
-            ->whereNotIn('id', $soldProductIds) // excluye productos vendidos desde el principio
             // Busqueda global
             ->when($searchGlobal = request('search_global'), function($query) use ($searchGlobal) {
                 $query->where(function($q) use ($searchGlobal) {
@@ -276,6 +275,7 @@ class ProductControllerAdvance extends Controller
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
             })
+            ->whereNotIn('id', $soldProductIds) // Excluir productos vendidos
             ->paginate($paginate);
 
         return ProductResource::collection($products);

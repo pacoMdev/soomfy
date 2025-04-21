@@ -217,12 +217,16 @@ const cargarMasProductos = async () => {
  * @param {Object} category - Objeto categoría seleccionada
  */
 const redirectCategory = (category) => {
-  // Y te redirigira al apartado de categorias, filtrado por categoria
+  // Obtenemos el nombre de la categoría, si es 'Todas' usamos string vacío para mostrar todo
+  const categoryName = category.name === 'Todas' ? '' : category.name;
+  console.log('Redirigiendo a categoría:', categoryName);
+  
+  // Redirigimos al usuario a la página de productos con el parámetro de categoría en la URL
   router.push({
     name: 'public.products',
-    // Y agregara search_category en la url
     query: {
-      search_category: category.name === 'Todas' ? '' : category.name // If "Todas", clear the category filter
+      search_category: categoryName,
+      _t: Date.now() // Añadimos timestamp para evitar problemas de caché del navegador
     }
   });
 };
@@ -231,11 +235,12 @@ const redirectCategory = (category) => {
  * Redirige al usuario a la vista de productos sin filtros de categoría
  */
 const redirectAll = () => {
-  // Y te redirigira al apartado de categorias, filtrado por categoria
+  // Redirigimos a la página de productos sin filtro de categoría (muestra todos)
   router.push({
     name: 'public.products',
     query: {
-      search_category: '' // Clear the category filter to show all products
+      search_category: '', // Categoría vacía muestra todos los productos
+      _t: Date.now() // Añadimos timestamp para evitar problemas de caché del navegador
     }
   });
 };

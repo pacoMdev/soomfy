@@ -147,6 +147,12 @@ import { authStore } from "@/store/auth"; // Import auth store
 import axios from 'axios';
 import './products.css';
 
+// Banderas de control para el proceso de filtrado
+const isInitialLoad = ref(true);      // Controla si estamos en la carga inicial de la página
+const disableWatchers = ref(true);    // Deshabilita los watchers durante la configuración inicial
+const processingFilters = ref(false); // Evita múltiples procesos de filtrado simultáneos
+const isProcessing = ref(false);      // Evita múltiples operaciones de obtención de productos a la vez
+
 /**
  * Variables reactivas principales para almacenar datos de los productos y categorías
  */
@@ -192,32 +198,68 @@ const BARCELONA_LONGITUDE = 2.1686;
 /**
  * Obtiene productos del servidor según los parámetros de filtrado
  * 
- * Esta función recupera los productos filtrados basados en los parámetros
- * de la URL actual y los muestra en la interfaz.
+ * Esta función es la responsable de leer los parámetros de la URL
+ * y solicitar los productos filtrados al backend.
  */
 const fetchProducts = async () => {
+  // Evitamos llamadas múltiples si ya hay un proceso en curso
+  if (isProcessing.value) return;
+  
   try {
-    console.log('Parámetros de consulta actuales:', route.query);
+    isProcessing.value = true; // Marcamos que estamos procesando
+    console.log('Obteniendo productos con parámetros URL:', route.query);
+    
+    // Obtenemos la categoría de la URL
+    const categoryFromUrl = route.query.search_category || '';
+    
+    // Si hay una categoría en la URL y tenemos la lista de categorías cargada,
+    // actualizamos la selección en la UI para mantener sincronizados URL y UI
+    if (categoryFromUrl && categoryList.value) {
+      setSelectedCategory(categoryFromUrl);
+    }
 
+    // Llamamos a la API para obtener productos filtrados usando los parámetros de la URL
     await getProducts(
-        1, // Página inicial
-        route.query.search_category || '', // If no category, show all products
-        route.query.search_id || '', // ID (vacío por defecto)
-        route.query.search_title || '', // Título de búsqueda
-        route.query.min_price || '', // Precio mínimo
-        route.query.max_price || '', // Precio máximo
-        route.query.search_estado || '', // Estado (vacío por defecto)
-        route.query.search_location || '', // Ubicación de búsqueda (vacío por defecto)
-        route.query.search_content || '', // Contenido (vacío por defecto)
-        route.query.search_global || '', // Global (vacío por defecto)
-        route.query.order_column || 'created_at', // Columna de orden, por defecto "created_at"
-        route.query.order_direction || 'desc', // Dirección de orden, por defecto "desc"
-        route.query.order_price || '', // Precio para ordenar
-        100
+      1, // Página inicial
+      categoryFromUrl, // Usamos la categoría directamente de la URL
+      route.query.search_id || '',
+      route.query.search_title || '',
+      route.query.min_price || '',
+      route.query.max_price || '',
+      route.query.search_estado || '',
+      route.query.search_location || '',
+      route.query.search_content || '',
+      route.query.search_global || '',
+      route.query.order_column || 'created_at',
+      route.query.order_direction || 'desc',
+      route.query.order_price || '',
+      100
     );
-
   } catch (error) {
     console.error('Error al obtener productos:', error);
+  } finally {
+    isProcessing.value = false; // Marcamos que hemos terminado
+  }
+};
+
+/**
+ * Establece la categoría seleccionada en la UI basada en el nombre
+ * 
+ * Esta función busca el objeto de categoría que coincide con el nombre
+ * proporcionado y lo establece como seleccionado en el componente MultiSelect.
+ * 
+ * @param {string} categoryName - Nombre de la categoría a seleccionar
+ */
+const setSelectedCategory = (categoryName) => {
+  // Buscamos el objeto de categoría cuyo nombre coincide con el parámetro
+  const category = categoryList.value.find(cat => 
+    cat.name.toLowerCase() === categoryName.toLowerCase()
+  );
+  
+  // Si encontramos la categoría, la establecemos como seleccionada
+  if (category) {
+    console.log('Estableciendo categoría seleccionada:', category.name);
+    categoriaSeleccionada.value = [category]; // MultiSelect espera un array
   }
 };
 
@@ -229,7 +271,7 @@ const buscarEstado = ref([]);           // Estados seleccionados (multiselect)
 const buscarTitulo = ref('');           // Texto para buscar en título
 const buscarPrecioMin = ref(null);      // Precio mínimo
 const buscarPrecioMax = ref(null);      // Precio máximo
-const buscarRadio = ref(0);             // Radio de búsqueda en metros
+const buscarRadio = ref(20000);             // Radio de búsqueda en metros
 const ordenarPrecio = ref('');          // Ordenamiento por precio (asc/desc)
 const ordenarFecha = ref('');           // Ordenamiento por fecha (asc/desc)
 const searchAddress = ref('');          // Dirección de búsqueda
@@ -362,12 +404,24 @@ const setupMap = () => {
 /**
  * Aplica todos los filtros seleccionados a la búsqueda de productos
  * 
- * Recopila todos los criterios de filtrado (categoría, estado, precio, ubicación, etc.)
- * y actualiza la URL y la lista de productos mostrados.
+ * Recopila todos los filtros de la UI y los aplica actualizando la URL
+ * y solicitando nuevos productos filtrados al backend.
  */
 const aplicarFiltro = async () => {
+  // No procedemos si estamos en carga inicial, procesando filtros o watchers deshabilitados
+  if (isInitialLoad.value || processingFilters.value || disableWatchers.value) {
+    console.log('⏳ Omitiendo aplicación de filtros:', 
+      isInitialLoad.value ? 'carga inicial en progreso' : 
+      processingFilters.value ? 'ya hay filtros procesándose' : 
+      'watchers deshabilitados');
+    return;
+  }
+  
   try {
-    // Map selected categories and states to their names
+    processingFilters.value = true; // Marcamos que estamos procesando filtros
+    console.log('🔍 Aplicando filtros con categorías:', categoriaSeleccionada.value);
+    
+    // Convertimos las categorías y estados seleccionados (objetos) a nombres (strings)
     const selectedCategoryNames = Array.isArray(categoriaSeleccionada.value)
       ? categoriaSeleccionada.value.map(category => category.name)
       : [];
@@ -376,6 +430,7 @@ const aplicarFiltro = async () => {
       ? buscarEstado.value.map(estado => estado.name)
       : [];
 
+    // Construimos el objeto de filtros a aplicar
     const filtros = {
       search_category: selectedCategoryNames.join(','),
       search_estado: selectedEstadoNames.join(','),
@@ -386,26 +441,31 @@ const aplicarFiltro = async () => {
       order_price: ordenarPrecio.value || '',
       min_price: buscarPrecioMin.value || '',
       max_price: buscarPrecioMax.value || '',
+      // Añadimos timestamp para evitar caché
+      _t: Date.now()
     };
 
-    // Importante: Incluimos siempre la ubicación si hay coordenadas,
-    // incluso cuando el radio es 0 (ubicación exacta)
+    // Incluimos datos de ubicación si tenemos coordenadas válidas
     if (latitude.value && longitude.value) {
       filtros.search_latitude = latitude.value;
       filtros.search_longitude = longitude.value;
       filtros.search_radius = buscarRadio.value;
     }
 
+    // Limpiamos los filtros eliminando cualquier valor vacío o nulo
     const filtrosLimpios = Object.fromEntries(
       Object.entries(filtros).filter(([_, value]) => value !== '' && value !== null && value !== undefined)
     );
 
     console.log("Filtros limpios:", filtrosLimpios);
-
+    console.log('📤 Aplicando filtros a URL:', filtrosLimpios);
+    
+    // Primero actualizamos la URL con los nuevos parámetros de filtrado
     await router.push({ query: filtrosLimpios });
-
+    
+    // Luego obtenemos productos con esos parámetros
     await getProducts(
-      1,
+      1, // Página inicial
       filtrosLimpios.search_category || '',
       '',
       filtrosLimpios.search_title || '',
@@ -425,7 +485,9 @@ const aplicarFiltro = async () => {
     );
 
   } catch (error) {
-    console.error('Error al aplicar filtro:', error);
+    console.error('❌ Error al aplicar filtros:', error);
+  } finally {
+    processingFilters.value = false; // Marcamos que terminamos de procesar filtros
   }
 };
 
@@ -466,10 +528,11 @@ const limpiarFiltros = async () => {
 };
 
 /**
- * Observa cambios en los filtros y actualiza los resultados
+ * Observadores (watchers) para detectar cambios en los filtros
  * 
- * Este watcher detecta cambios en cualquiera de los filtros
- * y actualiza automáticamente la búsqueda de productos.
+ * Este watcher observa cambios en todos los filtros de la UI
+ * y llama a aplicarFiltro() cuando detecta cambios, pero solo
+ * si no estamos en carga inicial, procesando filtros o con watchers deshabilitados.
  */
 watch(
   [
@@ -484,57 +547,94 @@ watch(
     latitude,
     longitude
   ],
-  aplicarFiltro
+  () => {
+    // Solo aplicamos filtros si los watchers están habilitados,
+    // no estamos en carga inicial y no hay filtros procesándose
+    if (!disableWatchers.value && !isInitialLoad.value && !processingFilters.value) {
+      console.log('👀 Valores de filtros cambiados, aplicando filtros');
+      aplicarFiltro();
+    } else {
+      console.log('👀 Cambio de filtro detectado pero ignorado');
+    }
+  }
 );
 
 /**
- * Observa cambios en la URL y actualiza la lista de productos
+ * Observador para cambios en la URL
  * 
- * Este watcher detecta cambios en los parámetros de la URL
- * y recarga los productos según los nuevos criterios.
+ * Este watcher observa cambios en los parámetros de la URL (route.query)
+ * y recarga los productos cuando detecta cambios, pero solo
+ * si los watchers están habilitados y no hay filtros procesándose.
  */
 watch(
   () => route.query,
   async (newQuery, oldQuery) => {
-    if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+    // Solo recargamos productos si los watchers están habilitados,
+    // no hay filtros procesándose y la URL realmente cambió
+    if (!disableWatchers.value && !processingFilters.value && 
+        JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+      console.log('🔄 Parámetros de URL cambiados, obteniendo productos');
       await fetchProducts();
     }
   },
-  { deep: true }
+  { deep: true } // Necesario para detectar cambios en objetos anidados
 );
 
 /**
  * Configuración inicial cuando se carga la página
  * 
- * - Obtiene la ubicación del usuario
- * - Carga productos iniciales
- * - Inicializa listas de categorías y estados
- * - Configura el mapa con los parámetros de la URL
+ * Este hook se ejecuta cuando el componente se monta y realiza
+ * todas las inicializaciones necesarias en el orden correcto.
  */
 onMounted(async () => {
-  await getUserLocation();
+  console.log('🚀 Página de productos montada');
   
-  fetchProducts();
-  getCategoryList();
-  getEstadoList();
+  // Mantenemos los watchers deshabilitados durante la configuración
+  // para evitar actualizaciones no deseadas
+  disableWatchers.value = true;
+  isInitialLoad.value = true;
   
-  setTimeout(() => {
-    setupMap();
+  try {
+    // Primero cargamos categorías, estados y ubicación del usuario (en paralelo)
+    await Promise.all([
+      getCategoryList(), // Carga la lista de categorías
+      getEstadoList(),   // Carga la lista de estados
+      getUserLocation()  // Obtiene la ubicación del usuario
+    ]);
     
-    setTimeout(async () => {
-      if (route.query.search_radius) {
-        buscarRadio.value = route.query.search_radius;
-        await updateCircleOnly(parseInt(buscarRadio.value));
-      } else {
-        // Si no hay radio en la URL, establecer explícitamente como ubicación exacta
-        buscarRadio.value = 0;
-        await updateCircleOnly(0);
-      }
+    // Obtenemos productos basados en los parámetros de URL
+    // (esto aplicará el filtro de categoría si está presente)
+    await fetchProducts();
+    
+    // Configuramos el mapa (con un pequeño retraso para asegurar que el DOM esté listo)
+    setTimeout(() => {
+      setupMap();
       
-      // Aplicar filtro para asegurar actualizaciones
-      aplicarFiltro();
-    }, 500);
-  }, 500);
+      // Configuramos el radio del mapa si existe en la URL
+      setTimeout(async () => {
+        if (route.query.search_radius) {
+          buscarRadio.value = route.query.search_radius;
+          await updateCircleOnly(parseInt(buscarRadio.value));
+        } else {
+          buscarRadio.value = 0;
+          await updateCircleOnly(0);
+        }
+      }, 300);
+    }, 300);
+    
+  } catch (error) {
+    console.error('❌ Error durante la configuración del componente:', error);
+  } finally {
+    // Marcamos la carga inicial como completada
+    isInitialLoad.value = false;
+    
+    // Habilitamos los watchers después de un retraso para 
+    // asegurar que todo esté estable
+    setTimeout(() => {
+      disableWatchers.value = false;
+      console.log('✅ Watchers habilitados');
+    }, 1000);
+  }
 });
 </script>
 
