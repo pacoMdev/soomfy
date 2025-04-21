@@ -169,7 +169,6 @@ Ejemplo proyecto Laravel 10 + vue3 PAra DAW
 - ✅ Vue 3
 - ✅ VueRouter + Pinia
 - ✅ PrimeVue
-- ✅ Vue i18n Multi Idioma
 - ✅ Iniciar sesión
 - ✅ Restablecimiento de contraseña
 - ✅ Login
