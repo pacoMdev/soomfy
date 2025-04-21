@@ -82,7 +82,14 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
     echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> .env && \
     echo "GOOGLE_CALLBACK_REDIRECT=${GOOGLE_CALLBACK_REDIRECT}" >> .env && \
     echo "STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}" >> .env && \
-    echo "STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}" >> .env
+    echo "STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}" >> .env \
+    echo "VITE_STRIPE_PUBLIC_KEY=${VITE_STRIPE_PUBLIC_KEY}" >> .env \
+    echo "VITE_FIREBASE_APIKEY=${VITE_FIREBASE_APIKEY}" >> .env \
+    echo "VITE_FIREBASE_AUTHDOMAIN=${VITE_FIREBASE_AUTHDOMAIN}" >> .env \
+    echo "VITE_FIREBASE_PROJECTID=${VITE_FIREBASE_PROJECTID}" >> .env \
+    echo "VITE_FIREBASE_STORAGEBUCKET=${VITE_FIREBASE_STORAGEBUCKET}" >> .env \
+    echo "VITE_FIREBASE_MESSAGINGSENDERID=${VITE_FIREBASE_MESSAGINGSENDERID}" >> .env \
+    echo "VITE_FIREBASE_APPID=${VITE_FIREBASE_APPID}" >> .env \
 # Generar la clave de Laravel
 # Limpiar caché de configuración antes de generar la clave
 RUN php artisan config:clear && php artisan key:generate
@@ -91,8 +98,8 @@ RUN php artisan config:clear && php artisan key:generate
 RUN chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
-# Exponer el puerto 8000
-EXPOSE 8000
+# Exponer el puerto 10000 Render default expose
+EXPOSE 10000
 
 # Comando para iniciar Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
