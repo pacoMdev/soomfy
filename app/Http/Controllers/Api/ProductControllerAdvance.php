@@ -160,8 +160,7 @@ class ProductControllerAdvance extends Controller
         // Búsqueda global
         $searchGlobal = request('search_global', null);
 
-
-        // obtiene lo productos finalizados (ids)
+        // Primero, obtenemos los IDs de productos vendidos
         $soldProductIds = ShippingAddressTransaction::where('status', 'finished')
             ->with('transaction.product')
             ->get()
@@ -169,7 +168,7 @@ class ProductControllerAdvance extends Controller
             ->unique()
             ->values();
 
-        // Muestra todos los productos con su categoria y foto
+        // Muestra todos los productos con su categoria y foto - excluyendo los vendidos
         $products = Product::with('user','estado','categories', 'media')
             ->whereNotIn('id', $soldProductIds) // excluye productos vendidos desde el principio
             // Busqueda global
@@ -248,7 +247,6 @@ class ProductControllerAdvance extends Controller
                         ]);
                     });
                 }
-
             })
             // Agregar múltiples órdenes condicionalmente
             // Ordenar por id
