@@ -73,7 +73,7 @@
                     @keyup.enter="searchLocation"
                   />
                   <button 
-                    class="btn btn-outline-secondary" 
+                    class="secondary-button-2 h-100 mt-1" 
                     type="button"
                     @click="searchLocation"
                     :disabled="isSearching"

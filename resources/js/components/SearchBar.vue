@@ -8,7 +8,7 @@
         v-model="searchTerm"
         :placeholder="placeholder"
     />
-    <button type="submit" :class="handleButtonStyle">
+    <button type="submit" :class="handleButtonStyle + ' no-borders-left'">
       <i class="fas fa-search"></i> {{ buttonText }}
     </button>
   </form>
@@ -95,6 +95,11 @@ const buscarProductos = () => {
   border: 1px solid var(--primary-color);
   padding-left: 25px;
   width: 45%;
+}
+
+.no-borders-left {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
 }
 
 @media (max-width: 1125px) {

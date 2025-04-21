@@ -255,6 +255,151 @@
 
                         </div>
                     </section>
+
+                    <!-- Sobre nosotros -->
+                    <section id="sobre-nosotros" class="tutorial-section">
+                        <h2>Sobre Nosotros</h2>
+                        <div class="section-content">
+                            <p>
+                                Soomfy nació con una idea clara: crear un espacio donde las personas puedan dar una segunda vida a aquellos 
+                                objetos que ya no utilizan, promoviendo un consumo más responsable y sostenible.
+                            </p>
+                            <p>
+                                Somos una plataforma de compraventa de artículos de segunda mano que conecta a personas con intereses comunes, 
+                                fomentando transacciones seguras y transparentes entre usuarios.
+                            </p>
+                            <h3>Nuestra misión</h3>
+                            <p>
+                                Crear una comunidad donde comprar y vender artículos usados sea tan fácil y seguro como hacerlo con nuevos, 
+                                contribuyendo a un modelo económico más circular y sostenible.
+                            </p>
+                            <h3>Nuestros valores</h3>
+                            <ul>
+                                <li><strong>Sostenibilidad:</strong> Extender la vida útil de los productos para reducir el impacto ambiental.</li>
+                                <li><strong>Transparencia:</strong> Ofrecer información clara y honesta en todas las transacciones.</li>
+                                <li><strong>Comunidad:</strong> Fomentar relaciones de confianza entre compradores y vendedores.</li>
+                                <li><strong>Innovación:</strong> Mejorar constantemente la experiencia de usuario en nuestra plataforma.</li>
+                                <li><strong>Seguridad:</strong> Garantizar que todas las transacciones sean seguras para nuestros usuarios.</li>
+                            </ul>
+                            <h3>¿Por qué elegir Soomfy?</h3>
+                            <p>
+                                Porque garantizamos que solo pagará por el producto cuando lo reciba y confirme que está en las condiciones acordadas.
+                                Nuestro servicio de intermediación protege tanto al comprador como al vendedor, asegurando transacciones justas y transparentes.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Legal -->
+                    <section id="legal" class="tutorial-section">
+                        <h2>Información Legal</h2>
+                        <div class="section-content">
+                            <h3>Términos y condiciones</h3>
+                            <p>
+                                Al utilizar Soomfy, aceptas cumplir con nuestros términos y condiciones, que establecen las 
+                                reglas para el uso de la plataforma y los derechos y obligaciones de los usuarios.
+                            </p>
+                            <h4>Registro y cuenta</h4>
+                            <p>
+                                Para utilizar Soomfy, debes:
+                            </p>
+                            <ul>
+                                <li>Ser mayor de 18 años o tener autorización de un tutor legal.</li>
+                                <li>Proporcionar información veraz y completa durante el registro.</li>
+                                <li>Mantener la confidencialidad de tu información de acceso.</li>
+                                <li>Ser responsable de todas las actividades realizadas con tu cuenta.</li>
+                            </ul>
+                            
+                            <h4>Publicación de artículos</h4>
+                            <p>
+                                Al publicar productos en Soomfy:
+                            </p>
+                            <ul>
+                                <li>Garantizas que eres el propietario legítimo o estás autorizado para venderlos.</li>
+                                <li>Te comprometes a proporcionar descripciones precisas y detalladas.</li>
+                                <li>Aceptas no publicar artículos prohibidos por la ley o nuestras políticas.</li>
+                                <li>Reconoces que Soomfy puede retirar cualquier anuncio que incumpla estas condiciones.</li>
+                            </ul>
+                            
+                            <h3>Política de privacidad</h3>
+                            <p>
+                                En Soomfy respetamos tu privacidad y nos comprometemos a proteger tus datos personales 
+                                de acuerdo con la normativa vigente.
+                            </p>
+                            <h4>Datos que recopilamos</h4>
+                            <ul>
+                                <li>Información de registro: nombre, correo electrónico, dirección, teléfono.</li>
+                                <li>Datos de transacciones: historial de compras y ventas.</li>
+                                <li>Información de uso: interacciones con la plataforma, productos visitados.</li>
+                                <li>Datos de ubicación: para facilitar transacciones locales.</li>
+                            </ul>
+                            
+                            <h4>Uso de la información</h4>
+                            <p>
+                                Utilizamos tus datos para:
+                            </p>
+                            <ul>
+                                <li>Gestionar tu cuenta y permitir el uso de la plataforma.</li>
+                                <li>Facilitar transacciones entre usuarios.</li>
+                                <li>Mejorar nuestros servicios y personalizar tu experiencia.</li>
+                                <li>Prevenir actividades fraudulentas y proteger la seguridad de los usuarios.</li>
+                                <li>Cumplir con obligaciones legales.</li>
+                            </ul>
+                            
+                            <h3>Propiedad intelectual</h3>
+                            <p>
+                                Todo el contenido de Soomfy, incluyendo logotipos, diseños, textos y software, está 
+                                protegido por derechos de propiedad intelectual y pertenece a nuestra empresa o a sus licenciantes.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Devoluciones -->
+                    <section id="devoluciones" class="tutorial-section">
+                        <h2>Política de Devoluciones</h2>
+                        <div class="section-content">
+                            <h3>Aviso importante</h3>
+                            <p>
+                                En Soomfy, actuamos únicamente como plataforma intermediaria entre compradores y vendedores. 
+                                <strong>No nos hacemos responsables de las devoluciones</strong> de los productos adquiridos a través de nuestra plataforma.
+                            </p>
+                            
+                            <h3>Gestión de devoluciones</h3>
+                            <p>
+                                Si has recibido un producto que no cumple con tus expectativas o presenta algún problema:
+                            </p>
+                            <ol>
+                                <li>Debes contactar directamente con el vendedor a través del chat de la plataforma.</li>
+                                <li>En caso de problemas con el envío, contacta con la empresa de correos o servicio de mensajería utilizado.</li>
+                                <li>Cualquier acuerdo de devolución debe ser negociado directamente entre comprador y vendedor.</li>
+                            </ol>
+                            
+                            <h3>Recomendaciones</h3>
+                            <p>
+                                Para evitar problemas con tus compras:
+                            </p>
+                            <ul>
+                                <li>Antes de comprar, pregunta al vendedor sobre su política de devoluciones.</li>
+                                <li>Solicita imágenes adicionales del producto si tienes dudas sobre su estado.</li>
+                                <li>Confirma los detalles de envío y seguro en caso de que el producto sufra daños durante el transporte.</li>
+                                <li>Conserva todos los comprobantes de pago y conversaciones con el vendedor.</li>
+                            </ul>
+                            
+                            <h3>Rol de Soomfy</h3>
+                            <p>
+                                Nuestra plataforma:
+                            </p>
+                            <ul>
+                                <li>Facilita la comunicación entre compradores y vendedores.</li>
+                                <li>Proporciona un espacio seguro para realizar transacciones.</li>
+                                <li>No interviene en disputas relacionadas con devoluciones.</li>
+                                <li>No asume responsabilidad por la calidad, estado o envío de los productos.</li>
+                            </ul>                            
+                            <p>
+                                <strong>Recuerda:</strong> Al utilizar nuestra plataforma, aceptas que cualquier problema con un producto 
+                                debe ser resuelto directamente con el vendedor o con la empresa de transporte correspondiente.
+                            </p>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -274,9 +419,10 @@ const sections = [
     { id: 'productos', title: 'Explorar productos' },
     { id: 'chat-soporte', title: 'Chat y soporte' },
     { id: 'proceso-compra', title: 'Proceso de compra' },
-    { id: 'seguimiento-pedidos', title: 'Seguimiento de pedidos' },
-    { id: 'devoluciones', title: 'Devoluciones' },
-    { id: 'consejos', title: 'Consejos y trucos' }
+    { id: 'consejos', title: 'Consejos y trucos' },
+    { id: 'sobre-nosotros', title: 'Sobre nosotros' },
+    { id: 'legal', title: 'Legal' },
+    { id: 'devoluciones', title: 'Devoluciones' }
 ];
 
 // Control de sección activa para el menú

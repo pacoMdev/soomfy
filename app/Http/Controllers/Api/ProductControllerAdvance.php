@@ -161,8 +161,17 @@ class ProductControllerAdvance extends Controller
         // Búsqueda global
         $searchGlobal = request('search_global', null);
 
-        // Muestra todos los productos con su categoria y foto
+        // Primero, obtenemos los IDs de productos vendidos
+        $soldProductIds = ShippingAddressTransaction::where('status', 'finished')
+            ->with('transaction.product')
+            ->get()
+            ->pluck('transaction.product.id')
+            ->unique()
+            ->values();
+
+        // Muestra todos los productos con su categoria y foto - excluyendo los vendidos
         $products = Product::with('user','estado','categories', 'media')
+            ->whereNotIn('id', $soldProductIds) // excluye productos vendidos desde el principio
             // Busqueda global
             ->when($searchGlobal = request('search_global'), function($query) use ($searchGlobal) {
                 $query->where(function($q) use ($searchGlobal) {
@@ -239,7 +248,6 @@ class ProductControllerAdvance extends Controller
                         ]);
                     });
                 }
-
             })
             // Agregar múltiples órdenes condicionalmente
             // Ordenar por id
@@ -267,20 +275,8 @@ class ProductControllerAdvance extends Controller
             })
             ->when($orderColumn && $orderDirection, function ($query) use ($orderColumn, $orderDirection) {
                 $query->orderBy($orderColumn, $orderDirection);
-            });
-            // ->paginate($paginate);
-            // excluye los productos ya vendidos de transactions
-            // $filteredProducts = $products->reject(function ($product) use ($soldProductIds) {
-                //     // return $soldProductIds->contains($product->id);
-                // });
-            $soldProductIds = ShippingAddressTransaction::where('status', 'finished')
-            ->with('transaction.product')
-            ->get()
-            ->pluck('transaction.product.id')
-            ->unique()
-            ->values();
-            $products = Product::whereNotIn('id', $soldProductIds) // excluye productos vendidos
-                ->paginate($paginate);
+            })
+            ->paginate($paginate);
 
         return ProductResource::collection($products);
     }
