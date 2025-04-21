@@ -89,7 +89,7 @@ RUN echo "APP_NAME=${APP_NAME}" > .env && \
     echo "VITE_FIREBASE_PROJECTID=${VITE_FIREBASE_PROJECTID}" >> .env && \
     echo "VITE_FIREBASE_STORAGEBUCKET=${VITE_FIREBASE_STORAGEBUCKET}" >> .env && \
     echo "VITE_FIREBASE_MESSAGINGSENDERID=${VITE_FIREBASE_MESSAGINGSENDERID}" >> .env && \
-    echo "VITE_FIREBASE_APPID=${VITE_FIREBASE_APPID}" >> .env \
+    echo "VITE_FIREBASE_APPID=${VITE_FIREBASE_APPID}" >> .env
 # Generar la clave de Laravel
 # Limpiar caché de configuración antes de generar la clave
 RUN php artisan config:clear && php artisan key:generate
