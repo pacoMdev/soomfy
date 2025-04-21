@@ -76,11 +76,11 @@ return [
     /*
      * Here you can specify which path generator should be used for the given class.
      */
-    'custom_path_generators' => [
-        App\Models\Category::class => App\Services\CategoryPathGenerator::class,
-        App\Models\Product::class => App\Services\ProductPathGenerator::class,
+    // 'custom_path_generators' => [
+    //     App\Models\Category::class => App\Services\CategoryPathGenerator::class,
+    //     App\Models\Product::class => App\Services\ProductPathGenerator::class,
 
-    ],
+    // ],
 
     /*
      * When urls to files get generated, this class will be called. Use the default

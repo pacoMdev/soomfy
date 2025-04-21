@@ -76,7 +76,6 @@
 <script setup>
 
 import useAuth from "@/composables/auth";
-import LocaleSwitcher from "../components/LocaleSwitcher.vue";
 import { authStore } from "../store/auth";
 import { ref, onMounted } from "vue";
 import Dropdown from 'primevue/dropdown';
