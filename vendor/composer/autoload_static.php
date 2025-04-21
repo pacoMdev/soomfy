@@ -28,6 +28,7 @@ class ComposerStaticInit8a1cb140156aa7111d0b288962e72f76
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
+        '1232758e40b1d31bb295b6907de02c63' => __DIR__ . '/..' . '/beste/clock/src/Clock.php',
         '265b4faa2b3a9766332744949e83bf97' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Collections/helpers.php',
         'c7a3c339e7e14b60e06a2d7fcce9476b' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Events/functions.php',
         'f57d353b41eb2e234b26064d63d8c5dd' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Filesystem/functions.php',
@@ -206,6 +207,7 @@ class ComposerStaticInit8a1cb140156aa7111d0b288962e72f76
         'B' => 
         array (
             'Brick\\Math\\' => 11,
+            'Beste\\Clock\\' => 12,
         ),
         'A' => 
         array (
@@ -649,6 +651,10 @@ class ComposerStaticInit8a1cb140156aa7111d0b288962e72f76
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
+        'Beste\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/beste/clock/src/Clock',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -741,6 +747,12 @@ class ComposerStaticInit8a1cb140156aa7111d0b288962e72f76
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'Beste\\Clock\\FrozenClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/FrozenClock.php',
+        'Beste\\Clock\\LocalizedClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/LocalizedClock.php',
+        'Beste\\Clock\\MinuteClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/MinuteClock.php',
+        'Beste\\Clock\\SystemClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/SystemClock.php',
+        'Beste\\Clock\\UTCClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/UTCClock.php',
+        'Beste\\Clock\\WrappingClock' => __DIR__ . '/..' . '/beste/clock/src/Clock/WrappingClock.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
         'Brick\\Math\\BigNumber' => __DIR__ . '/..' . '/brick/math/src/BigNumber.php',

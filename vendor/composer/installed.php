@@ -3,13 +3,22 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-prodSoomfy',
         'version' => 'dev-prodSoomfy',
-        'reference' => '2fe47acd10a45d8b1635ec789f3cc891615034ac',
+        'reference' => '6f2daf74ed04de6634b374f1d46395ca93c7c3de',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'beste/clock' => array(
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => '7004b55fcd54737b539886244b3a3b2188181974',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../beste/clock',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'brick/math' => array(
             'pretty_version' => '0.12.3',
             'version' => '0.12.3.0',
@@ -409,7 +418,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-prodSoomfy',
             'version' => 'dev-prodSoomfy',
-            'reference' => '2fe47acd10a45d8b1635ec789f3cc891615034ac',
+            'reference' => '6f2daf74ed04de6634b374f1d46395ca93c7c3de',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
