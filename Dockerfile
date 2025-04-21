@@ -13,7 +13,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instalar dependencias de PHP y Node
-RUN composer install --optimize-autoloader --no-dev \
+RUN composer update && composer install --optimize-autoloader --no-dev \
  && npm install \
  && npm run build
 
