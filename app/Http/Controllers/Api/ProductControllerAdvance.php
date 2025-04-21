@@ -348,8 +348,9 @@ class ProductControllerAdvance extends Controller
 
         $selledInPerson = Transactions::where('product_id', $productId)
         ->where('delivery_type', 'in_person')
-        ->get();
-        if ($selledInPerson){
+        ->get()
+        ->count();
+        if ($selledInPerson > 0){
             return response()->json([
                 'isProcessed' => true,
                 'isSelled' => true,
