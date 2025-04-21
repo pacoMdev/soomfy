@@ -7,6 +7,8 @@ import VueSweetalert2 from "vue-sweetalert2";
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 import useAuth from './composables/auth';
+import { installI18n, loadMessages } from "./plugins/i18n";
+import { langStore } from "@/store/lang";
 import './plugins/axios.js';
 
 /*PRIMEVUE */
@@ -83,6 +85,12 @@ app.use(DialogService);
 app.use(ConfirmationService);
 
 
+const i18n = installI18n(app);
+const l = langStore();
+l.$subscribe((_, state) => {
+    console.info('state: '+ state.locale);
+    loadMessages(state.locale)
+});
 /**PRIMEVUE */
 import Aura from '@primevue/themes/aura';
 
