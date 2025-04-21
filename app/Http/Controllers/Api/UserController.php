@@ -181,12 +181,7 @@ class UserController extends Controller
     }
     public function getValorations(Request $request){
         $userId = $request->userId;
-        // $reviews = UserOpinion::whereIn('product_id', function ($query) use ($userId) {
-        //     $query->select('product_id')
-        //           ->from('transactions')
-        //           ->where('userSeller_id', $userId);
-        // })->with(['user', 'product'])->get();
-        // Obtener productos vendidos por el usuario
+
         $productIds = \DB::table('transactions')
         ->where('userSeller_id', $userId)
         ->pluck('product_id');

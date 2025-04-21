@@ -16,7 +16,6 @@ use App\Models\Message;
 use App\Models\Transactions;
 use App\Models\UserOpinion;
 use App\Models\User;
-use App\Models\CategoryProduct;
 
 use App\Mail\ConstructEmail;
 use App\Models\ShippingAddressTransaction;

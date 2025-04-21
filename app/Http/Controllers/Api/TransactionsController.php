@@ -31,16 +31,6 @@ class TransactionsController extends Controller
             when(request('search_id'), function ($query) {
                 $query->where('id', request('search_id'));
             })
-            // ->when(request('search_title'), function ($query) {
-            //     $query->where('name', 'like', '%'.request('search_title').'%');
-            // })
-            // ->when(request('search_global'), function ($query) {
-            //     $query->where(function($q) {
-            //         $q->where('id', request('search_global'))
-            //             ->orWhere('name', 'like', '%'.request('search_global').'%');
-
-            //     });
-            // })
             ->orderBy($orderColumn, $orderDirection)
             ->paginate(50);
 
