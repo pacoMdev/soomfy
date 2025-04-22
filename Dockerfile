@@ -27,11 +27,11 @@ WORKDIR /var/www
 # Copia todos los archivos del proyecto
 COPY . .
 
-#Instalacion de las dependencias
-RUN npm install 
+# #Instalacion de las dependencias
+# RUN npm install 
 
-#Instalacion del proyecto
-RUN npm run build
+# #Instalacion del proyecto
+# RUN npm run build
 
 # Instala dependencias de PHP
 RUN composer install --optimize-autoloader --no-dev
