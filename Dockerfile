@@ -28,7 +28,14 @@ WORKDIR /var/www
 COPY . .
 
 # Instala dependencias de PHP
-RUN composer install --optimize-autoloader --no-dev
+RUN composer update && composer install --optimize-autoloader --no-dev \
+    && php artisan cache:clear \
+    && php artisan config:clear \
+    && php artisan config:cache \
+    && php artisan route:clear \
+    && php artisan route:cache \
+    && php artisan view:clear \
+    && php artisan view:cache
 
 # Copia el archivo de entorno de ejemplo si no existe .env
 RUN cp .env.example .env || true
