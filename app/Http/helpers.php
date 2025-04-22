@@ -6,12 +6,8 @@ function getBackURL()
     $url = '';
     if (env('APP_ENV') == 'local') {
         $url = 'http://127.0.0.1:8000/';
-    } elseif (env('APP_ENV') == 'dev') {
-        $url = 'https://soomfy.isdev.com/';
-    }elseif (env('APP_ENV') == 'pre') {
-        $url = 'https://soomfy.idpre.com/';
     }elseif (env('APP_ENV') == 'prod') {
-        $url = 'https://soomfy.isprod.com/';
+        $url = 'https://soomfy-production.up.railway.app';
     };
     return $url;
 }
