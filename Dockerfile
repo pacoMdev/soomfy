@@ -3,6 +3,7 @@ FROM php:8.2-fpm
 
 # Instala dependencias del sistema
 RUN apt-get update && apt-get install -y \
+    bash \
     build-essential \
     libpng-dev \
     libonig-dev \
