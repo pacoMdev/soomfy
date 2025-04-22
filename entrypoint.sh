@@ -6,8 +6,6 @@ npm install
 echo "🎨 Compilando frontend Vue..."
 npm run build
 
-npm ci
-
 echo "📦 Instalando dependencias de PHP..."
 composer update
 composer install --optimize-autoloader --no-dev
@@ -20,7 +18,7 @@ php artisan migrate --force
 php artisan storage:link || true
 
 echo "🧹 Limpia la cache"
-php artisan optimice:clear
+php artisan optimize:clear
 
 echo "🚀 Iniciando servidor Laravel..."
 php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
