@@ -6,6 +6,8 @@ npm install
 echo "🎨 Compilando frontend Vue..."
 npm run build
 
+npm ci
+
 echo "📦 Instalando dependencias de PHP..."
 composer update
 composer install --optimize-autoloader --no-dev
