@@ -154,6 +154,9 @@ const route = useRoute();
 const { products, getProducts, estadoList, getEstadoList } = useProducts();
 const { categoryList, getCategoryList } = useCategories();
 
+// Bandera simple para controlar si estamos en inicialización
+const isInitializing = ref(true);
+
 /**
  * Importación de funciones del composable de Mapas
  * 
@@ -366,6 +369,12 @@ const setupMap = () => {
  * y actualiza la URL y la lista de productos mostrados.
  */
 const aplicarFiltro = async () => {
+  // Si estamos inicializando y hay parámetros en la URL, no aplicar filtros
+  if (isInitializing.value && Object.keys(route.query).length > 0) {
+    console.log("Inicialización con parámetros existentes, no se aplicarán filtros");
+    return;
+  }
+
   try {
     // Map selected categories and states to their names
     const selectedCategoryNames = Array.isArray(categoriaSeleccionada.value)
@@ -402,8 +411,12 @@ const aplicarFiltro = async () => {
 
     console.log("Filtros limpios:", filtrosLimpios);
 
-    await router.push({ query: filtrosLimpios });
+    // Solo actualizar la URL si no estamos inicializando con parámetros existentes
+    if (!isInitializing.value || Object.keys(route.query).length === 0) {
+      await router.push({ query: filtrosLimpios });
+    }
 
+    // Cargar productos con los filtros correspondientes
     await getProducts(
       1,
       filtrosLimpios.search_category || '',
@@ -420,12 +433,15 @@ const aplicarFiltro = async () => {
       filtrosLimpios.order_price || '',
       filtrosLimpios.search_latitude || '',
       filtrosLimpios.search_longitude || '',
-      filtrosLimpios.search_radius || '',
-      ''
+      filtrosLimpios.search_radius || 20000,
+      '',
     );
 
   } catch (error) {
     console.error('Error al aplicar filtro:', error);
+  } finally {
+    // Una vez completado, desactivar la bandera de inicialización
+    isInitializing.value = false;
   }
 };
 
@@ -445,7 +461,7 @@ const limpiarFiltros = async () => {
   ordenarPrecio.value = '';
   buscarPrecioMin.value = '';
   buscarPrecioMax.value = '';
-  buscarRadio.value = 0;
+  buscarRadio.value = 20000;
   
   // Establecemos ubicación por defecto
   latitude.value = BARCELONA_LATITUDE;
@@ -484,7 +500,12 @@ watch(
     latitude,
     longitude
   ],
-  aplicarFiltro
+  () => {
+    // Solo aplicar filtros si no estamos en inicialización
+    if (!isInitializing.value) {
+      aplicarFiltro();
+    }
+  }
 );
 
 /**
@@ -497,6 +518,7 @@ watch(
   () => route.query,
   async (newQuery, oldQuery) => {
     if (JSON.stringify(newQuery) !== JSON.stringify(oldQuery)) {
+      // Evitar llamar a aplicarFiltro, usar fetchProducts directamente
       await fetchProducts();
     }
   },
@@ -505,15 +527,14 @@ watch(
 
 /**
  * Configuración inicial cuando se carga la página
- * 
- * - Obtiene la ubicación del usuario
- * - Carga productos iniciales
- * - Inicializa listas de categorías y estados
- * - Configura el mapa con los parámetros de la URL
  */
 onMounted(async () => {
+  // Activar bandera de inicialización
+  isInitializing.value = true;
+  
   await getUserLocation();
   
+  // Cargar productos según los parámetros de la URL
   fetchProducts();
   getCategoryList();
   getEstadoList();
@@ -526,13 +547,21 @@ onMounted(async () => {
         buscarRadio.value = route.query.search_radius;
         await updateCircleOnly(parseInt(buscarRadio.value));
       } else {
-        // Si no hay radio en la URL, establecer explícitamente como ubicación exacta
         buscarRadio.value = 0;
         await updateCircleOnly(0);
       }
       
-      // Aplicar filtro para asegurar actualizaciones
-      aplicarFiltro();
+      // Aplicar filtros solo si no hay parámetros en la URL
+      if (Object.keys(route.query).length === 0) {
+        console.log("No hay parámetros en la URL, aplicando filtros por defecto");
+        aplicarFiltro();
+      } else {
+        console.log("Ya existen parámetros en la URL, manteniendo filtros actuales");
+        // Desactivar bandera de inicialización después de un tiempo
+        setTimeout(() => {
+          isInitializing.value = false;
+        }, 500);
+      }
     }, 500);
   }, 500);
 });
