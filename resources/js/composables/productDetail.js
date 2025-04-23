@@ -25,7 +25,7 @@ export default function useProductDetail() {
         icon: 'pi pi-home', route: '/'
     });
     const breadcrumbs = computed(() => [
-        { label: 'Products', route: '/' },
+        { label: 'Products', route: '/products' },
         { label: product.value?.title || 'Cargando...', route: null }
     ]);
     const responsiveOptions = ref([
