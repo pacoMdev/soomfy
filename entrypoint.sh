@@ -1,24 +1,26 @@
 #!/bin/bash
 
-echo "➡️ Instalando dependencias de Node..."
-npm install
+# Salir si ocurre un error
+set -e
 
-echo "🎨 Compilando frontend Vue..."
-npm run build
+# Esperar a que el servicio de base de datos esté disponible (opcional)
+# echo "Esperando base de datos..."
+# until nc -z -v -w30 mysql 3306; do
+#   echo "Esperando..."
+#   sleep 1
+# done
 
-echo "📦 Instalando dependencias de PHP..."
-composer update
-composer install --optimize-autoloader --no-dev
+# Ejecuta migraciones si es necesario
+php artisan migrate --force
 
-echo "⚙️ Ejecutando comandos de Laravel..."
+# Opcional: limpiar y cachear config y rutas
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-php artisan migrate --force
-php artisan storage:link || true
 
-echo "🧹 Limpia la cache"
-php artisan optimize:clear
+# Iniciar servidor PHP (esto depende de tu infraestructura)
+# Si usas Laravel Octane o quieres usar el servidor embebido:
+# php artisan serve --host=0.0.0.0 --port=8080
 
-echo "🚀 Iniciando servidor Laravel..."
-php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Si usas PHP-FPM (lo más común con nginx)
+exec php-fpm
