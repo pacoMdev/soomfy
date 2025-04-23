@@ -1,13 +1,6 @@
 node_modules
 vendor
-.env
+npm-debug.log
+.dockerignore
 .git
 .gitignore
-Dockerfile
-docker-compose.yml
-*.log
-.idea
-.vscode
-*.md
-/tests
-/storage/*.key
