@@ -13,6 +13,9 @@ WORKDIR /var/www
 # Copiar archivos del proyecto
 COPY . /var/www
 
+# Copiar los assets del frontend ya compilados
+COPY --from=frontend /app/public /var/www/public
+
 # Instalar dependencias de PHP
 RUN composer install --optimize-autoloader --no-dev
 
