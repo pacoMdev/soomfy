@@ -23,4 +23,4 @@ php artisan view:cache
 # php artisan serve --host=0.0.0.0 --port=8080
 
 # Si usas PHP-FPM (lo más común con nginx)
-exec php-fpm
+php artisan serve --host=0.0.0.0 --port=8080
