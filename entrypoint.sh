@@ -1,21 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-echo "➡️ Instalando dependencias de Node..."
-npm install
+echo "🚀 Iniciando deploy en Railway..."
 
-echo "🎨 Compilando frontend Vue..."
-npm run build
+# 1. Instalar dependencias PHP (sólo si no viene cacheado)
+echo "📦 Instalando dependencias PHP..."
+composer install --no-dev --optimize-autoloader
 
-echo "📦 Instalando dependencias de PHP..."
-composer update
-composer install --optimize-autoloader --no-dev
-
-echo "⚙️ Ejecutando comandos de Laravel..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# 2. Ejecutar migraciones
+echo "📄 Ejecutando migraciones..."
 php artisan migrate --force
-php artisan storage:link || true
 
-echo "🚀 Iniciando servidor Laravel..."
-php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# 3. Ejecutar seeders (ignora errores de existentes)
+echo "🌱 Lanzando seeders..."
+php artisan db:seed --force || echo "✋ Seeders ya aplicados, continúo..."
+
+# 4. Crear enlace simbólico para /storage
+echo "🔗 Creando enlace simbólico de storage..."
+php artisan storage:link
+
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan config:cache
+
+# 5. Levantar el servidor en el puerto que asigna Railway
+echo "🌐 Levantando servidor Laravel en puerto ${PORT}..."
+php artisan serve --host=0.0.0.0 --port="${PORT}"
