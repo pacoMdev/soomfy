@@ -28,8 +28,8 @@ Route::get('google-auth/callback', [GoogleController::class, 'googleAuth'])->nam
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::view('/{any?}', 'main-view')
+Route::view('/{any}', 'main-view')
     ->name('dashboard')
-    ->where('any', '.*');
+    ->where('any', '^(?!build/).*$');
 
 

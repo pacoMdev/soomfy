@@ -5,7 +5,8 @@
     "▶️PROJECT": "npm  install; php artisan serve & npm run dev",
     "🆅VUE": "vite --open",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "start": "vite preview"
   },
   "engines": {
     "node": "18.x",
