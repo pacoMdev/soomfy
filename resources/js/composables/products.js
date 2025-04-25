@@ -166,7 +166,7 @@ export default function useProducts() {
             });
 
             // Redirigir al índice de productos
-            await router.push({ name: 'profile' });
+            await router.push({ name: 'logged.cuenta' });
 
         } catch (error) {
             // Manejo de errores

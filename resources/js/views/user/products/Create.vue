@@ -129,7 +129,7 @@
                                 </div>
                             </div>
                             
-                            <div v-if="product.toSend == 1" class="bg-light p-3 rounded mb-4">
+                            <!-- <div v-if="product.toSend == 1" class="bg-light p-3 rounded mb-4">
                                 <div class="row mb-3">
                                     <div class="col-12">
                                         <FloatLabel>
@@ -175,12 +175,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             
                             <!-- BUTTONS OPTIONS -->
                             <div class="d-flex flex-column flex-md-row justify-content-between mt-4">
                                 <Button label="Atrás" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" class="mb-3 mb-md-0" />
-                                <Button :disabled="isLoading" class="p-button-primary">
+                                <Button :disabled="isLoading" class="p-button-primary" type='submit'>
                                     <div v-show="isLoading" class="spinner-border spinner-border-sm me-2" role="status">
                                         <span class="visually-hidden">Cargando...</span>
                                     </div>
@@ -238,6 +238,7 @@ const {value: content} = useField('content', null, {initialValue: ''});
 const {value: categories} = useField('categories', null, {initialValue: '', label: 'categories'});
 const {value: price} = useField('price', null, {initialValue: 0});
 const {value: estados} = useField('estado', null, {initialValue: ''});
+const {value: toSend} = useField('toSend', null, {initialValue: 0});
 const {categoryList, getCategoryList} = useCategories()
 const {storeUserProduct, getEstadoList, estadoList, validationErrors, isLoading} = useProducts()
 
@@ -252,6 +253,7 @@ const product = ref({
     ],
     price,
     estado: estados,
+    toSend,
 })
 
 
@@ -278,6 +280,7 @@ function submitForm() {
       formData.append('content', product.value.content);
       formData.append('price', product.value.price);
       formData.append('estado_id', product.value.estado);
+      formData.append('toSend', product.value.toSend);
       if (Array.isArray(product.value.categories)) {
           product.value.categories.forEach((category) => {
             formData.append('categories[]', category);
