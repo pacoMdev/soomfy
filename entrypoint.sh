@@ -3,7 +3,7 @@ set -e
 
 echo "🚀 Iniciando deploy en Railway..."
 
-# 1. Instalar dependencias PHP (sólo si no viene cacheado)
+# 1. Instalar dependencias PHP
 echo "📦 Instalando dependencias PHP..."
 composer install --no-dev --optimize-autoloader
 
@@ -11,7 +11,7 @@ composer install --no-dev --optimize-autoloader
 echo "📄 Ejecutando migraciones..."
 php artisan migrate --force
 
-# 3. Ejecutar seeders (ignora errores de existentes)
+# 3. Ejecutar seeders (ignora errores si ya están)
 echo "🌱 Lanzando seeders..."
 php artisan db:seed --force || echo "✋ Seeders ya aplicados, continúo..."
 
@@ -19,15 +19,17 @@ php artisan db:seed --force || echo "✋ Seeders ya aplicados, continúo..."
 echo "🔗 Creando enlace simbólico de storage..."
 php artisan storage:link
 
+# 5. Compilar assets frontend
+echo "🎨 Compilando assets con Vite..."
+npm install
+npm run build
+
+# 6. Limpiar y cachear configuración
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 php artisan config:cache
 
-# 5. Compilar assets
-echo "🎨 Compilando assets con Vite..."
-npm install && npm run build
-
-# 6. Levantar el servidor
-echo "🌐 Levantando servidor Laravel en producción..."
-php -S 0.0.0.0:$PORT -t public
+# 7. Levantar servidor Laravel
+echo "🌐 Levantando servidor Laravel en puerto ${PORT}..."
+php artisan serve --host=0.0.0.0 --port="${PORT}"
