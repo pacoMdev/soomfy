@@ -24,6 +24,10 @@ php artisan route:clear
 php artisan view:clear
 php artisan config:cache
 
-# 5. Levantar el servidor en el puerto que asigna Railway
-echo "🌐 Levantando servidor Laravel en puerto ${PORT}..."
-php artisan serve --host=0.0.0.0 --port="${PORT}"
+# 5. Compilar assets
+echo "🎨 Compilando assets con Vite..."
+npm install && npm run build
+
+# 6. Levantar el servidor
+echo "🌐 Levantando servidor Laravel en producción..."
+php -S 0.0.0.0:$PORT -t public

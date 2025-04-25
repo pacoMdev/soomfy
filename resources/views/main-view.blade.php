@@ -15,6 +15,8 @@
     <title>Soomfy</title>
     {{-- Font awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @vite(['resources/js/app.js', 'resources/sass/app.scss'])
+   
     {{-- Icon --}}
     <link rel="icon" href="/images/logo-whiteground.svg">
     <!-- Fonts MAIN-->
@@ -37,12 +39,8 @@
             defer
     ></script>
 
-    <!-- Scripts -->
-{{--    @vite(['resources/sass/app.scss', 'resources/js/app.js'])--}}
-        @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-
 </head>
-<body class="font-sans antialiased">
+<body>
     <div id="app">
         <router-view></router-view>
     </div>
