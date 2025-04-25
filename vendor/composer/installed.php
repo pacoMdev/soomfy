@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'dev-prodSoomfy',
-        'version' => 'dev-prodSoomfy',
-        'reference' => '67b35f2f2bfd61b6515a5b2473a5bf55c8c70e55',
+        'pretty_version' => 'dev-Railway_Paco',
+        'version' => 'dev-Railway_Paco',
+        'reference' => 'd711e1c88f6c8d59f507ae45bcbd84510c4fb06c',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -416,9 +416,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'dev-prodSoomfy',
-            'version' => 'dev-prodSoomfy',
-            'reference' => '67b35f2f2bfd61b6515a5b2473a5bf55c8c70e55',
+            'pretty_version' => 'dev-Railway_Paco',
+            'version' => 'dev-Railway_Paco',
+            'reference' => 'd711e1c88f6c8d59f507ae45bcbd84510c4fb06c',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

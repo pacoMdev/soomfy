@@ -26,7 +26,6 @@ export default defineConfig({
         outDir: 'public/build', // o directamente 'public' si lo prefieres
         emptyOutDir: true,
       },
-      base: '/build/',
     resolve: {
         alias: {
             vue: 'vue/dist/vue.esm-bundler.js',
