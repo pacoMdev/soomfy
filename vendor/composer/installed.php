@@ -3,13 +3,22 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-Railway_Paco',
         'version' => 'dev-Railway_Paco',
-        'reference' => 'd711e1c88f6c8d59f507ae45bcbd84510c4fb06c',
+        'reference' => '046dccbf3e3fc55d715aa8a1a4448b7292359c0a',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'andyabih/laravel-to-uml' => array(
+            'pretty_version' => '1.0.3',
+            'version' => '1.0.3.0',
+            'reference' => 'd925215a7dbcaf813cabc8d83178e9f601c63b57',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../andyabih/laravel-to-uml',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'beste/clock' => array(
             'pretty_version' => '3.0.0',
             'version' => '3.0.0.0',
@@ -418,7 +427,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-Railway_Paco',
             'version' => 'dev-Railway_Paco',
-            'reference' => 'd711e1c88f6c8d59f507ae45bcbd84510c4fb06c',
+            'reference' => '046dccbf3e3fc55d715aa8a1a4448b7292359c0a',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

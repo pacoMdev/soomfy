@@ -115,4 +115,5 @@ return array(
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
     'Beste\\Clock\\' => array($vendorDir . '/beste/clock/src/Clock'),
     'App\\' => array($baseDir . '/app', $vendorDir . '/laravel/pint/app'),
+    'Andyabih\\LaravelToUML\\' => array($vendorDir . '/andyabih/laravel-to-uml/src'),
 );
