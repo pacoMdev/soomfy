@@ -6,14 +6,6 @@ use Tests\TestCase;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-/**
- * ProductTest - Prueba Unitaria para la funcionalidad de Productos
- * 
- * Este archivo de prueba se centra en probar la funcionalidad de productos de forma aislada,
- * sin dependencias de base de datos o API.
- * Simula el comportamiento de un ProductController utilizando stdClass de PHP para crear objetos simulados.
- * Estas pruebas validan operaciones básicas CRUD para productos.
- */
 class ProductTest extends TestCase
 {
     use DatabaseTransactions;
@@ -61,12 +53,10 @@ class ProductTest extends TestCase
         $product = Product::create($productData);
         $productId = $product->id;
 
-        // verificacion de creacion OK
         $this->assertDatabaseHas('products', [
             'id' => $productId,
         ]);
 
-        // verificacion de datos
         $this->assertEquals($product->id, $productId);
     }
 
@@ -82,7 +72,6 @@ class ProductTest extends TestCase
             'user_id' => 1
         ]);
         
-        // Guardar el ID para mejor búsqueda
         $productId = $product->id;
         
         $this->assertDatabaseHas('products', [
@@ -119,7 +108,6 @@ class ProductTest extends TestCase
             'user_id' => 1
         ]);
         
-        // Guardar el ID para mejor búsqueda
         $productId = $product->id;
         
         $this->assertDatabaseHas('products', [
