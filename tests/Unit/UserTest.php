@@ -2,135 +2,141 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-use stdClass;
+use Tests\TestCase;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-/**
- * Test unitario simplificado para UserController
- */
 class UserTest extends TestCase
 {
-    protected $user;
-    protected $userController;
-    protected $request;
-    
-    protected function setUp(): void
-    {
-        parent::setUp();
-        
-        // Crear un objeto simple para simular un usuario
-        $this->user = new stdClass();
-        $this->user->id = 1;
-        $this->user->name = 'Test User';
-        $this->user->email = 'test@example.com';
-        $this->user->surname1 = 'Surname1';
-        $this->user->surname2 = 'Surname2';
-        
-        // Simular el controlador
-        $this->userController = new stdClass();
-        
-        // Simular autenticación con Sanctum
-        $this->userController->auth = function() {
-            return $this->user;
-        };
-        
-        // Simular request
-        $this->request = new stdClass();
-        $this->request->name = 'New User';
-        $this->request->email = 'new@example.com';
-        $this->request->role_id = 2;
-        $this->request->password = 'password123';
-    }
+    use DatabaseTransactions;
 
-    /**
-     * Test de obtención de usuarios
-     */
     public function test_user_can_be_indexed()
     {
-        // Simular respuesta de index
-        $this->userController->index = function() {
-            $users = [(object)[
-                'id' => 1,
-                'name' => 'User 1'
-            ], (object)[
-                'id' => 2,
-                'name' => 'User 2'
-            ]];
-            return $users;
-        };
+        // Esto asegura que existe un rol "user" antes de crear el usuario
+        $role = Role::firstOrCreate(['name' => 'user']);
         
-        // Ejecutar y verificar que devuelve una colección con usuarios
-        $result = ($this->userController->index)();
-        $this->assertIsArray($result);
-        $this->assertCount(2, $result);
-        $this->assertEquals('User 1', $result[0]->name);
+        $usuario1 = User::create([
+            'name' => 'Usuario 1',
+            'surname1' => 'Apellido1',
+            'alias' => 'user1',
+            'email' => 'usuario1@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4147,
+            'longitude' => 2.0156,
+            'role_id' => $role->id
+        ]);
+        
+        $usuario2 = User::create([
+            'name' => 'Usuario 2',
+            'surname1' => 'Apellido2',
+            'alias' => 'user2',
+            'email' => 'usuario2@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.3874,
+            'longitude' => 2.1686,
+            'role_id' => $role->id
+        ]);
+        
+        $users = User::all();
+        
+        $this->assertContains($usuario1->id, $users->pluck('id')->toArray());
+        $this->assertContains($usuario2->id, $users->pluck('id')->toArray());
     }
     
-    /**
-     * Test de creación de usuario
-     */
     public function test_user_can_be_created()
     {
-        // Simular el método store
-        $this->userController->store = function($request) {
-            // Simular creación de usuario
-            $newUser = new stdClass();
-            $newUser->id = 3;
-            $newUser->name = $request->name;
-            $newUser->email = $request->email;
-            return $newUser;
-        };
+        // Esto asegura que existe un rol "user" antes de crear el usuario
+        $role = Role::firstOrCreate(['name' => 'user']);
         
-        // Ejecutar y verificar
-        $result = ($this->userController->store)($this->request);
-        $this->assertEquals('New User', $result->name);
-        $this->assertEquals('new@example.com', $result->email);
+        $userData = [
+            'name' => 'Usuario Prueba',
+            'surname1' => 'Apellido Prueba',
+            'alias' => 'usertest',
+            'email' => 'usuarioprueba@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4250,
+            'longitude' => 1.9873,
+            'role_id' => $role->id
+        ];
+
+        $user = User::create($userData);
+        $userId = $user->id;
+
+        $this->assertDatabaseHas('users', [
+            'id' => $userId,
+        ]);
+
+        $this->assertEquals($user->id, $userId);
     }
-    
-    /**
-     * Test de actualización de usuario
-     */
+
     public function test_user_can_be_updated()
     {
-        // Simular el método update
-        $this->userController->update = function($request, $user) {
-            $user->name = $request->name;
-            $user->email = $request->email;
-            return $user;
-        };
+        // Esto asegura que existe un rol "user" antes de crear el usuario
+        $role = Role::firstOrCreate(['name' => 'user']);
         
-        // Ejecutar y verificar
-        $result = ($this->userController->update)($this->request, $this->user);
-        $this->assertEquals('New User', $result->name);
-        $this->assertEquals('new@example.com', $result->email);
+        $user = User::create([
+            'name' => 'Usuario_Original',
+            'surname1' => 'Apellido_Original',
+            'alias' => 'original',
+            'email' => 'original@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4147,
+            'longitude' => 2.0156,
+            'role_id' => $role->id
+        ]);
+        
+        $userId = $user->id;
+        
+        $this->assertDatabaseHas('users', [
+            'id' => $userId,
+            'name' => 'Usuario_Original',
+        ]);
+    
+        $user->update([
+            'name' => 'Usuario_Actualizado',
+            'surname1' => 'Apellido_Actualizado',
+            'email' => 'actualizado@example.com'
+        ]);
+        
+        $this->assertDatabaseHas('users', [
+            'id' => $userId,
+            'name' => 'Usuario_Actualizado',
+            'surname1' => 'Apellido_Actualizado',
+        ]);
+        
+        $this->assertDatabaseMissing('users', [
+            'id' => $userId,
+            'name' => 'Usuario_Original',
+        ]);
     }
     
-    /**
-     * Test de eliminación de usuario
-     */
     public function test_user_can_be_deleted()
     {
-        // Simular el método destroy
-        $this->userController->destroy = function($user) {
-            // Simulamos la respuesta noContent (204)
-            return true;
-        };
+        // Esto asegura que existe un rol "user" antes de crear el usuario
+        $role = Role::firstOrCreate(['name' => 'user']);
         
-        // Ejecutar y verificar
-        $result = ($this->userController->destroy)($this->user);
-        $this->assertTrue($result);
-    }
+        $user = User::create([
+            'name' => 'Usuario a eliminar',
+            'surname1' => 'Apellido Eliminar',
+            'alias' => 'userdelete',
+            'email' => 'eliminar@example.com',
+            'password' => bcrypt('Qwert12345'),
+            'latitude' => 41.4147,
+            'longitude' => 2.0156,
+            'role_id' => $role->id
+        ]);
+        
+        $userId = $user->id;
+        
+        $this->assertDatabaseHas('users', [
+            'id' => $userId,
+        ]);
     
-    /**
-     * Test de autenticación con Sanctum
-     */
-    public function test_user_authentication_with_sanctum()
-    {
-        // Simular el método auth de Sanctum
-        $authUser = ($this->userController->auth)();
-        
-        // Verificar que devuelve el usuario autenticado
-        $this->assertEquals(1, $authUser->id);
-        $this->assertEquals('Test User', $authUser->name);
+        $user->delete();
+    
+        $this->assertDatabaseMissing('users', [
+            'id' => $userId,
+        ]);
     }
 }
